@@ -2,54 +2,55 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Feng Shui Design System - Gold and Red prosperity theme 
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 */
 
 @layer base {
   :root {
-    --background: 20 20% 97%;
-    --foreground: 0 15% 15%;
+    --background: 15 8% 5%;
+    --foreground: 45 100% 85%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 0 15% 15%;
+    --card: 15 12% 8%;
+    --card-foreground: 45 95% 88%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 15% 15%;
+    --popover: 15 15% 10%;
+    --popover-foreground: 45 95% 88%;
 
-    /* Primary - Deep Red for prosperity */
-    --primary: 0 70% 45%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 45 100% 55%;
+    --primary-foreground: 15 15% 10%;
 
-    /* Secondary - Warm Gold */
-    --secondary: 45 85% 55%;
-    --secondary-foreground: 0 15% 15%;
+    --secondary: 0 65% 45%;
+    --secondary-foreground: 45 95% 95%;
 
-    /* Muted tones */
-    --muted: 20 15% 95%;
-    --muted-foreground: 0 10% 45%;
+    --muted: 15 10% 15%;
+    --muted-foreground: 45 25% 65%;
 
-    /* Accent - Bright Gold */
-    --accent: 50 90% 65%;
-    --accent-foreground: 0 15% 15%;
+    --accent: 45 90% 60%;
+    --accent-foreground: 15 15% 10%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive-foreground: 210 40% 98%;
 
-    --border: 20 15% 88%;
-    --input: 20 15% 95%;
-    --ring: 0 70% 45%;
+    --border: 15 15% 20%;
+    --input: 15 15% 18%;
+    --ring: 45 100% 55%;
+
+    --gold: 45 100% 55%;
+    --gold-foreground: 15 15% 10%;
+    --red: 0 65% 45%;
+    --red-foreground: 45 95% 95%;
+    
+    --gradient-primary: linear-gradient(135deg, hsl(var(--gold)), hsl(var(--red)));
+    --gradient-secondary: linear-gradient(180deg, hsl(var(--background)), hsl(15 20% 8%));
+    --gradient-gold: linear-gradient(135deg, hsl(45 100% 55%), hsl(45 85% 65%));
+    
+    --shadow-gold: 0 10px 30px -10px hsl(var(--gold) / 0.3);
+    --shadow-elegant: 0 20px 40px -15px hsl(0 0% 0% / 0.4);
+    
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     --radius: 0.5rem;
-
-    /* Feng Shui specific colors */
-    --prosperity-gold: 45 95% 60%;
-    --prosperity-gold-foreground: 0 15% 15%;
-    --lucky-red: 0 75% 50%;
-    --lucky-red-foreground: 0 0% 98%;
-    --fortune-gradient: linear-gradient(135deg, hsl(45 95% 60%), hsl(0 75% 50%));
-    --golden-glow: 0 0 30px hsl(45 95% 60% / 0.3);
-    --red-glow: 0 0 20px hsl(0 75% 50% / 0.2);
 
     --sidebar-background: 0 0% 98%;
 
