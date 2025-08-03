@@ -18,7 +18,7 @@ const HeroSection = ({ birthDate, setBirthDate, onCalculate }: HeroSectionProps)
           alt="Feng Shui Compass"
           className="w-full h-full object-cover opacity-20"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-red-900/60 to-yellow-800/80 mix-blend-multiply"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-red-900/30 to-yellow-800/50 mix-blend-multiply"></div>
       </div>
 
       {/* Floating Elements */}
@@ -27,9 +27,9 @@ const HeroSection = ({ birthDate, setBirthDate, onCalculate }: HeroSectionProps)
       <div className="absolute bottom-32 left-20 w-8 h-8 bg-gold/20 rounded-full blur-md animate-pulse delay-2000" />
 
       {/* Main content */}
-      <div className="relative z-10 container mx-auto px-4 text-center max-w-4xl">
+      <div className="relative z-10 container mx-auto px-4 text-center max-w-4xl pt-10">
         <h1 className="text-5xl md:text-7xl font-bold leading-tight mb-6">
-          Discover Your <span className="text-gold">FengShui</span>
+          Discover Your <span className="text-gold">Feng Shui</span>
         </h1>
         <p className="text-lg md:text-xl text-white/90 mb-12 max-w-2xl mx-auto">
           Calculate your personal feng shui elements, find harmony in your space,

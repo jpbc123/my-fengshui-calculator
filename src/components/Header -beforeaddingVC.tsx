@@ -1,8 +1,7 @@
-// src/components/Header.tsx
 import { Link } from "react-router-dom";
 import LogoIcon from "@/components/LogoIcon";
 
-const Header = () => {
+export function Header() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-gold/20 shadow-sm">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
@@ -11,7 +10,7 @@ const Header = () => {
         <Link to="/" className="flex items-center gap-3 no-underline hover:no-underline focus:no-underline">
           <div className="relative">
             <LogoIcon />
-            <div className="absolute -top-1 -right-1 h-3 w-3 bg-red rounded-full animate-pulse" />
+            <div className="absolute -top-1 -right-1 h-3 w-3 bg-red rounded-full animate-pulse"></div>
           </div>
           <h1 className="text-xl font-bold text-gold">
             My Feng Shui Calculator
@@ -34,7 +33,7 @@ const Header = () => {
               label: "Calculator",
               items: [
                 { name: "Chinese Zodiac", href: "#" },
-                { name: "Visiber (Premium)", href: "/visiber-calculator" },
+                { name: "Visiber (Premium)", href: "#" },
                 { name: "Daily Energy Chart", href: "#" },
               ],
             },
@@ -48,9 +47,9 @@ const Header = () => {
             {
               label: "About",
               items: [
-                { name: "Privacy Policy", href: "/privacy-policy" },
-                { name: "Terms & Conditions", href: "#" },
-                { name: "Contact Us", href: "#" },
+                <a href="/my-fengshui-calculator/privacy-policy" className="block px-4 py-2 text-sm whitespace-nowrap hover:bg-gold hover:text-black transition-colors">Privacy Policy</a>,
+                <a href="#" className="block px-4 py-2 text-sm whitespace-nowrap hover:bg-gold hover:text-black transition-colors">Terms & Conditions</a>,
+                <a href="#" className="block px-4 py-2 text-sm whitespace-nowrap hover:bg-gold hover:text-black transition-colors">Contact Us</a>,
               ],
             },
           ].map((menu) => (
@@ -58,14 +57,8 @@ const Header = () => {
               <div className="peer cursor-pointer">{menu.label}</div>
               <div className="absolute top-full left-0 mt-2 min-w-60 rounded-md shadow-lg bg-gray-900 text-white opacity-0 invisible peer-hover:opacity-100 peer-hover:visible hover:opacity-100 hover:visible transition-all duration-200 py-1 z-50">
                 {menu.items.map((item, idx) =>
-                  item.href?.startsWith("/") ? (
-                    <Link
-                      key={idx}
-                      to={item.href}
-                      className="block px-4 py-2 text-sm whitespace-nowrap hover:bg-gold hover:text-black transition-colors"
-                    >
-                      {item.name}
-                    </Link>
+                  typeof item === "string" || typeof item === "object" && item?.type === 'a' ? (
+                    <div key={idx}>{item}</div>
                   ) : (
                     <a
                       key={idx}
@@ -91,6 +84,4 @@ const Header = () => {
       </div>
     </header>
   );
-};
-
-export default Header;
+}

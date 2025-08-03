@@ -1,4 +1,5 @@
-import { Header } from "@/components/Header";
+// src/pages/PrivacyPolicy.tsx
+import Header from "@/components/Header"; // ✅ default import
 
 const PrivacyPolicy = () => {
   return (

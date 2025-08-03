@@ -27,7 +27,7 @@ const HeroSection = ({ birthDate, setBirthDate, onCalculate }: HeroSectionProps)
       <div className="absolute bottom-32 left-20 w-8 h-8 bg-gold/20 rounded-full blur-md animate-pulse delay-2000" />
 
       {/* Main content */}
-      <div className="relative z-10 container mx-auto px-4 text-center max-w-4xl pt-10">
+      <div className="relative z-10 container mx-auto px-4 text-center max-w-4xl pt-24">
         <h1 className="text-5xl md:text-7xl font-bold leading-tight mb-6">
           Discover Your <span className="text-gold">Feng Shui</span>
         </h1>

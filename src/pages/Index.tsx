@@ -1,12 +1,10 @@
-// src/pages/Index.tsx 
+// src/pages/Index.tsx
 import { useState } from "react";
-import { Header } from "@/components/Header";
+import Header from "@/components/Header"; 
 import { FengShuiCalculatorModal } from "@/components/FengShuiCalculatorModal";
 import HeroSection from "@/components/HeroSection";
 import FeaturesSection from "@/components/FeaturesSection";
 import CTASection from "@/components/CTASection";
-import { Button } from "@/components/ui/button";
-import fengShuiCoinsImage from "@/assets/feng-shui-coins.jpg";
 
 const Index = () => {
   const [birthDate, setBirthDate] = useState<Date | undefined>();
@@ -23,7 +21,7 @@ const Index = () => {
       <Header />
 
       <main className="flex-grow">
-        <HeroSection 
+        <HeroSection
           birthDate={birthDate}
           setBirthDate={setBirthDate}
           onCalculate={handleCalculate}
@@ -32,7 +30,7 @@ const Index = () => {
         <CTASection />
       </main>
 
-      <FengShuiCalculatorModal 
+      <FengShuiCalculatorModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         birthDate={birthDate || null}
