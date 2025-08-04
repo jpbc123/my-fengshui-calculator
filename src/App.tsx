@@ -7,7 +7,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
-import VisiberCalculator from "./pages/VisiberCalculator"; // ✅ Import new page
+import VisiberCalculator from "./pages/VisiberCalculator"; 
+import ChineseZodiacCalculator from "./pages/ChineseZodiacCalculator"; 
 
 const queryClient = new QueryClient();
 
@@ -16,11 +17,12 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter basename="/my-fengshui-calculator"> {/* ✅ GitHub Pages-friendly */}
+      <BrowserRouter basename="/my-fengshui-calculator"> 
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/visiber-calculator" element={<VisiberCalculator />} /> {/* ✅ New route */}
+          <Route path="/visiber-calculator" element={<VisiberCalculator />} /> 
+          <Route path="/chinese-zodiac-calculator" element={<ChineseZodiacCalculator />} /> 
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

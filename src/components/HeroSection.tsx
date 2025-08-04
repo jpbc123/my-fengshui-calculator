@@ -23,7 +23,9 @@ const HeroSection = ({ birthDate, setBirthDate, onCalculate }: HeroSectionProps)
 
       {/* Floating Elements */}
       <div className="absolute top-10 left-10 w-6 h-6 bg-gold/30 rounded-full blur-lg animate-pulse" />
-      <div className="absolute bottom-16 right-20 w-10 h-10 bg-red-400/30 rounded-full blur-lg animate-pulse delay-1000" />
+      <div className="absolute top-16 right-80 w-10 h-10 bg-gold/30 rounded-full blur-md animate-pulse delay-1500" />
+	  <div className="absolute top-45 left-16 w-20 h-20 bg-gold/30 rounded-full blur-md animate-pulse delay-1500" />
+      <div className="absolute bottom-16 right-20 w-20 h-20 bg-gold/30 rounded-full blur-md animate-pulse delay-1000" />
       <div className="absolute bottom-32 left-20 w-8 h-8 bg-gold/20 rounded-full blur-md animate-pulse delay-2000" />
 
       {/* Main content */}

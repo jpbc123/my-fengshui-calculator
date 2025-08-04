@@ -17,7 +17,7 @@ const menuConfig = [
   {
     label: "Calculator",
     items: [
-      { name: "Chinese Zodiac", href: "#" },
+      { name: "Chinese Zodiac", href: "/chinese-zodiac-calculator" },
       { name: "Visiber (Premium)", href: "/visiber-calculator" },
       { name: "Daily Energy Chart", href: "#" },
     ],
