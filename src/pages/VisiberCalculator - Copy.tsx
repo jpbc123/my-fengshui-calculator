@@ -1,10 +1,10 @@
-// src/pages/VisiberCalculator.tsx
 import { useState } from "react";
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { DatePickerInput } from "@/components/DatePickerInput";
 import { motion, AnimatePresence } from "framer-motion";
 import { Info, Share2 } from "lucide-react";
+import VisiberCalculatorResultModal from "./VisiberCalculatorResultModal";
 
 const visiberMeanings: Record<number, string> = {
   1: "Leadership, independence, ambition",
@@ -19,33 +19,37 @@ const visiberMeanings: Record<number, string> = {
 };
 
 function calculateVisiberNumber(date: Date): number {
-  const digits = date
-    .toISOString()
-    .slice(0, 10)
-    .replaceAll("-", "")
-    .split("")
-    .map(Number);
-  let sum = digits.reduce((a, b) => a + b, 0);
+  const year = date.getFullYear().toString(); // "1990"
+  const month = (date.getMonth() + 1).toString().padStart(2, "0"); // "05"
+  const day = date.getDate().toString().padStart(2, "0"); // "26"
+
+  const digits = (year + month + day).split("").map(Number); // [1,9,9,0,0,5,2,6]
+
+  let sum = digits.reduce((a, b) => a + b, 0); // 32
+
   while (sum > 9) {
     sum = sum
       .toString()
       .split("")
       .map(Number)
-      .reduce((a, b) => a + b, 0);
+      .reduce((a, b) => a + b);
   }
-  return sum;
+
+  return sum; // 5 ✅
 }
 
 const VisiberCalculator = () => {
   const [birthDate, setBirthDate] = useState<Date | undefined>();
   const [visiberNumber, setVisiberNumber] = useState<number | null>(null);
   const [copied, setCopied] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const handleCalculate = () => {
     if (!birthDate) return;
     const result = calculateVisiberNumber(birthDate);
     setVisiberNumber(result);
     setCopied(false);
+    setShowModal(true);
   };
 
   const handleShare = () => {
@@ -60,17 +64,17 @@ const VisiberCalculator = () => {
       {/* Global Navigation Header */}
       <Header />
 
-      <main className="pt-20 px-4 pb-10">
+      <main className="pt-28 px-1 pb-10">
         <div className="max-w-3xl mx-auto text-center space-y-10">
           <h1 className="text-4xl md:text-6xl font-bold text-gold">
             Visiber Number Calculator
           </h1>
 
-          <div className="flex justify-center items-center gap-2 text-sm text-white/80">
-            <Info size={16} className="text-gold" />
-            <span>
-              Visiber numbers are derived from your birthdate and reflect your inner traits.
-            </span>
+          <div className="flex items-start gap-2 text-sm text-white/80 bg-gold/10 p-4 rounded-xl border border-gold/30">
+            <Info size={20} className="text-gold mt-1 shrink-0" />
+            <p className="text-left">
+              Visiber is a life philosophy system founded by Datuk Patrick Tan and Datuk David Hew, based on the belief that every aspect of a person's life can be explained through numbers. The name "Visiber" comes from "Vision" and "Number", symbolizing the idea that with a clear vision and understanding of one’s numbers, a person can achieve personal growth and success. Using your birth date, Visiber reveals a unique numeric pattern that reflects your personality, strengths, and life path.
+            </p>
           </div>
 
           <div className="bg-white/10 backdrop-blur-md border border-gold/30 rounded-2xl p-6 shadow-lg max-w-2xl mx-auto">
@@ -123,6 +127,13 @@ const VisiberCalculator = () => {
           </AnimatePresence>
         </div>
       </main>
+
+<VisiberCalculatorResultModal
+  open={showModal}
+  onClose={() => setShowModal(false)}
+  birthDate={birthDate as Date}
+  resultNumber={visiberNumber ?? 0}
+/>
     </div>
   );
 };
