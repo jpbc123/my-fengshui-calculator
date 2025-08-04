@@ -5,16 +5,47 @@ import { DatePickerInput } from "@/components/DatePickerInput";
 import { Info } from "lucide-react";
 import zodiacData from "@/data/zodiacData2025";
 
+// Import all zodiac images
+import ratImg from "@/assets/zodiac/rat.png";
+import oxImg from "@/assets/zodiac/ox.png";
+import tigerImg from "@/assets/zodiac/tiger.png";
+import rabbitImg from "@/assets/zodiac/rabbit.png";
+import dragonImg from "@/assets/zodiac/dragon.png";
+import snakeImg from "@/assets/zodiac/snake.png";
+import horseImg from "@/assets/zodiac/horse.png";
+import goatImg from "@/assets/zodiac/goat.png";
+import monkeyImg from "@/assets/zodiac/monkey.png";
+import roosterImg from "@/assets/zodiac/rooster.png";
+import dogImg from "@/assets/zodiac/dog.png";
+import pigImg from "@/assets/zodiac/pig.png";
+
 interface ZodiacInfo {
   image: string;
   traits: string;
   yearAnalysis: string;
 }
 
+const zodiacImages: { [key: string]: string } = {
+  Rat: ratImg,
+  Ox: oxImg,
+  Tiger: tigerImg,
+  Rabbit: rabbitImg,
+  Dragon: dragonImg,
+  Snake: snakeImg,
+  Horse: horseImg,
+  Goat: goatImg,
+  Monkey: monkeyImg,
+  Rooster: roosterImg,
+  Dog: dogImg,
+  Pig: pigImg,
+};
+
 const ChineseZodiacCalculator = () => {
   const [birthDate, setBirthDate] = useState<Date | null>(null);
   const [zodiacSign, setZodiacSign] = useState<string | null>(null);
   const [zodiacInfo, setZodiacInfo] = useState<ZodiacInfo | null>(null);
+  const [showMoreInfo, setShowMoreInfo] = useState(false);
+  const [showMore, setShowMore] = useState(false);
 
   const handleCalculate = () => {
     if (!birthDate) return;
@@ -49,14 +80,43 @@ const ChineseZodiacCalculator = () => {
             Chinese Zodiac Calculator
           </h1>
 
-          <div className="flex items-start gap-2 text-sm text-white/80 bg-gold/10 p-4 rounded-xl border border-gold/30">
-            <Info size={20} className="text-gold mt-1 shrink-0" />
-            <p className="text-left">
-              The Chinese Zodiac is a repeating cycle of 12 years, with each year
-              represented by an animal. This tradition is deeply rooted in Chinese
-              culture and believed to influence people’s personalities and fortunes.
-            </p>
-          </div>
+          {/* Expandable Info Box */}
+			<div className="flex flex-col gap-2">
+			{/* Summary Box */}
+			<div className="flex items-start gap-2 text-sm text-white/80 bg-gold/10 p-4 rounded-xl border border-gold/30">
+				<Info size={20} className="text-gold mt-1 shrink-0" />
+				<div className="text-left">
+				<p>
+					The Chinese Zodiac is a repeating cycle of 12 years, with each year
+					represented by an animal.
+				</p>
+				<button
+					onClick={() => setShowMore(!showMore)}
+					className="mt-2 text-gold hover:underline text-xs font-medium"
+				>
+					{showMore ? "Hide Details" : "View More"}
+				</button>
+				</div>
+			</div>
+			
+			{/* Additional Info */}
+			{showMore && (
+				<div className="bg-black/40 text-white/90 text-sm p-4 rounded-xl border border-white/10">
+				<p className="mb-2">
+					Each animal in the Chinese Zodiac is associated with certain traits and characteristics.
+					These beliefs have been passed down for generations and are still widely embraced today.
+				</p>
+				<p className="mb-2">
+					For example, those born in the year of the Dragon are said to be confident and ambitious,
+					while Rabbits are known to be gentle and compassionate.
+				</p>
+				<p>
+					The Zodiac also plays a role in compatibility, career paths, and even feng shui practices.
+					It is one of the oldest systems still used in modern Eastern astrology.
+				</p>
+				</div>
+			)}
+			</div>
 
           <div className="bg-white/10 backdrop-blur-md border border-gold/30 rounded-2xl p-6 shadow-lg max-w-2xl mx-auto">
             <div className="flex flex-col sm:flex-row gap-4 items-stretch">
@@ -79,16 +139,16 @@ const ChineseZodiacCalculator = () => {
 
           {zodiacSign && zodiacInfo && (
             <div className="space-y-6 bg-white/5 p-6 rounded-xl border border-gold/20 shadow-inner">
-			  <h2 className="text-3xl font-semibold text-white">
-			  Your Chinese Zodiac Sign is:{" "}
-			  <span className="text-gold">{zodiacSign}</span>
-			  </h2>
+              <h2 className="text-3xl font-semibold text-white">
+                Your Chinese Zodiac Sign is:{" "}
+                <span className="text-gold">{zodiacSign}</span>
+              </h2>
 
-			  <img
-			  src={`/src/assets/zodiac/${zodiacSign.toLowerCase()}.png`}
-			  alt={zodiacSign}
-			  className="w-40 h-40 mx-auto object-contain"
-			  />
+              <img
+                src={zodiacImages[zodiacSign]}
+                alt={zodiacSign}
+                className="w-40 h-40 mx-auto object-contain"
+              />
 
               <div>
                 <h3 className="text-xl font-semibold text-gold mb-2">
