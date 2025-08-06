@@ -64,6 +64,7 @@ const VisiberCalculator = () => {
   const [birthDate, setBirthDate] = useState<Date | undefined>();
   const [visiberNumber, setVisiberNumber] = useState<number | null>(null);
   const [copied, setCopied] = useState(false);
+  const [showMore, setShowMore] = useState(false);
 
   const handleCalculate = () => {
     if (!birthDate) return;
@@ -124,16 +125,41 @@ const VisiberCalculator = () => {
           <h1 className="text-4xl md:text-6xl font-bold text-gold">
             Visiber Number Calculator
           </h1>
+		  
+		{/* Expandable Info Box */}
+		<div className="flex flex-col gap-2">
+		{/* Summary Box */}
+		<div className="flex items-start gap-2 text-sm text-white/80 bg-gold/10 p-4 rounded-xl border border-gold/30">
+			<Info size={20} className="text-gold mt-1 shrink-0" />
+			<div className="text-left">
+			<p>
+			Visiber is a life philosophy system founded by Datuk Patrick Tan and Datuk David Hew, based on the belief that every aspect of a person's life can be explained through numbers.
+			</p>
+			<button
+				onClick={() => setShowMore(!showMore)}
+				className="text-gold font-semibold hover:underline text-sm">
+				{showMore ? "View Less" : "View More"}
+			</button>
+			</div>
+		</div>
+		
+		{/* Additional Info */}
+		{showMore && (
+		<div className="bg-black/40 text-white/90 text-sm p-4 rounded-xl border border-gold/25 text-left">
+			<p className="mb-2">
+			The name "Visiber" is a combination of "Vision" and "Number", symbolizing the idea that with a clear vision and understanding of one’s numbers, a person can achieve personal growth and success.
+			</p>
+			<p className="mb-2">
+			Using your birth date, Visiber reveals a unique numeric pattern that reflects your personality, strengths, and life path.
+			</p>
+			<p>
+			It provides insights into behavior, destiny, and potential obstacles by interpreting the vibration of numbers. Many people use it to guide decisions in relationships, career, and health.
+			</p>
+		</div>
+		)}
+		</div>
 
-          <div className="flex items-start gap-2 text-sm text-white/80 bg-gold/10 p-4 rounded-xl border border-gold/30">
-            <Info size={20} className="text-gold mt-1 shrink-0" />
-            <p className="text-left">
-              Visiber is a life philosophy system founded by Datuk Patrick Tan
-              and Datuk David Hew, based on the belief that every aspect of a
-              person's life can be explained through numbers...
-            </p>
-          </div>
-
+		{/* Input and Button Box */}
           <div className="bg-white/10 backdrop-blur-md border border-gold/30 rounded-2xl p-6 shadow-lg max-w-2xl mx-auto">
             <div className="flex flex-col sm:flex-row gap-4 items-stretch">
               <DatePickerInput

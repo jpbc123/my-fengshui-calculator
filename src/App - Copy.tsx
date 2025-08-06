@@ -6,7 +6,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import PrivacyPolicy from "./pages/PrivacyPolicy"; // ✅ Add this line
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import VisiberCalculator from "./pages/VisiberCalculator"; 
+import ChineseZodiacCalculator from "./pages/ChineseZodiacCalculator"; 
+import KuaNumberCalculator from "./pages/KuaNumberCalculator";
+import PersonalElement from "./pages/PersonalElement";
 
 const queryClient = new QueryClient();
 
@@ -15,11 +19,14 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter basename="/my-fengshui-calculator">
+      <BrowserRouter basename="/my-fengshui-calculator"> 
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} /> {/* ✅ Add this route */}
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/personal-element" element={<PersonalElement />} />
+		  <Route path="/kua-number-calculator" element={<KuaNumberCalculator />} /> 
+          <Route path="/chinese-zodiac-calculator" element={<ChineseZodiacCalculator />} /> 
+		  <Route path="/visiber-calculator" element={<VisiberCalculator />} /> 
+		  <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

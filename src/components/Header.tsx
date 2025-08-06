@@ -6,20 +6,11 @@ import { Menu, X } from "lucide-react";
 
 const menuConfig = [
   {
-    label: "Features",
+    label: "Explore by Wisdom",
     items: [
-      { name: "Feng Shui Tips", href: "#" },
-      { name: "Element Compatibility", href: "#" },
-      { name: "Daily Quote / Motivation", href: "#" },
-      { name: "Lucky Colors / Directions", href: "#" },
-    ],
-  },
-  {
-    label: "Calculator",
-    items: [
-      { name: "Chinese Zodiac", href: "/chinese-zodiac-calculator" },
-      { name: "Visiber (Premium)", href: "/visiber-calculator" },
-      { name: "Daily Energy Chart", href: "#" },
+      { name: "Feng Shui", href: "/feng-shui" },
+      { name: "Numerology", href: "/numerology" },
+      { name: "Astrology", href: "/astrology" },
     ],
   },
   {
@@ -38,6 +29,9 @@ const menuConfig = [
     ],
   },
 ];
+
+
+
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -66,22 +60,29 @@ const Header = () => {
               <div className="peer cursor-pointer">{menu.label}</div>
               <div className="absolute top-full left-0 mt-2 min-w-60 rounded-md shadow-lg bg-gray-900 text-white opacity-0 invisible peer-hover:opacity-100 peer-hover:visible hover:opacity-100 hover:visible transition-all duration-200 py-1 z-50">
                 {menu.items.map((item, idx) =>
-                  item.href?.startsWith("/") ? (
-                    <Link
-                      key={idx}
-                      to={item.href}
-                      className="block px-4 py-2 text-sm whitespace-nowrap hover:bg-gold hover:text-black transition-colors"
-                    >
-                      {item.name}
-                    </Link>
-                  ) : (
-                    <a
-                      key={idx}
-                      href={item.href}
-                      className="block px-4 py-2 text-sm whitespace-nowrap hover:bg-gold hover:text-black transition-colors"
-                    >
-                      {item.name}
-                    </a>
+				 item.isHeader ? (
+				 <div
+				 	key={idx}
+				 	className="px-4 py-2 text-xs uppercase tracking-wider text-white/40 cursor-default select-none"
+				 >
+				 	{item.name}
+				 </div>
+				 ) : item.href?.startsWith("/") ? (
+				 <Link
+				 	key={idx}
+				 	to={item.href}
+				 	className="block px-4 py-2 text-sm whitespace-nowrap hover:bg-gold hover:text-black transition-colors"
+				 >
+				 	{item.name}
+				 </Link>
+				 ) : (
+				 <a
+				 	key={idx}
+				 	href={item.href}
+				 	className="block px-4 py-2 text-sm whitespace-nowrap hover:bg-gold hover:text-black transition-colors"
+				 >
+				 	{item.name}
+				 </a>
                   )
                 )}
               </div>
@@ -120,24 +121,31 @@ const Header = () => {
               {openDropdown === menu.label && (
                 <div className="pl-4 mt-2 space-y-1">
                   {menu.items.map((item, idx) =>
-                    item.href?.startsWith("/") ? (
-                      <Link
-                        key={idx}
-                        to={item.href}
-                        className="block text-sm text-white/90 hover:text-gold transition"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        {item.name}
-                      </Link>
-                    ) : (
-                      <a
-                        key={idx}
-                        href={item.href}
-                        className="block text-sm text-white/90 hover:text-gold transition"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        {item.name}
-                      </a>
+					item.isHeader ? (
+					<div
+						key={idx}
+						className="text-xs uppercase tracking-wider text-white/50 mt-4 mb-1 select-none"
+					>
+						{item.name}
+					</div>
+					) : item.href?.startsWith("/") ? (
+					<Link
+						key={idx}
+						to={item.href}
+						className="block text-sm text-white/90 hover:text-gold transition"
+						onClick={() => setMobileMenuOpen(false)}
+					>
+						{item.name}
+					</Link>
+					) : (
+					<a
+						key={idx}
+						href={item.href}
+						className="block text-sm text-white/90 hover:text-gold transition"
+						onClick={() => setMobileMenuOpen(false)}
+					>
+						{item.name}
+					</a>
                     )
                   )}
                 </div>

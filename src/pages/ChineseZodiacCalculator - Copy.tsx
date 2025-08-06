@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { DatePickerInput } from "@/components/DatePickerInput";
 import { Info } from "lucide-react";
 import zodiacData from "@/data/zodiacData2025";
 
@@ -41,15 +41,16 @@ const zodiacImages: { [key: string]: string } = {
 };
 
 const ChineseZodiacCalculator = () => {
-  const [birthYear, setBirthYear] = useState<number | null>(null);
+  const [birthDate, setBirthDate] = useState<Date | null>(null);
   const [zodiacSign, setZodiacSign] = useState<string | null>(null);
   const [zodiacInfo, setZodiacInfo] = useState<ZodiacInfo | null>(null);
   const [showMoreInfo, setShowMoreInfo] = useState(false);
   const [showMore, setShowMore] = useState(false);
 
   const handleCalculate = () => {
-    if (!birthYear || birthYear < 1900 || birthYear > 2100) return;
-    const zodiacIndex = (birthYear - 4) % 12;
+    if (!birthDate) return;
+    const year = birthDate.getFullYear();
+    const zodiacIndex = (year - 4) % 12;
     const sign = [
       "Rat",
       "Ox",
@@ -64,6 +65,7 @@ const ChineseZodiacCalculator = () => {
       "Dog",
       "Pig",
     ][zodiacIndex];
+
     setZodiacSign(sign);
     setZodiacInfo(zodiacData[sign]);
   };
@@ -79,65 +81,59 @@ const ChineseZodiacCalculator = () => {
           </h1>
 
           {/* Expandable Info Box */}
-          <div className="flex flex-col gap-2">
-		  {/* Summary Box */}
-            <div className="flex items-start gap-2 text-sm text-white/80 bg-gold/10 p-4 rounded-xl border border-gold/30">
-              <Info size={20} className="text-gold mt-1 shrink-0" />
-              <div className="text-left">
-                <p>
-                  The Chinese Zodiac (生肖, Shēngxiào) is a 12-year cycle where
-                  each year is associated with a specific animal sign and its
-                  unique personality traits. It is a fundamental part of
-                  traditional Chinese astrology and influences beliefs about
-                  destiny, character, compatibility, and fortune.
-                </p>
-                <button
-                  onClick={() => setShowMore(!showMore)}
-                  className="mt-2 text-gold hover:underline text-xs font-medium"
-                >
-                  {showMore ? "Hide Details" : "View More"}
-                </button>
-              </div>
-            </div>
-
+			<div className="flex flex-col gap-2">
+			{/* Summary Box */}
+			<div className="flex items-start gap-2 text-sm text-white/80 bg-gold/10 p-4 rounded-xl border border-gold/30">
+				<Info size={20} className="text-gold mt-1 shrink-0" />
+				<div className="text-left">
+				<p>The Chinese Zodiac (生肖, Shēngxiào) is a 12-year cycle where each year is associated with a specific animal sign and its unique personality traits. It is a fundamental part of traditional Chinese astrology and influences beliefs about destiny, character, compatibility, and fortune.
+				</p>
+				<button
+					onClick={() => setShowMore(!showMore)}
+					className="mt-2 text-gold hover:underline text-xs font-medium">
+					{showMore ? "Hide Details" : "View More"}
+				</button>
+				</div>
+			</div>
+			
 			{/* Additional Info */}
-            {showMore && (
-              <div className="bg-black/40 text-white/90 text-sm p-4 rounded-xl border border-gold/26 text-left">
-                <p className="mb-2">
-                  Each animal in the Chinese Zodiac is associated with certain
-                  traits and characteristics. These beliefs have been passed
-                  down for generations and are still widely embraced today.
-                </p>
-                <p className="mb-2">
-                  For example, those born in the year of the Dragon are said to
-                  be confident and ambitious, while Rabbits are known to be
-                  gentle and compassionate.
-                </p>
-                <p>
-                  The Zodiac also plays a role in compatibility, career paths,
-                  and even feng shui practices. It is one of the oldest systems
-                  still used in modern Eastern astrology.
-                </p>
-              </div>
-            )}
+			{showMore && (
+				<div className="bg-black/40 text-white/90 text-sm p-4 rounded-xl border border-gold/26 text-left">
+				<p className="mb-2">
+					Each animal in the Chinese Zodiac is associated with certain traits and characteristics.
+					These beliefs have been passed down for generations and are still widely embraced today.
+				</p>
+				<p className="mb-2">
+					For example, those born in the year of the Dragon are said to be confident and ambitious,
+					while Rabbits are known to be gentle and compassionate.
+				</p>
+				<p>
+					The Zodiac also plays a role in compatibility, career paths, and even feng shui practices.
+					It is one of the oldest systems still used in modern Eastern astrology.
+				</p>
+				</div>
+			)}
+			</div>
+
+          <div className="bg-white/10 backdrop-blur-md border border-gold/30 rounded-2xl p-6 shadow-lg max-w-2xl mx-auto">
+            <div className="flex flex-col sm:flex-row gap-4 items-stretch">
+              <DatePickerInput
+                date={birthDate}
+                onDateChange={setBirthDate}
+                placeholder="Enter your birthdate"
+              />
+              <Button
+                variant="gold"
+                size="lg"
+                onClick={handleCalculate}
+                disabled={!birthDate}
+                className="px-8 h-14 text-lg font-semibold whitespace-nowrap"
+              >
+                Calculate
+              </Button>
+            </div>
           </div>
 
-          
-		  <div className="space-y-4 bg-white/5 p-6 rounded-xl border border-gold/20">
-			{/* Year-only input */}
-			<Input
-			placeholder="Enter your birth year (e.g. 1992)"
-			value={birthYear || ""}
-			onChange={(e) => setBirthYear(Number(e.target.value))}
-			className="bg-black text-white "
-			/>
-			
-			<Button onClick={handleCalculate} className="bg-gold text-black hover:opacity-90 mt-4">
-				Calculate My Zodiac
-			</Button>
-		  </div>
-
-          
           {zodiacSign && zodiacInfo && (
             <div className="space-y-6 bg-white/5 p-6 rounded-xl border border-gold/20 shadow-inner">
               <h2 className="text-3xl font-semibold text-white">
