@@ -1,11 +1,12 @@
+// src/pages/PersonalElement.tsx
 import { useState } from "react";
 import Header from "@/components/Header";
 import { DatePickerInput } from "@/components/DatePickerInput";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Info } from "lucide-react";
-import { useNavigate } from "react-router-dom"; 
-import Breadcrumb from "@/components/Breadcrumb";
+import { useNavigate } from "react-router-dom";
+
 
 const heavenlyStems = [
   "Jia", "Yi", "Bing", "Ding", "Wu",
@@ -33,13 +34,6 @@ const elementDescriptions: Record<string, string> = {
   Water: "Water people are intuitive, wise, and flexible. They adapt well and value wisdom, communication, and philosophy.",
 };
 
-const breadcrumbs = [
-  { label: "Home", path: "/" },
-  { label: "Feng Shui", path: "/feng-shui" },
-  { label: "Personal Element" },
-];
-
-
 export default function PersonalElement() {
   const [birthDate, setBirthDate] = useState<Date | undefined>();
   const [result, setResult] = useState<{
@@ -48,8 +42,6 @@ export default function PersonalElement() {
     description: string;
   } | null>(null);
   const [showMore, setShowMore] = useState(false);
-
-  const navigate = useNavigate(); 
 
   const handleCalculate = () => {
     if (!birthDate) return;
@@ -66,14 +58,10 @@ export default function PersonalElement() {
   return (
     <div className="min-h-screen bg-black text-white">
       <Header />
-	  <div className="pt-24 px-4 max-w-3xl mx-auto">
-		<Breadcrumb items={breadcrumbs} />
-		<h1 className="text-2xl font-bold text-gold mb-4">
-		Personal Element Analysis
-		</h1>
-	  </div>
-      <main className="pt-6 px-1 pb-10">
+      <main className="pt-28 px-1 pb-10">
         <div className="max-w-3xl mx-auto text-center space-y-10">
+          <h1 className="text-4xl md:text-6xl font-bold text-gold">Personal Element Analysis</h1>
+
           {/* Expandable Info Box */}
           <div className="flex flex-col gap-2">
             {/* Summary Box */}
@@ -111,7 +99,7 @@ export default function PersonalElement() {
           </div>
 
           {/* Input and Button Box */}
-          <div className="bg-white/5 p-6 rounded-xl border border-gold/20">
+          <div className="bg-white/10 backdrop-blur-md border border-gold/30 rounded-2xl p-6 shadow-lg max-w-2xl mx-auto">
             <div className="flex flex-col sm:flex-row gap-4 items-stretch">
               <DatePickerInput
                 date={birthDate}
@@ -123,8 +111,9 @@ export default function PersonalElement() {
                 size="lg"
                 onClick={handleCalculate}
                 disabled={!birthDate}
-                className="px-8 h-14 text-lg font-semibold whitespace-nowrap">
-                Calculate Personal Element
+                className="px-8 h-14 text-lg font-semibold whitespace-nowrap"
+              >
+                Calculate
               </Button>
             </div>
           </div>
@@ -134,25 +123,16 @@ export default function PersonalElement() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mt-8 p-6 rounded-xl bg-gold/10 border border-gold/30"
+              className="mt-8 p-6 rounded-xl bg-gold/10 border border-gold/30 text-left"
             >
               <h2 className="text-xl font-bold text-gold mb-2">Your Element: {result.element}</h2>
-              <p className="text-white/90 mb-2">
+              <p className="text-white/90 text-sm mb-2">
                 <strong>Heavenly Stem:</strong> {result.stem}
               </p>
-              <p className="text-white/90 mb-2">
+              <p className="text-white/90 text-sm mb-2">
                 <strong>Element:</strong> {result.element}
               </p>
-              <p className="text-white/90">{result.description}</p>
-
-              {/* Learn More */}
-              <Button
-                variant="outline"
-                className="mt-4 border-gold text-gold"
-                onClick={() => navigate("/personal-element-details", { state: result })}
-              >
-                Learn more about your results →
-              </Button>
+              <p className="text-white/90 text-sm">{result.description}</p>
             </motion.div>
           )}
         </div>

@@ -3,10 +3,11 @@ const FeaturesSection = () => {
     <section className="bg-black text-white py-20" id="features">
       <div className="container mx-auto px-4 text-center">
         <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gold">
-          Unlock the Power of FengShui
-        </h2>
-        <p className="text-lg max-w-3xl mx-auto mb-12 text-gray-300">
-          Harness ancient Chinese wisdom with modern precision. Our comprehensive calculator provides personalized insights to transform your life and space.
+          Explore the Wisdom of Feng Shui </h2>
+		<h2 className="text-4xl md:text-5xl font-bold mb-4 text-gold">Numerology & Astrology</h2>
+        
+        <p className="text-lg max-w-3xl mx-auto mb-10 text-gray-300">
+          Gain personalized insights into your energy, relationships, and life path with our all-in-one guidance tools — blending ancient traditions with modern precision.
         </p>
 
         {/* Grid of features */}
@@ -15,32 +16,32 @@ const FeaturesSection = () => {
             {
               icon: "🔍",
               title: "Personal Element Analysis",
-              desc: "Discover your core element based on your birth date and time. Understand your natural strengths, weaknesses, and life path according to ancient feng shui principles.",
+              desc: "Discover your core element through Feng Shui’s Five Elements theory, based on your birth date. Understand your natural strengths, challenges, and life path according to ancient Chinese principles.",
             },
             {
               icon: "🏠",
               title: "Space Harmony Mapping",
-              desc: "Get detailed recommendations for arranging your living and working spaces. Optimize energy flow for prosperity, health, and happiness.",
+              desc: "Get detailed recommendations for arranging your living and working spaces based on your Kua Number. Optimize energy flow for prosperity, health, and happiness.",
             },
             {
               icon: "💫",
               title: "Compatibility Analysis",
-              desc: "Understand relationship dynamics through element compatibility. Perfect for personal relationships, business partnerships, and family harmony.",
+              desc: "Understand relationship dynamics through Astrology for deeper insights into personal, business, and family relationships.",
             },
             {
               icon: "📅",
               title: "Daily Guidance",
-              desc: "Receive personalized daily tips and recommendations based on your element and current cosmic influences to make the most of each day.",
+              desc: "Receive personalized daily tips based on your astrological influences and favorable dates in Feng Shui, helping you make the most of each day’s unique energy.",
             },
             {
               icon: "🎯",
               title: "Goal Manifestation",
-              desc: "Learn the optimal timing and feng shui arrangements to support your personal and professional goals using ancient wisdom.",
+              desc: "Use Numerology to identify powerful timing for your goals, and Feng Shui to align your environment for success in personal and professional endeavors",
             },
             {
               icon: "🌱",
               title: "Wellness Optimization",
-              desc: "Discover how to enhance your physical and mental well-being through personalized feng shui practices and environmental adjustments.",
+              desc: "Enhance your physical and mental well-being through Feng Shui’s environmental harmony principles, with additional insights from Astrology on your personal health tendencies.",
             },
           ].map((feature, idx) => (
             <div

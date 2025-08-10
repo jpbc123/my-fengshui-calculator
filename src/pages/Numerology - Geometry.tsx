@@ -3,8 +3,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Link } from "react-router-dom";
 import Breadcrumb from "@/components/Breadcrumb";
-import { useEffect } from "react";
-import "./Numerology.css"; // We'll add our particle + numbers animation here
+import "./Numerology.css"; // Still keeping this in case we want to mix effects later
 
 const breadcrumbs = [
   { label: "Home", path: "/" },
@@ -12,91 +11,95 @@ const breadcrumbs = [
 ];
 
 export default function Numerology() {
-  useEffect(() => {
-    // Particle generation
-    const canvas = document.getElementById("particleCanvas") as HTMLCanvasElement;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let particles: { x: number; y: number; size: number; opacity: number; speedX: number; speedY: number }[] = [];
-
-    const initParticles = () => {
-      particles = [];
-      for (let i = 0; i < 80; i++) {
-        particles.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          size: Math.random() * 2,
-          opacity: Math.random() * 0.6,
-          speedX: (Math.random() - 0.5) * 0.2,
-          speedY: (Math.random() - 0.5) * 0.2,
-        });
-      }
-    };
-
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "rgba(212,175,55,1)"; // gold color
-
-      particles.forEach((p) => {
-        ctx.globalAlpha = p.opacity;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fill();
-
-        p.x += p.speedX;
-        p.y += p.speedY;
-
-        // Wrap around edges
-        if (p.x < 0) p.x = canvas.width;
-        if (p.x > canvas.width) p.x = 0;
-        if (p.y < 0) p.y = canvas.height;
-        if (p.y > canvas.height) p.y = 0;
-      });
-
-      requestAnimationFrame(animate);
-    };
-
-    const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      initParticles();
-    };
-
-    window.addEventListener("resize", resizeCanvas);
-    resizeCanvas();
-    animate();
-
-    return () => window.removeEventListener("resize", resizeCanvas);
-  }, []);
-
   return (
-    <div className="numerology-page min-h-screen text-white relative overflow-hidden bg-black">
-      {/* Particle canvas */}
-      <canvas id="particleCanvas" className="absolute inset-0 z-0"></canvas>
+    <div className="numerology-page min-h-screen text-white relative overflow-hidden">
+      {/* Sacred Geometry Background */}
+<svg
+  className="absolute inset-0 w-full h-full z-0 opacity-20"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <defs>
+    <pattern
+      id="sacredPattern"
+      x="0"
+      y="0"
+      width="200"
+      height="200"
+      patternUnits="userSpaceOnUse"
+    >
+      {/* Hexagon shape with glow */}
+      <polygon
+        points="100,0 200,50 200,150 100,200 0,150 0,50"
+        stroke="rgba(212,175,55,0.3)"
+        strokeWidth="1"
+        fill="none"
+      >
+        <animate
+          attributeName="stroke"
+          values="
+            rgba(212,175,55,0.3);
+            rgba(212,175,55,0.6);
+            rgba(212,175,55,0.3)"
+          dur="6s"
+          repeatCount="indefinite"
+        />
+      </polygon>
+
+      {/* Circle inside with glow */}
+      <circle
+        cx="100"
+        cy="100"
+        r="60"
+        stroke="rgba(212,175,55,0.15)"
+        strokeWidth="1"
+        fill="none"
+      >
+        <animate
+          attributeName="stroke"
+          values="
+            rgba(212,175,55,0.15);
+            rgba(212,175,55,0.5);
+            rgba(212,175,55,0.15)"
+          dur="6s"
+          repeatCount="indefinite"
+          begin="3s"
+        />
+      </circle>
+    </pattern>
+  </defs>
+
+  <rect
+    width="100%"
+    height="100%"
+    fill="url(#sacredPattern)"
+  >
+    <animateTransform
+      attributeName="transform"
+      type="rotate"
+      from="0 400 400"
+      to="360 400 400"
+      dur="120s"
+      repeatCount="indefinite"
+    />
+  </rect>
+</svg>
 
       {/* Floating numbers */}
-      <div className="absolute top-0 left-0 w-full h-[calc(100%-100px)] z-0">
-  {Array.from({ length: 14 }).map((_, i) => {
-    const numberPool = [1,2,3,4,5,6,7,8,9,11,13,17,19,22,27,33,44];
-    const num = numberPool[Math.floor(Math.random() * numberPool.length)];
-    return (
-      <span
-        key={i}
-        className="floating-number"
-        style={{
-          top: `${Math.random() * 85}%`,
-          left: `${Math.random() * 90}%`,
-          animationDelay: `${i * 1.5}s, ${i * 1.5}s`
-        }}
-      >
-        {num}
-      </span>
-    );
-  })}
-</div>
-
+      <div className="absolute inset-0 z-0">
+        {[3, 7, 9, 11, 22].map((num, i) => (
+          <span
+            key={i}
+            className="absolute text-gold text-6xl font-bold opacity-10 animate-float"
+            style={{
+              top: `${Math.random() * 80}%`,
+              left: `${Math.random() * 80}%`,
+              animationDelay: `${i * 3}s`,
+            }}
+          >
+            {num}
+          </span>
+        ))}
+      </div>
 
       <Header />
 

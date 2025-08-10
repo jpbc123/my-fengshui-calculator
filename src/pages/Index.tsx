@@ -5,35 +5,27 @@ import { FengShuiCalculatorModal } from "@/components/FengShuiCalculatorModal";
 import HeroSection from "@/components/HeroSection";
 import FeaturesSection from "@/components/FeaturesSection";
 import CTASection from "@/components/CTASection";
+import Footer from "@/components/Footer";
 
 const Index = () => {
-  const [birthDate, setBirthDate] = useState<Date | undefined>();
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleCalculate = () => {
-    if (birthDate) {
-      setIsModalOpen(true);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <Header />
 
       <main className="flex-grow">
-        <HeroSection
-          birthDate={birthDate}
-          setBirthDate={setBirthDate}
-          onCalculate={handleCalculate}
-        />
+        <HeroSection />
         <FeaturesSection />
-        <CTASection />
+        <CTASection onStartCalculation={() => setIsModalOpen(true)} />
+        <Footer />
       </main>
 
       <FengShuiCalculatorModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        birthDate={birthDate || null}
+        // Adjust props as per your existing modal requirements
+        birthDate={null} 
       />
     </div>
   );

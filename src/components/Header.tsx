@@ -50,7 +50,7 @@ const Header = () => {
             <LogoIcon />
             <div className="absolute -top-1 -right-1 h-3 w-3 bg-red rounded-full animate-pulse" />
           </div>
-          <h1 className="text-xl font-bold text-gold">My Feng Shui Calculator</h1>
+          <h1 className="text-xl font-bold text-gold">The Universal Decoder</h1>
         </Link>
 
         {/* Desktop Navigation */}

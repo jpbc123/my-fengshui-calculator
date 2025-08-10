@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { DatePickerInput } from "@/components/DatePickerInput";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,114 +28,6 @@ const luckyDirections: Record<number, string[]> = {
 
 const kuaGroup = (kua: number) =>
   [1, 3, 4, 9].includes(kua) ? "East Group" : "West Group";
-  
-const kuaProfiles: Record<number, {
-  name: string;
-  traits: string[];
-  lucky: string[];
-  unlucky: string[];
-}> = {
-  1: {
-    name: "Kan (Water)",
-    traits: [
-      "Adaptable and resourceful",
-      "Strong intuition and insight",
-      "Calm and reflective by nature",
-      "Excellent at networking and connecting with others"
-    ],
-    lucky: ["North", "South", "Southeast", "East"],
-    unlucky: ["Southwest", "West", "Northwest", "Northeast"]
-  },
-  2: {
-    name: "Kun (Earth)",
-    traits: [
-      "Reliable, patient, and steady",
-      "Strong family values",
-      "Nurturing and supportive personality",
-      "Prefers stability over risk"
-    ],
-    lucky: ["Southwest", "West", "Northwest", "Northeast"],
-    unlucky: ["North", "South", "Southeast", "East"]
-  },
-  3: {
-    name: "Zhen (Wood)",
-    traits: [
-      "Energetic and driven",
-      "Thrives on taking initiative",
-      "Creative and quick to adapt",
-      "Can be impatient or easily frustrated"
-    ],
-    lucky: ["South", "North", "Southeast", "East"],
-    unlucky: ["Southwest", "West", "Northwest", "Northeast"]
-  },
-  4: {
-    name: "Xun (Wood)",
-    traits: [
-      "Diplomatic and persuasive",
-      "Highly creative and adaptable",
-      "Good with relationships and partnerships",
-      "Sometimes indecisive due to considering too many options"
-    ],
-    lucky: ["Southeast", "East", "North", "South"],
-    unlucky: ["Southwest", "West", "Northwest", "Northeast"]
-  },
-  5: {
-    name: "Center (Earth) – Special Case",
-    traits: [
-      "Balanced and grounded personality",
-      "Natural leader with a sense of fairness",
-      "Stable, reliable, and practical",
-      "Must adapt based on gender in calculations"
-    ],
-    lucky: ["Varies depending on gender – usually follows #2 for women and #8 for men"],
-    unlucky: ["Varies depending on gender – usually follows #2 for women and #8 for men"]
-  },
-  6: {
-    name: "Qian (Metal)",
-    traits: [
-      "Strong, determined, and disciplined",
-      "Respected for leadership skills",
-      "Goal-oriented and ambitious",
-      "Sometimes too rigid or stubborn"
-    ],
-    lucky: ["Northwest", "Northeast", "Southwest", "West"],
-    unlucky: ["South", "North", "Southeast", "East"]
-  },
-  7: {
-    name: "Dui (Metal)",
-    traits: [
-      "Charming and sociable",
-      "Enjoys communication and fun activities",
-      "Optimistic and adaptable",
-      "May struggle with focus or persistence"
-    ],
-    lucky: ["West", "Southwest", "Northeast", "Northwest"],
-    unlucky: ["East", "Southeast", "North", "South"]
-  },
-  8: {
-    name: "Gen (Earth)",
-    traits: [
-      "Calm, patient, and steady",
-      "Values knowledge and self-improvement",
-      "Good at long-term planning",
-      "Can be slow to act but thorough"
-    ],
-    lucky: ["Northeast", "West", "Northwest", "Southwest"],
-    unlucky: ["South", "North", "East", "Southeast"]
-  },
-  9: {
-    name: "Li (Fire)",
-    traits: [
-      "Passionate and ambitious",
-      "Creative and expressive",
-      "Radiates warmth and enthusiasm",
-      "May become impulsive or overly emotional"
-    ],
-    lucky: ["South", "North", "Southeast", "East"],
-    unlucky: ["West", "Northwest", "Southwest", "Northeast"]
-  }
-};
-
 
 export default function KuaNumberCalculator() {
   const [showMore, setShowMore] = useState(false);
@@ -252,63 +143,28 @@ export default function KuaNumberCalculator() {
 		</div>
 		</div>
 
-        {/* Result Display */}
-		{kuaNumber && (
-		<motion.div
-			initial={{ opacity: 0, y: 20 }}
-			animate={{ opacity: 1, y: 0 }}
-			className="mt-8 p-6 rounded-xl bg-gold/10 border border-gold/30 text-left prose prose-invert"
-		>
-			<h2 className="text-xl font-bold text-gold mb-1">
-			Your Kua Number: {kuaNumber} – {kuaProfiles[kuaNumber].name}
-			</h2>
-			<p className="mb-4">
-			Group: <span className="font-semibold">{kuaGroup(kuaNumber)}</span>
-			</p>
-		
-			<div className="space-y-4">
-			<div>
-				<h3 className="font-semibold mb-1">Key Traits:</h3>
-				<ul className="list-disc list-inside">
-				{kuaProfiles[kuaNumber].traits.map((trait, i) => (
-					<li key={i}>{trait}</li>
-				))}
-				</ul>
-			</div>
-		
-			<div>
-				<h3 className="font-semibold mb-1">Lucky Directions:</h3>
-				<ul className="list-disc list-inside">
-				{kuaProfiles[kuaNumber].lucky.map((dir, i) => (
-					<li key={i}>{dir}</li>
-				))}
-				</ul>
-			</div>
-		
-			<div>
-				<h3 className="font-semibold mb-1">Unlucky Directions:</h3>
-				<ul className="list-disc list-inside">
-				{kuaProfiles[kuaNumber].unlucky.map((dir, i) => (
-					<li key={i}>{dir}</li>
-				))}
-				</ul>
-			</div>
-		
-			<div>
-				<h3 className="font-semibold mb-1">Practical Tips:</h3>
-				<ul className="list-disc list-inside">
-				<li>Face your lucky direction when working or studying.</li>
-				<li>Position your bed so your head points toward a lucky direction.</li>
-				<li>Place your main door to align with your most favorable direction.</li>
-				</ul>
-			</div>
-			</div>
-		</motion.div>
-		)}
-
+		{/* Result Display */}
+        {kuaNumber && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-8 p-6 rounded-xl bg-gold/10 border border-gold/30"
+          >
+            <h2 className="text-xl font-bold text-gold mb-2">Your Kua Number: {kuaNumber}</h2>
+            <p className="text-white/90 mb-2">
+              Group: <span className="font-semibold">{kuaGroup(kuaNumber)}</span>
+            </p>
+            <p className="text-white/90 mb-2">
+              Lucky Directions:{" "}
+              <span className="text-white font-medium">{luckyDirections[kuaNumber].join(", ")}</span>
+            </p>
+            <p className="text-white/60 text-sm">
+              Align your bed, desk, or entrance to face these directions for better energy.
+            </p>
+          </motion.div>
+        )}
       </div>
 	  </main>
-	  <Footer />
     </div>
   );
 }

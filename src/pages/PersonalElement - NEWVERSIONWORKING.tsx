@@ -1,13 +1,11 @@
 import { useState } from "react";
 import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { DatePickerInput } from "@/components/DatePickerInput";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Info } from "lucide-react";
 import { Solar, Lunar } from "lunar-typescript";
 import Breadcrumb from "@/components/Breadcrumb";
-import ReactMarkdown from 'react-markdown';
 
 const elementByHeavenlyStem: Record<string, string> = {
   Jia: "Wood", Yi: "Wood",
@@ -37,147 +35,17 @@ const elementDescriptions: Record<string, string> = {
 };
 
 const stemDescriptions: Record<string, string> = {
-  Jia: `🌳 **Jia (甲) – Yang Wood**  
-**Element:** Wood  
-
-Jia is like a tall, sturdy tree — upright, dependable, and growth-oriented.  
-
-**Those with Jia as their Heavenly Stem often:**  
-- Are principled and dependable  
-- Take initiative and lead with vision  
-- Strive for steady growth and progress  
-
-**They may also:**  
-- Be stubborn or inflexible  
-- Struggle with adapting quickly to change`,
-
-  Yi: `🌱 **Yi (乙) – Yin Wood**  
-**Element:** Wood  
-
-Yi is like climbing vines or delicate flowers — flexible, adaptive, and diplomatic.  
-
-**Those with Yi as their Heavenly Stem often:**  
-- Are creative and adaptable  
-- Build relationships through charm and empathy  
-- Work well behind the scenes to influence outcomes  
-
-**They may also:**  
-- Be overly dependent on others  
-- Avoid confrontation even when necessary`,
-
-  Bing: `🔥 **Bing (丙) – Yang Fire**  
-**Element:** Fire  
-
-Bing is like the sun — warm, bright, and energizing.  
-
-**Those with Bing as their Heavenly Stem often:**  
-- Inspire others with optimism  
-- Have a big presence and strong leadership  
-- Thrive when motivating or teaching  
-
-**They may also:**  
-- Be impatient or restless  
-- Overextend themselves trying to help everyone`,
-
-  Ding: `🕯 **Ding (丁) – Yin Fire**  
-**Element:** Fire  
-
-Ding is like candlelight — subtle, nurturing, and refined.  
-
-**Those with Ding as their Heavenly Stem often:**  
-- Offer emotional warmth and comfort  
-- Work quietly yet effectively  
-- Have strong intuition and insight  
-
-**They may also:**  
-- Be overly sensitive or moody  
-- Struggle with self-confidence`,
-
-  Wu: `🏔 **Wu (戊) – Yang Earth**  
-**Element:** Earth  
-
-Wu is like a mountain — stable, protective, and reliable.  
-
-**Those with Wu as their Heavenly Stem often:**  
-- Are trustworthy and responsible  
-- Provide security for others  
-- Have great endurance and patience  
-
-**They may also:**  
-- Be overly cautious or resistant to change  
-- Struggle with expressing emotions`,
-
-  Ji: `🌾 **Ji (己) – Yin Earth**  
-**Element:** Earth  
-
-Ji is like fertile soil — nurturing, supportive, and grounded.  
-
-**Those with Ji as their Heavenly Stem often:**  
-- Care deeply for others’ well-being  
-- Offer practical solutions and guidance  
-- Are humble and approachable  
-
-**They may also:**  
-- Worry too much about small details  
-- Be prone to self-doubt`,
-
-  Geng: `⚔ **Geng (庚) – Yang Metal**  
-**Element:** Metal  
-
-Geng is like an axe or raw metal — strong, bold, and decisive.  
-
-**Those with Geng as their Heavenly Stem often:**  
-- Are courageous and ambitious  
-- Excel in solving problems directly  
-- Have a strong sense of justice  
-
-**They may also:**  
-- Be overly critical or harsh  
-- Have a short temper`,
-
-  Xin: `💎 **Xin (辛) – Yin Metal**  
-**Element:** Metal  
-
-Xin is like refined jewelry — elegant, sharp, and intelligent.  
-
-**Those with Xin as their Heavenly Stem often:**  
-- Possess great taste and attention to detail  
-- Communicate with charm and diplomacy  
-- Value refinement and etiquette  
-
-**They may also:**  
-- Be passive-aggressive when upset  
-- Struggle with inner vulnerability`,
-
-  Ren: `🌊 **Ren (壬) – Yang Water**  
-**Element:** Water  
-
-Ren is like the ocean — vast, deep, and adaptable.  
-
-**Those with Ren as their Heavenly Stem often:**  
-- Are resourceful and intelligent  
-- Adapt quickly to changing situations  
-- Inspire others with their vision  
-
-**They may also:**  
-- Be unpredictable or secretive  
-- Struggle with commitment`,
-
-  Gui: `💧 **Gui (癸) – Yin Water**  
-**Element:** Water  
-
-Gui is like gentle rain — nurturing, subtle, and intuitive.  
-
-**Those with Gui as their Heavenly Stem often:**  
-- Are empathetic and understanding  
-- Possess strong intuition and imagination  
-- Work best in peaceful environments  
-
-**They may also:**  
-- Be indecisive or hesitant  
-- Avoid conflict even when necessary`
+  Jia: "Yang Wood (甲): Upright, principled, and growth-oriented like a tall tree. Persistent and structured in their approach.",
+  Yi: "Yin Wood (乙): Flexible, gentle, and persuasive like a vine. Skilled in diplomacy, often graceful and resilient.",
+  Bing: "Yang Fire (丙): Radiates warmth, boldness, and charisma. Natural-born leaders and visionaries.",
+  Ding: "Yin Fire (丁): Quiet flame — subtle, passionate, and deeply insightful. They influence through warmth and intuition.",
+  Wu: "Yang Earth (戊): Stable, dependable, and protective like a mountain. Values trust, commitment, and loyalty.",
+  Ji: "Yin Earth (己): Nurturing, considerate, and adaptable like fertile soil. They support others and build harmony.",
+  Geng: "Yang Metal (庚): Strong, persistent, and unyielding like forged steel. Strives for justice and perfection.",
+  Xin: "Yin Metal (辛): Elegant, refined, and precise like jewelry. Polished and graceful, with high standards.",
+  Ren: "Yang Water (壬): Vast, powerful, and deep like the ocean. Strategic thinkers and resilient under pressure.",
+  Gui: "Yin Water (癸): Gentle, intuitive, and philosophical like morning dew. Quiet yet profound in wisdom.",
 };
-
 
 const compatibilityInsights: Record<string, string> = {
   Wood: "Wood works well with Water (which nurtures it), and struggles with Metal (which cuts it).",
@@ -277,7 +145,7 @@ export default function PersonalElement() {
       <main className="pt-6 px-1 pb-10">
         <div className="max-w-3xl mx-auto text-center space-y-10">
 
-          {/* Summary Box */}
+          {/* Info Box */}
           <div className="flex flex-col gap-2">
             <div className="flex items-start gap-2 text-sm text-white/80 bg-gold/10 p-4 rounded-xl border border-gold/30">
               <Info size={20} className="text-gold mt-1 shrink-0" />
@@ -294,15 +162,12 @@ export default function PersonalElement() {
               </div>
             </div>
 
-			{/* Additional Info */}
             {showMore && (
               <div className="bg-black/40 text-white/90 text-sm p-4 rounded-xl border border-gold/26 text-left">
                 <p className="mb-2">The Five Elements (Wu Xing 五行) — Wood, Fire, Earth, Metal, and Water — are essential to Chinese metaphysics, philosophy, and medicine.</p>
                 <p>• Each person is born under a heavenly stem tied to one of these five elements.</p>
                 <p>• Your element affects your strengths, personality, and compatibility with others and spaces.</p>
                 <p className="mb-2">Used in Four Pillars (BaZi), Feng Shui, and holistic wellness, your element can guide career, love, and lifestyle alignment.</p>
-				<p className="mb-2">
-				Use your Personal Element to choose colors, décor, and environments that strengthen your energy, and to balance relationships by understanding elemental harmony.</p>
               </div>
             )}
           </div>
@@ -336,10 +201,7 @@ export default function PersonalElement() {
             >
               <h2 className="text-xl font-bold text-gold">Your Element: {result.element}</h2>
               <p><strong>Heavenly Stem:</strong> {result.stem}</p>
-              <div className="prose prose-invert">
-				<strong>Stem Meaning:</strong>
-				<ReactMarkdown>{result.stemDescription}</ReactMarkdown>
-			  </div>
+              <p><strong>Stem Meaning:</strong> {result.stemDescription}</p>
               <p><strong>Element Traits:</strong> {result.description}</p>
               <p><strong>Compatibility:</strong> {compatibilityInsights[result.element]}</p>
               <p><strong>Lucky Numbers:</strong> {luckyTips[result.element].numbers.join(", ")}</p>
@@ -350,8 +212,6 @@ export default function PersonalElement() {
           )}
         </div>
       </main>
-	  <Footer />
     </div>
-	
   );
 }

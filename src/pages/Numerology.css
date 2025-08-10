@@ -1,0 +1,22 @@
+/* src/pages/Numerology.css */
+.floating-number {
+  position: absolute;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: rgba(212, 175, 55, 0.25);
+  pointer-events: none;
+  white-space: nowrap;
+  animation: drift 20s linear infinite, fadeCycle 8s ease-in-out infinite;
+}
+
+@keyframes drift {
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(50px, -60px); }
+  100% { transform: translate(100px, 0); }
+}
+
+@keyframes fadeCycle {
+  0%, 100% { opacity: 0; }
+  10%, 90% { opacity: 0.25; }
+  50% { opacity: 0.4; }
+}

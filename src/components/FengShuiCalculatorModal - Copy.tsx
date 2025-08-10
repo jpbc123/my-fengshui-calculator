@@ -5,13 +5,12 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { DatePickerInput } from "@/components/DatePickerInput"; // added for birthdate step
 import { cn } from "@/lib/utils"; 
 
 interface FengShuiCalculatorModalProps {
   isOpen: boolean;
   onClose: () => void;
-  birthDate: Date | null; // can start null from CTA
+  birthDate: Date | null;
 }
 
 const animals = [
@@ -37,24 +36,25 @@ function calculateKuaNumber(birthYear: number, gender: string, bornBeforeChinese
     birthYear -= 1;
   }
 
-  // Reduce last two digits to a single digit
-  let sum = birthYear % 100;
+  const sumDigits = (year: number): number => {
+    return year.toString().split('').reduce((sum, digit) => sum + parseInt(digit), 0);
+  };
+
+  let sum = sumDigits(birthYear);
   while (sum >= 10) {
-    sum = Math.floor(sum / 10) + (sum % 10);
+    sum = sumDigits(sum);
   }
 
-  let kua = 0;
+  let kua: number;
+  const isAfter2000 = birthYear >= 2000;
 
   if (gender.toLowerCase() === "male") {
-    kua = birthYear < 2000 ? 10 - sum : 9 - sum;
-    if (kua <= 0) {
-      kua += 9; // wrap-around for negatives or zero
-    }
+    kua = (isAfter2000 ? 9 : 10) - sum;
     if (kua === 5) kua = 2;
   } else if (gender.toLowerCase() === "female") {
-    kua = birthYear < 2000 ? sum + 5 : sum + 6;
+    kua = (isAfter2000 ? 6 : 5) + sum;
     while (kua >= 10) {
-      kua = Math.floor(kua / 10) + (kua % 10);
+      kua = sumDigits(kua);
     }
     if (kua === 5) kua = 8;
   } else {
@@ -64,52 +64,21 @@ function calculateKuaNumber(birthYear: number, gender: string, bornBeforeChinese
   return kua;
 }
 
-export function FengShuiCalculatorModal({ isOpen, onClose, birthDate: initialBirthDate }: FengShuiCalculatorModalProps) {
-  // Step: birthdate → gender → results
-  const [step, setStep] = useState<'birthdate' | 'gender' | 'results'>('birthdate');
-  const [birthDate, setBirthDate] = useState<Date | undefined>(initialBirthDate || undefined);
-  const [gender, setGender] = useState<string>("");
+export function FengShuiCalculatorModal({ isOpen, onClose, birthDate }: FengShuiCalculatorModalProps) {
+  const [step, setStep] = useState<'gender' | 'results'>('gender');
+  const [gender, setGender] = useState<string>('');
 
-  const handleBirthdateProceed = () => {
-    if (birthDate) {
-      setStep('gender');
-    }
-  };
-
-  const handleGenderProceed = () => {
+  const handleProceed = () => {
     if (gender) {
       setStep('results');
     }
   };
 
   const handleClose = () => {
-    setStep('birthdate');
-    setBirthDate(undefined);
-    setGender("");
+    setStep('gender');
+    setGender('');
     onClose();
   };
-
-  const renderBirthdateSelection = () => (
-    <div className="animate-fade-in px-6 py-4">
-      <h2 className="text-2xl font-bold text-foreground mb-6 text-center">
-        Enter Your Birthdate
-      </h2>
-	  <div className="w-full [&_button]:w-full">
-      <DatePickerInput
-        date={birthDate}
-        onDateChange={setBirthDate}
-        placeholder="Select your birthdate"
-      />
-	  </div>
-      <Button
-        onClick={handleBirthdateProceed}
-        disabled={!birthDate}
-        className="w-full mt-6 bg-gradient-gold text-gold-foreground hover:opacity-90 text-lg py-6 shadow-gold"
-      >
-        Continue
-      </Button>
-    </div>
-  );
 
   const renderGenderSelection = () => (
     <div className="animate-fade-in px-6 py-4">
@@ -129,7 +98,7 @@ export function FengShuiCalculatorModal({ isOpen, onClose, birthDate: initialBir
       </RadioGroup>
 
       <Button
-        onClick={handleGenderProceed}
+        onClick={handleProceed}
         disabled={!gender}
         className="w-full bg-gradient-gold text-gold-foreground hover:opacity-90 text-lg py-6 shadow-gold"
       >
@@ -207,9 +176,7 @@ export function FengShuiCalculatorModal({ isOpen, onClose, birthDate: initialBir
           <span className="sr-only">Close</span>
         </button>
 
-        {step === 'birthdate' && renderBirthdateSelection()}
-        {step === 'gender' && renderGenderSelection()}
-        {step === 'results' && renderResults()}
+        {step === 'gender' ? renderGenderSelection() : renderResults()}
       </DialogContent>
     </Dialog>
   );

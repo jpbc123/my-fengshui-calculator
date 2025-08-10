@@ -1,35 +1,44 @@
 // src/pages/FengShui.tsx
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import { Link } from "react-router-dom";
 import fengShuiImage from "@/assets/feng-shui.jpg";
+import Breadcrumb from "@/components/Breadcrumb";
+
+const breadcrumbs = [
+  { label: "Home", path: "/" },
+  { label: "Feng Shui" },
+];
 
 export default function FengShui() {
   return (
     <div className="min-h-screen bg-black text-white">
       <Header />
-      <div className="max-w-4xl mx-auto p-6 pt-28">
-        <h1 className="text-3xl font-bold text-gold mb-2">What is Feng Shui?</h1>
-
+	  <div className="pt-24 px-4 max-w-3xl mx-auto">
+		<Breadcrumb items={breadcrumbs} />
+		<h1 className="text-2xl font-bold text-gold mb-4">
+		What is Feng Shui?
+		</h1>
         {/* Gold horizontal line */}
-        <div className="border-t-4 border-gold w-32 mb-6"></div>
-
-        <p className="mb-10 text-white/80">
+        <div className="border-t-4 border-gold w-32 mb-4"></div>
+	  </div>
+      <div className="max-w-4xl mx-auto p-6 pt-6">
+        <p className="mb-6 text-white/80">
           Feng Shui is an ancient Chinese metaphysical system that seeks harmony between individuals and their surrounding environment.
           It's about how energy (Qi) flows through spaces and how we can align ourselves for success, health, and balance.
         </p>
-		
 		{/* Feng Shui Image */}
-        <div className="mb-10">
+        <div className="mb-6">
           <img
             src={fengShuiImage}
             alt="Feng Shui"
             className="w-full rounded-xl shadow-lg border border-gold/20"
           />
         </div>
-        <p className="mb-10 text-white/80">
+        <p className="mb-6 text-white/80">
           Feng Shui principles are deeply rooted in the Five Elements theory — Wood, Fire, Earth, Metal, and Water — and the concept of Yin and Yang. These elements interact in dynamic cycles, influencing everything from architecture and interior design to personal luck and energy flow.
         </p>
-		<p className="mb-10 text-white/80">
+		<p className="mb-6 text-white/80">
           By analyzing the orientation of a space, the placement of furniture, and even the surrounding natural landscape, Feng Shui practitioners aim to optimize the balance of Qi. This alignment is believed to enhance prosperity, relationships, health, and overall well-being.
         </p>
 		
@@ -55,6 +64,7 @@ export default function FengShui() {
           </Link>
         </div>
       </div>
+	  <Footer />
     </div>
   );
 }
