@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import { Link } from "react-router-dom";
 import fengShuiImage from "@/assets/feng-shui.jpg";
 import Breadcrumb from "@/components/Breadcrumb";
+import "./fengshui-background.css";
 
 const breadcrumbs = [
   { label: "Home", path: "/" },
@@ -12,7 +13,7 @@ const breadcrumbs = [
 
 export default function FengShui() {
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="fengshui-bg min-h-screen bg-black text-white overflow-hidden">
       <Header />
 	  <div className="pt-24 px-4 max-w-3xl mx-auto">
 		<Breadcrumb items={breadcrumbs} />
@@ -31,8 +32,8 @@ export default function FengShui() {
         <div className="mb-6">
           <img
             src={fengShuiImage}
-            alt="Feng Shui"
-            className="w-full rounded-xl shadow-lg border border-gold/20"
+            alt="feng shui bagua energy"
+            className="w-full object-cover rounded-xl shadow-lg border border-gold/20"
           />
         </div>
         <p className="mb-6 text-white/80">

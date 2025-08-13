@@ -12,7 +12,7 @@ const Footer = () => {
         <div>
           <div className="flex items-center gap-3 mb-4">
             <LogoIcon />
-            <h2 className="text-lg font-bold text-gold">Destiny in Numbers</h2>
+            <h2 className="text-lg font-bold text-gold">Feng Shui & Beyond</h2>
           </div>
           <p className="text-sm text-white/70 leading-relaxed">
             Unlock the wisdom of Feng Shui, Numerology, and Astrology to align your life with the flow of energy.

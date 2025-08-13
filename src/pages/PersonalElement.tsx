@@ -226,7 +226,7 @@ const fengShuiTips: Record<string, string> = {
 const breadcrumbs = [
   { label: "Home", path: "/" },
   { label: "Feng Shui", path: "/feng-shui" },
-  { label: "Personal Element" },
+  { label: "Personal Element Analysis" },
 ];
 
 export default function PersonalElement() {
@@ -267,16 +267,14 @@ export default function PersonalElement() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="flex flex-col min-h-screen bg-black text-white overflow-hidden">
       <Header />
-      <div className="pt-24 px-4 max-w-3xl mx-auto">
+	   <main className="flex-grow pt-6 px-1 pb-10">
+        <div className="pt-24 px-4 max-w-3xl mx-auto">
         <Breadcrumb items={breadcrumbs} />
         <h1 className="text-2xl font-bold text-gold mb-4">Personal Element Analysis</h1>
       </div>
-
-      <main className="pt-6 px-1 pb-10">
-        <div className="max-w-3xl mx-auto text-center space-y-10">
-
+		<div className="max-w-3xl mx-auto text-center space-y-10">
           {/* Summary Box */}
           <div className="flex flex-col gap-2">
             <div className="flex items-start gap-2 text-sm text-white/80 bg-gold/10 p-4 rounded-xl border border-gold/30">

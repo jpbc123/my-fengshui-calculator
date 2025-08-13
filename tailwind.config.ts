@@ -52,13 +52,10 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-
-        // ✅ Updated gold color
         gold: {
           DEFAULT: "#FFD700",
-          foreground: "#4B3A00", // dark gold for contrast
+          foreground: "#4B3A00",
         },
-
         red: {
           DEFAULT: "hsl(var(--red))",
           foreground: "hsl(var(--red-foreground))",
@@ -73,8 +70,6 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
-
-        // 🟡 Optional shorthand
         goldHex: "#FFD700",
       },
       borderRadius: {
@@ -105,12 +100,19 @@ export default {
           "0%": { backgroundPosition: "-200% 0" },
           "100%": { backgroundPosition: "200% 0" },
         },
+        // 🌀 New Qi Animation
+        qi: {
+          "0%, 100%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fade-in 0.3s ease-out",
         shimmer: "shimmer 2s linear infinite",
+        // 🌀 New Qi Animation
+        qi: "qi 15s ease infinite",
       },
       backgroundImage: {
         "gradient-primary": "var(--gradient-primary)",

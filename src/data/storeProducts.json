@@ -1,0 +1,29 @@
+[
+  {
+    "id": 1,
+    "name": "Feng Shui Crystal Tree",
+    "category": "Feng Shui",
+    "description": "Enhance wealth energy with this natural crystal tree.",
+    "image": "/assets/products/crystal-tree.jpg",
+    "link": "https://www.amazon.com/dp/example?tag=your-affiliate-id",
+    "price": "$25"
+  },
+  {
+    "id": 2,
+    "name": "Astrology Birth Chart Guide",
+    "category": "Astrology",
+    "description": "Understand your cosmic blueprint with this illustrated guide.",
+    "image": "/assets/products/birth-chart-book.jpg",
+    "link": "https://www.clickbank.com/example-affiliate",
+    "price": "$14.99"
+  },
+  {
+    "id": 3,
+    "name": "Numerology Life Path Book",
+    "category": "Numerology",
+    "description": "Discover your destiny with this beginner-friendly numerology guide.",
+    "image": "/assets/products/numerology-book.jpg",
+    "link": "https://www.amazon.com/dp/example?tag=your-affiliate-id",
+    "price": "$18"
+  }
+]

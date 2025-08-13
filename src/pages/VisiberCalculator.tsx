@@ -1,9 +1,18 @@
 import { useState } from "react";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { DatePickerInput } from "@/components/DatePickerInput";
 import { motion, AnimatePresence } from "framer-motion";
 import { Info, Share2 } from "lucide-react";
+import Breadcrumb from "@/components/Breadcrumb";
+
+const breadcrumbs = [
+  { label: "Home", path: "/" },
+  { label: "Numerology", path: "/numerology" },
+  { label: "Visiber Calculator" },
+];
+
 
 const visiberMeanings: Record<number, string> = {
   1: "Leadership, independence, ambitious",
@@ -117,18 +126,17 @@ const VisiberCalculator = () => {
   })();
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="flex flex-col min-h-screen bg-black text-white overflow-hidden">
       <Header />
-
-      <main className="pt-28 px-1 pb-10">
+      <main className="flex-grow pt-6 px-1 pb-10">
+	        <div className="pt-24 px-4 max-w-3xl mx-auto">
+        <Breadcrumb items={breadcrumbs} />
+        <h1 className="text-2xl font-bold text-gold mb-4">Visiber Calculator</h1>
+      </div>
         <div className="max-w-3xl mx-auto text-center space-y-10">
-          <h1 className="text-4xl md:text-6xl font-bold text-gold">
-            Visiber Number Calculator
-          </h1>
-		  
-		{/* Expandable Info Box */}
-		<div className="flex flex-col gap-2">
+		
 		{/* Summary Box */}
+		<div className="flex flex-col gap-2">
 		<div className="flex items-start gap-2 text-sm text-white/80 bg-gold/10 p-4 rounded-xl border border-gold/30">
 			<Info size={20} className="text-gold mt-1 shrink-0" />
 			<div className="text-left">
@@ -160,7 +168,7 @@ const VisiberCalculator = () => {
 		</div>
 
 		{/* Input and Button Box */}
-          <div className="bg-white/10 backdrop-blur-md border border-gold/30 rounded-2xl p-6 shadow-lg max-w-2xl mx-auto">
+          <div className="bg-white/10 backdrop-blur-md border border-gold/30 rounded-2xl p-6 shadow-lg max-w-3xl mx-auto">
             <div className="flex flex-col sm:flex-row gap-4 items-stretch">
               <DatePickerInput
                 date={birthDate}
@@ -179,6 +187,7 @@ const VisiberCalculator = () => {
             </div>
           </div>
 
+		{/* Result */}
           <AnimatePresence>
             {visiberNumber && breakdown && (
               <motion.div
@@ -280,16 +289,16 @@ const VisiberCalculator = () => {
                   </svg>
 
                   {/* Traits */}
-                  <div className="mt-6 space-y-4 text-left max-w-lg mx-auto">
+                  <div className="space-y-4 text-left max-w-lg mx-auto">
                     <div>
-                      <h3 className="text-lg font-bold text-gold">Positive Traits</h3>
-                      <p className="text-white/90 text-sm leading-relaxed">
+                      <h2 className="text-lg font-bold text-gold">Positive Traits</h2>
+                      <p className="text-white/90 text-lg leading-relaxed">
                         {visiberPositiveTraits[visiberNumber]}
                       </p>
                     </div>
                     <div>
-                      <h3 className="text-lg font-bold text-gold">Negative Traits</h3>
-                      <p className="text-white/90 text-sm leading-relaxed">
+                      <h2 className="text-lg font-bold text-gold">Negative Traits</h2>
+                      <p className="text-white/90 text-lg leading-relaxed">
                         {visiberNegativeTraits[visiberNumber]}
                       </p>
                     </div>
@@ -300,7 +309,7 @@ const VisiberCalculator = () => {
                     variant="outline"
                     size="sm"
                     onClick={handleShare}
-                    className="mt-6 border-gold text-gold hover:bg-gold hover:text-black transition"
+                    className="mt-8 border-gold text-gold hover:bg-gold hover:text-black transition"
                   >
                     <Share2 size={16} className="mr-2" />
                     {copied ? "Copied!" : "Share My Number"}
@@ -311,6 +320,7 @@ const VisiberCalculator = () => {
           </AnimatePresence>
         </div>
       </main>
+	  <Footer />
     </div>
   );
 };

@@ -1,10 +1,10 @@
-// src/pages/Numerology.tsx
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Link } from "react-router-dom";
 import Breadcrumb from "@/components/Breadcrumb";
 import { useEffect } from "react";
-import "./Numerology.css"; // We'll add our particle + numbers animation here
+import numerologyImage from "@/assets/numerology.jpg";
+import "./Numerology.css"; 
 
 const breadcrumbs = [
   { label: "Home", path: "/" },
@@ -72,30 +72,10 @@ export default function Numerology() {
   }, []);
 
   return (
-    <div className="numerology-page min-h-screen text-white relative overflow-hidden bg-black">
+    <div className="numerology-page min-h-screen text-white relative overflow-hidden bg-black overflow-hidden">
       {/* Particle canvas */}
       <canvas id="particleCanvas" className="absolute inset-0 z-0"></canvas>
 
-      {/* Floating numbers */}
-      <div className="absolute top-0 left-0 w-full h-[calc(100%-100px)] z-0">
-  {Array.from({ length: 14 }).map((_, i) => {
-    const numberPool = [1,2,3,4,5,6,7,8,9,11,13,17,19,22,27,33,44];
-    const num = numberPool[Math.floor(Math.random() * numberPool.length)];
-    return (
-      <span
-        key={i}
-        className="floating-number"
-        style={{
-          top: `${Math.random() * 85}%`,
-          left: `${Math.random() * 90}%`,
-          animationDelay: `${i * 1.5}s, ${i * 1.5}s`
-        }}
-      >
-        {num}
-      </span>
-    );
-  })}
-</div>
 
 
       <Header />
@@ -114,6 +94,15 @@ export default function Numerology() {
           It interprets patterns found in your name, birth date, and other personal details to reveal insights
           about your personality, strengths, challenges, and life path.
         </p>
+		
+		{/* Numerology Image */}
+        <div className="mb-6">
+          <img
+            src={numerologyImage}
+            alt="Numerology"
+            className="w-full object-cover rounded-xl shadow-lg border border-gold/20"
+          />
+        </div>
 
         <p className="mb-6 text-white/80">
           At its core, numerology sees numbers as more than mere quantities — they are energetic symbols

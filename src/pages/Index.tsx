@@ -11,7 +11,7 @@ const Index = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col">
+    <div className="min-h-screen bg-background text-foreground flex flex-col overflow-hidden">
       <Header />
 
       <main className="flex-grow">

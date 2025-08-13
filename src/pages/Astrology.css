@@ -1,0 +1,18 @@
+.astrology-page {
+  position: relative;
+  background-color: black;
+  color: white;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+#astrologyParticleCanvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.astrology-page .content {
+  position: relative;
+  z-index: 10;
+}

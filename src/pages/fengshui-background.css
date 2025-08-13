@@ -1,0 +1,17 @@
+/* src/pages/fengshui-background.css */
+.fengshui-bg {
+  background: radial-gradient(circle at 20% 30%, rgba(255, 215, 0, 0.08) 0%, transparent 40%),
+              radial-gradient(circle at 80% 70%, rgba(255, 215, 0, 0.08) 0%, transparent 40%),
+              #000;
+  background-size: 200% 200%;
+  animation: fengshuiGlow 20s ease-in-out infinite alternate;
+}
+
+@keyframes fengshuiGlow {
+  0% {
+    background-position: 20% 30%, 80% 70%;
+  }
+  100% {
+    background-position: 40% 50%, 60% 50%;
+  }
+}

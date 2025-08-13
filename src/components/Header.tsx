@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import LogoIcon from "@/components/LogoIcon";
 import { Menu, X } from "lucide-react";
+import Store from "./pages/Store";
 
 const menuConfig = [
   {
@@ -16,7 +17,7 @@ const menuConfig = [
   {
     label: "Community",
     items: [
-      { name: "Store", href: "#" },
+      { name: "Store", href: "/store" },
       { name: "Community Chat", href: "#" },
     ],
   },
@@ -50,7 +51,7 @@ const Header = () => {
             <LogoIcon />
             <div className="absolute -top-1 -right-1 h-3 w-3 bg-red rounded-full animate-pulse" />
           </div>
-          <h1 className="text-xl font-bold text-gold">The Universal Decoder</h1>
+          <h1 className="text-xl font-bold text-gold">Feng Shui & Beyond</h1>
         </Link>
 
         {/* Desktop Navigation */}

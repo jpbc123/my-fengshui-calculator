@@ -12,7 +12,7 @@ import Breadcrumb from "@/components/Breadcrumb";
 const breadcrumbs = [
   { label: "Home", path: "/" },
   { label: "Feng Shui", path: "/feng-shui" },
-  { label: "Kua Number" },
+  { label: "Kua Number Calculator" },
 ];
 
 const luckyDirections: Record<number, string[]> = {
@@ -169,15 +169,13 @@ export default function KuaNumberCalculator() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="flex flex-col min-h-screen bg-black text-white overflow-hidden">
       <Header />
+	  <main className="flex-grow pt-6 px-1 pb-10">
 	  <div className="pt-24 px-4 max-w-3xl mx-auto">
 		<Breadcrumb items={breadcrumbs} />
-		<h1 className="text-2xl font-bold text-gold mb-4">
-		Kua Number Calculator
-		</h1>
+		<h1 className="text-2xl font-bold text-gold mb-4">Kua Number Calculator</h1>
 	  </div>
-      <main className="pt-6 px-1 pb-10">
         <div className="max-w-3xl mx-auto text-center space-y-10">
           {/* Expandable Info Box */}
 			<div className="flex flex-col gap-2">
