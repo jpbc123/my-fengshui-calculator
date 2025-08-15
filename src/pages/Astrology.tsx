@@ -2,8 +2,9 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Link } from "react-router-dom";
 import Breadcrumb from "@/components/Breadcrumb";
-import astrologyImage from "@/assets/astrology.jpg"; // You’ll need to add this image
-import "./Astrology.css"; // Optional if you want background effects like Numerology
+import astrologyImage from "@/assets/astrology.jpg"; 
+import "./Astrology.css"; 
+import { useEffect } from "react";
 
 const breadcrumbs = [
   { label: "Home", path: "/" },
@@ -11,16 +12,49 @@ const breadcrumbs = [
 ];
 
 export default function Astrology() {
+  useEffect(() => {
+    const container = document.querySelector(".meteor-background");
+    if (!container) return; // safety check
+
+    function createMeteor() {
+      const meteor = document.createElement("div");
+      meteor.classList.add("meteor");
+
+      // Random starting horizontal position anywhere across the screen
+      meteor.style.left = `${Math.random() * window.innerWidth}px`;
+
+      // Always start at the top of the screen
+      meteor.style.top = "0px";
+
+      container.appendChild(meteor);
+
+      // Random animation speed
+      meteor.style.animationDuration = (Math.random() * 1 + 0.8) + "s";
+
+      // Remove after animation
+      setTimeout(() => meteor.remove(), 2000);
+    }
+
+    // Spawn meteors randomly
+    const interval = setInterval(() => {
+      if (Math.random() > 0.5) { // 50% chance every second
+        createMeteor();
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="astrology-page min-h-screen bg-black text-white overflow-hidden">
       <Header />
-
+	  <div className="page-content">
+      <div className="meteor-background"></div>
       <div className="pt-24 px-4 max-w-3xl mx-auto">
         <Breadcrumb items={breadcrumbs} />
         <h1 className="text-2xl font-bold text-gold mb-4">
           What is Astrology?
         </h1>
-        {/* Gold horizontal line */}
         <div className="border-t-4 border-gold w-32 mb-4"></div>
       </div>
 
@@ -31,7 +65,6 @@ export default function Astrology() {
           uncover the cosmic connections that shape our personalities, relationships, and destiny.
         </p>
 
-        {/* Astrology Image */}
         <div className="mb-6">
           <img
             src={astrologyImage}
@@ -55,7 +88,6 @@ export default function Astrology() {
         <h2 className="text-2xl font-semibold mb-4">Astrology Calculation Tools</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Chinese Zodiac Calculator */}
           <Link to="/chinese-zodiac-calculator">
             <div className="bg-gold/10 border border-gold/30 hover:border-gold rounded-xl p-5 cursor-pointer transition hover:shadow-md">
               <h3 className="text-lg font-semibold text-gold mb-1">Chinese Zodiac Calculator</h3>
@@ -65,17 +97,17 @@ export default function Astrology() {
             </div>
           </Link>
 
-          {/* Placeholder for future astrology tool */}
-          <div className="bg-gold/10 border border-gold/30 rounded-xl p-5 opacity-50 cursor-not-allowed">
-            <h3 className="text-lg font-semibold text-gold mb-1">Coming Soon</h3>
-            <p className="text-sm text-white/80">
-              More astrology tools will be added here to expand your cosmic insights.
-            </p>
-          </div>
+          <Link to="/western-zodiac-calculator">
+            <div className="bg-gold/10 border border-gold/30 hover:border-gold rounded-xl p-5 cursor-pointer transition hover:shadow-md">
+              <h3 className="text-lg font-semibold text-gold mb-1">Western Zodiac Calculator</h3>
+              <p className="text-sm text-white/80">Uncover your Western zodiac sign and explore the traits, strengths, and influences that shape your personality.</p>
+            </div>
+          </Link>
         </div>
       </div>
 
       <Footer />
+	  </div>
     </div>
   );
 }
