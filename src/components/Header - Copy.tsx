@@ -3,24 +3,21 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import LogoIcon from "@/components/LogoIcon";
 import { Menu, X } from "lucide-react";
+import Store from "./pages/Store";
 
 const menuConfig = [
   {
     label: "Explore by Wisdom",
     items: [
-      { name: "Feng Shui", isHeader: true },
-      { name: "Personal Element Analysis", href: "/personal-element" },
-      { name: "Kua Number Calculator", href: "/kua-number-calculator" },
-      { name: "Numerology", isHeader: true },
-      { name: "Visiber Calculator", href: "/visiber-calculator" },
-      { name: "Astrology", isHeader: true },
-      { name: "Chinese Zodiac Calculator", href: "/chinese-zodiac-calculator" },
+      { name: "Feng Shui", href: "/feng-shui" },
+      { name: "Numerology", href: "/numerology" },
+      { name: "Astrology", href: "/astrology" },
     ],
   },
   {
     label: "Community",
     items: [
-      { name: "Store", href: "#" },
+      { name: "Store", href: "/store" },
       { name: "Community Chat", href: "#" },
     ],
   },
@@ -33,6 +30,7 @@ const menuConfig = [
     ],
   },
 ];
+
 
 
 
@@ -53,7 +51,7 @@ const Header = () => {
             <LogoIcon />
             <div className="absolute -top-1 -right-1 h-3 w-3 bg-red rounded-full animate-pulse" />
           </div>
-          <h1 className="text-xl font-bold text-gold">My Feng Shui Calculator</h1>
+          <h1 className="text-xl font-bold text-gold">Feng Shui & Beyond</h1>
         </Link>
 
         {/* Desktop Navigation */}

@@ -174,82 +174,99 @@ const WesternZodiacCalculator = () => {
             </div>
           </div>
 
-          {/* Result */}
-          {zodiacSign && signInfo && (
-            <div className="space-y-6 bg-white/5 p-6 rounded-xl border border-gold/20 shadow-inner text-left">
-              <h2 className="text-3xl font-semibold text-white text-center">
-                Your Western Zodiac Sign is:{" "}
-                <span className="text-gold">{zodiacSign}</span>
-              </h2>
+			{/* Result */}
+			{zodiacSign && signInfo && (
+			<div className="space-y-6 bg-white/5 p-6 rounded-xl border border-gold/20 shadow-inner text-left">
+				<h2 className="text-3xl font-semibold text-white text-center">
+				Your Western Zodiac Sign is:{" "}
+				<span className="text-gold">{zodiacSign}</span>
+				</h2>
+			
+				{westernZodiacImages[zodiacSign] && (
+				<img
+					src={westernZodiacImages[zodiacSign]}
+					alt={zodiacSign}
+					className="w-40 h-40 mx-auto object-contain"
+				/>
+				)}
+			
+				<div>
+				<h3 className="text-xl font-semibold text-gold mb-2">
+					Traits of {zodiacSign}:
+				</h3>
+				<p className="text-white/90">
+					{Array.isArray(signInfo.traits)
+					? signInfo.traits.join(", ")
+					: signInfo.traits}
+				</p>
+				</div>
+			
+				<div>
+				<h3 className="text-xl font-semibold text-gold mb-2">
+					2025 Forecast for {zodiacSign}:
+				</h3>
+				<p className="text-white/90">{signInfo.yearAnalysis}</p>
+				</div>
+			
+				{signInfo.compatibility && (
+				<div>
+					<h3 className="text-xl font-semibold text-gold mb-2">
+					Compatibility:
+					</h3>
+					<p className="text-white/90">
+					{Array.isArray(signInfo.compatibility)
+						? signInfo.compatibility.join(", ")
+						: signInfo.compatibility}
+					</p>
+				</div>
+				)}
 
-              {westernZodiacImages[zodiacSign] && (
-                <img
-                  src={westernZodiacImages[zodiacSign]}
-                  alt={zodiacSign}
-                  className="w-40 h-40 mx-auto object-contain"
-                />
-              )}
-
-              <div>
-                <h3 className="text-xl font-semibold text-gold mb-2">
-                  Traits of {zodiacSign}:
-                </h3>
-                <p className="text-white/90">{signInfo.traits}</p>
-              </div>
-
-              <div>
-                <h3 className="text-xl font-semibold text-gold mb-2">
-                  2025 Forecast for {zodiacSign}:
-                </h3>
-                <p className="text-white/90">{signInfo.yearAnalysis}</p>
-              </div>
-
-              {signInfo.compatibility && (
-                <div>
-                  <h3 className="text-xl font-semibold text-gold mb-2">
-                    Compatibility:
-                  </h3>
-                  <p className="text-white/90">{signInfo.compatibility}</p>
-                </div>
-              )}
-
-              {signInfo.luckyNumbers && (
-                <div>
-                  <h3 className="text-xl font-semibold text-gold mb-2">
-                    Lucky Numbers:
-                  </h3>
-                  <p className="text-white/90">{signInfo.luckyNumbers}</p>
-                </div>
-              )}
-
-              {signInfo.luckyColors && (
-                <div>
-                  <h3 className="text-xl font-semibold text-gold mb-2">
-                    Lucky Colors:
-                  </h3>
-                  <p className="text-white/90">{signInfo.luckyColors}</p>
-                </div>
-              )}
-
-              {signInfo.careerAdvice && (
-                <div>
-                  <h3 className="text-xl font-semibold text-gold mb-2">
-                    Career Advice:
-                  </h3>
-                  <p className="text-white/90">{signInfo.careerAdvice}</p>
-                </div>
-              )}
-
-              {signInfo.personalityInsights && (
-                <div>
-                  <h3 className="text-xl font-semibold text-gold mb-2">
-                    Personality Insights:
-                  </h3>
-                  <p className="text-white/90">{signInfo.personalityInsights}</p>
-                </div>
-              )}
-            </div>
-          )}
+			
+				{signInfo.luckyNumbers && (
+				<div>
+					<h3 className="text-xl font-semibold text-gold mb-2">
+					Lucky Numbers:
+					</h3>
+					<p className="text-white/90">
+					{Array.isArray(signInfo.luckyNumbers)
+						? signInfo.luckyNumbers.join(", ")
+						: signInfo.luckyNumbers}
+					</p>
+				</div>
+				)}
+			
+				{signInfo.luckyColors && (
+				<div>
+					<h3 className="text-xl font-semibold text-gold mb-2">
+					Lucky Colors:
+					</h3>
+					<p className="text-white/90">
+					{Array.isArray(signInfo.luckyColors)
+						? signInfo.luckyColors.join(", ")
+						: signInfo.luckyColors}
+					</p>
+				</div>
+				)}
+			
+				{signInfo.careerAdvice && (
+				<div>
+					<h3 className="text-xl font-semibold text-gold mb-2">
+					Career Advice:
+					</h3>
+					<p className="text-white/90">{signInfo.careerAdvice}</p>
+				</div>
+				)}
+			
+				{signInfo.personalityInsights && (
+				<div>
+					<h3 className="text-xl font-semibold text-gold mb-2">
+					Personality Insights:
+					</h3>
+					<p className="text-white/90">{signInfo.personalityInsights}</p>
+				</div>
+				)}
+			</div>
+			)}
         </div>
       </main>
       <Footer />
