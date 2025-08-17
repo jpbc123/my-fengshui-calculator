@@ -74,21 +74,51 @@ export default function Numerology() {
   return (
     <div className="numerology-page min-h-screen text-white relative overflow-hidden bg-black overflow-hidden">
       {/* Particle canvas */}
-      <canvas id="particleCanvas" className="absolute inset-0 z-0"></canvas>
-
-
-
+      <canvas id="particleCanvas" className="absolute inset-0 z-0 pointer-events-none"></canvas>
       <Header />
-
       <div className="pt-24 px-4 max-w-3xl mx-auto relative z-10">
         <Breadcrumb items={breadcrumbs} />
-        <h1 className="text-2xl font-bold text-gold mb-4">
-          What is Numerology?
-        </h1>
-        <div className="border-t-4 border-gold w-32 mb-4"></div>
       </div>
-
-      <div className="max-w-4xl mx-auto p-6 pt-6 relative z-10">
+	  
+	  {/* Tools Intro Section */}
+      <div className="max-w-4xl mx-auto px-6 mb-12">
+        <h2 className="text-2xl font-semibold text-gold mb-6">
+          Numerology Tools
+        </h2>
+		<p className="text-white/80 mb-6">
+        Unlock the hidden power of numbers and how they shape your destiny. 
+		Begin with our free Numerology tools below to reveal your unique life path and personal insights.
+        </p>
+        <div className="grid gap-6 md:grid-cols-2">
+          {/* Tool Cards */}
+			<Link
+			to="/visiber-calculator"
+			className="bg-black/40 border border-gold/30 rounded-xl p-6 hover:bg-gold/10 transition shadow-lg"
+			>
+			<div className="flex justify-center text-3xl mb-3">🔢</div>
+			<h3 className="flex justify-center text-xl font-bold text-gold mb-2">Visiber Calculator</h3>
+			<p className="text-center text-white/70 text-sm">
+			Explore your Visiber number and understand how it shapes your destiny, personality, and relationships.
+			</p>
+			</Link>
+			
+			<Link
+			to="#"
+			className="bg-black/40 border border-gold/30 rounded-xl p-6 opacity-50 cursor-not-allowed pointer-events-none shadow-lg">
+			<div className="flex justify-center text-3xl mb-3">⏳</div>
+			<h3 className="flex justify-center text-xl font-bold text-gold mb-2">Coming Soon</h3>
+			<p className="text-center text-white/70 text-sm">
+			More numerology tools will be added here to deepen your insights.
+			</p>
+			</Link>
+        </div>
+      </div>
+	  
+	  {/* "What is Numerology" Section */}
+      <div className="max-w-4xl mx-auto p-6 pt-6">
+        <h2 className="text-2xl font-bold text-gold mb-4">What is Numerology?</h2>
+        <div className="border-t-4 border-gold w-32 mb-4"></div>
+      
         <p className="mb-6 text-white/80">
           Numerology is the study of the mystical significance of numbers and their influence on human life.
           It interprets patterns found in your name, birth date, and other personal details to reveal insights
@@ -114,28 +144,7 @@ export default function Numerology() {
           From ancient Pythagorean teachings to modern interpretations, numerology remains a powerful tool
           for self-discovery and guidance.
         </p>
-
-        <h2 className="text-2xl font-semibold mb-4">Numerology Calculation Tools</h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Link to="/visiber-calculator">
-            <div className="bg-gold/10 border border-gold/30 hover:border-gold rounded-xl p-5 cursor-pointer transition hover:shadow-md">
-              <h3 className="text-lg font-semibold text-gold mb-1">Visiber Calculator</h3>
-              <p className="text-sm text-white/80">
-                Explore your Visiber number and understand how it shapes your destiny, personality, and relationships.
-              </p>
-            </div>
-          </Link>
-
-          <div className="bg-gold/10 border border-gold/30 rounded-xl p-5 opacity-50 cursor-not-allowed">
-            <h3 className="text-lg font-semibold text-gold mb-1">Coming Soon</h3>
-            <p className="text-sm text-white/80">
-              More numerology tools will be added here to deepen your insights.
-            </p>
-          </div>
         </div>
-      </div>
-
       <Footer />
     </div>
   );

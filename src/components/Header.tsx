@@ -6,14 +6,6 @@ import { Menu, X } from "lucide-react";
 
 const menuConfig = [
   {
-    label: "Features",
-    items: [
-      { name: "Daily Horoscope", href: "/daily-horoscope" },
-      { name: "Lucky Numbers Generator", href: "#" },
-      { name: "Community Discussion", href: "#" },
-    ],
-  },
-  {
     label: "Explore by Wisdom",
     items: [
       { name: "Feng Shui", href: "/feng-shui" },
@@ -22,8 +14,16 @@ const menuConfig = [
     ],
   },
   {
+    label: "Features",
+    items: [
+	  { name: "Articles", href: "#" },
+      { name: "Daily Horoscope", href: "/daily-horoscope" },
+      { name: "Lucky Numbers Generator", href: "#" },
+    ],
+  },
+  {
     label: "Store",
-    href: "/store", // now a single menu link
+    href: "/store", 
   },
   {
     label: "About",
