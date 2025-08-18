@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Breadcrumb from "@/components/Breadcrumb";
-import wheelImage from "@/assets/zodiac-wheel.png"; // your wheel image
+import wheelImage from "@/assets/zodiac-wheel.png";
 
 const breadcrumbs = [
   { label: "Home", path: "/" },
@@ -21,6 +21,7 @@ export default function DailyHoroscope() {
   const [horoscope, setHoroscope] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"overview" | "love" | "career">("overview");
 
   const wheelRef = useRef<HTMLDivElement>(null);
   const startAngleRef = useRef<number | null>(null);
@@ -122,44 +123,98 @@ export default function DailyHoroscope() {
   return (
     <div className="min-h-screen bg-black text-white">
       <Header />
-      <div className="pt-24 px-4 max-w-3xl mx-auto">
-        <Breadcrumb items={breadcrumbs} />
-        <h1 className="text-2xl font-bold text-gold mb-4">Daily Horoscope</h1>
-        <div className="border-t-4 border-gold w-32 mb-4"></div>
 
-        {/* Wheel wrapper */}
-        <div className="relative mx-auto mb-8 w-96 h-96">
-          {/* Fixed Arrow */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-4 h-6 bg-gold rounded z-10"></div>
+      {/* Outer container */}
+      <div className="pt-24 px-4 max-w-7xl mx-auto">
+        {/* Breadcrumbs + title centered like FengShui page */}
+        <div className="max-w-3xl mx-auto mb-8">
+          <Breadcrumb items={breadcrumbs} />
+          <h1 className="text-2xl font-bold text-gold mt-4">Daily Horoscope</h1>
+          <div className="border-t-4 border-gold w-32 mt-2"></div>
+        </div>
 
-          {/* Rotating Wheel */}
-          <div
-            ref={wheelRef}
-            onPointerDown={handlePointerDown}
-            onPointerMove={handlePointerMove}
-            onPointerUp={handlePointerUp}
-            style={{ touchAction: "none", cursor: "grab" }}
-            className="w-full h-full"
-          >
-            <img src={wheelImage} alt="Zodiac Wheel" className="w-full h-full object-contain" />
+        {/* 2-column layout */}
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Left side - wheel & results */}
+          <div>
+            <div className="relative mx-auto mb-8 w-96 h-96">
+              {/* Fixed Arrow */}
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-4 h-6 bg-gold rounded z-10"></div>
+
+              {/* Rotating Wheel */}
+              <div
+                ref={wheelRef}
+                onPointerDown={handlePointerDown}
+                onPointerMove={handlePointerMove}
+                onPointerUp={handlePointerUp}
+                style={{ touchAction: "none", cursor: "grab" }}
+                className="w-full h-full"
+              >
+                <img src={wheelImage} alt="Zodiac Wheel" className="w-full h-full object-contain" />
+              </div>
+            </div>
+
+            {/* Tabs */}
+            <div className="p-6 border border-gold/30 rounded-xl bg-white/5">
+              {selectedSign && (
+                <p className="text-gold font-semibold mb-4">
+                  Your Sign: {selectedSign.charAt(0).toUpperCase() + selectedSign.slice(1)}
+                </p>
+              )}
+
+              {/* Tab buttons */}
+              <div className="flex space-x-4 mb-4">
+                {["overview", "love", "career"].map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(tab as any)}
+                    className={`px-3 py-1 rounded ${
+                      activeTab === tab ? "bg-gold text-black font-bold" : "bg-white/10 text-white/70"
+                    }`}
+                  >
+                    {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                  </button>
+                ))}
+              </div>
+
+              {/* Tab content */}
+              {loading && <p className="text-white/70">Loading horoscope...</p>}
+              {error && <p className="text-red-400">{error}</p>}
+
+              {!loading && !error && (
+                <>
+                  {activeTab === "overview" && (
+                    <p className="text-white/80 leading-relaxed">
+                      {horoscope || "Spin the wheel to reveal your horoscope."}
+                    </p>
+                  )}
+                  {activeTab === "love" && (
+                    <p className="text-white/80 leading-relaxed">
+                      💖 Love insights coming soon! For now, enjoy your daily overview.
+                    </p>
+                  )}
+                  {activeTab === "career" && (
+                    <p className="text-white/80 leading-relaxed">
+                      💼 Career insights coming soon! For now, enjoy your daily overview.
+                    </p>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+
+          {/* Right side - related links */}
+          <div className="max-w-md">
+            <h2 className="text-xl font-semibold text-gold mb-4">Related Articles</h2>
+            <ul className="space-y-2">
+              <li><a href="#" className="text-white/80 hover:text-gold">How to Make the Most of Your Zodiac Energy</a></li>
+              <li><a href="#" className="text-white/80 hover:text-gold">Love Compatibility Between Signs</a></li>
+              <li><a href="#" className="text-white/80 hover:text-gold">Career Growth Based on Astrology</a></li>
+            </ul>
           </div>
         </div>
-
-        {/* Selected sign & horoscope display */}
-        <div className="p-6 border border-gold/30 rounded-xl bg-white/5">
-          {selectedSign && <p className="text-gold font-semibold mb-2">Your Sign: {selectedSign.charAt(0).toUpperCase() + selectedSign.slice(1)}</p>}
-          {loading && <p className="text-white/70">Loading horoscope...</p>}
-          {error && <p className="text-red-400">{error}</p>}
-          {horoscope && (
-            <p className="text-white/80 leading-relaxed">{horoscope}</p>
-          )}
-          {!loading && !horoscope && !error && (
-            <p className="text-white/50 italic">
-              Drag the wheel to point your zodiac at the arrow.
-            </p>
-          )}
-        </div>
       </div>
+
       <Footer />
     </div>
   );

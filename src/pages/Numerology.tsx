@@ -73,7 +73,7 @@ export default function Numerology() {
 
   return (
     <div className="numerology-page min-h-screen text-white relative overflow-hidden bg-black overflow-hidden">
-      {/* Particle canvas */}
+      {/* Effects */}
       <canvas id="particleCanvas" className="absolute inset-0 z-0 pointer-events-none"></canvas>
       <Header />
       <div className="pt-24 px-4 max-w-3xl mx-auto relative z-10">
@@ -89,25 +89,23 @@ export default function Numerology() {
         Unlock the hidden power of numbers and how they shape your destiny. 
 		Begin with our free Numerology tools below to reveal your unique life path and personal insights.
         </p>
+		
+		{/* Tool Cards */}
         <div className="grid gap-6 md:grid-cols-2">
-          {/* Tool Cards */}
-			<Link
-			to="/visiber-calculator"
-			className="bg-black/40 border border-gold/30 rounded-xl p-6 hover:bg-gold/10 transition shadow-lg"
-			>
+			<Link to="/visiber-calculator"
+			className="bg-black/40 border border-gold/30 rounded-xl p-6 hover:bg-gold/10 transition shadow-lg">
 			<div className="flex justify-center text-3xl mb-3">🔢</div>
-			<h3 className="flex justify-center text-xl font-bold text-gold mb-2">Visiber Calculator</h3>
-			<p className="text-center text-white/70 text-sm">
+			  <h3 className="flex justify-center text-xl font-bold text-gold mb-2">Visiber Calculator</h3>
+			  <p className="text-center text-white/70 text-sm">
 			Explore your Visiber number and understand how it shapes your destiny, personality, and relationships.
 			</p>
 			</Link>
 			
-			<Link
-			to="#"
+			<Link to="#"
 			className="bg-black/40 border border-gold/30 rounded-xl p-6 opacity-50 cursor-not-allowed pointer-events-none shadow-lg">
 			<div className="flex justify-center text-3xl mb-3">⏳</div>
-			<h3 className="flex justify-center text-xl font-bold text-gold mb-2">Coming Soon</h3>
-			<p className="text-center text-white/70 text-sm">
+			  <h3 className="flex justify-center text-xl font-bold text-gold mb-2">Coming Soon</h3>
+			  <p className="text-center text-white/70 text-sm">
 			More numerology tools will be added here to deepen your insights.
 			</p>
 			</Link>

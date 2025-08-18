@@ -46,56 +46,25 @@ export default function Astrology() {
   }, []);
 
   return (
-    <div className="astrology-page min-h-screen bg-black text-white relative overflow-hidden">
-	{/* Effects */}
+    <div className="astrology-page min-h-screen bg-black text-white overflow-hidden">
+      <Header />
 	  <div className="page-content">
       <div className="meteor-background"></div>
-      <Header />
-      <div className="pt-24 px-4 max-w-3xl mx-auto relative z-10">
+      <div className="pt-24 px-4 max-w-3xl mx-auto">
         <Breadcrumb items={breadcrumbs} />
-	  </div>
-	  
-		{/* Tools Intro Section */}
-		<div className="max-w-4xl mx-auto px-6 mb-12">
-		<h2 className="text-2xl font-semibold text-gold mb-6">
-			Astrology Calculation Tools
-		</h2>
-		<p className="text-white/80 mb-6">
-        Random astrology brief description here.
-        </p>
-		
-		{/* Tool Cards */}
-        <div className="grid gap-6 md:grid-cols-2">
-          <Link to="/chinese-zodiac-calculator"
-		  className="bg-black/40 border border-gold/30 rounded-xl p-6 hover:bg-gold/10 transition shadow-lg">
-		  <div className="flex justify-center text-3xl mb-3">🐲</div>
-            <h3 className="flex justify-center text-xl font-bold text-gold mb-2">Chinese Zodiac Calculator</h3>
-            <p className="text-center text-white/70 text-sm">
-                Find your Chinese zodiac animal and learn about its traits, compatibility, and meaning.
-              </p>
-          </Link>
-
-          <Link to="/western-zodiac-calculator"
-		  className="bg-black/40 border border-gold/30 rounded-xl p-6 hover:bg-gold/10 transition shadow-lg">
-		  <div className="flex justify-center text-3xl mb-3">♊</div>
-            <h3 className="flex justify-center text-xl font-bold text-gold mb-2">Western Zodiac Calculator</h3>
-            <p className="text-center text-white/70 text-sm">Uncover your Western zodiac sign and explore the traits, strengths, and influences that shape your personality.</p>
-          </Link>
-		</div>
-      </div>
-	  
-	  {/* "What is Astrology" Section */}
-      <div className="max-w-4xl mx-auto p-6 pt-6">
-        <h2 className="text-2xl font-bold text-gold mb-4">What is Astrology?</h2>
+        <h1 className="text-2xl font-bold text-gold mb-4">
+          What is Astrology?
+        </h1>
         <div className="border-t-4 border-gold w-32 mb-4"></div>
+      </div>
 
+      <div className="max-w-4xl mx-auto p-6 pt-6">
         <p className="mb-6 text-white/80">
           Astrology is the ancient study of how the positions and movements of celestial bodies influence life on Earth.
           From the alignment of the Sun, Moon, and planets to the intricate patterns of the stars, astrology seeks to
           uncover the cosmic connections that shape our personalities, relationships, and destiny.
         </p>
-		
-		{/* Astrology Image */}
+
         <div className="mb-6">
           <img
             src={astrologyImage}
@@ -115,9 +84,30 @@ export default function Astrology() {
           about the patterns of the universe, astrology provides a timeless framework for understanding life’s
           rhythms and your place within them.
         </p>
+
+        <h2 className="text-2xl font-semibold mb-4">Astrology Calculation Tools</h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Link to="/chinese-zodiac-calculator">
+            <div className="bg-gold/10 border border-gold/30 hover:border-gold rounded-xl p-5 cursor-pointer transition hover:shadow-md">
+              <h3 className="text-lg font-semibold text-gold mb-1">Chinese Zodiac Calculator</h3>
+              <p className="text-sm text-white/80">
+                Find your Chinese zodiac animal and learn about its traits, compatibility, and meaning.
+              </p>
+            </div>
+          </Link>
+
+          <Link to="/western-zodiac-calculator">
+            <div className="bg-gold/10 border border-gold/30 hover:border-gold rounded-xl p-5 cursor-pointer transition hover:shadow-md">
+              <h3 className="text-lg font-semibold text-gold mb-1">Western Zodiac Calculator</h3>
+              <p className="text-sm text-white/80">Uncover your Western zodiac sign and explore the traits, strengths, and influences that shape your personality.</p>
+            </div>
+          </Link>
         </div>
       </div>
+
       <Footer />
-	</div>
+	  </div>
+    </div>
   );
 }

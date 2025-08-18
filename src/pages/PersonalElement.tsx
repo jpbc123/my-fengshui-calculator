@@ -8,6 +8,7 @@ import { Info } from "lucide-react";
 import { Solar, Lunar } from "lunar-typescript";
 import Breadcrumb from "@/components/Breadcrumb";
 import ReactMarkdown from 'react-markdown';
+import ShareResult from "@/components/ShareResult";
 
 const elementByHeavenlyStem: Record<string, string> = {
   Jia: "Wood", Yi: "Wood",
@@ -327,24 +328,30 @@ export default function PersonalElement() {
 
           {/* Result */}
           {result && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mt-8 p-6 rounded-xl bg-gold/10 border border-gold/30 text-left space-y-4"
-            >
-              <h2 className="text-xl font-bold text-gold">Your Element: {result.element}</h2>
-              <p><strong>Heavenly Stem:</strong> {result.stem}</p>
-              <div className="prose prose-invert">
-				<strong>Stem Meaning:</strong>
-				<ReactMarkdown>{result.stemDescription}</ReactMarkdown>
-			  </div>
-              <p><strong>Element Traits:</strong> {result.description}</p>
-              <p><strong>Compatibility:</strong> {compatibilityInsights[result.element]}</p>
-              <p><strong>Lucky Numbers:</strong> {luckyTips[result.element].numbers.join(", ")}</p>
-              <p><strong>Lucky Colors:</strong> {luckyTips[result.element].colors.join(", ")}</p>
-              <p><strong>Suggested Careers:</strong> {luckyTips[result.element].careers.join(", ")}</p>
-              <p><strong>Feng Shui Tip:</strong> {fengShuiTips[result.element]}</p>
-            </motion.div>
+            <>
+              <motion.div
+                id="personalElementResult" // <-- this id is important for ShareResult
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-8 p-6 rounded-xl bg-gold/10 border border-gold/30 text-left space-y-4"
+              >
+                <h2 className="text-xl font-bold text-gold">Your Element: {result.element}</h2>
+                <p><strong>Heavenly Stem:</strong> {result.stem}</p>
+                <div className="prose prose-invert">
+                  <strong>Stem Meaning:</strong>
+                  <ReactMarkdown>{result.stemDescription}</ReactMarkdown>
+                </div>
+                <p><strong>Element Traits:</strong> {result.description}</p>
+                <p><strong>Compatibility:</strong> {compatibilityInsights[result.element]}</p>
+                <p><strong>Lucky Numbers:</strong> {luckyTips[result.element].numbers.join(", ")}</p>
+                <p><strong>Lucky Colors:</strong> {luckyTips[result.element].colors.join(", ")}</p>
+                <p><strong>Suggested Careers:</strong> {luckyTips[result.element].careers.join(", ")}</p>
+                <p><strong>Feng Shui Tip:</strong> {fengShuiTips[result.element]}</p>
+              </motion.div>
+
+              {/* Share Buttons */}
+              <ShareResult targetId="personalElementResult" />
+            </>
           )}
         </div>
       </main>

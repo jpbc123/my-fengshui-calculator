@@ -1,17 +1,19 @@
 // src/pages/DailyHoroscope.tsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Breadcrumb from "@/components/Breadcrumb";
+import wheelImage from "@/assets/zodiac-wheel.png"; // your wheel image
 
 const breadcrumbs = [
   { label: "Home", path: "/" },
   { label: "Daily Horoscope" },
 ];
 
-const zodiacSigns = [
-  "aries", "taurus", "gemini", "cancer", "leo", "virgo",
-  "libra", "scorpio", "sagittarius", "capricorn", "aquarius", "pisces"
+// Zodiac order clockwise in your image, starting at top
+const imageZodiacOrder = [
+  "aries", "pisces", "aquarius", "capricorn", "sagittarius", "scorpio",
+  "libra", "virgo", "leo", "cancer", "gemini", "taurus"
 ];
 
 export default function DailyHoroscope() {
@@ -20,22 +22,24 @@ export default function DailyHoroscope() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Load cached horoscope from localStorage on component mount
+  const wheelRef = useRef<HTMLDivElement>(null);
+  const startAngleRef = useRef<number | null>(null);
+  const currentRotationRef = useRef(0);
+
+  // Load cached horoscope
   useEffect(() => {
     if (selectedSign) {
       const cached = localStorage.getItem(`horoscope_${selectedSign}`);
-      if (cached) {
-        setHoroscope(cached);
-      }
+      if (cached) setHoroscope(cached);
     }
   }, [selectedSign]);
 
+  // Fetch horoscope from RapidAPI
   const fetchHoroscope = async (sign: string) => {
     setSelectedSign(sign);
     setLoading(true);
     setError(null);
 
-    // Check localStorage first
     const cached = localStorage.getItem(`horoscope_${sign}`);
     if (cached) {
       setHoroscope(cached);
@@ -56,11 +60,8 @@ export default function DailyHoroscope() {
       );
 
       if (!response.ok) throw new Error(`Status ${response.status}`);
-
       const data = await response.json();
       setHoroscope(data.horoscope);
-
-      // Save to localStorage
       localStorage.setItem(`horoscope_${sign}`, data.horoscope);
     } catch (err: any) {
       console.error(err);
@@ -68,6 +69,54 @@ export default function DailyHoroscope() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Drag rotation handlers
+  const handlePointerDown = (e: React.PointerEvent) => {
+    e.preventDefault();
+    const rect = wheelRef.current!.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const x = e.clientX - cx;
+    const y = e.clientY - cy;
+    startAngleRef.current = Math.atan2(y, x);
+    wheelRef.current!.setPointerCapture(e.pointerId);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (startAngleRef.current === null) return;
+    const rect = wheelRef.current!.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const x = e.clientX - cx;
+    const y = e.clientY - cy;
+    const angle = Math.atan2(y, x);
+    const delta = angle - startAngleRef.current;
+    const deg = delta * (180 / Math.PI);
+    wheelRef.current!.style.transform = `rotate(${currentRotationRef.current + deg}deg)`;
+  };
+
+  const handlePointerUp = (e: React.PointerEvent) => {
+    if (startAngleRef.current === null) return;
+    const rect = wheelRef.current!.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const x = e.clientX - cx;
+    const y = e.clientY - cy;
+    const angle = Math.atan2(y, x);
+    const delta = angle - startAngleRef.current;
+    const deg = delta * (180 / Math.PI);
+    currentRotationRef.current += deg;
+    startAngleRef.current = null;
+
+    // Normalize rotation to [0, 360)
+    const rotationNormalized = (360 - (currentRotationRef.current % 360) + 15) % 360;
+
+    // Determine zodiac using the image order
+    const zodiacIndex = Math.floor(rotationNormalized / 30) % 12;
+    const zodiac = imageZodiacOrder[zodiacIndex];
+
+    fetchHoroscope(zodiac);
   };
 
   return (
@@ -78,23 +127,27 @@ export default function DailyHoroscope() {
         <h1 className="text-2xl font-bold text-gold mb-4">Daily Horoscope</h1>
         <div className="border-t-4 border-gold w-32 mb-4"></div>
 
-        {/* Zodiac sign buttons */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-8">
-          {zodiacSigns.map((sign) => (
-            <button
-              key={sign}
-              onClick={() => fetchHoroscope(sign)}
-              className={`py-2 px-4 rounded border border-gold/40 hover:bg-gold hover:text-black transition ${
-                selectedSign === sign ? "bg-gold text-black" : "text-gold"
-              }`}
-            >
-              {sign.charAt(0).toUpperCase() + sign.slice(1)}
-            </button>
-          ))}
+        {/* Wheel wrapper */}
+        <div className="relative mx-auto mb-8 w-96 h-96">
+          {/* Fixed Arrow */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-4 h-6 bg-gold rounded z-10"></div>
+
+          {/* Rotating Wheel */}
+          <div
+            ref={wheelRef}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            style={{ touchAction: "none", cursor: "grab" }}
+            className="w-full h-full"
+          >
+            <img src={wheelImage} alt="Zodiac Wheel" className="w-full h-full object-contain" />
+          </div>
         </div>
 
-        {/* Horoscope display */}
+        {/* Selected sign & horoscope display */}
         <div className="p-6 border border-gold/30 rounded-xl bg-white/5">
+          {selectedSign && <p className="text-gold font-semibold mb-2">Your Sign: {selectedSign.charAt(0).toUpperCase() + selectedSign.slice(1)}</p>}
           {loading && <p className="text-white/70">Loading horoscope...</p>}
           {error && <p className="text-red-400">{error}</p>}
           {horoscope && (
@@ -102,7 +155,7 @@ export default function DailyHoroscope() {
           )}
           {!loading && !horoscope && !error && (
             <p className="text-white/50 italic">
-              Select a zodiac sign to see today’s horoscope.
+              Drag the wheel to point your zodiac at the arrow.
             </p>
           )}
         </div>

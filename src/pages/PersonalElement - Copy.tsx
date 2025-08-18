@@ -1,28 +1,31 @@
 import { useState } from "react";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import { DatePickerInput } from "@/components/DatePickerInput";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Info } from "lucide-react";
-import { useNavigate } from "react-router-dom"; 
+import { Solar, Lunar } from "lunar-typescript";
 import Breadcrumb from "@/components/Breadcrumb";
-
-const heavenlyStems = [
-  "Jia", "Yi", "Bing", "Ding", "Wu",
-  "Ji", "Geng", "Xin", "Ren", "Gui"
-];
+import ReactMarkdown from 'react-markdown';
 
 const elementByHeavenlyStem: Record<string, string> = {
-  Jia: "Wood",
-  Yi: "Wood",
-  Bing: "Fire",
-  Ding: "Fire",
-  Wu: "Earth",
-  Ji: "Earth",
-  Geng: "Metal",
-  Xin: "Metal",
-  Ren: "Water",
-  Gui: "Water",
+  Jia: "Wood", Yi: "Wood",
+  Bing: "Fire", Ding: "Fire",
+  Wu: "Earth", Ji: "Earth",
+  Geng: "Metal", Xin: "Metal",
+  Ren: "Water", Gui: "Water",
+};
+
+const stemChineseNames: Record<string, string> = {
+  Jia: "甲", Yi: "乙", Bing: "丙", Ding: "丁", Wu: "戊",
+  Ji: "己", Geng: "庚", Xin: "辛", Ren: "壬", Gui: "癸",
+};
+
+const stemEnglishNames: Record<string, string> = {
+  "甲": "Jia", "乙": "Yi", "丙": "Bing", "丁": "Ding",
+  "戊": "Wu", "己": "Ji", "庚": "Geng", "辛": "Xin",
+  "壬": "Ren", "癸": "Gui",
 };
 
 const elementDescriptions: Record<string, string> = {
@@ -33,12 +36,198 @@ const elementDescriptions: Record<string, string> = {
   Water: "Water people are intuitive, wise, and flexible. They adapt well and value wisdom, communication, and philosophy.",
 };
 
+const stemDescriptions: Record<string, string> = {
+  Jia: `🌳 **Jia (甲) – Yang Wood**  
+**Element:** Wood  
+
+Jia is like a tall, sturdy tree — upright, dependable, and growth-oriented.  
+
+**Those with Jia as their Heavenly Stem often:**  
+- Are principled and dependable  
+- Take initiative and lead with vision  
+- Strive for steady growth and progress  
+
+**They may also:**  
+- Be stubborn or inflexible  
+- Struggle with adapting quickly to change`,
+
+  Yi: `🌱 **Yi (乙) – Yin Wood**  
+**Element:** Wood  
+
+Yi is like climbing vines or delicate flowers — flexible, adaptive, and diplomatic.  
+
+**Those with Yi as their Heavenly Stem often:**  
+- Are creative and adaptable  
+- Build relationships through charm and empathy  
+- Work well behind the scenes to influence outcomes  
+
+**They may also:**  
+- Be overly dependent on others  
+- Avoid confrontation even when necessary`,
+
+  Bing: `🔥 **Bing (丙) – Yang Fire**  
+**Element:** Fire  
+
+Bing is like the sun — warm, bright, and energizing.  
+
+**Those with Bing as their Heavenly Stem often:**  
+- Inspire others with optimism  
+- Have a big presence and strong leadership  
+- Thrive when motivating or teaching  
+
+**They may also:**  
+- Be impatient or restless  
+- Overextend themselves trying to help everyone`,
+
+  Ding: `🕯 **Ding (丁) – Yin Fire**  
+**Element:** Fire  
+
+Ding is like candlelight — subtle, nurturing, and refined.  
+
+**Those with Ding as their Heavenly Stem often:**  
+- Offer emotional warmth and comfort  
+- Work quietly yet effectively  
+- Have strong intuition and insight  
+
+**They may also:**  
+- Be overly sensitive or moody  
+- Struggle with self-confidence`,
+
+  Wu: `🏔 **Wu (戊) – Yang Earth**  
+**Element:** Earth  
+
+Wu is like a mountain — stable, protective, and reliable.  
+
+**Those with Wu as their Heavenly Stem often:**  
+- Are trustworthy and responsible  
+- Provide security for others  
+- Have great endurance and patience  
+
+**They may also:**  
+- Be overly cautious or resistant to change  
+- Struggle with expressing emotions`,
+
+  Ji: `🌾 **Ji (己) – Yin Earth**  
+**Element:** Earth  
+
+Ji is like fertile soil — nurturing, supportive, and grounded.  
+
+**Those with Ji as their Heavenly Stem often:**  
+- Care deeply for others’ well-being  
+- Offer practical solutions and guidance  
+- Are humble and approachable  
+
+**They may also:**  
+- Worry too much about small details  
+- Be prone to self-doubt`,
+
+  Geng: `⚔ **Geng (庚) – Yang Metal**  
+**Element:** Metal  
+
+Geng is like an axe or raw metal — strong, bold, and decisive.  
+
+**Those with Geng as their Heavenly Stem often:**  
+- Are courageous and ambitious  
+- Excel in solving problems directly  
+- Have a strong sense of justice  
+
+**They may also:**  
+- Be overly critical or harsh  
+- Have a short temper`,
+
+  Xin: `💎 **Xin (辛) – Yin Metal**  
+**Element:** Metal  
+
+Xin is like refined jewelry — elegant, sharp, and intelligent.  
+
+**Those with Xin as their Heavenly Stem often:**  
+- Possess great taste and attention to detail  
+- Communicate with charm and diplomacy  
+- Value refinement and etiquette  
+
+**They may also:**  
+- Be passive-aggressive when upset  
+- Struggle with inner vulnerability`,
+
+  Ren: `🌊 **Ren (壬) – Yang Water**  
+**Element:** Water  
+
+Ren is like the ocean — vast, deep, and adaptable.  
+
+**Those with Ren as their Heavenly Stem often:**  
+- Are resourceful and intelligent  
+- Adapt quickly to changing situations  
+- Inspire others with their vision  
+
+**They may also:**  
+- Be unpredictable or secretive  
+- Struggle with commitment`,
+
+  Gui: `💧 **Gui (癸) – Yin Water**  
+**Element:** Water  
+
+Gui is like gentle rain — nurturing, subtle, and intuitive.  
+
+**Those with Gui as their Heavenly Stem often:**  
+- Are empathetic and understanding  
+- Possess strong intuition and imagination  
+- Work best in peaceful environments  
+
+**They may also:**  
+- Be indecisive or hesitant  
+- Avoid conflict even when necessary`
+};
+
+
+const compatibilityInsights: Record<string, string> = {
+  Wood: "Wood works well with Water (which nurtures it), and struggles with Metal (which cuts it).",
+  Fire: "Fire thrives with Wood (fuel) and is weakened by Water (extinguishes it).",
+  Earth: "Earth benefits from Fire (creates earth) but is drained by Wood (overcomes it).",
+  Metal: "Metal is supported by Earth and is melted by Fire.",
+  Water: "Water is nourished by Metal but blocked or absorbed by Earth.",
+};
+
+const luckyTips: Record<string, { numbers: number[]; colors: string[]; careers: string[] }> = {
+  Wood: {
+    numbers: [3, 4],
+    colors: ["green", "teal"],
+    careers: ["writer", "teacher", "botanist", "environmentalist"],
+  },
+  Fire: {
+    numbers: [9],
+    colors: ["red", "orange", "purple"],
+    careers: ["leader", "entrepreneur", "public speaker", "entertainer"],
+  },
+  Earth: {
+    numbers: [2, 5, 8],
+    colors: ["yellow", "beige", "brown"],
+    careers: ["nurse", "real estate", "chef", "mediator"],
+  },
+  Metal: {
+    numbers: [6, 7],
+    colors: ["white", "silver", "gold"],
+    careers: ["lawyer", "engineer", "banker", "designer"],
+  },
+  Water: {
+    numbers: [1],
+    colors: ["blue", "black", "navy"],
+    careers: ["philosopher", "therapist", "musician", "sailor"],
+  },
+};
+
+const fengShuiTips: Record<string, string> = {
+  Wood: "Place plants and green décor in the East or Southeast of your home.",
+  Fire: "Use red or triangular décor in the South for fame and recognition.",
+  Earth: "Strengthen the center of your home with ceramics and earthy tones.",
+  Metal: "Add metallic objects in the West or Northwest for creativity and leadership.",
+  Water: "Incorporate fountains or blue accents in the North for career success.",
+};
+
 const breadcrumbs = [
   { label: "Home", path: "/" },
   { label: "Feng Shui", path: "/feng-shui" },
-  { label: "Personal Element" },
+  { label: "Personal Element Analysis" },
 ];
-
 
 export default function PersonalElement() {
   const [birthDate, setBirthDate] = useState<Date | undefined>();
@@ -46,42 +235,53 @@ export default function PersonalElement() {
     stem: string;
     element: string;
     description: string;
+    stemDescription: string;
   } | null>(null);
   const [showMore, setShowMore] = useState(false);
-
-  const navigate = useNavigate(); 
 
   const handleCalculate = () => {
     if (!birthDate) return;
 
-    const year = birthDate.getFullYear();
-    const stemIndex = (year - 4) % 10;
-    const stem = heavenlyStems[stemIndex];
-    const element = elementByHeavenlyStem[stem];
-    const description = elementDescriptions[element];
+    try {
+      const lunar = Lunar.fromDate(new Date(birthDate));
+      const dayGanZhi = lunar.getDayInGanZhi(); // e.g., "甲子"
+      const stemChineseChar = dayGanZhi.charAt(0);
+      const dayHeavenlyStem = stemEnglishNames[stemChineseChar];
 
-    setResult({ stem, element, description });
+      if (!dayHeavenlyStem) throw new Error(`Unrecognized stem: ${stemChineseChar}`);
+
+      const stemChinese = stemChineseNames[dayHeavenlyStem];
+      const element = elementByHeavenlyStem[dayHeavenlyStem];
+      const description = elementDescriptions[element];
+      const stemDescription = stemDescriptions[dayHeavenlyStem];
+
+      setResult({
+        stem: `${dayHeavenlyStem} (${stemChinese})`,
+        element,
+        description,
+        stemDescription,
+      });
+    } catch (err) {
+      console.error("Failed to calculate:", err);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="flex flex-col min-h-screen bg-black text-white overflow-hidden">
       <Header />
-	  <div className="pt-24 px-4 max-w-3xl mx-auto">
-		<Breadcrumb items={breadcrumbs} />
-		<h1 className="text-2xl font-bold text-gold mb-4">
-		Personal Element Analysis
-		</h1>
-	  </div>
-      <main className="pt-6 px-1 pb-10">
-        <div className="max-w-3xl mx-auto text-center space-y-10">
-          {/* Expandable Info Box */}
+	   <main className="flex-grow pt-6 px-1 pb-10">
+        <div className="pt-24 px-4 max-w-3xl mx-auto">
+        <Breadcrumb items={breadcrumbs} />
+        <h1 className="text-2xl font-bold text-gold mb-4">Personal Element Analysis</h1>
+      </div>
+		<div className="max-w-3xl mx-auto text-center space-y-10">
+          {/* Summary Box */}
           <div className="flex flex-col gap-2">
-            {/* Summary Box */}
             <div className="flex items-start gap-2 text-sm text-white/80 bg-gold/10 p-4 rounded-xl border border-gold/30">
               <Info size={20} className="text-gold mt-1 shrink-0" />
               <div className="text-left">
                 <p>
-                  Your Personal Element is derived from the heavenly stem of your birth year and reflects your intrinsic character and destiny. It plays a key role in Feng Shui, Five Elements theory, and classical Chinese metaphysics.
+                  Your Personal Element is derived from the heavenly stem of your birth <strong>day</strong> and reflects your intrinsic character and destiny.
                 </p>
                 <button
                   onClick={() => setShowMore(!showMore)}
@@ -92,25 +292,20 @@ export default function PersonalElement() {
               </div>
             </div>
 
-            {/* Additional Info */}
+			{/* Additional Info */}
             {showMore && (
               <div className="bg-black/40 text-white/90 text-sm p-4 rounded-xl border border-gold/26 text-left">
-                <p className="mb-2">
-                  The Five Elements (Wu Xing 五行) — Wood, Fire, Earth, Metal, and Water — are essential to Chinese metaphysics, philosophy, and medicine.
-                </p>
+                <p className="mb-2">The Five Elements (Wu Xing 五行) — Wood, Fire, Earth, Metal, and Water — are essential to Chinese metaphysics, philosophy, and medicine.</p>
                 <p>• Each person is born under a heavenly stem tied to one of these five elements.</p>
                 <p>• Your element affects your strengths, personality, and compatibility with others and spaces.</p>
-                <p className="mb-2">
-                  This concept is often used alongside the Four Pillars (BaZi), Feng Shui, and health practices to guide life decisions, career paths, and relationships.
-                </p>
-                <p className="mb-2">
-                  Understanding your personal element can help you create more balance and alignment in your home, work, and lifestyle.
-                </p>
+                <p className="mb-2">Used in Four Pillars (BaZi), Feng Shui, and holistic wellness, your element can guide career, love, and lifestyle alignment.</p>
+				<p className="mb-2">
+				Use your Personal Element to choose colors, décor, and environments that strengthen your energy, and to balance relationships by understanding elemental harmony.</p>
               </div>
             )}
           </div>
 
-          {/* Input and Button Box */}
+          {/* Input */}
           <div className="bg-white/5 p-6 rounded-xl border border-gold/20">
             <div className="flex flex-col sm:flex-row gap-4 items-stretch">
               <DatePickerInput
@@ -123,40 +318,38 @@ export default function PersonalElement() {
                 size="lg"
                 onClick={handleCalculate}
                 disabled={!birthDate}
-                className="px-8 h-14 text-lg font-semibold whitespace-nowrap">
+                className="px-8 h-14 text-lg font-semibold whitespace-nowrap"
+              >
                 Calculate Personal Element
               </Button>
             </div>
           </div>
 
-          {/* Result Display */}
+          {/* Result */}
           {result && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mt-8 p-6 rounded-xl bg-gold/10 border border-gold/30"
+              className="mt-8 p-6 rounded-xl bg-gold/10 border border-gold/30 text-left space-y-4"
             >
-              <h2 className="text-xl font-bold text-gold mb-2">Your Element: {result.element}</h2>
-              <p className="text-white/90 mb-2">
-                <strong>Heavenly Stem:</strong> {result.stem}
-              </p>
-              <p className="text-white/90 mb-2">
-                <strong>Element:</strong> {result.element}
-              </p>
-              <p className="text-white/90">{result.description}</p>
-
-              {/* Learn More */}
-              <Button
-                variant="outline"
-                className="mt-4 border-gold text-gold"
-                onClick={() => navigate("/personal-element-details", { state: result })}
-              >
-                Learn more about your results →
-              </Button>
+              <h2 className="text-xl font-bold text-gold">Your Element: {result.element}</h2>
+              <p><strong>Heavenly Stem:</strong> {result.stem}</p>
+              <div className="prose prose-invert">
+				<strong>Stem Meaning:</strong>
+				<ReactMarkdown>{result.stemDescription}</ReactMarkdown>
+			  </div>
+              <p><strong>Element Traits:</strong> {result.description}</p>
+              <p><strong>Compatibility:</strong> {compatibilityInsights[result.element]}</p>
+              <p><strong>Lucky Numbers:</strong> {luckyTips[result.element].numbers.join(", ")}</p>
+              <p><strong>Lucky Colors:</strong> {luckyTips[result.element].colors.join(", ")}</p>
+              <p><strong>Suggested Careers:</strong> {luckyTips[result.element].careers.join(", ")}</p>
+              <p><strong>Feng Shui Tip:</strong> {fengShuiTips[result.element]}</p>
             </motion.div>
           )}
         </div>
       </main>
+	  <Footer />
     </div>
+	
   );
 }
