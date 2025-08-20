@@ -1,5 +1,6 @@
 // src/pages/DailyHoroscope.tsx
 import { useState, useEffect, useRef } from "react";
+import { createClient } from '@supabase/supabase-js';
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Breadcrumb from "@/components/Breadcrumb";
@@ -9,6 +10,12 @@ const breadcrumbs = [
   { label: "Home", path: "/" },
   { label: "Daily Horoscope" },
 ];
+
+// Initialize Supabase client
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+);
 
 // Zodiac order clockwise in your image, starting at top
 const imageZodiacOrder = [
@@ -27,21 +34,28 @@ export default function DailyHoroscope() {
   const startAngleRef = useRef<number | null>(null);
   const currentRotationRef = useRef(0);
 
-  // Load cached horoscope
+  // Load cached horoscope on component mount or sign change
   useEffect(() => {
     if (selectedSign) {
-      const cached = localStorage.getItem(`horoscope_${selectedSign}`);
-      if (cached) setHoroscope(cached);
+      const cacheKey = `horoscope_${selectedSign}_${new Date().toISOString().split('T')[0]}`;
+      const cached = localStorage.getItem(cacheKey);
+      if (cached) {
+        setHoroscope(cached);
+      }
     }
   }, [selectedSign]);
 
-  // Fetch horoscope from RapidAPI
+  // Fetch horoscope from Supabase
   const fetchHoroscope = async (sign: string) => {
     setSelectedSign(sign);
     setLoading(true);
     setError(null);
 
-    const cached = localStorage.getItem(`horoscope_${sign}`);
+    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+    const cacheKey = `horoscope_${sign}_${today}`;
+
+    // Check cache first (with today's date)
+    const cached = localStorage.getItem(cacheKey);
     if (cached) {
       setHoroscope(cached);
       setLoading(false);
@@ -49,27 +63,82 @@ export default function DailyHoroscope() {
     }
 
     try {
-      const response = await fetch(
-        `https://astropredict-daily-horoscopes-lucky-insights.p.rapidapi.com/horoscope?lang=en&zodiac=${sign}&type=daily&timezone=UTC`,
-        {
-          method: "GET",
-          headers: {
-            "X-RapidAPI-Key": import.meta.env.VITE_RAPIDAPI_KEY,
-            "X-RapidAPI-Host": "astropredict-daily-horoscopes-lucky-insights.p.rapidapi.com",
-          },
-        }
-      );
+      console.log(`Fetching horoscope for ${sign} on ${today}`);
 
-      if (!response.ok) throw new Error(`Status ${response.status}`);
-      const data = await response.json();
-      setHoroscope(data.horoscope);
-      localStorage.setItem(`horoscope_${sign}`, data.horoscope);
+      // Fetch from Supabase
+      const { data, error: supabaseError } = await supabase
+        .from('horoscopes')
+        .select('content, date')
+        .eq('sign', sign)
+        .eq('date', today)
+        .single();
+
+      if (supabaseError) {
+        console.error('Supabase error:', supabaseError);
+        throw new Error('Horoscope not available for today. Please try again later.');
+      }
+
+      if (!data || !data.content) {
+        throw new Error('No horoscope data found for today.');
+      }
+
+      console.log(`Found horoscope for ${sign}:`, data.content);
+      
+      setHoroscope(data.content);
+      
+      // Cache the result with today's date
+      localStorage.setItem(cacheKey, data.content);
+      
+      // Clean up old cache entries (optional)
+      cleanupOldCache(sign);
+
     } catch (err: any) {
-      console.error(err);
+      console.error('Error fetching horoscope:', err);
       setError(err.message || "Could not load horoscope. Please try again later.");
+      
+      // Fallback: try to get the most recent horoscope for this sign
+      await fetchLatestHoroscope(sign);
     } finally {
       setLoading(false);
     }
+  };
+
+  // Fallback: Fetch the most recent horoscope if today's is not available
+  const fetchLatestHoroscope = async (sign: string) => {
+    try {
+      console.log(`Fetching latest horoscope for ${sign}`);
+      
+      const { data, error: supabaseError } = await supabase
+        .from('horoscopes')
+        .select('content, date')
+        .eq('sign', sign)
+        .order('date', { ascending: false })
+        .limit(1)
+        .single();
+
+      if (supabaseError || !data) {
+        console.error('No fallback data available');
+        return;
+      }
+
+      console.log(`Found latest horoscope for ${sign} from ${data.date}`);
+      setHoroscope(`${data.content} (Latest available from ${data.date})`);
+      setError(null); // Clear the error since we found something
+      
+    } catch (fallbackErr) {
+      console.error('Fallback fetch failed:', fallbackErr);
+    }
+  };
+
+  // Clean up old localStorage entries to prevent bloat
+  const cleanupOldCache = (sign: string) => {
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    
+    // Remove cache entries older than yesterday
+    const oldCacheKey = `horoscope_${sign}_${yesterday.toISOString().split('T')[0]}`;
+    localStorage.removeItem(oldCacheKey);
   };
 
   // Drag rotation handlers

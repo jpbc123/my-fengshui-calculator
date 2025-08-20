@@ -9,8 +9,7 @@ const CTASection = ({ onStartCalculation }: CTASectionProps) => {
       <div className="container mx-auto px-4">
         <h2 className="text-4xl md:text-5xl font-bold mb-4">Ready to Transform Your Life?</h2>
         <p className="text-lg max-w-2xl mx-auto mb-8">
-          Join thousands who have discovered harmony through our Feng Shui, Numerology, 
-          and Astrology tools. Start your journey to balance and prosperity today.
+          Join thousands who have discovered harmony through our Feng Shui, Numerology, and Astrology tools. Start your journey to balance and prosperity today.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4">
           <button

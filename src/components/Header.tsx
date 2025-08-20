@@ -125,10 +125,12 @@ const Header = () => {
 
         {/* Login / Get Started - Desktop */}
         <div className="hidden md:flex gap-4">
-          <button className="text-white hover:text-gold transition">Login</button>
+          {/*
+		  <button className="text-white hover:text-gold transition">Login</button>
           <button className="bg-gold text-black font-semibold px-4 py-2 rounded hover:bg-yellow-400 transition">
             Get Started
           </button>
+		  */}
         </div>
       </div>
 
@@ -201,12 +203,14 @@ const Header = () => {
 
           {/* Mobile Login / Get Started */}
           <div className="pt-4 border-t border-gold/20 mt-4 space-y-2">
-            <button className="w-full text-left text-white hover:text-gold transition">
+            {/*
+			<button className="w-full text-left text-white hover:text-gold transition">
               Login
             </button>
             <button className="w-full bg-gold text-black font-semibold px-4 py-2 rounded hover:bg-yellow-400 transition">
               Get Started
             </button>
+			*/}
           </div>
         </div>
       )}

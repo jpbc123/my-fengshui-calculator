@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import HeroLanding from "@/pages/HeroLanding";
 import DailyHoroscope from "./pages/DailyHoroscope"; 
 import FengShui from "@/pages/FengShui"; 
 import PersonalElement from "./pages/PersonalElement";
@@ -33,6 +34,7 @@ const App = () => (
         <ScrollToTop /> {/* 👈 This will reset scroll on route change */}
         <Routes>
           <Route path="/" element={<Index />} />
+		  <Route path="/zodiac/:zodiac" element={<HeroLanding />} />
           <Route path="/feng-shui" element={<FengShui />} />
           <Route path="/personal-element" element={<PersonalElement />} />
           <Route path="/kua-number-calculator" element={<KuaNumberCalculator />} />
