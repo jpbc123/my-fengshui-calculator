@@ -59,11 +59,11 @@ const ChineseZodiacCalculator = () => {
     ][zodiacIndex];
 
     // Redirect to HeroLanding page for that zodiac
-    navigate(`/zodiac/${sign.toLowerCase()}`);
+    navigate(`/chinese-zodiac/${sign.toLowerCase()}`);
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-black text-white overflow-hidden">
+    <div className="flex flex-col min-h-screen bg-white text-white overflow-hidden">
       <Header />
       <main className="flex-grow pt-6 px-1 pb-10">
         <div className="pt-24 px-4 max-w-3xl mx-auto">

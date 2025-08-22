@@ -43,6 +43,7 @@ const App = () => (
           <Route path="/visiber-calculator" element={<VisiberCalculator />} />
 		  <Route path="/astrology" element={<Astrology />} />
           <Route path="/chinese-zodiac-calculator" element={<ChineseZodiacCalculator />} />
+		  <Route path="/chinese-zodiac/:sign" element={<ChineseZodiacLanding />} />
 		  <Route path="/western-zodiac-calculator" element={<WesternZodiacCalculator />} />
 		  <Route path="/daily-horoscope" element={<DailyHoroscope />} /> 
           <Route path="/store" element={<Store />} /> 
