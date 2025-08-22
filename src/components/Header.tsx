@@ -16,15 +16,15 @@ const menuConfig = [
   {
     label: "Features",
     items: [
-	  { name: "Articles", href: "#" },
+      { name: "Articles", href: "#" },
       { name: "Western Horoscope", href: "/daily-horoscope" },
-	  { name: "Chinese Horoscope", href: "/zodiac/dragon"},
+      { name: "Chinese Horoscope", href: "/zodiac/dragon" },
       { name: "Lucky Numbers Generator", href: "#" },
     ],
   },
   {
     label: "Store",
-    href: "/store", 
+    href: "/store",
   },
   {
     label: "About",
@@ -46,23 +46,23 @@ const Header = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-purple-900 via-black to-indigo-900 border-b border-purple-400/30 shadow-lg">
-
-
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo + Title */}
         <Link
           to="/"
-          className="flex items-center gap-3 no-underline hover:no-underline focus:no-underline"
+          className="flex items-center gap-3 no-underline hover:no-underline focus:no-underline flex-shrink"
         >
-          <div className="relative">
+          <div className="relative flex-shrink-0">
             <LogoIcon />
             <div className="absolute -top-1 -right-1 h-3 w-3 bg-red rounded-full animate-pulse" />
           </div>
-          <h1 className="text-5xl text-gold font-charity">Feng Shui & Beyond</h1>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl text-gold font-charity leading-snug break-words">
+            Feng Shui & Beyond
+          </h1>
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-6 text-white font-medium relative z-50">
+        <nav className="hidden md:flex items-center gap-6 text-white font-medium relative z-50 flex-1 justify-end">
           {menuConfig.map((menu) => (
             <div key={menu.label} className="relative">
               {menu.items ? (
@@ -117,7 +117,7 @@ const Header = () => {
         </nav>
 
         {/* Mobile hamburger icon */}
-        <div className="md:hidden z-50">
+        <div className="md:hidden z-50 flex-shrink-0">
           <button
             onClick={() => setMobileMenuOpen((prev) => !prev)}
             className="text-white"
@@ -129,11 +129,11 @@ const Header = () => {
         {/* Login / Get Started - Desktop */}
         <div className="hidden md:flex gap-4">
           {/*
-		  <button className="text-white hover:text-gold transition">Login</button>
+          <button className="text-white hover:text-gold transition">Login</button>
           <button className="bg-gold text-black font-semibold px-4 py-2 rounded hover:bg-yellow-400 transition">
             Get Started
           </button>
-		  */}
+          */}
         </div>
       </div>
 
@@ -207,13 +207,13 @@ const Header = () => {
           {/* Mobile Login / Get Started */}
           <div className="pt-4 border-t border-gold/20 mt-4 space-y-2">
             {/*
-			<button className="w-full text-left text-white hover:text-gold transition">
+            <button className="w-full text-left text-white hover:text-gold transition">
               Login
             </button>
             <button className="w-full bg-gold text-black font-semibold px-4 py-2 rounded hover:bg-yellow-400 transition">
               Get Started
             </button>
-			*/}
+            */}
           </div>
         </div>
       )}

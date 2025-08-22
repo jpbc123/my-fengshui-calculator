@@ -2,11 +2,10 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
-import Header from '../components/Header'; // Adjusted import path
-import Footer from '../components/Footer'; // Adjusted import path
-import Breadcrumb from '../components/Breadcrumb'; // Adjusted import path
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import Breadcrumb from '../components/Breadcrumb';
 
-// Import zodiac images - Adjusted import paths
 import ratImage from '../assets/chinese-zodiac/year-of-the-rat.png';
 import oxImage from '../assets/chinese-zodiac/year-of-the-ox.png';
 import tigerImage from '../assets/chinese-zodiac/year-of-the-tiger.png';
@@ -32,13 +31,12 @@ const zodiacImages: { [key: string]: string } = {
   monkey: monkeyImage,
   rooster: roosterImage,
   dog: dogImage,
-  pig: pigImage
+  pig: pigImage,
 };
 
-// List of all zodiac signs for the dropdown
 const allZodiacs = [
-  "Rat", "Ox", "Tiger", "Rabbit", "Dragon", "Snake", "Horse",
-  "Goat", "Monkey", "Rooster", "Dog", "Pig"
+  "Rat","Ox","Tiger","Rabbit","Dragon","Snake","Horse",
+  "Goat","Monkey","Rooster","Dog","Pig"
 ];
 
 type TabType = 'horoscope' | 'relationship' | 'career' | 'wealth' | 'social' | 'lucky_color' | 'lucky_number';
@@ -51,9 +49,8 @@ const ChineseHoroscopeResult = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<TabType>('horoscope');
-  const [language, setLanguage] = useState<LanguageType>('en'); // 2. Default language set to English
+  const [language, setLanguage] = useState<LanguageType>('en');
 
-  // Create breadcrumbs based on the zodiac
   const zodiacName = zodiac ? zodiac.charAt(0).toUpperCase() + zodiac.slice(1) : '';
   const breadcrumbs = [
     { label: "Home", path: "/" },
@@ -78,7 +75,6 @@ const ChineseHoroscopeResult = () => {
         setError(null);
         return;
       }
-
       try {
         setLoading(true);
         setError(null);
@@ -89,12 +85,10 @@ const ChineseHoroscopeResult = () => {
           .eq('sign', zodiac)
           .eq('for_date', today)
           .single();
-
         if (supabaseError) {
           setError('Horoscope data not found for today. Please try again later.');
           return;
         }
-
         setHoroscopeData(data);
       } catch (err) {
         setError('Failed to fetch horoscope data. Please try again.');
@@ -102,7 +96,6 @@ const ChineseHoroscopeResult = () => {
         setLoading(false);
       }
     };
-
     fetchHoroscopeData();
   }, [zodiac]);
 
@@ -115,11 +108,7 @@ const ChineseHoroscopeResult = () => {
     const englishContent = horoscopeData[activeTabData.field_en];
 
     if (!chineseContent && !englishContent) {
-      return (
-        <div className="text-center text-white/70 py-8">
-          <p>No data available for this section.</p>
-        </div>
-      );
+      return <div className="text-center text-white/70 py-8"><p>No data available for this section.</p></div>;
     }
 
     return (
@@ -146,9 +135,7 @@ const ChineseHoroscopeResult = () => {
     return (
       <div className="min-h-screen bg-gradient-to-b from-red-900 to-red-800 text-white">
         <Header />
-        <div className="pt-24 px-4 max-w-3xl mx-auto">
-          <Breadcrumb items={breadcrumbs} />
-        </div>
+        <div className="pt-24 px-4 max-w-3xl mx-auto"><Breadcrumb items={breadcrumbs} /></div>
         <div className="flex items-center justify-center min-h-[50vh]">
           <div className="text-white text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
@@ -161,50 +148,34 @@ const ChineseHoroscopeResult = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-red-900 to-red-800 text-white">
+    <div className="min-h-screen bg-white text-black">
       <Header />
-      <div className="pt-24 px-4 max-w-3xl mx-auto">
-        <Breadcrumb items={breadcrumbs} />
-      </div>
+      <div className="pt-24 px-4 max-w-3xl mx-auto"><Breadcrumb items={breadcrumbs} /></div>
 
       <div className="container mx-auto px-4 py-8 max-w-6xl">
-        {/* 1. Everything left aligned */}
+        {/* Zodiac title + image */}
         <div className="mb-8 text-left">
           <div className="flex items-center mb-4 justify-start">
-            {currentZodiac && (
-              <img
-                src={zodiacImages[currentZodiac]}
-                alt={zodiacName}
-                className="w-20 h-20 object-contain mr-4"
-              />
-            )}
-            <h1 className="text-4xl md:text-5xl font-bold">
-              {zodiacName || 'Chinese Horoscope'}
-            </h1>
+            {currentZodiac && <img src={zodiacImages[currentZodiac]} alt={zodiacName} className="w-20 h-20 object-contain mr-4" />}
+            <h1 className="text-4xl md:text-5xl font-bold">{zodiacName || 'Chinese Horoscope'}</h1>
           </div>
-          
-          {/* Zodiac Dropdown with Placeholder */}
-          <div className="relative inline-block text-white mb-2">
+
+          {/* Zodiac Dropdown */}
+          <div className="relative inline-block text-black mb-2">
             <select
               value={currentZodiac}
               onChange={(e) => {
                 const selectedZodiac = e.target.value;
-                if (selectedZodiac) {
-                  navigate(`/zodiac/${selectedZodiac.toLowerCase()}`);
-                }
+                if (selectedZodiac) navigate(`/zodiac/${selectedZodiac.toLowerCase()}`);
               }}
-              className="w-full pl-3 pr-10 py-2 text-lg text-white bg-white/20 border border-white/40 rounded-lg appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-gold"
+              className="w-full pl-3 pr-10 py-2 text-lg text-black bg-gold/20 border border-white/40 rounded-lg appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-gold"
             >
-              <option value="" disabled hidden={!!currentZodiac} selected={!currentZodiac}>
-                Change Sign
-              </option>
+              <option value="" disabled hidden={!!currentZodiac} selected={!currentZodiac}>Change Sign</option>
               {allZodiacs.map((sign) => (
-                <option key={sign} value={sign.toLowerCase()} className="bg-red-900 text-white">
-                  {sign}
-                </option>
+                <option key={sign} value={sign.toLowerCase()} className="bg-red-900 text-black">{sign}</option>
               ))}
             </select>
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-white">
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-black">
               <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                 <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
               </svg>
@@ -212,93 +183,69 @@ const ChineseHoroscopeResult = () => {
           </div>
         </div>
 
-        {/* 4. Main content box with tabs, date, and language toggle */}
-        {currentZodiac && horoscopeData ? (
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-            {/* Tab Navigation */}
-            <h2 className="text-2xl font-bold text-gold mb-6 text-center">
-              More Horoscopes for {zodiacName}
-            </h2>
-            <div className="flex flex-wrap justify-center gap-3 mb-6">
-              {horoscopeTabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id as TabType)}
-                  className={`flex items-center px-4 py-3 rounded-lg border transition-all duration-200 ${
-                    activeTab === tab.id
-                      ? 'bg-gold text-red-900 border-gold shadow-lg transform scale-105'
-                      : 'bg-white/10 text-white border-white/20 hover:bg-white/20 hover:border-white/40'
-                  }`}
-                >
-                  <span className="mr-2 text-lg">{tab.icon}</span>
-                  <span className="font-medium text-sm md:text-base">{tab.label}</span>
-                </button>
-              ))}
-            </div>
+        {/* Flex container: result box + ad */}
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* Result Box */}
+          <div className="flex-1 lg:max-w-3xl">
+            {currentZodiac && horoscopeData ? (
+              <div className="bg-black/10 backdrop-blur-sm rounded-xl p-6 border border-black/20">
+                {/* Language Toggle */}
+                <div className="flex justify-end mb-4">
+                  <div className="inline-flex bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 gap-2 p-2 flex-shrink-0">
+                    <button onClick={() => setLanguage('cn')} className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${language === 'cn' ? 'bg-gold text-red-900' : 'text-white hover:bg-white/10'}`}>中文</button>
+                    <button onClick={() => setLanguage('en')} className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${language === 'en' ? 'bg-gold text-red-900' : 'text-white hover:bg-white/10'}`}>English</button>
+                    <button onClick={() => setLanguage('both')} className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${language === 'both' ? 'bg-gold text-red-900' : 'text-white hover:bg-white/10'}`}>Both Languages</button>
+                  </div>
+                </div>
 
-            {/* 5. Date and 6. Language Toggle (adjacent and right-aligned) */}
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 text-left">
-              <p className="text-white/80 mb-2 sm:mb-0">
-                {new Date(horoscopeData.for_date).toLocaleDateString('en-US', {
-                  weekday: 'long',
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                })}
-              </p>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 flex-shrink-0">
-                <button
-                  onClick={() => setLanguage('cn')}
-                  className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                    language === 'cn' ? 'bg-gold text-red-900' : 'text-white hover:bg-white/10'
-                  }`}
-                >
-                  中文
-                </button>
-                <button
-                  onClick={() => setLanguage('en')}
-                  className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                    language === 'en' ? 'bg-gold text-red-900' : 'text-white hover:bg-white/10'
-                  }`}
-                >
-                  English
-                </button>
-                <button
-                  onClick={() => setLanguage('both')} // 3. "Both Languages" last
-                  className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                    language === 'both' ? 'bg-gold text-red-900' : 'text-white hover:bg-white/10'
-                  }`}
-                >
-                  Both Languages
-                </button>
+                {/* Tabs */}
+                <div className="flex flex-wrap justify-center gap-3 mb-6">
+  {horoscopeTabs.map((tab) => (
+    <button
+      key={tab.id}
+      onClick={() => setActiveTab(tab.id as TabType)}
+      className={`flex items-center px-4 py-3 rounded-lg border transition-all duration-200 ${
+        activeTab === tab.id
+          ? 'bg-gold text-white border-gold shadow-lg transform scale-105'
+          : 'bg-white/10 text-black border-white/20 hover:bg-white/20 hover:border-white/40'
+      }`}
+    >
+      <span className="mr-2 text-lg">{tab.icon}</span>
+      <span className="font-medium text-sm md:text-base">{tab.label}</span>
+    </button>
+  ))}
+</div>
+
+                {/* Date */}
+                <p className="text-white/80 mb-4">
+                  {new Date(horoscopeData.for_date).toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' })}
+                </p>
+
+                {/* Content */}
+                <div className="mb-12">{renderContent()}</div>
               </div>
-            </div>
+            ) : (
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 text-center text-white/70 py-8">
+                <p className="mb-4 text-xl font-semibold">
+                  {zodiac ? `No horoscope data found for ${zodiacName} today. Please try another sign or check back later.` : 'Please select a Chinese Zodiac sign from the dropdown above to view its horoscope.'}
+                </p>
+                <p>You can also use the Chinese Zodiac Calculator to find your sign.</p>
+                <button onClick={() => navigate('/chinese-zodiac-calculator')} className="bg-gold text-red-900 px-6 py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-colors mt-4 inline-block">Calculate My Sign</button>
+              </div>
+            )}
+          </div>
 
-            {/* Content Display */}
-            <div className="mb-12">
-              {renderContent()}
+          {/* Sidebar / Ad */}
+          <div className="w-full lg:w-80 flex-shrink-0">
+            <div className="bg-white/20 border border-white/30 rounded-lg p-4 text-center text-black">
+              Your Ad Here
             </div>
           </div>
-        ) : (
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 text-center text-white/70 py-8">
-            <p className="mb-4 text-xl font-semibold">
-              {zodiac ? `No horoscope data found for ${zodiacName} today. Please try another sign or check back later.` : 'Please select a Chinese Zodiac sign from the dropdown above to view its horoscope.'}
-            </p>
-            <p>You can also use the Chinese Zodiac Calculator to find your sign.</p>
-            <button
-              onClick={() => navigate('/chinese-zodiac-calculator')}
-              className="bg-gold text-red-900 px-6 py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-colors mt-4 inline-block"
-            >
-              Calculate My Sign
-            </button>
-          </div>
-        )}
+        </div>
 
-        {/* Footer Info */}
+        {/* Footer info */}
         <div className="text-center mt-8">
-          <p className="text-white/80 text-sm">
-            Horoscope updated daily. Check back tomorrow for new insights!
-          </p>
+          <p className="text-white/80 text-sm">Horoscope updated daily. Check back tomorrow for new insights!</p>
         </div>
       </div>
       <Footer />

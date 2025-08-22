@@ -13,7 +13,7 @@ const breadcrumbs = [
 
 export default function FengShui() {
   return (
-    <div className="fengshui-bg min-h-screen bg-black text-white overflow-hidden">
+    <div className="fengshui-bg min-h-screen bg-white text-white overflow-hidden">
       <Header />
       <div className="pt-24 px-4 max-w-3xl mx-auto">
         <Breadcrumb items={breadcrumbs} />
@@ -24,7 +24,7 @@ export default function FengShui() {
         <h2 className="text-2xl font-semibold text-gold mb-6">
           Feng Shui Tools
         </h2>
-		<p className="text-white/80 mb-6">
+		<p className="text-black/80 mb-6">
           Discover how Feng Shui can guide harmony, balance, and energy in your life. 
           Start with our free tools below to explore your personal Feng Shui insights.
         </p>
@@ -32,7 +32,8 @@ export default function FengShui() {
           {/* Tool Cards */}
 			<Link
 			to="/kua-number-calculator"
-			className="bg-black/40 border border-gold/30 rounded-xl p-6 hover:bg-gold/10 transition shadow-lg"
+			className="bg-gradient-to-r from-purple-700 via-gray-800 to-indigo-700 border border-gold/30 rounded-xl p-6 
+           hover:from-purple-600 hover:via-gray-700 hover:to-indigo-600 transition shadow-lg"
 			>
 			<div className="flex justify-center text-3xl mb-3">☯</div>
 			<h3 className="flex justify-center text-xl font-bold text-gold mb-2">Kua Number Calculator</h3>
@@ -43,9 +44,10 @@ export default function FengShui() {
 			
 			<Link
 			to="/personal-element"
-			className="bg-black/40 border border-gold/30 rounded-xl p-6 hover:bg-gold/10 transition shadow-lg"
+			className="bg-gradient-to-r from-purple-700 via-gray-800 to-indigo-700 border border-gold/30 rounded-xl p-6 
+           hover:from-purple-600 hover:via-gray-700 hover:to-indigo-600 transition shadow-lg"
 			>
-			<div className="flex justify-center text-3xl mb-3">🔥</div>
+			<div className="flex justify-center w-3xl mb-3">🔥</div>
 			<h3 className="flex justify-center text-xl font-bold text-gold mb-2">Personal Element Analysis</h3>
 			<p className="text-center text-white/70 text-sm">
 				Explore your elemental balance and Feng Shui alignment based on your birthdate.
@@ -59,7 +61,7 @@ export default function FengShui() {
         <h2 className="text-2xl font-bold text-gold mb-4">What is Feng Shui?</h2>
         <div className="border-t-4 border-gold w-32 mb-4"></div>
 
-        <p className="mb-6 text-white/80">
+        <p className="mb-6 text-black/80">
           Feng Shui is an ancient Chinese metaphysical system that seeks harmony 
           between individuals and their surrounding environment. It's about how 
           energy (Qi) flows through spaces and how we can align ourselves for 
@@ -75,21 +77,21 @@ export default function FengShui() {
           />
         </div>
 
-        <p className="mb-6 text-white/80">
+        <p className="mb-6 text-black/80">
           Feng Shui principles are deeply rooted in the Five Elements theory — 
           Wood, Fire, Earth, Metal, and Water — and the concept of Yin and Yang. 
           These elements interact in dynamic cycles, influencing everything from 
           architecture and interior design to personal luck and energy flow.
         </p>
 
-        <p className="mb-6 text-white/80">
+        <p className="mb-6 text-black/80">
           By analyzing the orientation of a space, the placement of furniture, 
           and even the surrounding natural landscape, Feng Shui practitioners aim 
           to optimize the balance of Qi. This alignment is believed to enhance 
           prosperity, relationships, health, and overall well-being.
         </p>
 
-        <p className="mb-10 text-white/80">
+        <p className="mb-10 text-black/80">
           Today, Feng Shui is practiced worldwide, blending traditional wisdom 
           with modern lifestyles. Whether you're designing your home, choosing a 
           work desk location, or exploring your personal energy chart, Feng Shui 
