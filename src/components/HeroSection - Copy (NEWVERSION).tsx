@@ -1,5 +1,5 @@
 // src/components/HeroSection.tsx
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 // Import zodiac images
 import ratImage from '../assets/chinese-zodiac/year-of-the-rat.png';
 import oxImage from '../assets/chinese-zodiac/year-of-the-ox.png';
@@ -15,6 +15,8 @@ import dogImage from '../assets/chinese-zodiac/year-of-the-dog.png';
 import pigImage from '../assets/chinese-zodiac/year-of-the-pig.png';
 
 const HeroSection = () => {
+  const navigate = useNavigate();
+
   const chineseZodiacs = [
     {
       id: 1,
@@ -114,10 +116,9 @@ const HeroSection = () => {
     }
   ];
 
-  const handleZodiacClick = (zodiac) => {
-    console.log(`Selected ${zodiac.name}`);
-    // Here you can add your navigation logic or modal opening
-  };
+  const handleZodiacClick = (zodiac: any) => {
+  navigate(`/zodiac/${zodiac.name.toLowerCase()}`);
+};
 
   return (
     <section className="relative bg-red-900 text-white min-h-[90vh] py-32 overflow-hidden">
@@ -130,10 +131,10 @@ const HeroSection = () => {
       
       <div className="relative z-10 container mx-auto px-4 text-center max-w-6xl pt-1">
         {/* Chinese Zodiac Selection */}
-        <div className="mt-12 mb-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-gold mb-8">
+        <div className="mt-10 mb-8">
+          <h1 className="text-3xl md:text-4xl font-bold text-gold mb-10">
             Choose Your Chinese Zodiac
-          </h2>
+          </h1>
           <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 max-w-5xl mx-auto">
             {chineseZodiacs.map((zodiac) => (
               <div
@@ -159,8 +160,6 @@ const HeroSection = () => {
                     {zodiac.name}
                   </h3>
                   
-
-                  
                   {/* Hover overlay with traits */}
                   <div className="absolute inset-0 bg-black/80 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center p-3">
                     <div className="mb-1">
@@ -183,15 +182,15 @@ const HeroSection = () => {
             ))}
           </div>
           
-          <p className="text-white/80 text-sm mt-6">
+          <p className="text-white/80 text-sm mt-10">
             Don't know your Chinese zodiac year? 
             <span className="text-gold font-semibold cursor-pointer hover:underline ml-1">
-			<Link 
-			to="/chinese-zodiac-calculator" 
-			className="text-gold font-semibold cursor-pointer hover:underline ml-1"
-			>
-              Calculate it here →
-			</Link>
+              <Link 
+                to="/chinese-zodiac-calculator" 
+                className="text-gold font-semibold cursor-pointer hover:underline ml-1"
+              >
+                Calculate it here →
+              </Link>
             </span>
           </p>
         </div>

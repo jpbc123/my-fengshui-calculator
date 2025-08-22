@@ -434,7 +434,7 @@ const zodiacData: Record<ZodiacKey, any> = {
   },
 };
 
-const HeroLanding: React.FC = () => {
+const ChineseZodiacLanding: React.FC = () => {
   const { zodiac } = useParams<{ zodiac: string }>();
   const key = (zodiac?.toLowerCase() as ZodiacKey) || "dragon";
   const currentZodiac = zodiacData[key] ?? zodiacData.dragon;
@@ -630,4 +630,4 @@ const HeroLanding: React.FC = () => {
   );
 };
 
-export default HeroLanding;
+export default ChineseZodiacLanding;

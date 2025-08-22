@@ -1,6 +1,7 @@
 const FeaturesSection = () => {
   return (
-    <section className="bg-black text-white py-20" id="features">
+    <section className="bg-gradient-to-r from-purple-800 via-gray-900 to-indigo-800 text-white py-20" id="features">
+
       <div className="container mx-auto px-4 text-center">
         <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gold">
           Explore the Wisdom of Feng Shui </h2>

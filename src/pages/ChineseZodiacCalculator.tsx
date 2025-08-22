@@ -1,59 +1,17 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Info } from "lucide-react";
-import { ChineseZodiacData2025 } from "@/data/ChineseZodiacData2025";
 import Breadcrumb from "@/components/Breadcrumb";
 import { DatePickerInput } from "@/components/DatePickerInput";
-
-// Zodiac images
-import ratImg from "@/assets/zodiac/rat.png";
-import oxImg from "@/assets/zodiac/ox.png";
-import tigerImg from "@/assets/zodiac/tiger.png";
-import rabbitImg from "@/assets/zodiac/rabbit.png";
-import dragonImg from "@/assets/zodiac/dragon.png";
-import snakeImg from "@/assets/zodiac/snake.png";
-import horseImg from "@/assets/zodiac/horse.png";
-import goatImg from "@/assets/zodiac/goat.png";
-import monkeyImg from "@/assets/zodiac/monkey.png";
-import roosterImg from "@/assets/zodiac/rooster.png";
-import dogImg from "@/assets/zodiac/dog.png";
-import pigImg from "@/assets/zodiac/pig.png";
 
 const breadcrumbs = [
   { label: "Home", path: "/" },
   { label: "Astrology", path: "/astrology" },
   { label: "Chinese Zodiac Calculator" },
 ];
-
-interface ZodiacInfo {
-  image?: string;
-  traits: string;
-  yearAnalysis: string;
-  compatibility?: string;
-  luckyNumbers?: string;
-  luckyColors?: string;
-  luckyDirections?: string;
-  careerAdvice?: string;
-  fengShuiTips?: string;
-  personalityInsights?: string;
-}
-
-const zodiacImages: { [key: string]: string } = {
-  Rat: ratImg,
-  Ox: oxImg,
-  Tiger: tigerImg,
-  Rabbit: rabbitImg,
-  Dragon: dragonImg,
-  Snake: snakeImg,
-  Horse: horseImg,
-  Goat: goatImg,
-  Monkey: monkeyImg,
-  Rooster: roosterImg,
-  Dog: dogImg,
-  Pig: pigImg,
-};
 
 // Chinese New Year dates for range of years
 const chineseNewYearDates: Record<number, string> = {
@@ -67,9 +25,8 @@ const chineseNewYearDates: Record<number, string> = {
 
 const ChineseZodiacCalculator = () => {
   const [birthDate, setBirthDate] = useState<Date | null>(null);
-  const [zodiacSign, setZodiacSign] = useState<string | null>(null);
-  const [zodiacInfo, setZodiacInfo] = useState<ZodiacInfo | null>(null);
   const [showMore, setShowMore] = useState(false);
+  const navigate = useNavigate();
 
   const handleCalculate = () => {
     if (!birthDate) return;
@@ -101,8 +58,8 @@ const ChineseZodiacCalculator = () => {
       "Pig",
     ][zodiacIndex];
 
-    setZodiacSign(sign);
-    setZodiacInfo(ChineseZodiacData2025[sign]);
+    // Redirect to HeroLanding page for that zodiac
+    navigate(`/zodiac/${sign.toLowerCase()}`);
   };
 
   return (
@@ -143,7 +100,7 @@ const ChineseZodiacCalculator = () => {
                   Because the Chinese zodiac follows the lunar calendar, the zodiac year does not start on January 1 but rather on Chinese New Year, which usually falls between late January and mid-February. This means your zodiac sign depends on both your birth date and the exact start of the lunar year.
                 </p>
                 <p>
-                  The Chinese Zodiac also plays a role in compatibility, career paths, and feng shui practices..
+                  The Chinese Zodiac also plays a role in compatibility, career paths, and feng shui practices.
                 </p>
               </div>
             )}
@@ -168,101 +125,6 @@ const ChineseZodiacCalculator = () => {
               </Button>
             </div>
           </div>
-
-          {/* Result */}
-          {zodiacSign && zodiacInfo && (
-            <div className="space-y-6 bg-white/5 p-6 rounded-xl border border-gold/20 shadow-inner text-left">
-              <h2 className="text-3xl font-semibold text-white text-center">
-                Your Chinese Zodiac Sign is:{" "}
-                <span className="text-gold">{zodiacSign}</span>
-              </h2>
-
-              <img
-                src={zodiacImages[zodiacSign]}
-                alt={zodiacSign}
-                className="w-40 h-40 mx-auto object-contain"
-              />
-
-              <div>
-                <h3 className="text-xl font-semibold text-gold mb-2">
-                  Traits of the {zodiacSign}:
-                </h3>
-                <p className="text-white/90">{zodiacInfo.traits}</p>
-              </div>
-
-              <div>
-                <h3 className="text-xl font-semibold text-gold mb-2">
-                  2025 Forecast for {zodiacSign}:
-                </h3>
-                <p className="text-white/90">{zodiacInfo.yearAnalysis}</p>
-              </div>
-
-              {zodiacInfo.compatibility && (
-                <div>
-                  <h3 className="text-xl font-semibold text-gold mb-2">
-                    Compatibility:
-                  </h3>
-                  <p className="text-white/90">{zodiacInfo.compatibility}</p>
-                </div>
-              )}
-
-              {zodiacInfo.luckyNumbers && (
-                <div>
-                  <h3 className="text-xl font-semibold text-gold mb-2">
-                    Lucky Numbers:
-                  </h3>
-                  <p className="text-white/90">{zodiacInfo.luckyNumbers}</p>
-                </div>
-              )}
-
-              {zodiacInfo.luckyColors && (
-                <div>
-                  <h3 className="text-xl font-semibold text-gold mb-2">
-                    Lucky Colors:
-                  </h3>
-                  <p className="text-white/90">{zodiacInfo.luckyColors}</p>
-                </div>
-              )}
-
-              {zodiacInfo.luckyDirections && (
-                <div>
-                  <h3 className="text-xl font-semibold text-gold mb-2">
-                    Lucky Directions:
-                  </h3>
-                  <p className="text-white/90">{zodiacInfo.luckyDirections}</p>
-                </div>
-              )}
-
-              {zodiacInfo.careerAdvice && (
-                <div>
-                  <h3 className="text-xl font-semibold text-gold mb-2">
-                    Career Advice:
-                  </h3>
-                  <p className="text-white/90">{zodiacInfo.careerAdvice}</p>
-                </div>
-              )}
-
-              {zodiacInfo.fengShuiTips && (
-                <div>
-                  <h3 className="text-xl font-semibold text-gold mb-2">
-                    Feng Shui Tips:
-                  </h3>
-                  <p className="text-white/90">{zodiacInfo.fengShuiTips}</p>
-                </div>
-              )}
-
-              {zodiacInfo.personalityInsights && (
-                <div>
-                  <h3 className="text-xl font-semibold text-gold mb-2">
-                    Personality Insights:
-                  </h3>
-                  <p className="text-white/90">
-                    {zodiacInfo.personalityInsights}
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
         </div>
       </main>
       <Footer />

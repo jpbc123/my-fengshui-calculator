@@ -14,10 +14,20 @@ import roosterImage from '../assets/chinese-zodiac/year-of-the-rooster.png';
 import dogImage from '../assets/chinese-zodiac/year-of-the-dog.png';
 import pigImage from '../assets/chinese-zodiac/year-of-the-pig.png';
 
+// Define type for zodiac object
+interface Zodiac {
+  id: number;
+  name: string;
+  displayYears: string;
+  image: string;
+  color: string;
+  traits: string;
+}
+
 const HeroSection = () => {
   const navigate = useNavigate();
 
-  const chineseZodiacs = [
+  const chineseZodiacs: Zodiac[] = [
     {
       id: 1,
       name: "Rat",
@@ -116,12 +126,14 @@ const HeroSection = () => {
     }
   ];
 
-  const handleZodiacClick = (zodiac: any) => {
-  navigate(`/zodiac/${zodiac.name.toLowerCase()}`);
-};
+  const handleZodiacClick = (zodiac: Zodiac) => {
+    navigate(`/zodiac/${zodiac.name.toLowerCase()}`);
+  };
 
   return (
-    <section className="relative bg-red-900 text-white min-h-[90vh] py-32 overflow-hidden">
+    <section className="relative bg-white text-black min-h-[90vh] py-32 overflow-hidden">
+
+
       {/* Floating Elements */}
       <div className="absolute top-10 left-10 w-6 h-6 bg-gold/30 rounded-full blur-lg animate-pulse" />
       <div className="absolute top-16 right-80 w-10 h-10 bg-gold/30 rounded-full blur-md animate-pulse delay-1500" />
@@ -131,8 +143,8 @@ const HeroSection = () => {
       
       <div className="relative z-10 container mx-auto px-4 text-center max-w-6xl pt-1">
         {/* Chinese Zodiac Selection */}
-        <div className="mt-8 mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-gold mb-8">
+        <div className="mt-10 mb-8">
+          <h1 className="text-3xl md:text-4xl font-bold text-gold mb-10">
             Choose Your Chinese Zodiac
           </h1>
           <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 max-w-5xl mx-auto">
@@ -141,8 +153,16 @@ const HeroSection = () => {
                 key={zodiac.id}
                 onClick={() => handleZodiacClick(zodiac)}
                 className="group cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                role="button"
+                tabIndex={0}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    handleZodiacClick(zodiac);
+                  }
+                }}
+                aria-label={`View ${zodiac.name} horoscope`}
               >
-                <div className="relative bg-transparent rounded-xl p-4 text-center text-white shadow-lg hover:shadow-2xl transition-all duration-300 backdrop-blur-sm border border-white/20">
+                <div className="relative bg-transparent rounded-xl p-4 text-center text-black shadow-lg hover:shadow-2xl transition-all duration-300 backdrop-blur-sm border border-white/20">
                   {/* Decorative background pattern */}
                   <div className="absolute inset-0 opacity-10 bg-gradient-to-br from-white to-transparent rounded-xl"></div>
                   
@@ -161,28 +181,28 @@ const HeroSection = () => {
                   </h3>
                   
                   {/* Hover overlay with traits */}
-                  <div className="absolute inset-0 bg-black/80 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center p-3">
-                    <div className="mb-1">
-                      <img 
-                        src={zodiac.image} 
-                        alt={zodiac.name}
-                        className="w-10 h-10 mx-auto object-contain"
-                      />
-                    </div>
-                    <h4 className="font-bold text-sm mb-1">{zodiac.name}</h4>
-                    <p className="text-xs text-center leading-relaxed">
-                      {zodiac.traits}
-                    </p>
-                    <div className="mt-1 text-xs opacity-75">
-                      Click to explore
-                    </div>
-                  </div>
+					<div className="absolute inset-0 bg-gradient-to-r from-purple-900 via-black to-indigo-900 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center p-3 border border-purple-400/30 text-white">
+					<div className="mb-1">
+						<img 
+						src={zodiac.image} 
+						alt={zodiac.name}
+						className="w-10 h-10 mx-auto object-contain"
+						/>
+					</div>
+					<h4 className="font-bold text-sm mb-1">{zodiac.name}</h4>
+					<p className="text-xs text-center leading-relaxed">
+						{zodiac.traits}
+					</p>
+					<div className="mt-1 text-xs opacity-75">
+						Click to explore
+					</div>
+					</div>
                 </div>
               </div>
             ))}
           </div>
           
-          <p className="text-white/80 text-sm mt-6">
+          <p className="text-black/80 text-sm mt-10">
             Don't know your Chinese zodiac year? 
             <span className="text-gold font-semibold cursor-pointer hover:underline ml-1">
               <Link 
@@ -195,7 +215,7 @@ const HeroSection = () => {
           </p>
         </div>
         
-        <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto">
+        <p className="text-lg md:text-xl text-grea=y/80 max-w-2xl mx-auto">
           Begin your journey of self-discovery and unlock tools for balance, prosperity, and clarity.
         </p>
       </div>

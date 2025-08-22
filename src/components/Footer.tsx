@@ -5,14 +5,14 @@ import { Facebook, Instagram, Youtube } from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer className="bg-background border-t border-gold/20 text-white mt-16">
+    <footer className="bg-gradient-to-r from-purple-900 via-black to-indigo-900 border-t border-purple-400/30 text-white mt-16">
       <div className="container mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-4 gap-8">
         
         {/* Brand */}
         <div>
           <div className="flex items-center gap-3 mb-4">
             <LogoIcon />
-            <h2 className="text-lg font-bold text-gold">Feng Shui & Beyond</h2>
+            <h2 className="text-3xl font-bold text-gold font-charity">Feng Shui & Beyond</h2>
           </div>
           <p className="text-sm text-white/70 leading-relaxed">
             Unlock the wisdom of Feng Shui, Numerology, and Astrology to align your life with the flow of energy.
@@ -52,7 +52,7 @@ const Footer = () => {
       {/* Bottom Bar */}
       <div className="border-t border-gold/10">
         <div className="container mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center text-sm text-white/60">
-          <p>© {new Date().getFullYear()} Destiny in Numbers. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Feng Shui & Beyond. All rights reserved.</p>
           <div className="flex gap-4 mt-3 md:mt-0">
             <a href="#" className="hover:text-gold"><Facebook size={18} /></a>
             <a href="#" className="hover:text-gold"><Instagram size={18} /></a>

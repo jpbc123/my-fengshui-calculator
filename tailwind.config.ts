@@ -18,6 +18,18 @@ export default {
       },
     },
     extend: {
+	  fontFamily: {
+		gelato: ["Gelato Script", "cursive"],
+		signature: ["Brilliant Signature", "cursive"],
+		charity: ["Days of Charity", "cursive"],
+		luckyfield: ["Luckyfield", "cursive"],
+		luckily: ["Luckily", "cursive"],
+		breathing: ["Breathing", "cursive"],
+		marquette: ["Marquette", "cursive"],
+		heisenberg: ["Heisenberg", "cursive"],
+		romantically: ["Romantically", "cursive"],
+		southhampton: ["SouthHampton", "cursive"],
+		},
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
