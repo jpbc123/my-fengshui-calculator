@@ -6,6 +6,7 @@ import HeroSection from "@/components/HeroSection";
 import FeaturesSection from "@/components/FeaturesSection";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
+import DailyWisdomBanner from "@/components/DailyWisdomBanner";
 
 const Index = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,6 +18,7 @@ const Index = () => {
       <main>
         <HeroSection />
         <FeaturesSection />
+		<DailyWisdomBanner />
         <CTASection onStartCalculation={() => setIsModalOpen(true)} />
         <Footer />
       </main>

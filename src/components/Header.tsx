@@ -45,7 +45,7 @@ const Header = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-purple-900 via-black to-indigo-900 border-b border-purple-400/30 shadow-lg">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-purple-900 via-gray-400 to-indigo-900 via-50% border-b border-purple-400/30 shadow-lg">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo + Title */}
         <Link

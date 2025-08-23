@@ -132,8 +132,6 @@ const HeroSection = () => {
 
   return (
     <section className="relative bg-white text-black min-h-[90vh] py-32 overflow-hidden">
-
-
       {/* Floating Elements */}
       <div className="absolute top-10 left-10 w-6 h-6 bg-gold/30 rounded-full blur-lg animate-pulse" />
       <div className="absolute top-16 right-80 w-10 h-10 bg-gold/30 rounded-full blur-md animate-pulse delay-1500" />
@@ -152,7 +150,7 @@ const HeroSection = () => {
               <div
                 key={zodiac.id}
                 onClick={() => handleZodiacClick(zodiac)}
-                className="group cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                className="group relative cursor-pointer transform transition-all duration-300 hover:scale-105"
                 role="button"
                 tabIndex={0}
                 onKeyPress={(e) => {
@@ -162,51 +160,49 @@ const HeroSection = () => {
                 }}
                 aria-label={`View ${zodiac.name} horoscope`}
               >
-                <div className="relative bg-transparent rounded-xl p-4 text-center text-black shadow-lg hover:shadow-2xl transition-all duration-300 backdrop-blur-sm border border-white/20">
-                  {/* Decorative background pattern */}
+                {/* The Base Button: Always visible */}
+                <div className="relative bg-gray-100 rounded-xl p-4 text-center text-black shadow-md border-2 border-gray-200 transition-all duration-300">
                   <div className="absolute inset-0 opacity-10 bg-gradient-to-br from-white to-transparent rounded-xl"></div>
                   
-                  {/* Zodiac image */}
-                  <div className="relative mb-2 group-hover:animate-bounce">
-                    <img 
-                      src={zodiac.image} 
+                  <div className="relative mb-2 group-hover:scale-110 transition-transform duration-300">
+                    <img
+                      src={zodiac.image}
                       alt={zodiac.name}
                       className="w-10 h-10 md:w-16 md:h-16 mx-auto object-contain"
                     />
                   </div>
                   
-                  {/* Zodiac name */}
                   <h3 className="relative text-sm md:text-base font-bold mb-1">
                     {zodiac.name}
                   </h3>
-                  
-                  {/* Hover overlay with traits */}
-					<div className="absolute inset-0 bg-gradient-to-r from-purple-900 via-black to-indigo-900 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center p-3 border border-purple-400/30 text-white">
-					<div className="mb-1">
-						<img 
-						src={zodiac.image} 
-						alt={zodiac.name}
-						className="w-10 h-10 mx-auto object-contain"
-						/>
-					</div>
-					<h4 className="font-bold text-sm mb-1">{zodiac.name}</h4>
-					<p className="text-xs text-center leading-relaxed">
-						{zodiac.traits}
-					</p>
-					<div className="mt-1 text-xs opacity-75">
-						Click to explore
-					</div>
-					</div>
+                </div>
+
+                {/* The Hover Overlay: Becomes visible on hover */}
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-900 via-black to-indigo-900 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center p-3 text-white shadow-xl hover:shadow-2xl">
+                  <div className="mb-1">
+                    <img
+                      src={zodiac.image}
+                      alt={zodiac.name}
+                      className="w-10 h-10 mx-auto object-contain"
+                    />
+                  </div>
+                  <h4 className="font-bold text-sm mb-1">{zodiac.name}</h4>
+                  <p className="text-xs text-center leading-relaxed">
+                    {zodiac.traits}
+                  </p>
+                  <div className="mt-1 text-xs opacity-75">
+                    Click to explore
+                  </div>
                 </div>
               </div>
             ))}
           </div>
           
           <p className="text-black/80 text-sm mt-10">
-            Don't know your Chinese zodiac year? 
+            Don't know your Chinese zodiac year? 
             <span className="text-gold font-semibold cursor-pointer hover:underline ml-1">
-              <Link 
-                to="/chinese-zodiac-calculator" 
+              <Link 
+                to="/chinese-zodiac-calculator" 
                 className="text-gold font-semibold cursor-pointer hover:underline ml-1"
               >
                 Calculate it here →

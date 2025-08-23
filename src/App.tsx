@@ -19,6 +19,7 @@ import ChineseZodiacCalculator from "./pages/ChineseZodiacCalculator";
 import ChineseZodiacLanding from "@/pages/ChineseZodiacLanding";
 import WesternZodiacCalculator from "./pages/WesternZodiacCalculator";
 import PrivacyPolicy from "./pages/PrivacyPolicy"; 
+import DailyWisdomArticlePage from "@/pages/DailyWisdomArticlePage"; 
 
 import Store from "./pages/Store";
 
@@ -48,6 +49,7 @@ const App = () => (
 		  <Route path="/daily-horoscope" element={<DailyHoroscope />} /> 
           <Route path="/store" element={<Store />} /> 
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+		  <Route path="/daily-wisdom-article" element={<DailyWisdomArticlePage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
