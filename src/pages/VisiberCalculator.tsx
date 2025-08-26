@@ -13,7 +13,6 @@ const breadcrumbs = [
   { label: "Visiber Calculator" },
 ];
 
-
 const visiberMeanings: Record<number, string> = {
   1: "Leadership, independence, ambitious",
   2: "Sensitivity, harmony, cooperation",
@@ -126,49 +125,52 @@ const VisiberCalculator = () => {
   })();
 
   return (
-    <div className="flex flex-col min-h-screen bg-black text-white overflow-hidden">
+    <div className="flex flex-col min-h-screen bg-white text-black overflow-hidden">
       <Header />
       <main className="flex-grow pt-6 px-1 pb-10">
-	        <div className="pt-24 px-4 max-w-3xl mx-auto">
-        <Breadcrumb items={breadcrumbs} />
-        <h1 className="text-2xl font-bold text-gold mb-4">Visiber Calculator</h1>
-      </div>
+        <div className="pt-24 px-4 max-w-3xl mx-auto">
+          <Breadcrumb items={breadcrumbs} className="text-black/80" />
+          <h1 className="text-2xl font-bold text-gold mb-4">Visiber Calculator</h1>
+          <p className="text-black/80 mb-6">
+            Unlock the secrets of your personality and life path through <span className="font-semibold">Visiber numerology</span>, a unique system that interprets your birthdate's energetic patterns.
+          </p>
+        </div>
         <div className="max-w-3xl mx-auto text-center space-y-10">
-		
-		{/* Summary Box */}
-		<div className="flex flex-col gap-2">
-		<div className="flex items-start gap-2 text-sm text-white/80 bg-gold/10 p-4 rounded-xl border border-gold/30">
-			<Info size={20} className="text-gold mt-1 shrink-0" />
-			<div className="text-left">
-			<p>
-			Visiber is a life philosophy system founded by Datuk Patrick Tan and Datuk David Hew, based on the belief that every aspect of a person's life can be explained through numbers.
-			</p>
-			<button
-				onClick={() => setShowMore(!showMore)}
-				className="text-gold font-semibold hover:underline text-sm">
-				{showMore ? "View Less" : "View More"}
-			</button>
-			</div>
-		</div>
-		
-		{/* Additional Info */}
-		{showMore && (
-		<div className="bg-black/40 text-white/90 text-sm p-4 rounded-xl border border-gold/25 text-left">
-			<p className="mb-2">
-			The name "Visiber" is a combination of "Vision" and "Number", symbolizing the idea that with a clear vision and understanding of one’s numbers, a person can achieve personal growth and success.
-			</p>
-			<p className="mb-2">
-			Using your birth date, Visiber reveals a unique numeric pattern that reflects your personality, strengths, and life path.
-			</p>
-			<p>
-			It provides insights into behavior, destiny, and potential obstacles by interpreting the vibration of numbers. Many people use it to guide decisions in relationships, career, and health.
-			</p>
-		</div>
-		)}
-		</div>
+          
+          {/* Summary Box */}
+          <div className="flex flex-col gap-2">
+            <div className="flex items-start gap-2 text-black/80 bg-gray-50 p-4 rounded-xl border border-gray-200">
+              <Info size={20} className="text-gold mt-1 shrink-0" />
+              <div className="text-left">
+                <p>
+                  <span className="font-semibold">Visiber</span> is a life philosophy system founded by Datuk Patrick Tan and Datuk David Hew, based on the belief that every aspect of a person's life can be explained through numbers.
+                </p>
+                <button
+                  onClick={() => setShowMore(!showMore)}
+                  className="mt-2 text-gold hover:underline text-xs font-medium">
+                  {showMore ? "View Less" : "View More"}
+                </button>
+              </div>
+            </div>
+            
+            {/* Additional Info */}
+            {showMore && (
+              <div className="bg-gray-50 text-black/90 p-4 rounded-xl border border-gray-200 text-left">
+                <p className="mb-2">
+                  The name <span className="font-semibold">"Visiber"</span> is a combination of "Vision" and "Number", symbolizing the idea that with a clear vision and understanding of one’s numbers, a person can achieve personal growth and success.
+                </p>
+                <p className="mb-2">
+                  Using your birth date, Visiber reveals a unique numeric pattern that reflects your personality, strengths, and life path.
+                </p>
+                <p>
+                  It provides insights into behavior, destiny, and potential obstacles by interpreting the vibration of numbers. Many people use it to guide decisions in relationships, career, and health.
+                </p>
+              </div>
+            )}
+          </div>
 
-		{/* Input and Button Box */}
-          <div className="bg-white/10 backdrop-blur-md border border-gold/30 rounded-2xl p-6 shadow-lg max-w-3xl mx-auto">
+          {/* Input and Button Box */}
+          <div className="space-y-4 bg-gray-50 p-6 rounded-xl border border-gray-200">
             <div className="flex flex-col sm:flex-row gap-4 items-stretch">
               <DatePickerInput
                 date={birthDate}
@@ -187,7 +189,7 @@ const VisiberCalculator = () => {
             </div>
           </div>
 
-		{/* Result */}
+          {/* Result */}
           <AnimatePresence>
             {visiberNumber && breakdown && (
               <motion.div
@@ -196,18 +198,18 @@ const VisiberCalculator = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.5 }}
-                className="mt-10 space-y-6"
+                className="mt-10 p-6 bg-gray-50 rounded-xl border border-gray-200 text-left space-y-6"
               >
                 <div>
-                  <h2 className="text-2xl font-semibold text-gold">
-                    Your Character Number: {visiberNumber}
+                  <h2 className="text-2xl font-bold text-gold text-center">
+                    Your Character Number: <span className="text-black">{visiberNumber}</span>
                   </h2>
-                  <p className="text-white/90 text-lg">
+                  <p className="text-black/90 text-lg text-center mt-2">
                     {visiberMeanings[visiberNumber]}
                   </p>
                 </div>
 
-                <div className="text-sm text-white/70 text-center">
+                <div className="text-black/70 text-center">
                   <div className="font-bold text-gold mb-2">Breakdown</div>
 
                   {/* Birthdate Digits */}
@@ -215,7 +217,7 @@ const VisiberCalculator = () => {
                     {breakdown.birthDigits.map((digit, index) => (
                       <div
                         key={index}
-                        className="w-8 h-8 flex items-center justify-center border border-gold text-white font-mono text-sm"
+                        className="w-8 h-8 flex items-center justify-center border border-gold text-black font-mono"
                       >
                         {digit}
                       </div>
@@ -232,7 +234,7 @@ const VisiberCalculator = () => {
                     <polygon
                       points="60,60 320,60 190,320"
                       fill="none"
-                      stroke="gold"
+                      stroke="gold" 
                       strokeWidth="1.6"
                     />
                     <line
@@ -240,7 +242,7 @@ const VisiberCalculator = () => {
                       y1="60"
                       x2="190"
                       y2="220"
-                      stroke="gold"
+                      stroke="gold" 
                       strokeWidth="1.3"
                     />
                     <line
@@ -248,7 +250,7 @@ const VisiberCalculator = () => {
                       y1="140"
                       x2="280"
                       y2="140"
-                      stroke="gold"
+                      stroke="gold" 
                       strokeWidth="1.3"
                     />
                     <line
@@ -256,34 +258,34 @@ const VisiberCalculator = () => {
                       y1="220"
                       x2="240"
                       y2="220"
-                      stroke="gold"
+                      stroke="gold" 
                       strokeWidth="1.3"
                     />
 
                     {/* Top row */}
-                    <text x="118" y="105" fill="white" fontSize="18" textAnchor="middle" fontFamily="monospace">
+                    <text x="118" y="105" fill="black" fontSize="18" textAnchor="middle" fontFamily="monospace">
                       {breakdown.daySum}
                     </text>
-                    <text x="158" y="105" fill="white" fontSize="18" textAnchor="middle" fontFamily="monospace">
+                    <text x="158" y="105" fill="black" fontSize="18" textAnchor="middle" fontFamily="monospace">
                       {breakdown.monthSum}
                     </text>
-                    <text x="222" y="105" fill="white" fontSize="18" textAnchor="middle" fontFamily="monospace">
+                    <text x="222" y="105" fill="black" fontSize="18" textAnchor="middle" fontFamily="monospace">
                       {breakdown.yearFirstSum}
                     </text>
-                    <text x="262" y="105" fill="white" fontSize="18" textAnchor="middle" fontFamily="monospace">
+                    <text x="262" y="105" fill="black" fontSize="18" textAnchor="middle" fontFamily="monospace">
                       {breakdown.yearLastSum}
                     </text>
 
                     {/* Middle row */}
-                    <text x="155" y="182" fill="white" fontSize="18" textAnchor="middle" fontFamily="monospace">
+                    <text x="155" y="182" fill="black" fontSize="18" textAnchor="middle" fontFamily="monospace">
                       {breakdown.leftMiddleSum}
                     </text>
-                    <text x="225" y="182" fill="white" fontSize="18" textAnchor="middle" fontFamily="monospace">
+                    <text x="225" y="182" fill="black" fontSize="18" textAnchor="middle" fontFamily="monospace">
                       {breakdown.rightMiddleSum}
                     </text>
 
                     {/* Final number */}
-                    <text x="190" y="266" fill="gold" fontSize="30" fontWeight="bold" textAnchor="middle" fontFamily="monospace">
+                    <text x="190" y="266" fill="black" fontSize="30" fontWeight="bold" textAnchor="middle" fontFamily="monospace">
                       {visiberNumber}
                     </text>
                   </svg>
@@ -292,13 +294,13 @@ const VisiberCalculator = () => {
                   <div className="space-y-4 text-left max-w-lg mx-auto">
                     <div>
                       <h2 className="text-lg font-bold text-gold">Positive Traits</h2>
-                      <p className="text-white/90 text-lg leading-relaxed">
+                      <p className="text-black/90 leading-relaxed">
                         {visiberPositiveTraits[visiberNumber]}
                       </p>
                     </div>
                     <div>
                       <h2 className="text-lg font-bold text-gold">Negative Traits</h2>
-                      <p className="text-white/90 text-lg leading-relaxed">
+                      <p className="text-black/90 leading-relaxed">
                         {visiberNegativeTraits[visiberNumber]}
                       </p>
                     </div>
@@ -320,7 +322,7 @@ const VisiberCalculator = () => {
           </AnimatePresence>
         </div>
       </main>
-	  <Footer />
+      <Footer />
     </div>
   );
 };

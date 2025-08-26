@@ -192,3 +192,12 @@ All colors MUST be HSL.
   font-weight: normal;
   font-style: normal;
 }
+
+.header-gradient {
+  background: linear-gradient(
+    to right,
+    var(--purple-900),
+    var(--indigo-900) 50%,
+    var(--white-400)
+  );
+}

@@ -3,9 +3,9 @@ const FeaturesSection = () => {
     <section className="bg-gradient-to-r from-purple-800 via-gray-900 to-indigo-800 text-white py-20" id="features">
 
       <div className="container mx-auto px-4 text-center">
-        <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gold">
-          Explore the Wisdom of Feng Shui </h2>
-		<h2 className="text-4xl md:text-5xl font-bold mb-4 text-gold">Numerology & Astrology</h2>
+        <h3 className="text-4xl md:text-4xl font-bold mb-4 text-gold">
+          Explore the Wisdom of Feng Shui </h3>
+		<h3 className="text-4xl md:text-4xl font-bold mb-4 text-gold">Numerology & Astrology</h3>
         
         <p className="text-lg max-w-3xl mx-auto mb-10 text-gray-300">
           Gain personalized insights into your energy, relationships, and life path with our all-in-one guidance tools — blending ancient traditions with modern precision.

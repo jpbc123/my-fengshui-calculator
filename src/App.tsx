@@ -6,55 +6,83 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import ChineseHoroscopeResult from "@/pages/ChineseHoroscopeResult";
-import DailyHoroscope from "./pages/DailyHoroscope"; 
-import FengShui from "@/pages/FengShui"; 
+import ChineseHoroscopeResult from "@/pages/ChineseHoroscopeResult"; 
+import FengShui from "@/pages/FengShui"; 
 import PersonalElement from "./pages/PersonalElement";
 import PersonalElementDetails from "./pages/PersonalElementDetails";
 import KuaNumberCalculator from "./pages/KuaNumberCalculator";
 import Numerology from "./pages/Numerology";
 import VisiberCalculator from "./pages/VisiberCalculator";
 import Astrology from "./pages/Astrology";
+import WesternDailyHoroscope from "./pages/WesternDailyHoroscope";
+import WesternZodiacCalculator from "./pages/WesternZodiacCalculator";
 import ChineseZodiacCalculator from "./pages/ChineseZodiacCalculator";
 import ChineseZodiacLanding from "@/pages/ChineseZodiacLanding";
-import WesternZodiacCalculator from "./pages/WesternZodiacCalculator";
-import PrivacyPolicy from "./pages/PrivacyPolicy"; 
-import DailyWisdomArticlePage from "@/pages/DailyWisdomArticlePage"; 
+import AuraAnalysisPage from "@/pages/AuraAnalysisPage";
+import DailyWisdomArticlePage from "@/pages/DailyWisdomArticlePage"; 
+
+import ComingSoonPage from "@/pages/ComingSoonPage";
+import ComingSoonStore from "@/pages/ComingSoonStore";
 
 import Store from "./pages/Store";
+
+import AboutUs from "./pages/AboutUs"; 
+import PrivacyPolicy from "./pages/PrivacyPolicy"; 
+
 
 import ScrollToTop from "@/components/ScrollToTop";
 
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter basename="/my-fengshui-calculator">
-        <ScrollToTop /> {/* 👈 This will reset scroll on route change */}
-        <Routes>
-          <Route path="/" element={<Index />} />
-		  <Route path="/zodiac/:zodiac" element={<ChineseHoroscopeResult />} />
-          <Route path="/feng-shui" element={<FengShui />} />
-          <Route path="/personal-element" element={<PersonalElement />} />
-          <Route path="/kua-number-calculator" element={<KuaNumberCalculator />} />
-          <Route path="/numerology" element={<Numerology />} /> 
-          <Route path="/visiber-calculator" element={<VisiberCalculator />} />
-		  <Route path="/astrology" element={<Astrology />} />
-          <Route path="/chinese-zodiac-calculator" element={<ChineseZodiacCalculator />} />
-		  <Route path="/chinese-zodiac/:sign" element={<ChineseZodiacLanding />} />
-		  <Route path="/western-zodiac-calculator" element={<WesternZodiacCalculator />} />
-		  <Route path="/daily-horoscope" element={<DailyHoroscope />} /> 
-          <Route path="/store" element={<Store />} /> 
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-		  <Route path="/daily-wisdom-article" element={<DailyWisdomArticlePage />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter basename="/my-fengshui-calculator">
+        <ScrollToTop /> {/* 👈 This will reset scroll on route change */}
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="*" element={<NotFound />} />
+		  
+		  {/* Main Menus */}
+          <Route path="/feng-shui" element={<FengShui />} />
+		  <Route path="/numerology" element={<Numerology />} /> 
+		  <Route path="/astrology" element={<Astrology />} />
+		  <Route path="/store" element={<Store />} /> 
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+		  
+		  {/* Submenu-Feng Shui */}
+          <Route path="/personal-element" element={<PersonalElement />} />
+          <Route path="/kua-number-calculator" element={<KuaNumberCalculator />} />
+          
+		  {/* Submenu-Numerology */}
+          <Route path="/visiber-calculator" element={<VisiberCalculator />} />
+		  
+		  {/* Submenu-Astrology */}
+          <Route path="/chinese-zodiac-calculator" element={<ChineseZodiacCalculator />} />
+		  <Route path="/chinese-zodiac-landing" element={<ChineseZodiacLanding />} />
+		  <Route path="/western-zodiac-calculator" element={<WesternZodiacCalculator />} />
+		 
+		  {/* Features-Horoscopes */}
+		  <Route path="/zodiac/:zodiac" element={<ChineseHoroscopeResult />} /> {/* Result for HeroSection */}
+          <Route path="/western-horoscope" element={<WesternDailyHoroscope />} />
+		  
+		  {/* Tools Section */}
+		  <Route path="/daily-wisdom-article" element={<DailyWisdomArticlePage />} />
+		  <Route path="/aura-analysis" element={<AuraAnalysisPage />} />
+		  
+		  {/* This is the new line you need to add */}
+          <Route path="/about-us" element={<AboutUs />} />
+		  
+		  {/* Coming Soon */}
+		  <Route path="/community-chat" element={<ComingSoonPage />} />
+		  <Route path="/coming-store" element={<ComingSoonStore />} />
+          
+        </Routes>
+      </BrowserRouter>
+    </TooltipProvider>
+  </QueryClientProvider>
 );
 
 export default App;

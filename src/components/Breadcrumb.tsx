@@ -19,7 +19,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({ items }) => {
               {item.label}
             </Link>
           ) : (
-            <span className="text-gold">{item.label}</span>
+            <span className="text-gold font-bold">{item.label}</span>
           )}
           {idx < items.length - 1 && <span className="mx-1">›</span>}
         </span>

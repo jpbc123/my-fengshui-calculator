@@ -5,7 +5,7 @@
   "homepage": "https://jpbc123.github.io/my-fengshui-calculator",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
@@ -13,6 +13,7 @@
     "deploy": "vite build && gh-pages -d dist"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@headlessui/react": "^2.2.4",
     "@hookform/resolvers": "^3.9.0",
     "@radix-ui/react-accordion": "^1.2.0",
@@ -51,6 +52,7 @@
     "cmdk": "^1.0.0",
     "cors": "^2.8.5",
     "date-fns": "^3.6.0",
+    "dayjs": "^1.11.13",
     "dotenv": "^17.2.1",
     "embla-carousel-react": "^8.3.0",
     "express": "^5.1.0",
@@ -59,6 +61,7 @@
     "input-otp": "^1.2.4",
     "lucide-react": "^0.462.0",
     "lunar-typescript": "^1.8.0",
+    "motion": "^12.23.12",
     "next-themes": "^0.3.0",
     "node-fetch": "^3.3.2",
     "react": "^18.3.1",

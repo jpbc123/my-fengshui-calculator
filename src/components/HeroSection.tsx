@@ -143,14 +143,14 @@ const HeroSection = () => {
         {/* Chinese Zodiac Selection */}
         <div className="mt-10 mb-8">
           <h1 className="text-3xl md:text-4xl font-bold text-gold mb-10">
-            Choose Your Chinese Zodiac
+            Find Your Chinese Zodiac Horoscope
           </h1>
-          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 max-w-5xl mx-auto">
+          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 max-w-5xl mx-auto items-stretch">
             {chineseZodiacs.map((zodiac) => (
               <div
                 key={zodiac.id}
                 onClick={() => handleZodiacClick(zodiac)}
-                className="group relative cursor-pointer transform transition-all duration-300 hover:scale-105"
+                className="group relative cursor-pointer transform transition-all duration-300 hover:scale-105 h-full flex flex-col"
                 role="button"
                 tabIndex={0}
                 onKeyPress={(e) => {
@@ -161,24 +161,24 @@ const HeroSection = () => {
                 aria-label={`View ${zodiac.name} horoscope`}
               >
                 {/* The Base Button: Always visible */}
-                <div className="relative bg-gray-100 rounded-xl p-4 text-center text-black shadow-md border-2 border-gray-200 transition-all duration-300">
+                <div className="relative bg-gray-100 rounded-xl p-4 text-center text-black shadow-md border-2 border-gray-200 transition-all duration-300 h-full flex flex-col">
                   <div className="absolute inset-0 opacity-10 bg-gradient-to-br from-white to-transparent rounded-xl"></div>
                   
                   <div className="relative mb-2 group-hover:scale-110 transition-transform duration-300">
                     <img
                       src={zodiac.image}
-                      alt={zodiac.name}
+                      alt={`Year of the ${zodiac.name} Chinese Zodiac`}
                       className="w-10 h-10 md:w-16 md:h-16 mx-auto object-contain"
                     />
                   </div>
                   
-                  <h3 className="relative text-sm md:text-base font-bold mb-1">
-                    {zodiac.name}
+                  <h3 className="relative text-sm md:text-base font-bold flex-1 flex items-end justify-center">
+                    Year of the<br />{zodiac.name}
                   </h3>
                 </div>
 
                 {/* The Hover Overlay: Becomes visible on hover */}
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-900 via-black to-indigo-900 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center p-3 text-white shadow-xl hover:shadow-2xl">
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-900 via-black to-indigo-900 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center p-3 text-white shadow-xl hover:shadow-2xl h-full">
                   <div className="mb-1">
                     <img
                       src={zodiac.image}
@@ -188,10 +188,10 @@ const HeroSection = () => {
                   </div>
                   <h4 className="font-bold text-sm mb-1">{zodiac.name}</h4>
                   <p className="text-xs text-center leading-relaxed">
-                    {zodiac.traits}
+                    Traits: {zodiac.traits}
                   </p>
                   <div className="mt-1 text-xs opacity-75">
-                    Click to explore
+                    Click to view your horoscope
                   </div>
                 </div>
               </div>
@@ -199,20 +199,20 @@ const HeroSection = () => {
           </div>
           
           <p className="text-black/80 text-sm mt-10">
-            Don't know your Chinese zodiac year? 
+            Don't know your Chinese zodiac sign? 
             <span className="text-gold font-semibold cursor-pointer hover:underline ml-1">
-              <Link 
-                to="/chinese-zodiac-calculator" 
+              <Link 
+                to="/chinese-zodiac-calculator" 
                 className="text-gold font-semibold cursor-pointer hover:underline ml-1"
               >
-                Calculate it here →
+                Use our Chinese Zodiac Calculator →
               </Link>
             </span>
           </p>
         </div>
         
         <p className="text-lg md:text-xl text-grea=y/80 max-w-2xl mx-auto">
-          Begin your journey of self-discovery and unlock tools for balance, prosperity, and clarity.
+          Explore your unique traits and a path to balance, prosperity, and clarity through ancient Chinese astrology.
         </p>
       </div>
     </section>

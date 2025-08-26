@@ -1,3 +1,4 @@
+// src/components/DatePickerInput.tsx
 import { useState } from "react";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
@@ -53,7 +54,7 @@ export function DatePickerInput({
 
   const handleDateSelect = (selected: Date | undefined) => {
     onDateChange(selected);
-    if (selected) setPopoverOpen(false); // ✅ Close popover when day selected
+    if (selected) setPopoverOpen(false); // Close popover when day selected
   };
 
   return (
@@ -62,8 +63,8 @@ export function DatePickerInput({
         <Button
           variant="outline"
           className={cn(
-            "flex-1 h-14 px-6 justify-start text-left font-normal bg-input border-border hover:bg-muted/50 transition-colors",
-            !date && "text-muted-foreground"
+            "flex-1 h-14 px-6 justify-start text-left font-normal bg-white border-black/20 text-black hover:bg-gray-100/80 transition-colors",
+            !date && "text-black/60"
           )}
         >
           <span className="flex-1">
@@ -71,18 +72,18 @@ export function DatePickerInput({
           </span>
           <CalendarIcon className="ml-4 h-5 w-5 text-gold" />
         </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-auto p-0 bg-card border-gold/20" align="start">
-        <div className="flex items-center justify-between p-3 border-b border-border">
+      </PopoverContent>
+      <PopoverContent className="w-auto p-0 bg-white border-black/20" align="start">
+        <div className="flex items-center justify-between p-3 border-b border-black/20">
           <div className="flex gap-2">
             <Select
               value={months[calendarDate.getMonth()]}
               onValueChange={(month) => handleMonthChange(months.indexOf(month).toString())}
             >
-              <SelectTrigger className="w-[120px] h-8">
+              <SelectTrigger className="w-[120px] h-8 bg-white text-black border-black/20">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white">
                 {months.map((month) => (
                   <SelectItem key={month} value={month}>
                     {month}
@@ -95,10 +96,10 @@ export function DatePickerInput({
               value={calendarDate.getFullYear().toString()}
               onValueChange={handleYearChange}
             >
-              <SelectTrigger className="w-[80px] h-8">
+              <SelectTrigger className="w-[80px] h-8 bg-white text-black border-black/20">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="max-h-[200px]">
+              <SelectContent className="max-h-[200px] bg-white">
                 {years.map((year) => (
                   <SelectItem key={year} value={year.toString()}>
                     {year}
@@ -115,7 +116,7 @@ export function DatePickerInput({
           month={calendarDate}
           onMonthChange={setCalendarDate}
           initialFocus
-          className="p-3 pointer-events-auto"
+          className="p-3 pointer-events-auto bg-white"
           disabled={(date) =>
             date > new Date() || date < new Date("1920-01-01")
           }

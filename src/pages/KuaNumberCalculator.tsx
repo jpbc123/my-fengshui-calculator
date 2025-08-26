@@ -1,13 +1,14 @@
+// src/pages/KuaNumberCalculator.tsx
 import { useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { DatePickerInput } from "@/components/DatePickerInput";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { motion } from "framer-motion";
 import { Info } from "lucide-react";
 import Breadcrumb from "@/components/Breadcrumb";
+import { Link } from "react-router-dom";
 
 const breadcrumbs = [
   { label: "Home", path: "/" },
@@ -29,7 +30,7 @@ const luckyDirections: Record<number, string[]> = {
 
 const kuaGroup = (kua: number) =>
   [1, 3, 4, 9].includes(kua) ? "East Group" : "West Group";
-  
+
 const kuaProfiles: Record<number, {
   name: string;
   traits: string[];
@@ -145,7 +146,7 @@ export default function KuaNumberCalculator() {
   const [kuaNumber, setKuaNumber] = useState<number | null>(null);
 
   const calculateKuaNumber = () => {
-    const year = birthDate.getFullYear();
+    const year = birthDate!.getFullYear();
     if (isNaN(year) || year < 1900 || year > 2100) {
       setKuaNumber(null);
       return;
@@ -169,144 +170,173 @@ export default function KuaNumberCalculator() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-black text-white overflow-hidden">
+    <div className="flex flex-col min-h-screen bg-white text-black overflow-hidden">
       <Header />
-	  <main className="flex-grow pt-6 px-1 pb-10">
-	  <div className="pt-24 px-4 max-w-3xl mx-auto">
-		<Breadcrumb items={breadcrumbs} />
-		<h1 className="text-2xl font-bold text-gold mb-4">Kua Number Calculator</h1>
-	  </div>
-        <div className="max-w-3xl mx-auto text-center space-y-10">
-          {/* Expandable Info Box */}
-			<div className="flex flex-col gap-2">
-			{/* Summary Box */}
-			<div className="flex items-start gap-2 text-sm text-white/80 bg-gold/10 p-4 rounded-xl border border-gold/30">
-				<Info size={20} className="text-gold mt-1 shrink-0" />
-				<div className="text-left">
-				<p>
-					Your Kua Number (Ming Gua 明卦) is based on your birth year and gender, and reveals your personal Feng Shui energy type. It’s used to find your best directions for health, wealth, love, and growth.
-				</p>
-				<button
-					onClick={() => setShowMore(!showMore)}
-					className="mt-2 text-gold hover:underline text-xs font-medium">
-					{showMore ? "Hide Details" : "View More"}
-				</button>
+      <main className="flex-grow pt-6 px-1 pb-10">
+        <div className="pt-24 px-4 pb-16 max-w-5xl mx-auto">
+          {/* 2-column layout */}
+          <div className="flex flex-col lg:flex-row lg:justify-between">
+            {/* Left side - Calculator and Results */}
+            <div className="max-w-xl">
+              {/* Breadcrumbs + title */}
+              <div className="mb-8">
+                <Breadcrumb items={breadcrumbs} className="text-black/80" />
+                <h1 className="text-2xl font-bold text-gold mt-4 mb-6">Kua Number Calculator</h1>
+                <p className="text-black/80 mb-6">
+                  Discover how <span className="font-semibold">Feng Shui</span> can guide <span className="font-semibold">harmony, balance, and positive energy</span> in your life.
+                  Start with our free tools below to explore your <span className="font-semibold">personal Feng Shui insights</span>, including your <span className="font-semibold">Kua number</span> and <span className="font-semibold">lucky directions</span>.
+                </p>
+              </div>
+
+              {/* Summary Box */}
+				<div className="flex flex-col gap-2 mb-8">
+				<div className="flex items-start gap-2 text-black/80 bg-gray-50 p-4 rounded-xl border border-gray-200">
+					<Info size={20} className="text-gold mt-1 shrink-0" />
+					<div className="text-left">
+					<p>
+						Your <span className="font-semibold">Kua Number (Ming Gua 命卦)</span> is an essential part of Ba Zhai Feng Shui. Calculated from your <span className="font-semibold">birth year and gender</span>, it reveals your personal Feng Shui energy type. Use your <span className="font-semibold">lucky directions</span> to find the best positions for <span className="font-semibold">health, wealth, love, and growth</span>.
+					</p>
+					<button
+						onClick={() => setShowMore(!showMore)}
+						className="mt-2 text-gold hover:underline text-xs font-medium"
+					>
+						{showMore ? "Hide Details" : "View More"}
+					</button>
+					</div>
 				</div>
-			</div>
-			
-			{/* Additional Info */}
-			{showMore && (
-				<div className="bg-black/40 text-white/90 text-sm p-4 rounded-xl border border-gold/26 text-left">
-				<p className="mb-2">
-				The Kua system comes from the Ba Zhai (Eight Mansions) school of Feng Shui, rooted in:</p>
-				<p>• The Eight Trigrams (Bagua 八卦) from the I Ching.</p>
-				<p>• Yin–Yang theory and the Five Elements (Wood, Fire, Earth, Metal, Water).</p>
-				<p className="mb-2">Feng Shui practitioners in ancient China used this system to align a person’s living environment with cosmic energies to bring harmony, health, and prosperity.</p>
-				<p className="mb-2">The Ming Gua (命卦, meaning “life trigram”) reflects the energy pattern you were born into — like an energetic blueprint of your Qi.
-				</p>
-				<p className="mb-2">
-				For example, those born in the year of the Dragon are said to be confident and ambitious, while Rabbits are known to be gentle and compassionate.
-				</p>
-				<p className="mb-2">Favorable directions are used for sleeping positions, desk placement, and door orientation to attract positive Qi.</p>
-				<p>Knowing your Kua Number can help you arrange your space to support prosperity, health, and harmonious relationships.</p>
-				</div>
+				
+				{/* Additional Info */}
+				{showMore && (
+					<div className="bg-gray-50 text-black/90 p-4 rounded-xl border border-gray-200 text-left">
+					<p className="mb-2">
+						The <span className="font-semibold">Kua system</span> comes from the <span className="font-semibold">Ba Zhai (Eight Mansions) school of Feng Shui</span>, rooted in:
+					</p>
+					<ul className="list-disc list-inside">
+					<li>
+						The <span className="font-semibold">Eight Trigrams (Bagua 八卦)</span> from the I Ching.
+					</li>
+					<li>
+						<span className="font-semibold">Yin–Yang theory</span> and the <span className="font-semibold">Five Elements (Wood, Fire, Earth, Metal, Water)</span>.
+					</li>
+					</ul>
+					<p className="mb-2">
+						<span className="font-semibold">Feng Shui practitioners</span> in ancient China used this system to align a person’s living environment with <span className="font-semibold">cosmic energies</span> to bring harmony, health, and prosperity.
+					</p>
+					<p className="mb-2">
+						The <span className="font-semibold">Ming Gua (命卦, meaning “life trigram”)</span> reflects the energy pattern you were born into — like an <span className="font-semibold">energetic blueprint of your Qi</span>.
+					</p>
+					<p className="mb-2">
+						For example, those born in the year of the Dragon are said to be confident and ambitious, while Rabbits are known to be gentle and compassionate.
+					</p>
+					<p className="mb-2">
+						<span className="font-semibold">Favorable directions</span> are used for sleeping positions, desk placement, and door orientation to attract <span className="font-semibold">positive Qi</span>.
+					</p>
+					<p>
+						Knowing your <span className="font-semibold">Kua Number</span> can help you arrange your space to support <span className="font-semibold">prosperity, health, and harmonious relationships</span>.
+					</p>
+					</div>
 				)}
-			</div>	
-			
-		{/* Input and Button Box */}
-		<div className="space-y-4 bg-white/5 p-6 rounded-xl border border-gold/20">
-		<div className="flex flex-col gap-4">
-			<DatePickerInput
-			placeholder="Enter your birthdate"
-			date={birthDate}
-			onDateChange={setBirthDate}
-			className="bg-black text-white"
-			/>
-		
-			<RadioGroup
-			defaultValue="male"
-			onValueChange={setGender}
-			className="flex justify-center gap-6"
-			>
-			<div className="flex items-center space-x-2">
-				<RadioGroupItem value="male" id="male" />
-				<label htmlFor="male">Male</label>
-			</div>
-			<div className="flex items-center space-x-2">
-				<RadioGroupItem value="female" id="female" />
-				<label htmlFor="female">Female</label>
-			</div>
-			</RadioGroup>
-		
-			<Button 
-			variant="gold"
-			size="lg"
-			disabled={!birthDate}
-			onClick={calculateKuaNumber}
-			className="px-8 h-14 text-lg font-semibold whitespace-nowrap"
-			>
-			Calculate My Kua Number
-			</Button>
-		</div>
-		</div>
+				</div>
 
-        {/* Result Display */}
-		{kuaNumber && (
-		<motion.div
-			initial={{ opacity: 0, y: 20 }}
-			animate={{ opacity: 1, y: 0 }}
-			className="mt-8 p-6 rounded-xl bg-gold/10 border border-gold/30 text-left prose prose-invert"
-		>
-			<h2 className="text-xl font-bold text-gold mb-1">
-			Your Kua Number: {kuaNumber} – {kuaProfiles[kuaNumber].name}
-			</h2>
-			<p className="mb-4">
-			Group: <span className="font-semibold">{kuaGroup(kuaNumber)}</span>
-			</p>
-		
-			<div className="space-y-4">
-			<div>
-				<h3 className="font-semibold mb-1">Key Traits:</h3>
-				<ul className="list-disc list-inside">
-				{kuaProfiles[kuaNumber].traits.map((trait, i) => (
-					<li key={i}>{trait}</li>
-				))}
-				</ul>
-			</div>
-		
-			<div>
-				<h3 className="font-semibold mb-1">Lucky Directions:</h3>
-				<ul className="list-disc list-inside">
-				{kuaProfiles[kuaNumber].lucky.map((dir, i) => (
-					<li key={i}>{dir}</li>
-				))}
-				</ul>
-			</div>
-		
-			<div>
-				<h3 className="font-semibold mb-1">Unlucky Directions:</h3>
-				<ul className="list-disc list-inside">
-				{kuaProfiles[kuaNumber].unlucky.map((dir, i) => (
-					<li key={i}>{dir}</li>
-				))}
-				</ul>
-			</div>
-		
-			<div>
-				<h3 className="font-semibold mb-1">Practical Tips:</h3>
-				<ul className="list-disc list-inside">
-				<li>Face your lucky direction when working or studying.</li>
-				<li>Position your bed so your head points toward a lucky direction.</li>
-				<li>Place your main door to align with your most favorable direction.</li>
-				</ul>
-			</div>
-			</div>
-		</motion.div>
-		)}
+              {/* Input and Button Box */}
+              <div className="space-y-4 bg-gray-50 p-6 rounded-xl border border-gray-200">
+                <div className="flex flex-col gap-4">
+                  <DatePickerInput
+                    placeholder="Enter your birthdate"
+                    date={birthDate}
+                    onDateChange={setBirthDate}
+                    className="bg-white text-black border border-gray-300"
+                  />
+                  <RadioGroup
+                    defaultValue="male"
+                    onValueChange={setGender}
+                    className="flex justify-center gap-6"
+                  >
+                    <div className="flex items-center space-x-2 text-black/90">
+                      <RadioGroupItem value="male" id="male" className="border border-black" />
+                      <label htmlFor="male">Male</label>
+                    </div>
+                    <div className="flex items-center space-x-2 text-black/90">
+                      <RadioGroupItem value="female" id="female" className="border border-black" />
+                      <label htmlFor="female">Female</label>
+                    </div>
+                  </RadioGroup>
+                  <Button
+                    variant="gold"
+                    size="lg"
+                    disabled={!birthDate}
+                    onClick={calculateKuaNumber}
+                    className="px-8 h-14 text-lg font-semibold whitespace-nowrap"
+                  >
+                    Calculate My Kua Number
+                  </Button>
+                </div>
+              </div>
 
-      </div>
-	  </main>
-	  <Footer />
+              {/* Result */}
+              {kuaNumber && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mt-8 p-6 rounded-xl bg-gray-50 border border-gray-200 text-left"
+                >
+                  <h2 className="text-xl font-bold text-gold mb-1">
+                    Your Kua Number: {kuaNumber} – {kuaProfiles[kuaNumber].name}
+                  </h2>
+                  <p className="mb-4 text-black/90">
+                    Group: <span className="font-semibold">{kuaGroup(kuaNumber)}</span>
+                  </p>
+                  <div className="space-y-4 text-black/90">
+                    <div>
+                      <h3 className="font-semibold mb-1 text-gold">Key Traits:</h3>
+                      <ul className="list-disc list-inside">
+                        {kuaProfiles[kuaNumber].traits.map((trait, i) => (
+                          <li key={i}>{trait}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold mb-1 text-gold">Lucky Directions:</h3>
+                      <ul className="list-disc list-inside">
+                        {kuaProfiles[kuaNumber].lucky.map((dir, i) => (
+                          <li key={i}>{dir}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold mb-1 text-gold">Unlucky Directions:</h3>
+                      <ul className="list-disc list-inside">
+                        {kuaProfiles[kuaNumber].unlucky.map((dir, i) => (
+                          <li key={i}>{dir}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold mb-1 text-gold">Practical Tips:</h3>
+                      <ul className="list-disc list-inside">
+                        <li>Face your lucky direction when working or studying.</li>
+                        <li>Position your bed so your head points toward a lucky direction.</li>
+                        <li>Place your main door to align with your most favorable direction.</li>
+                      </ul>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </div>
+
+            {/* Right side - related articles */}
+            <div className="max-w-md mt-40 lg:mt-0">
+              <h2 className="text-xl font-semibold text-black mb-4">Related Articles</h2>
+              <ul className="space-y-2 text-sm">
+                <li><Link to="#" className="text-black/80 hover:text-gold">Feng Shui for Beginners: The Basics</Link></li>
+                <li><Link to="#" className="text-black/80 hover:text-gold">How to Use Your Lucky Directions at Work</Link></li>
+                <li><Link to="#" className="text-black/80 hover:text-gold">Balancing the Five Elements in Your Home</Link></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </main>
+      <Footer />
     </div>
   );
 }
