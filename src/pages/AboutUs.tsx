@@ -9,7 +9,6 @@ const AboutUsPage = () => {
       <main>
         <AboutUsSection />
       </main>
-      <Footer />
     </>
   );
 };

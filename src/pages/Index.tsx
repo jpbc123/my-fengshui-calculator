@@ -31,8 +31,6 @@ const Index = () => {
 		  <DailyWisdomBanner />
         </div>
 		
-
-        <Footer />
       </main>
 
 

@@ -1,15 +1,16 @@
+// src/components/Breadcrumb.tsx
 import { Link } from "react-router-dom";
 
 type Crumb = {
   label: string;
-  path?: string; // optional, no link if not given
+  path?: string;
 };
 
 interface BreadcrumbProps {
   items: Crumb[];
 }
 
-const Breadcrumb: React.FC<BreadcrumbProps> = ({ items }) => {
+const Breadcrumb: React.FC<BreadcrumbProps> = ({ items = [] }) => {
   return (
     <nav className="text-sm text-black/70 mb-4">
       {items.map((item, idx) => (

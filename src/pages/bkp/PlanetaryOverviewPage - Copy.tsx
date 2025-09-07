@@ -1,0 +1,173 @@
+// src/components/PlanetaryOverviewPage.tsx - UPDATED TO USE SANITY VIA BACKEND API
+import { useState, useEffect } from "react";
+import dayjs from "dayjs";
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import Breadcrumb from "@/components/Breadcrumb";
+import { Sparkle, Info } from "lucide-react";
+
+const breadcrumbs = [
+  { label: "Home", path: "/" },
+  { label: "Daily Insights", path: "/daily-insights" },
+  { label: "Planetary Overview" },
+];
+
+interface PlanetaryOverviewData {
+    date: string;
+    planetary_index: number;
+    summary: string;
+    article: string;
+}
+
+export default function PlanetaryOverviewPage() {
+    const [data, setData] = useState<PlanetaryOverviewData | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    // Fixed API base URL to match your server
+    const API_BASE_URL = "http://localhost:3001";
+
+    useEffect(() => {
+        const fetchTodayData = async () => {
+            setLoading(true);
+            setError(null);
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/planetary-overview`);
+                
+                if (!response.ok) {
+                    if (response.status === 202) {
+                        // Request in progress, retry after delay
+                        setTimeout(() => fetchTodayData(), 3000);
+                        return;
+                    }
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                
+                // Ensure we have the expected data structure
+                if (result && result.date) {
+                    setData({
+                        date: result.date,
+                        planetary_index: result.planetary_index || 3,
+                        summary: result.summary || "Planetary energies are in transition today.",
+                        article: result.article || "Today brings a unique blend of cosmic energies. Take time to reflect and align with the universal flow."
+                    });
+                } else {
+                    throw new Error("Invalid data format received");
+                }
+            } catch (error) {
+                console.error("Failed to fetch planetary overview:", error);
+                setError("Failed to load today's planetary overview. Please try again later.");
+                
+                // Set fallback data
+                const today = dayjs().format('YYYY-MM-DD');
+                setData({
+                    date: today,
+                    planetary_index: 3,
+                    summary: "Universal energies are in transition today. Take time for reflection and avoid making hasty decisions.",
+                    article: "Today brings a blend of practical and intuitive energies. The planetary alignments suggest focusing on balance and mindful decision-making. While some cosmic influences may feel challenging, they offer opportunities for growth and self-discovery. Pay attention to your inner wisdom and trust your instincts as you navigate the day's opportunities."
+                });
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchTodayData();
+    }, [API_BASE_URL]);
+
+    return (
+        <div className="flex flex-col min-h-screen bg-white text-black overflow-hidden">
+            <Header />
+            <main className="flex-grow pt-6 px-1 pb-10">
+                <div className="pt-24 px-4 pb-16 max-w-5xl mx-auto">
+                    {/* 2-column layout */}
+                    <div className="flex flex-col lg:flex-row lg:justify-between">
+                        {/* Left side - Content */}
+                        <div className="max-w-xl">
+                            {/* Breadcrumbs + title */}
+                            <div className="mb-8">
+                                <Breadcrumb items={breadcrumbs} className="text-black/80" />
+                                <h1 className="text-2xl font-bold text-gold mt-4 mb-6 flex items-center gap-2">
+                                    <Sparkle className="w-6 h-6" /> Daily Planetary Overview
+                                </h1>
+                                <p className="text-black/80 mb-6">
+                                    A detailed look at today's cosmic influences and how they affect your energy.
+                                </p>
+                            </div>
+
+                            {/* Error message if any */}
+                            {error && (
+                                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
+                                    <p className="text-red-700 text-sm">{error}</p>
+                                </div>
+                            )}
+
+                            {/* Summary Box */}
+                            <div className="flex flex-col gap-2 mb-8">
+                                <div className="flex items-start gap-2 text-black/80 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                                    <Info size={20} className="text-gold mt-1 shrink-0" />
+                                    <div className="text-left">
+                                        <p>
+                                            The <span className="font-semibold">Planetary Index</span> reflects the overall harmony and intensity of celestial alignments. A higher score indicates a favorable day for most activities.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Article Content */}
+                            <div className="space-y-4 bg-gray-50 p-6 rounded-xl border border-gray-200">
+                                {loading ? (
+                                    <div className="text-center text-black/90">Loading today's overview...</div>
+                                ) : data ? (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        className="text-black/90 text-left"
+                                    >
+                                        <h2 className="text-xl font-bold text-gold mb-2">
+                                            Overview for {dayjs(data.date).format('MMMM D, YYYY')}
+                                        </h2>
+                                        <p className="text-sm font-semibold mb-2">
+                                            Planetary Index: {data.planetary_index}/5
+                                        </p>
+                                        <p className="mb-4 text-base leading-relaxed">{data.summary}</p>
+                                        
+                                        <div className="mt-6">
+                                            <h3 className="text-lg font-semibold text-gold mb-3">Detailed Analysis</h3>
+                                            <div className="prose prose-sm prose-gold max-w-none text-black/90">
+                                                {/* Handle both HTML content and plain text */}
+                                                {data.article.includes('<') ? (
+                                                    <div dangerouslySetInnerHTML={{ __html: data.article }} />
+                                                ) : (
+                                                    <div className="whitespace-pre-line leading-relaxed">
+                                                        {data.article}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                ) : (
+                                    <div className="text-center text-black/90">No planetary overview available for today.</div>
+                                )}
+                            </div>
+                        </div>
+                        
+                        {/* Right side - related articles */}
+                        <div className="max-w-md mt-12 lg:mt-0">
+                            <h2 className="text-xl font-semibold text-black mb-4">Related Articles</h2>
+                            <ul className="space-y-2 text-sm">
+                                <li><Link to="#" className="text-black/80 hover:text-gold">Your Personal Energy Field: The Aura</Link></li>
+                                <li><Link to="#" className="text-black/80 hover:text-gold">Decoding Celestial Events</Link></li>
+                                <li><Link to="#" className="text-black/80 hover:text-gold">Chakras and Their Role in Wellness</Link></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    );
+}

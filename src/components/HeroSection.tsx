@@ -203,7 +203,7 @@ const HeroSection = () => {
             <span className="text-gold font-semibold cursor-pointer hover:underline ml-1">
               <Link 
                 to="/chinese-zodiac-calculator" 
-                className="text-gold font-semibold cursor-pointer hover:underline ml-1"
+                className="text-gold font-semibold cursor-pointer hover:underline hover:text-yellow-500 transition-colors"
               >
                 Use our Chinese Zodiac Calculator →
               </Link>

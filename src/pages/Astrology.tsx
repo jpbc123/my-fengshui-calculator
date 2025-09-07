@@ -78,7 +78,6 @@ export default function Astrology() {
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 }

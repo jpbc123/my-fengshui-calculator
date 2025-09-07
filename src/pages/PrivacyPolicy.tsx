@@ -12,7 +12,7 @@ const PrivacyPolicy = () => {
           <article className="prose prose-lg mx-auto text-black">
             <h1 className="text-4xl font-bold text-gold mb-6 text-center">Privacy Policy</h1>
             <p className="lead text-black/80">
-              Welcome to My Feng Shui Calculator. We value your privacy and are committed to protecting your personal information. This Privacy Policy outlines how we collect, use, and safeguard your data when you use our website.
+              Welcome to Feng Shui & Beyond. We value your privacy and are committed to protecting your personal information. This Privacy Policy outlines how we collect, use, and safeguard your data when you use our website.
             </p>
 
             <section>
@@ -80,7 +80,6 @@ const PrivacyPolicy = () => {
             </section>
           </article>
         </main>
-        <Footer />
       </div>
     </>
   );

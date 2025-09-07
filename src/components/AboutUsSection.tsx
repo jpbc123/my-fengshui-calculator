@@ -2,6 +2,7 @@
 
 import type React from "react";
 import { Link } from "react-router-dom"; 
+import AboutUsImage from "@/assets/about-us-img.jpg";
 
 import { useState, useEffect, useRef } from "react";
 import {
@@ -63,25 +64,25 @@ export default function AboutUsSection() {
 
   const services = [
     {
-      icon: <Hand className="w-6 h-6" />,
+      icon: <Compass className="w-6 h-6" />,
       secondaryIcon: <Sparkles className="w-4 h-4 absolute -top-1 -right-1 text-[#A9BBC8]" />,
       title: "Our Philosophy",
       description:
-        "We believe that harmony and balance are not just abstract concepts—they are tangible forces that can be understood and applied to enrich our lives. The tools and calculators on this site are designed to be your compass, helping you navigate your path with greater clarity and purpose. My goal is to empower you to unlock your true potential and create a more harmonious existence.",
+        "We believe that harmony and balance are not just abstract concepts—they are tangible forces that can be understood and applied to enrich our lives. The tools and calculators on this site are designed to be your compass, helping you navigate your path with greater clarity and purpose. Our goal is to empower you to unlock your true potential and create a more harmonious existence.",
       position: "left",
     },
     {
-      icon: <Compass className="w-6 h-6" />,
+      icon: <Hand className="w-6 h-6" />,
       secondaryIcon: <Star className="w-4 h-4 absolute -top-1 -right-1 text-[#A9BBC8]" />,
       title: "Our Commitment",
       description:
-        "To provide accurate, accessible, and meaningful tools that guide you toward a more balanced and fulfilling life.",
+        "To provide accurate, accessible, and meaningful tools that guide you toward a more balanced and fulfilling life. We are committed to providing you with fresh, (almost) daily content that is both a trusted resource and a source of leisure. Our content is designed to be accessible and comforting, providing guidance for any part of your life, from relationships and career to personal growth.     ",
       position: "left",
     },
 	{
 	icon: <Lightbulb className="w-6 h-6" />,
 	secondaryIcon: <Sparkles className="w-4 h-4 absolute -top-1 -right-1 text-[#A9BBC8]" />,
-	title: "What We Offer",
+	title: "What We Provide",
 	description: (
 		<>
 		<strong>Personalized Insights:</strong> Our calculators are built on authentic principles to provide you with unique insights into your personal energy, relationships, and life path.<br />
@@ -169,7 +170,7 @@ export default function AboutUsSection() {
         </motion.div>
 
         <motion.p className="text-center max-w-2xl mx-auto mb-16 text-[#202e44]/80" variants={itemVariants}>
-          Welcome to the My Feng Shui Calculator family! As a passionate student and practitioner of Eastern metaphysics, I built this site to share the transformative power of ancient wisdom with a modern audience. This isn't just a collection of algorithms; it's a personal mission to make these profound insights accessible to everyone.
+          Welcome to Feng Shui & Beyond! We believe in the power of optimism. Our content is a cosmic guide to uplift and inspire you, helping you find your way toward self-empowerment and a more harmonious life.
         </motion.p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
@@ -201,9 +202,8 @@ export default function AboutUsSection() {
                 transition={{ duration: 0.8, delay: 0.3 }}
                 whileHover={{ scale: 1.03, transition: { duration: 0.3 } }}
               >
-                <img
-                  src="https://images.unsplash.com/photo-1747582411588-f9b4acabe995?q=80&w=3027&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                  alt="Modern House"
+                <img src={AboutUsImage}
+                  alt="Mystical"
                   className="w-full h-full object-cover"
                 />
                 <motion.div

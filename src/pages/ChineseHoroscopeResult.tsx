@@ -4,8 +4,10 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Breadcrumb from '../components/Breadcrumb';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import PeriodTabs from '../components/PeriodTabs';
+import { ImageSwiper } from '../components/OlderImageSwiper';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 
 // Image imports
 import ratImage from '../assets/chinese-zodiac/year-of-the-rat.png';
@@ -20,6 +22,13 @@ import monkeyImage from '../assets/chinese-zodiac/year-of-the-monkey.png';
 import roosterImage from '../assets/chinese-zodiac/year-of-the-rooster.png';
 import dogImage from '../assets/chinese-zodiac/year-of-the-dog.png';
 import pigImage from '../assets/chinese-zodiac/year-of-the-pig.png';
+
+import lotteryImage from '../assets/lottery.jpg';
+import ncompatibilityImage from '../assets/name-compatibility.jpg';
+import ccompatibilityImage from '../assets/chinese-compatibility.jpg';
+import wcompatibilityImage from '../assets/western-compatibility.jpg';
+import fcookieImage from '../assets/fortunecookie.jpg';
+
 
 const zodiacImages: { [key: string]: string } = {
     rat: ratImage, ox: oxImage, tiger: tigerImage, rabbit: rabbitImage,
@@ -54,10 +63,10 @@ interface HoroscopeTabsProps {
 
 // Base interface for all horoscope data
 interface BaseHoroscopeData {
-    id?: string;
+    _id?: string;
     sign: string;
-    horoscope: string;
-    horoscope_en: string;
+    horoscope?: string;
+    horoscope_en?: string;
     money?: string;
     money_en?: string;
     social?: string;
@@ -70,17 +79,27 @@ interface BaseHoroscopeData {
     lucky_color_en?: string;
     lucky_number?: string;
     lucky_number_en?: string;
-    updated_at: string;
+    // Sanity fields
+    overviewContent?: string;
+    loveContent?: string;
+    careerContent?: string;
+    wealthContent?: string;
+    socialContent?: string;
+    luckyColor?: string;
+    luckyNumber?: string | number;
 }
 
 // Specific interfaces for each period
 interface DailyHoroscopeDataType extends BaseHoroscopeData {
-    for_date: string;
+    for_date?: string;
+    forDate?: string;
 }
 
 interface WeeklyHoroscopeDataType extends BaseHoroscopeData {
-    start_date: string;
-    end_date: string;
+    start_date?: string;
+    end_date?: string;
+    startDate?: string;
+    endDate?: string;
 }
 
 interface YearlyHoroscopeDataType extends BaseHoroscopeData {
@@ -104,7 +123,6 @@ function getWeekDates(date = new Date()) {
         end: endOfWeek.toISOString().slice(0, 10)
     };
 }
-
 
 const HoroscopeTabs = ({ tabs, activeTab, onTabClick }: HoroscopeTabsProps) => {
     return (
@@ -140,13 +158,19 @@ const HoroscopeTabs = ({ tabs, activeTab, onTabClick }: HoroscopeTabsProps) => {
 const ChineseHoroscopeResult = () => {
     const { zodiac } = useParams<{ zodiac: string }>();
     const navigate = useNavigate();
-
     const [horoscopeData, setHoroscopeData] = useState<HoroscopeDataType | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [activeCategoryTab, setActiveCategoryTab] = useState<CategoryTabType>('horoscope');
-    const [activePeriodTab, setActivePeriodTab] = useState<PeriodTabType>('today'); // New state for period tabs
+    const [activePeriodTab, setActivePeriodTab] = useState<PeriodTabType>('today');
     const [language, setLanguage] = useState<LanguageType>('en');
+	const [periodLoading, setPeriodLoading] = useState(false); // Add loading state specifically for period changes
+    const [contentKey, setContentKey] = useState(0); // For triggering content animations
+	const [activeCardIndex, setActiveCardIndex] = useState(0);
+	
+	const handleCardSwipe = (newIndex) => {
+        setActiveCardIndex(newIndex);
+    };
 
     const periodTabs = useMemo(() => [
         { id: 'yesterday', label: 'Yesterday' },
@@ -155,32 +179,86 @@ const ChineseHoroscopeResult = () => {
         { id: 'yearly', label: 'Current Year' },
     ], []);
 
+// DEFINE THE FEATURE CARDS WITH IMAGES AND LINKS
+const featureCards = useMemo(() => [
+    {
+        title: "Lucky Number Generator",
+        description: "Discover your fortune through numbers",
+        images: lotteryImage,
+        link: '/lucky-numbers'
+    },
+    {
+        title: "Name Compatibility",
+        description: "Find out if he/she is the one",
+        images: ncompatibilityImage,
+        link: '/name-compatibility'
+    },
+    {
+        title: "Chinese Zodiac Compatibility",
+        description: "Explore how your Chinese zodiac sign aligns with others",
+        images: ccompatibilityImage,
+        link: '/chinese-compatibility'
+    },
+    {
+        title: "Western Zodiac Compatibility",
+        description: "See how your Western star sign matches with different signs",
+        images: wcompatibilityImage,
+        link: '/western-compatibility'
+    },
+    {
+        title: "Daily Fortune Cookie",
+        description: "Crack open a virtual cookie for a daily dose of wisdom and fortune",
+        images: fcookieImage,
+        link: '/fortune-cookie'
+    }
+], [navigate]);
+
+
+const allFeatureImages = useMemo(() =>
+    featureCards.map(card => card.images).join(','),
+    [featureCards]
+);
+
     const zodiacName = zodiac ? zodiac.charAt(0).toUpperCase() + zodiac.slice(1) : '';
     const breadcrumbs = [
         { label: "Home", path: "/" },
+		{ label: "Horoscope", path: "/horoscope" },
         { label: `${zodiacName} Horoscope` },
     ];
 
     const categoryTabs: CategoryTabItem[] = useMemo(() => [
-        { id: 'horoscope', label: 'Overview', icon: '☀️', field: 'horoscope', field_en: 'horoscope_en' },
-        { id: 'relationship', label: 'Relationship', icon: '💕', field: 'love', field_en: 'love_en' },
-        { id: 'career', label: 'Career', icon: '💼', field: 'career', field_en: 'career_en' },
-        { id: 'wealth', label: 'Wealth', icon: '💰', field: 'money', field_en: 'money_en' },
-        { id: 'social', label: 'Social', icon: '👥', field: 'social', field_en: 'social_en' },
-        { id: 'lucky_color', label: 'Lucky Color', icon: '🌈', field: 'lucky_color', field_en: 'lucky_color_en' },
-        { id: 'lucky_number', label: 'Lucky Number', icon: '🔢', field: 'lucky_number', field_en: 'lucky_number_en' },
+        { id: 'horoscope', label: 'Overview', icon: '', field: 'horoscope', field_en: 'horoscope_en' },
+        { id: 'relationship', label: 'Relationship', icon: '', field: 'love', field_en: 'love_en' },
+        { id: 'career', label: 'Career', icon: '', field: 'career', field_en: 'career_en' },
+        { id: 'wealth', label: 'Wealth', icon: '', field: 'money', field_en: 'money_en' },
+        { id: 'social', label: 'Social', icon: '', field: 'social', field_en: 'social_en' },
+        { id: 'lucky_color', label: 'Lucky Color', icon: '', field: 'lucky_color', field_en: 'lucky_color_en' },
+        { id: 'lucky_number', label: 'Lucky Number', icon: '', field: 'lucky_number', field_en: 'lucky_number_en' },
     ], []);
+
+    // Enhanced period tab handler with optimistic loading
+    const handlePeriodTabChange = (newPeriod: PeriodTabType) => {
+        if (newPeriod === activePeriodTab) return;
+        
+        setPeriodLoading(true);
+        setActivePeriodTab(newPeriod);
+        setContentKey(prev => prev + 1); // Force content re-render with animation
+    };
 
     useEffect(() => {
         const fetchHoroscopeData = async () => {
             if (!zodiac) {
                 setLoading(false);
+                setPeriodLoading(false);
                 setHoroscopeData(null);
                 setError(null);
                 return;
             }
 
-            setLoading(true);
+            // Don't show main loading for period changes
+            if (!periodLoading) {
+                setLoading(true);
+            }
             setError(null);
 
             let apiUrl = `/api/chinese-horoscope/${zodiac.toLowerCase()}`;
@@ -190,8 +268,7 @@ const ChineseHoroscopeResult = () => {
                 const dayOffset = activePeriodTab === 'yesterday' ? -1 : 0;
                 apiUrl += `?period=daily&dayOffset=${dayOffset}`;
             } else if (activePeriodTab === 'weekly') {
-                const { start, end } = getWeekDates();
-                apiUrl += `?period=weekly&startDate=${start}&endDate=${end}`;
+                apiUrl += `?period=weekly`;
             } else if (activePeriodTab === 'yearly') {
                 apiUrl += `?period=yearly`;
             }
@@ -203,6 +280,7 @@ const ChineseHoroscopeResult = () => {
                     throw new Error(errorData.error || `Server error: ${response.statusText}`);
                 }
                 const data: HoroscopeDataType = await response.json();
+                console.log('Received horoscope data:', data); // Debug log
                 setHoroscopeData(data);
             } catch (err: any) {
                 console.error("Failed to fetch horoscope data:", err);
@@ -210,30 +288,71 @@ const ChineseHoroscopeResult = () => {
                 setHoroscopeData(null);
             } finally {
                 setLoading(false);
+                setPeriodLoading(false);
             }
         };
 
         fetchHoroscopeData();
-    }, [zodiac, activePeriodTab]); // Re-fetch when zodiac or period tab changes
-    
+    }, [zodiac, activePeriodTab]);
 
     const renderContent = () => {
-        if (loading) return null;
+        if (loading && !periodLoading) return null;
         if (error) return <div className="text-center text-red-500 py-8"><p>{error}</p></div>;
         if (!horoscopeData) return <div className="text-center text-gray-500 py-8"><p>No data available for this section.</p></div>;
 
         const activeTabData = categoryTabs.find(tab => tab.id === activeCategoryTab);
         if (!activeTabData) return null;
 
-        const chineseContent = (horoscopeData as any)[activeTabData.field];
-        const englishContent = (horoscopeData as any)[activeTabData.field_en];
+        // Handle both snake_case and camelCase field names
+        let chineseContent = (horoscopeData as any)[activeTabData.field];
+        let englishContent = (horoscopeData as any)[activeTabData.field_en];
+
+        // Fallback for yearly data structure
+        if (activePeriodTab === 'yearly' && !chineseContent && !englishContent) {
+            switch (activeTabData.id) {
+                case 'horoscope':
+                    chineseContent = (horoscopeData as any).overviewContent;
+                    englishContent = (horoscopeData as any).overviewContent;
+                    break;
+                case 'relationship':
+                    chineseContent = (horoscopeData as any).loveContent;
+                    englishContent = (horoscopeData as any).loveContent;
+                    break;
+                case 'career':
+                    chineseContent = (horoscopeData as any).careerContent;
+                    englishContent = (horoscopeData as any).careerContent;
+                    break;
+                case 'wealth':
+                    chineseContent = (horoscopeData as any).wealthContent;
+                    englishContent = (horoscopeData as any).wealthContent;
+                    break;
+                case 'social':
+                    chineseContent = (horoscopeData as any).socialContent;
+                    englishContent = (horoscopeData as any).socialContent;
+                    break;
+                case 'lucky_color':
+                    chineseContent = (horoscopeData as any).luckyColor;
+                    englishContent = (horoscopeData as any).luckyColor;
+                    break;
+                case 'lucky_number':
+                    chineseContent = String((horoscopeData as any).luckyNumber || '');
+                    englishContent = String((horoscopeData as any).luckyNumber || '');
+                    break;
+            }
+        }
 
         if (!chineseContent && !englishContent) {
             return <div className="text-center text-gray-500 py-8"><p>No data available for this section.</p></div>;
         }
 
         return (
-            <div className="space-y-6">
+            <motion.div 
+                key={contentKey} // This will trigger re-animation when content changes
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+                className="space-y-6"
+            >
                 {englishContent && (language === 'both' || language === 'en') && (
                     <div>
                         {language === 'both' && <p className="text-gray-400 text-sm mb-2 font-semibold">English:</p>}
@@ -242,11 +361,11 @@ const ChineseHoroscopeResult = () => {
                 )}
                 {chineseContent && (language === 'both' || language === 'cn') && (
                     <div>
-                        {language === 'both' && <p className="text-gray-400 text-sm mb-2 font-semibold">中文:</p>}
+                        {language === 'both' && <p className="text-gray-400 text-sm mb-2 font-semibold">CN</p>}
                         <p className="prose text-lg leading-relaxed text-gray-800">{chineseContent}</p>
                     </div>
                 )}
-            </div>
+            </motion.div>
         );
     };
 
@@ -255,11 +374,32 @@ const ChineseHoroscopeResult = () => {
 
         if (activePeriodTab === 'today' || activePeriodTab === 'yesterday') {
             const dailyData = horoscopeData as DailyHoroscopeDataType;
-            return new Date(dailyData.for_date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            const dateString = dailyData.for_date || dailyData.forDate;
+            if (!dateString) return null;
+            
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return null; // Check for invalid date
+            
+            return date.toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
         } else if (activePeriodTab === 'weekly') {
             const weeklyData = horoscopeData as WeeklyHoroscopeDataType;
-            const start = new Date(weeklyData.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-            const end = new Date(weeklyData.end_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            const startDateString = weeklyData.start_date || weeklyData.startDate;
+            const endDateString = weeklyData.end_date || weeklyData.endDate;
+            
+            if (!startDateString || !endDateString) return null;
+            
+            const startDate = new Date(startDateString);
+            const endDate = new Date(endDateString);
+            
+            if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) return null;
+            
+            const start = startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            const end = endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
             return `Week of ${start} - ${end}`;
         } else if (activePeriodTab === 'yearly') {
             const yearlyData = horoscopeData as YearlyHoroscopeDataType;
@@ -270,7 +410,7 @@ const ChineseHoroscopeResult = () => {
 
     const currentZodiac = zodiac || '';
 
-    if (loading && zodiac) {
+    if (loading && zodiac && !periodLoading) {
         return (
             <div className="min-h-screen bg-white text-black flex flex-col justify-center items-center p-4">
                 <Header />
@@ -292,78 +432,131 @@ const ChineseHoroscopeResult = () => {
         <div className="min-h-screen bg-white text-black flex flex-col">
             <Header />
             <main className="flex-grow container mx-auto px-4 py-8 max-w-6xl mt-20">
-                <Breadcrumb items={breadcrumbs} />
-
+                <Breadcrumb items={breadcrumbs} />	
+				
                 <div className="flex flex-col lg:flex-row gap-6 mt-8">
                     {/* Main Content Area */}
-                    <div className="flex-1 lg:max-w-3xl">
+                    <div className="flex-1">
                         {currentZodiac && horoscopeData ? (
-                            <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
-                                {/* Zodiac title + image */}
-                                <div className="mb-8 text-center">
-                                    <img src={zodiacImages[currentZodiac]} alt={zodiacName} className="w-24 h-24 object-contain mx-auto mb-4" />
-                                    <h1 className="text-4xl md:text-5xl font-bold text-gray-800">{zodiacName || 'Chinese Horoscope'}</h1>
-                                </div>
+                            <div className="space-y-8">
+                                {/* EXISTING HOROSCOPE RESULTS BOX */}
+                                <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
+                                    {/* Zodiac title + image */}
+                                    <div className="mb-8 text-center">
+                                        <img src={zodiacImages[currentZodiac]} alt={zodiacName} className="w-24 h-24 object-contain mx-auto mb-4" />
+                                        <h1 className="text-4xl md:text-5xl font-bold text-gray-800">{zodiacName || 'Chinese Horoscope'}</h1>
+                                    </div>
 
-                                {/* Zodiac Dropdown for changing signs */}
-                                <div className="relative inline-block w-full text-center mb-6">
-                                    <div className="relative inline-block w-full md:w-auto">
-                                        <select
-                                            value={currentZodiac}
-                                            onChange={(e) => {
-                                                const selectedZodiac = e.target.value;
-                                                if (selectedZodiac) navigate(`/zodiac/${selectedZodiac.toLowerCase()}`);
-                                            }}
-                                            className="w-full pl-3 pr-10 py-2 text-lg text-black bg-gray-100 border border-gray-300 rounded-lg appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-purple-500"
-                                        >
-                                            <option value="" disabled hidden={!!currentZodiac} selected={!currentZodiac}>Change Sign</option>
-                                            {allZodiacs.map((sign) => (
-                                                <option key={sign} value={sign.toLowerCase()} className="bg-white text-black">{sign}</option>
-                                            ))}
-                                        </select>
-                                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
-                                            <svg className="fill-current h-4 w-4 text-gray-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                                            </svg>
+                                    {/* Zodiac Dropdown for changing signs */}
+                                    <div className="relative inline-block w-full text-center mb-6">
+                                        <div className="relative inline-block w-full md:w-auto">
+                                            <select
+                                                value={currentZodiac}
+                                                onChange={(e) => {
+                                                    const selectedZodiac = e.target.value;
+                                                    if (selectedZodiac) navigate(`/zodiac/${selectedZodiac.toLowerCase()}`);
+                                                }}
+                                                className="w-full pl-3 pr-10 py-2 text-lg text-black bg-gray-100 border border-gray-300 rounded-lg appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                            >
+                                                <option value="" disabled>Change Sign</option>
+                                                {allZodiacs.map((sign) => (
+                                                    <option key={sign} value={sign.toLowerCase()} className="bg-white text-black">{sign}</option>
+                                                ))}
+                                            </select>
+                                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
+                                                <svg className="fill-current h-4 w-4 text-gray-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                                </svg>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                
-                                {/* Language Toggle buttons */}
-                                <div className="flex justify-center md:justify-end mb-6">
-                                    <div className="inline-flex bg-gray-100 rounded-lg p-1 space-x-1 border border-gray-200">
-                                        <button onClick={() => setLanguage('en')} className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${language === 'en' ? 'bg-black text-white' : 'text-gray-600 hover:bg-white'}`}>EN</button>
-                                        <button onClick={() => setLanguage('cn')} className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${language === 'cn' ? 'bg-black text-white' : 'text-gray-600 hover:bg-white'}`}>中文</button>
-                                        <button onClick={() => setLanguage('both')} className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${language === 'both' ? 'bg-black text-white' : 'text-gray-600 hover:bg-white'}`}>Both</button>
+                                    
+                                    {/* Language Toggle buttons */}
+                                    <div className="flex justify-center md:justify-end mb-6">
+                                        <div className="inline-flex bg-gray-100 rounded-lg p-1 space-x-1 border border-gray-200">
+                                            <button onClick={() => setLanguage('en')} className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${language === 'en' ? 'bg-black text-white' : 'text-gray-600 hover:bg-white'}`}>EN</button>
+                                            <button onClick={() => setLanguage('cn')} className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${language === 'cn' ? 'bg-black text-white' : 'text-gray-600 hover:bg-white'}`}>CN</button>
+                                            <button onClick={() => setLanguage('both')} className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${language === 'both' ? 'bg-black text-white' : 'text-gray-600 hover:bg-white'}`}>Both</button>
+                                        </div>
+                                    </div>
+
+                                    {/* Period Tabs with loading indicator */}
+                                    <div className="gap-2 mb-6 relative">
+                                        <PeriodTabs
+                                            tabs={periodTabs}
+                                            activeTab={activePeriodTab}
+                                            onTabClick={handlePeriodTabChange}
+                                        />
+                                        {periodLoading && (
+                                            <div className="absolute -right-8 top-1/2 transform -translate-y-1/2">
+                                                <div className="animate-spin rounded-full h-4 w-4 border-2 border-purple-500 border-t-transparent"></div>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Horoscope Category Tabs using Framer Motion style */}
+                                    <div className="flex justify-start flex-wrap mb-6">
+                                        <HoroscopeTabs
+                                            tabs={categoryTabs}
+                                            activeTab={activeCategoryTab}
+                                            onTabClick={setActiveCategoryTab}
+                                        />
+                                    </div>
+
+                                    {/* Content display area with enhanced animations */}
+                                    <div className="mb-8 p-4 bg-gray-50 rounded-lg border border-gray-200 shadow-inner relative">
+                                        {periodLoading && (
+                                            <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center rounded-lg z-10">
+                                                <div className="flex items-center space-x-2">
+                                                    <div className="animate-spin rounded-full h-6 w-6 border-2 border-amber-500 border-t-transparent"></div>
+                                                    <span className="text-gray-600">Loading...</span>
+                                                </div>
+                                            </div>
+                                        )}
+                                        <AnimatePresence mode="wait">
+                                            <motion.div
+                                                key={`${activePeriodTab}-${activeCategoryTab}`}
+                                                initial={{ opacity: periodLoading ? 0.3 : 1 }}
+                                                animate={{ opacity: 1 }}
+                                                transition={{ duration: 0.2 }}
+                                            >
+                                                <div className="text-gray-500 mb-4 text-center text-sm">
+                                                    {renderPeriodDateInfo()}
+                                                </div>
+                                                {renderContent()}
+                                            </motion.div>
+                                        </AnimatePresence>
                                     </div>
                                 </div>
 
-                                {/* Period Tabs (Today, Yesterday, Weekly, Yearly) */}
-                                <div className="flex justify-start flex-wrap gap-2 mb-6">
-                                    <PeriodTabs
-                                        tabs={periodTabs}
-                                        activeTab={activePeriodTab}
-                                        onTabClick={setActivePeriodTab}
-                                    />
-                                </div>
-                                
+                                {/* ADD THIS NEW SECTION - IMAGESWIPER */}
+                                <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-800 text-center mb-8">
+                Play & Discover
+            </h2>
+            <div className="flex flex-col items-center">
+                <ImageSwiper
+                    images={allFeatureImages}
+                    // 2. Pass the index from the swiper to the handler
+                    onSwipe={handleCardSwipe}
+                />
 
-                                {/* Horoscope Category Tabs using Framer Motion style */}
-                                <div className="mb-6">
-                                    <HoroscopeTabs
-                                        tabs={categoryTabs}
-                                        activeTab={activeCategoryTab}
-                                        onTabClick={setActiveCategoryTab}
-                                    />
-                                </div>
-
-                                {/* Content display area */}
-                                <div className="mb-8 p-4 bg-gray-50 rounded-lg border border-gray-200 shadow-inner">
-                                    <div className="text-gray-500 mb-4 text-center text-sm">
-                                        {renderPeriodDateInfo()} {/* Dynamic date/period info */}
-                                    </div>
-                                    {renderContent()} {/* Render the horoscope content */}
-                                </div>
+                <div className="text-center mt-4">
+                    {/* The details now correctly update with the new index */}
+                    <h3 className="text-lg font-semibold">{featureCards[activeCardIndex].title}</h3>
+                    <p className="text-sm text-muted-foreground">{featureCards[activeCardIndex].description}</p>
+                    <p className="mt-1">
+                        <span className="font-semibold">{featureCards[activeCardIndex].price}</span>
+                    </p>
+                    <button
+                        onClick={() => navigate(featureCards[activeCardIndex].link)}
+                        className="mt-4 bg-purple-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-purple-700 transition-colors"
+                    >
+                        View
+                    </button>
+                </div>
+            </div>
+        </div>
                             </div>
                         ) : (
                             // UI for when no horoscope data is found or zodiac is not selected
@@ -376,17 +569,8 @@ const ChineseHoroscopeResult = () => {
                             </div>
                         )}
                     </div>
-
-                    {/* Sidebar / Ad Placeholder */}
-                    <div className="w-full lg:w-80 flex-shrink-0">
-                        <div className="bg-white rounded-lg p-4 text-center text-gray-600 border border-gray-200 shadow-sm">
-                            <span className="font-semibold text-xl text-gray-800">Your Ad Here</span>
-                            <p className="text-sm mt-2">Space for a sponsor or a relevant product.</p>
-                        </div>
-                    </div>
                 </div>
             </main>
-            <Footer />
         </div>
     );
 };

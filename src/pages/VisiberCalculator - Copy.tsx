@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -6,12 +6,22 @@ import { DatePickerInput } from "@/components/DatePickerInput";
 import { motion, AnimatePresence } from "framer-motion";
 import { Info, Share2 } from "lucide-react";
 import Breadcrumb from "@/components/Breadcrumb";
+import { Link } from "react-router-dom";
+import { client } from "../../sanityClient";
+import { PortableText } from '@portabletext/react';
+import imageUrlBuilder from '@sanity/image-url';
 
 const breadcrumbs = [
   { label: "Home", path: "/" },
   { label: "Numerology", path: "/numerology" },
   { label: "Visiber Calculator" },
 ];
+
+// Interface for article data from Sanity
+interface SanityArticle {
+  title: string;
+  slug: string; 
+}
 
 const visiberMeanings: Record<number, string> = {
   1: "Leadership, independence, ambitious",
@@ -73,6 +83,30 @@ const VisiberCalculator = () => {
   const [visiberNumber, setVisiberNumber] = useState<number | null>(null);
   const [copied, setCopied] = useState(false);
   const [showMore, setShowMore] = useState(false);
+  const [loadingTips, setLoadingTips] = useState(true);
+  const [relatedArticles, setRelatedArticles] = useState<SanityArticle[]>([]);
+  const [fetchError, setFetchError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const RELATED_ARTICLES_LIMIT = 5;
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const [articles, kuaData] = await Promise.all([
+          client.fetch<SanityArticle[]>(
+		`*[_type == "article" && ("numerology" in tags )] | order(publishDate desc)[0...${RELATED_ARTICLES_LIMIT}]{title, "slug": slug.current}`
+		),
+        ]);
+        setRelatedArticles(articles);
+      } catch (error) {
+        console.error("Error fetching data from Sanity:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   const handleCalculate = () => {
     if (!birthDate) return;
@@ -305,24 +339,13 @@ const VisiberCalculator = () => {
                       </p>
                     </div>
                   </div>
-
-                  {/* Share Button */}
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleShare}
-                    className="mt-8 border-gold text-gold hover:bg-gold hover:text-black transition"
-                  >
-                    <Share2 size={16} className="mr-2" />
-                    {copied ? "Copied!" : "Share My Number"}
-                  </Button>
+                  
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
       </main>
-      <Footer />
     </div>
   );
 };

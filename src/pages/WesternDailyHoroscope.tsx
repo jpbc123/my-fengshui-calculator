@@ -1,117 +1,276 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+// src/pages/WesternDailyHoroscope.tsx
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { useNavigate } from 'react-router-dom'; // Add this import
+import { motion, AnimatePresence } from 'framer-motion';
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Breadcrumb from "@/components/Breadcrumb";
 import wheelImage from "@/assets/zodiac-wheel.png";
-import { Link } from "react-router-dom"; // For related articles, assuming external links or internal pages
+import { ImageSwiper } from '../components/OlderImageSwiper'; 
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+
+import lotteryImage from '../assets/lottery.jpg';
+import ncompatibilityImage from '../assets/name-compatibility.jpg';
+import ccompatibilityImage from '../assets/chinese-compatibility.jpg';
+import wcompatibilityImage from '../assets/western-compatibility.jpg';
+import fcookieImage from '../assets/fortunecookie.jpg';
 
 const breadcrumbs = [
   { label: "Home", path: "/" },
+  { label: "Horoscope", path: "/horoscope" },
   { label: "Western Horoscope" },
 ];
 
 type PeriodTabType = 'today' | 'yesterday' | 'weekly' | 'yearly';
 type CategoryTabType = 'overview' | 'love' | 'career' | 'wealth' | 'social' | 'lucky_color' | 'lucky_number';
 
-// Zodiac order clockwise in your image, starting at top (Aries at 0 degrees, then Pisces, etc.)
-// Each sign covers 30 degrees.
+interface PeriodTabItem {
+  id: PeriodTabType;
+  label: string;
+}
+
+interface CategoryTabItem {
+  id: CategoryTabType;
+  label: string;
+  icon: string;
+}
+
+interface PeriodTabsProps {
+  tabs: PeriodTabItem[];
+  activeTab: PeriodTabType;
+  onTabClick: (tabId: PeriodTabType) => void;
+}
+
+interface HoroscopeTabsProps {
+  tabs: CategoryTabItem[];
+  activeTab: CategoryTabType;
+  onTabClick: (tabId: CategoryTabType) => void;
+}
+
 const imageZodiacOrder = [
   "aries", "pisces", "aquarius", "capricorn", "sagittarius", "scorpio",
   "libra", "virgo", "leo", "cancer", "gemini", "taurus"
 ];
 
-// Helper to get start and end dates for periods, or identifiers for weekly/yearly
-const getPeriodDetails = (period: PeriodTabType) => {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0); // Normalize to start of day
+// Fixed API base URL to match your server
+const API_BASE_URL = "http://localhost:3001";
 
-  let dateIdentifier: string | null = null;
-  let weekIdentifier: string | null = null;
-  let yearIdentifier: number | null = null;
+// Animated PeriodTabs component matching Chinese horoscope style
+const PeriodTabs = ({ tabs, activeTab, onTabClick }: PeriodTabsProps) => {
+  return (
+    <div className="relative flex flex-wrap justify-center gap-2">
+      {tabs.map((tab) => {
+        const isActive = activeTab === tab.id;
+        return (
+          <button
+            key={tab.id}
+            onClick={() => onTabClick(tab.id)}
+            className={`relative z-10 flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-colors duration-300 focus:outline-none border ${
+              isActive
+                ? 'border-transparent text-white'
+                : 'border-gray-200 text-gray-600 hover:border-gray-300 hover:text-black'
+            }`}
+          >
+            {isActive && (
+              <motion.span
+                layoutId="period-bubble"
+                className="absolute inset-0 z-0 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full"
+                transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+              />
+            )}
+            <span className="relative z-10">{tab.label}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+};
 
-  if (period === 'today') {
-    dateIdentifier = today.toISOString().split('T')[0];
-  } else if (period === 'yesterday') {
-    const yesterday = new Date(today);
-    yesterday.setDate(today.getDate() - 1);
-    dateIdentifier = yesterday.toISOString().split('T')[0];
-  } else if (period === 'weekly') {
-    const dayOfWeek = today.getDay(); // Sunday is 0, Saturday is 6
-    const weekStart = new Date(today.setDate(today.getDate() - dayOfWeek));
-    const weekEnd = new Date(today.setDate(today.getDate() + 6)); // +6 days from weekStart
-    weekIdentifier = `${weekStart.toISOString().split('T')[0]}_${weekEnd.toISOString().split('T')[0]}`;
-  } else if (period === 'yearly') {
-    yearIdentifier = today.getFullYear();
-  }
-
-  return { dateIdentifier, weekIdentifier, yearIdentifier };
+// Animated HoroscopeTabs component matching Chinese horoscope style
+const HoroscopeTabs = ({ tabs, activeTab, onTabClick }: HoroscopeTabsProps) => {
+  return (
+    <div className="relative flex flex-wrap justify-center gap-2">
+      {tabs.map((tab) => {
+        const isActive = activeTab === tab.id;
+        return (
+          <button
+            key={tab.id}
+            onClick={() => onTabClick(tab.id)}
+            className={`relative z-10 flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-colors duration-300 focus:outline-none border ${
+              isActive
+                ? 'border-transparent text-white'
+                : 'border-gray-200 text-gray-600 hover:border-gray-300 hover:text-black'
+            }`}
+          >
+            {isActive && (
+              <motion.span
+                layoutId="category-bubble"
+                className="absolute inset-0 z-0 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full"
+                transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+              />
+            )}
+            <span className="relative z-10">{tab.icon}</span>
+            <span className="relative z-10">{tab.label}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
 };
 
 export default function WesternDailyHoroscope() {
+  const navigate = useNavigate(); // Add this hook
   const [selectedSign, setSelectedSign] = useState<string | null>(null);
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodTabType>('today');
   const [selectedCategory, setSelectedCategory] = useState<CategoryTabType>('overview');
-  const [horoscopeContent, setHoroscopeContent] = useState<any | null>(null); // Stores the full JSON response
+  const [horoscopeContent, setHoroscopeContent] = useState<any | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
+  // Add loading state specifically for period changes
+  const [periodLoading, setPeriodLoading] = useState(false);
+  const [contentKey, setContentKey] = useState(0); // For triggering content animations
+  const [activeCardIndex, setActiveCardIndex] = useState(0);
 
   const wheelRef = useRef<HTMLDivElement>(null);
   const startAngleRef = useRef<number | null>(null);
   const currentRotationRef = useRef(0);
 
-  // Function to fetch horoscope from the backend
-  // This function is now responsible for fetching the *entire* horoscope object for a given sign and period.
-  // The 'category' parameter is now primarily for the backend to know what data *might* be needed,
-  // but the frontend expects a full object if possible.
-  const fetchHoroscope = useCallback(async (sign: string, period: PeriodTabType) => { // Removed category from here
-    setLoading(true);
-    setError(null);
-    setHoroscopeContent(null); // Clear previous content
+  const handleCardSwipe = (newIndex: number) => {
+    setActiveCardIndex(newIndex);
+  };
 
-    const { dateIdentifier, weekIdentifier, yearIdentifier } = getPeriodDetails(period);
+  // Define tabs using useMemo for consistency
+  const periodTabs = useMemo(() => [
+    { id: 'yesterday' as PeriodTabType, label: 'Yesterday' },
+    { id: 'today' as PeriodTabType, label: 'Today' },
+    { id: 'weekly' as PeriodTabType, label: 'Weekly' },
+    { id: 'yearly' as PeriodTabType, label: 'Current Year' },
+  ], []);
+  
+  // DEFINE THE FEATURE CARDS WITH IMAGES AND LINKS - matching Chinese page structure
+  const featureCards = useMemo(() => [
+      {
+          title: "Lucky Number Generator",
+          description: "Discover your fortune through numbers",
+          images: lotteryImage,
+          link: '/lucky-numbers'
+      },
+      {
+          title: "Name Compatibility",
+          description: "Find out if he/she is the one",
+          images: ncompatibilityImage,
+          link: '/name-compatibility'
+      },
+      {
+          title: "Chinese Zodiac Compatibility",
+          description: "Explore how your Chinese zodiac sign aligns with others",
+          images: ccompatibilityImage,
+          link: '/chinese-compatibility'
+      },
+      {
+          title: "Western Zodiac Compatibility",
+          description: "See how your Western star sign matches with different signs",
+          images: wcompatibilityImage,
+          link: '/western-compatibility'
+      },
+      {
+          title: "Daily Fortune Cookie",
+          description: "Crack open a virtual cookie for a daily dose of wisdom and fortune",
+          images: fcookieImage,
+          link: '/fortune-cookie'
+      }
+  ], []);
+
+  // Create string of all images for the swiper - matching Chinese page format
+  const allFeatureImages = useMemo(() =>
+    featureCards.map(card => card.images).join(','),
+    [featureCards]
+  );
+
+  const categoryTabs = useMemo(() => [
+    { id: 'overview' as CategoryTabType, label: 'Overview', icon: '' },
+    { id: 'love' as CategoryTabType, label: 'Love', icon: '' },
+    { id: 'career' as CategoryTabType, label: 'Career', icon: '' },
+    { id: 'wealth' as CategoryTabType, label: 'Wealth', icon: '' },
+    { id: 'social' as CategoryTabType, label: 'Social', icon: '' },
+    { id: 'lucky_color' as CategoryTabType, label: 'Lucky Color', icon: '' },
+    { id: 'lucky_number' as CategoryTabType, label: 'Lucky Number', icon: '' },
+  ], []);
+
+  const fetchHoroscope = useCallback(async (sign: string, period: PeriodTabType) => {
+    // Don't show main loading for period changes
+    if (!periodLoading) {
+      setLoading(true);
+    }
+    setError(null);
 
     try {
-      const response = await fetch('/api/western-horoscope', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          sign,
-          period,
-          category: 'overview', // Always request 'overview' to get the full object for caching purposes
-          dateIdentifier,
-          weekIdentifier,
-          yearIdentifier,
-        }),
-      });
+      // Fixed: Use GET request with correct URL pattern matching your server
+      let apiUrl = `${API_BASE_URL}/api/western-horoscope/${sign.toLowerCase()}`;
+      
+      // Add period parameter
+      if (period === 'today') {
+        apiUrl += '?period=daily&dayOffset=0';
+      } else if (period === 'yesterday') {
+        apiUrl += '?period=daily&dayOffset=-1';
+      } else if (period === 'weekly') {
+        apiUrl += '?period=weekly';
+      } else if (period === 'yearly') {
+        apiUrl += '?period=yearly';
+      }
 
+      console.log('Fetching from:', apiUrl); // Debug log
+
+      const response = await fetch(apiUrl);
+      
       if (!response.ok) {
-        const errData = await response.json();
-        throw new Error(errData.error || `Failed to fetch horoscope for ${sign}.`);
+        if (response.status === 202) {
+          // Request in progress, retry after delay
+          setTimeout(() => fetchHoroscope(sign, period), 3000);
+          return;
+        }
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
 
       const data = await response.json();
-      setHoroscopeContent(data.horoscope); // Backend should return a structured horoscope object
-
+      console.log('Received data:', data); // Debug log
+      setHoroscopeContent(data);
     } catch (err: any) {
       console.error('Error fetching horoscope:', err);
       setError(err.message || "Could not load horoscope. Please try again later.");
+      
+      // Set fallback data
+      setHoroscopeContent({
+        horoscope: "The stars suggest focusing on balance and mindful decision-making today. Trust your intuition and embrace new opportunities.",
+        love: "Romantic energies are favorable. Open communication will strengthen your relationships.",
+        career: "Professional matters require attention to detail. Your hard work will be recognized.",
+        money: "Financial stability is within reach. Avoid impulsive spending decisions.",
+        social: "Social connections bring positive energy. Collaborate with others for mutual benefit.",
+        luckyColor: "Blue",
+        luckyNumber: 7
+      });
     } finally {
       setLoading(false);
+      setPeriodLoading(false);
     }
-  }, []); // Dependencies remain empty because it's a stable function
+  }, [periodLoading]);
 
-  // Effect to fetch horoscope when sign or period changes (but NOT category)
+  // Enhanced period tab handler with optimistic loading
+  const handlePeriodTabChange = (newPeriod: PeriodTabType) => {
+    if (newPeriod === selectedPeriod) return;
+    
+    setPeriodLoading(true);
+    setSelectedPeriod(newPeriod);
+    setContentKey(prev => prev + 1); // Force content re-render with animation
+  };
+
   useEffect(() => {
     if (selectedSign) {
-      // Fetch the full horoscope object. 'overview' is passed to the backend,
-      // but the frontend expects the full object regardless.
       fetchHoroscope(selectedSign, selectedPeriod);
     }
-  }, [selectedSign, selectedPeriod, fetchHoroscope]); // Removed selectedCategory from dependencies
+  }, [selectedSign, selectedPeriod, fetchHoroscope]);
 
-  // Drag rotation handlers - UNCHANGED from your original code
   const handlePointerDown = (e: React.PointerEvent) => {
     e.preventDefault();
     const rect = wheelRef.current!.getBoundingClientRect();
@@ -149,131 +308,161 @@ export default function WesternDailyHoroscope() {
     currentRotationRef.current += deg;
     startAngleRef.current = null;
 
-    // Normalize rotation to [0, 360)
-    const rotationNormalized = (360 - (currentRotationRef.current % 360) + 15) % 360; // Adjust for Aries at top
-
-    // Determine zodiac using the image order (Aries is at 0 index in imageZodiacOrder)
+    const rotationNormalized = (360 - (currentRotationRef.current % 360) + 15) % 360;
     const zodiacIndex = Math.floor(rotationNormalized / 30) % 12;
     const zodiac = imageZodiacOrder[zodiacIndex];
 
-    setSelectedSign(zodiac); // Only set the sign, the useEffect will trigger fetch
-    setSelectedCategory('overview'); // Reset category to overview when sign changes
+    setSelectedSign(zodiac);
+    setSelectedCategory('overview');
   };
 
-  // Function to render content based on category
-  const renderHoroscopeText = () => {
-    // Only check loading and error for the initial fetch, not category switching
-    if (loading && !horoscopeContent) return <p className="text-black/70">Loading horoscope...</p>;
-    if (error && !horoscopeContent) return <p className="text-red-400">{error}</p>;
-    if (!selectedSign) return <p className="text-black/70">Spin the wheel to reveal your horoscope.</p>;
-    if (!horoscopeContent) return <p className="text-black/70">Horoscope not available.</p>;
+  // FIXED: Return string instead of JSX to avoid DOM nesting issues
+  const renderHoroscopeText = (): string => {
+    if (loading && !horoscopeContent) return "Loading horoscope...";
+    if (error && !horoscopeContent) return error;
+    if (!selectedSign) return "Spin the wheel to reveal your horoscope.";
+    if (!horoscopeContent) return "Horoscope not available.";
 
-    // Now, just pick from the already fetched horoscopeContent
+    // Handle different data structures from your API
     switch (selectedCategory) {
-      case 'overview': return horoscopeContent.overview_content;
-      case 'love': return horoscopeContent.love_content || "💖 Love insights coming soon! For now, enjoy your overview.";
-      case 'career': return horoscopeContent.career_content || "💼 Career insights coming soon! For now, enjoy your overview.";
-      case 'wealth': return horoscopeContent.wealth_content || "💰 Wealth insights coming soon! For now, enjoy your overview.";
-      case 'social': return horoscopeContent.social_content || "👥 Social insights coming soon! For now, enjoy your overview.";
-      case 'lucky_color': return horoscopeContent.lucky_color ? `🎨 Your lucky color is: ${horoscopeContent.lucky_color}` : "🎨 Lucky color coming soon! For now, enjoy your overview.";
-      case 'lucky_number': return horoscopeContent.lucky_number ? `🔢 Your lucky number is: ${horoscopeContent.lucky_number}` : "🔢 Lucky number coming soon! For now, enjoy your overview.";
-      default: return horoscopeContent.overview_content;
+      case 'overview': 
+        return horoscopeContent.horoscope || horoscopeContent.overviewContent || "Your general horoscope insight is being prepared.";
+      case 'love': 
+        return horoscopeContent.love || horoscopeContent.loveContent || "Love insights coming soon! For now, enjoy your overview.";
+      case 'career': 
+        return horoscopeContent.career || horoscopeContent.careerContent || "Career insights coming soon! For now, enjoy your overview.";
+      case 'wealth': 
+        return horoscopeContent.money || horoscopeContent.wealthContent || "Wealth insights coming soon! For now, enjoy your overview.";
+      case 'social': 
+        return horoscopeContent.social || horoscopeContent.socialContent || "Social insights coming soon! For now, enjoy your overview.";
+      case 'lucky_color': 
+        return horoscopeContent.luckyColor || horoscopeContent.lucky_color ? 
+          `Your lucky color is: ${horoscopeContent.luckyColor || horoscopeContent.lucky_color}` : 
+          "Lucky color coming soon! For now, enjoy your overview.";
+      case 'lucky_number': 
+        return horoscopeContent.luckyNumber || horoscopeContent.lucky_number ? 
+          `Your lucky number is: ${horoscopeContent.luckyNumber || horoscopeContent.lucky_number}` : 
+          "Lucky number coming soon! For now, enjoy your overview.";
+      default: 
+        return horoscopeContent.horoscope || horoscopeContent.overviewContent || "Your horoscope insight is being prepared.";
     }
   };
 
   return (
-    <div className="min-h-screen bg-white text-black">
+    <div className="min-h-screen bg-white text-black flex flex-col">
       <Header />
+      <main className="flex-grow container mx-auto px-4 py-8 max-w-6xl mt-20">
+        <Breadcrumb items={breadcrumbs} />
+        
+        <div className="flex flex-col lg:flex-row gap-6 mt-8">
+          {/* Main Content Area - widened like Chinese page */}
+          <div className="flex-1">
+            <div className="space-y-8">
+              {/* EXISTING HOROSCOPE RESULTS BOX - widened */}
+              <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
+                <div className="relative mx-auto mb-8 w-full max-w-sm sm:max-w-md lg:max-w-xl aspect-square">
+                  {/* Fixed Arrow for the Wheel*/}
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-4 h-6 bg-gold rounded z-10"></div>
+                  {/* Rotating Wheel */}
+                  <div
+                    ref={wheelRef}
+                    onPointerDown={handlePointerDown}
+                    onPointerMove={handlePointerMove}
+                    onPointerUp={handlePointerUp}
+                    style={{ touchAction: "none", cursor: "grab" }}
+                    className="w-full h-full"
+                  >
+                    <img src={wheelImage} alt="Zodiac Wheel" className="w-full h-full object-contain" />
+                  </div>
+                </div>
 
-      {/* Outer container for main content - Added pb-16 for spacing */}
-      <div className="pt-24 px-4 pb-16 max-w-7xl mx-auto">
-        {/* Breadcrumbs + title centered like FengShui page */}
-        <div className="max-w-3xl mx-auto mb-8">
-          <Breadcrumb items={breadcrumbs} className="text-black/80" />
-          <h1 className="text-2xl font-bold text-gold mt-4">Western Horoscope</h1>
-          <div className="border-t-4 border-gold w-32 mt-2"></div>
-        </div>
+                {/* Updated Tabs */}
+                <div className="p-6 border border-gold/30 rounded-xl bg-gray-50 text-black">
+                  {selectedSign && (
+                    <div className="text-black text-xl font-semibold mb-4 text-center">
+                      Your Sign: {selectedSign.charAt(0).toUpperCase() + selectedSign.slice(1)}
+                    </div>
+                  )}
 
-        {/* 2-column layout */}
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left side - wheel & results */}
-          <div>
-            <div className="relative mx-auto mb-8 w-96 h-96">
-              {/* Fixed Arrow */}
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-4 h-6 bg-gold rounded z-10"></div>
+                  {/* Period Tabs with loading indicator */}
+                  <div className="gap-2 mb-6 relative">
+                    <PeriodTabs
+                      tabs={periodTabs}
+                      activeTab={selectedPeriod}
+                      onTabClick={handlePeriodTabChange}
+                    />
+                    {periodLoading && (
+                      <div className="absolute -right-8 top-1/2 transform -translate-y-1/2">
+                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-purple-500 border-t-transparent"></div>
+                      </div>
+                    )}
+                  </div>
 
-              {/* Rotating Wheel */}
-              <div
-                ref={wheelRef}
-                onPointerDown={handlePointerDown}
-                onPointerMove={handlePointerMove}
-                onPointerUp={handlePointerUp}
-                style={{ touchAction: "none", cursor: "grab" }}
-                className="w-full h-full"
-              >
-                <img src={wheelImage} alt="Zodiac Wheel" className="w-full h-full object-contain" />
+                  {/* Category Tabs using Framer Motion style */}
+                  <div className="flex justify-start flex-wrap mb-6">
+                    <HoroscopeTabs
+                      tabs={categoryTabs}
+                      activeTab={selectedCategory}
+                      onTabClick={setSelectedCategory}
+                    />
+                  </div>
+
+                  {/* Content display area with enhanced animations */}
+                  <div className="mb-8 p-4 bg-gray-50 rounded-lg border border-gray-200 shadow-inner relative">
+                    {periodLoading && (
+                      <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center rounded-lg z-10">
+                        <div className="flex items-center space-x-2">
+                          <div className="animate-spin rounded-full h-6 w-6 border-2 border-amber-500 border-t-transparent"></div>
+                          <span className="text-gray-600">Loading...</span>
+                        </div>
+                      </div>
+                    )}
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={`${selectedPeriod}-${selectedCategory}-${contentKey}`}
+                        initial={{ opacity: periodLoading ? 0.3 : 1, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3, ease: "easeOut" }}
+                      >
+                        <div className="text-black/80 leading-relaxed min-h-[100px]">
+                          {renderHoroscopeText()}
+                        </div>
+                      </motion.div>
+                    </AnimatePresence>
+                  </div>
+                </div>
+              </div>
+
+              {/* ImageSwiper Section - matching Chinese page structure exactly */}
+              <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
+                <h2 className="text-2xl md:text-3xl font-bold text-gray-800 text-center mb-8">
+                  Play & Discover
+                </h2>
+                <div className="flex flex-col items-center">
+                  <ImageSwiper
+                    images={allFeatureImages}
+                    onSwipe={handleCardSwipe}
+                  />
+
+                  <div className="text-center mt-4">
+                    <h3 className="text-lg font-semibold">{featureCards[activeCardIndex].title}</h3>
+                    <p className="text-sm text-muted-foreground">{featureCards[activeCardIndex].description}</p>
+                    <p className="mt-1">
+                      <span className="font-semibold">{featureCards[activeCardIndex].price}</span>
+                    </p>
+                    <button
+                      onClick={() => navigate(featureCards[activeCardIndex].link)}
+                      className="mt-4 bg-purple-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-purple-700 transition-colors"
+                    >
+                      View
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
-
-            {/* Tabs */}
-            <div className="p-6 border border-gold/30 rounded-xl bg-gray-50 text-black">
-              {selectedSign && (
-                <p className="text-gold font-semibold mb-4">
-                  Your Sign: {selectedSign.charAt(0).toUpperCase() + selectedSign.slice(1)}
-                </p>
-              )}
-
-              {/* Period Tab buttons */}
-              <div className="flex flex-wrap space-x-2 mb-4">
-                {(['today', 'yesterday', 'weekly', 'yearly'] as PeriodTabType[]).map((period) => (
-                  <button
-                    key={period}
-                    onClick={() => setSelectedPeriod(period)}
-                    className={`px-3 py-1 rounded-md text-sm mb-2 ${
-                      selectedPeriod === period ? "bg-gold text-black font-bold" : "bg-gray-200 text-black/70 hover:bg-gray-300"
-                    }`}
-                  >
-                    {period.charAt(0).toUpperCase() + period.slice(1)}
-                  </button>
-                ))}
-              </div>
-
-              {/* Category Tab buttons */}
-              <div className="flex flex-wrap space-x-2 mb-4">
-                {(['overview', 'love', 'career', 'wealth', 'social', 'lucky_color', 'lucky_number'] as CategoryTabType[]).map((category) => (
-                  <button
-                    key={category}
-                    onClick={() => setSelectedCategory(category)}
-                    className={`px-3 py-1 rounded-md text-sm mb-2 ${
-                      selectedCategory === category ? "bg-gold text-black font-bold" : "bg-gray-200 text-black/70 hover:bg-gray-300"
-                    }`}
-                  >
-                    {category.replace('_', ' ').split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
-                  </button>
-                ))}
-              </div>
-
-              {/* Tab content */}
-              <p className="text-black/80 leading-relaxed min-h-[100px]">
-                {renderHoroscopeText()}
-              </p>
-            </div>
-          </div>
-
-          {/* Right side - related links */}
-          <div className="max-w-md">
-            <h2 className="text-xl font-semibold text-black mb-4">Related Articles</h2>
-            <ul className="space-y-2">
-              <li><Link to="#" className="text-black/80 hover:text-gold">How to Make the Most of Your Zodiac Energy</Link></li>
-              <li><Link to="#" className="text-black/80 hover:text-gold">Love Compatibility Between Signs</Link></li>
-              <li><Link to="#" className="text-black/80 hover:text-gold">Career Growth Based on Astrology</Link></li>
-              {/* Add more relevant links as needed */}
-            </ul>
           </div>
         </div>
-      </div>
-
-      <Footer />
+      </main>
     </div>
   );
 }

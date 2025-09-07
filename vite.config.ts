@@ -6,42 +6,40 @@ import path from "path";
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
 
-  console.log("Vite mode:", mode);
-  console.log("Loaded RapidAPI Key:", env.VITE_RAPIDAPI_KEY);
-
   return {
     base: mode === "production" ? "/my-fengshui-calculator/" : "/",
     server: {
       port: 8080,
       proxy: {
-        // Existing proxy for the Horoscope API (RapidAPI)
-        "/api/horoscope": {
-          target: "https://astropredict-daily-horoscopes-lucky-insights.p.rapidapi.com",
-          changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api\/horoscope/, "/horoscope"),
-          headers: {
-            "X-RapidAPI-Key": env.VITE_RAPIDAPI_KEY,
-            "X-RapidAPI-Host": "astropredict-daily-horoscopes-lucky-insights.p.rapidapi.com",
-          },
-        },
-        // Proxy for the Daily Wisdom API (your Node.js backend)
+        // Daily Wisdom API
         "/api/daily-wisdom": {
           target: "http://localhost:3001",
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api\/daily-wisdom/, "/api/daily-wisdom"),
         },
-        // Proxy for the Chinese Horoscope API (your Node.js backend)
-        "/api/chinese-horoscope": { 
-            target: "http://localhost:3001", // Your Node.js backend server
-            changeOrigin: true,
-            // The rewrite rule ensures the path remains /api/chinese-horoscope/:zodiac on the backend
-            rewrite: (path) => path.replace(/^\/api\/chinese-horoscope/, "/api/chinese-horoscope"),
-        },
-        // NEW Proxy for the Western Horoscope API (your Node.js backend)
-        "/api/western-horoscope": {
-          target: "http://localhost:3001", // Your Node.js backend server
+        // Chinese Horoscope API
+        "/api/chinese-horoscope": {
+          target: "http://localhost:3001",
           changeOrigin: true,
-          // No rewrite needed here, as the client-side URL matches the backend endpoint exactly
+        },
+        // Western Horoscope API
+        "/api/western-horoscope": {
+          target: "http://localhost:3001",
+          changeOrigin: true,
+        },
+        // Daily Feng Shui Tip API
+        "/api/daily-fengshui-tip": {
+          target: "http://localhost:3001",
+          changeOrigin: true,
+        },
+        // Planetary Overview API
+        "/api/planetary-overview": {
+          target: "http://localhost:3001",
+          changeOrigin: true,
+        },
+        // Contact Us Form API
+        "/api/contact": {
+          target: "http://localhost:3001",
+          changeOrigin: true,
         },
       },
     },
@@ -49,7 +47,12 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),
+        "~": path.resolve(__dirname, "./src"),
       },
     },
+	build: {
+      sourcemap: false, // 🚫 disables source maps in production
+      minify: "esbuild", // or "terser" if you need advanced minification
+	  },
   };
 });

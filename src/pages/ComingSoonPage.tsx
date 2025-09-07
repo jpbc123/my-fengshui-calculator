@@ -29,8 +29,6 @@ export default function ComingSoonPage() {
           </Link>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,9 @@ import { DatePickerInput } from "@/components/DatePickerInput";
 import { westernZodiacData } from "@/data/westernZodiacData";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { client } from "../../sanityClient";
+import { PortableText } from '@portabletext/react';
+import imageUrlBuilder from '@sanity/image-url';
 
 // Western zodiac images
 import ariesImg from "@/assets/western/aries.png";
@@ -28,6 +31,12 @@ const breadcrumbs = [
   { label: "Astrology", path: "/astrology" },
   { label: "Western Zodiac Calculator" },
 ];
+
+// Interface for article data from Sanity
+interface SanityArticle {
+  title: string;
+  slug: string; 
+}
 
 interface SignInfo {
   image?: string;
@@ -102,6 +111,9 @@ const WesternZodiacCalculator = () => {
   const [zodiacSign, setZodiacSign] = useState<string | null>(null);
   const [signInfo, setSignInfo] = useState<SignInfo | null>(null);
   const [showMore, setShowMore] = useState(false);
+  const [relatedArticles, setRelatedArticles] = useState<SanityArticle[]>([]);
+  const [loading, setLoading] = useState(true);
+  const RELATED_ARTICLES_LIMIT = 5;
 
   const handleCalculate = () => {
     if (!birthDate) return;
@@ -111,7 +123,25 @@ const WesternZodiacCalculator = () => {
     setZodiacSign(sign);
     setSignInfo(sign ? (westernZodiacData as Record<string, SignInfo>)[sign] : null);
   };
-
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const articles = await client.fetch<SanityArticle[]>(
+          `*[_type == "article" && ("western zodiac" in tags || "astrology" in tags)] | order(publishDate desc)[0...${RELATED_ARTICLES_LIMIT}]{title, "slug": slug.current}`
+        );
+        setRelatedArticles(articles);
+      } catch (error) {
+        console.error("Error fetching data from Sanity:", error);
+        setLoading(false);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+  
   return (
     <div className="flex flex-col min-h-screen bg-white text-black overflow-hidden">
       <Header />
@@ -264,17 +294,33 @@ const WesternZodiacCalculator = () => {
 
             {/* Right side - related articles */}
             <div className="max-w-md mt-40 lg:mt-0">
-              <h2 className="text-xl font-semibold text-black mb-4">Related Articles</h2>
-              <ul className="space-y-2 text-sm">
-                <li><Link to="#" className="text-black/80 hover:text-gold">Feng Shui for Beginners: The Basics</Link></li>
-                <li><Link to="#" className="text-black/80 hover:text-gold">Balancing the Five Elements in Your Home</Link></li>
-                <li><Link to="#" className="text-black/80 hover:text-gold">Discover Your Personal Element</Link></li>
-              </ul>
-            </div>
+			<h2 className="text-xl font-semibold text-black mb-4">Related Articles</h2>
+			{loading ? (
+				<div className="space-y-2">
+				<div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+				<div className="h-4 bg-gray-200 rounded animate-pulse w-3/4"></div>
+				<div className="h-4 bg-gray-200 rounded animate-pulse w-1/2"></div>
+				</div>
+			) : relatedArticles.length > 0 ? (
+				<ul className="space-y-2 text-sm">
+				{relatedArticles.map((article, index) => (
+					<li key={index}>
+					<Link
+						to={`/articles/${article.slug}`}
+						className="text-lg text-black/80 hover:text-gold"
+					>
+						{article.title}
+					</Link>
+					</li>
+				))}
+				</ul>
+			) : (
+				<p className="text-gray-500 text-sm">No related articles found</p>
+			)}
+			</div>
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 };

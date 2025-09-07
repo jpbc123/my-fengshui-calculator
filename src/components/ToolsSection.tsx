@@ -8,11 +8,11 @@ const ToolsSection = () => {
   const initialTools = [
     {
       id: 1,
-      title: "Kua Number Calculator",
-      description: "Discover your best directions for success and harmony.",
-      icon: "🧭",
-      link: "/kua-number-calculator",
-      category: "Feng Shui",
+      title: "Visiber Numerology",
+      description: "Explore the hidden meanings behind the numbers in your life.",
+      icon: "🔢",
+      link: "/visiber-calculator",
+      category: "Numerology",
     },
     {
       id: 2,
@@ -22,12 +22,12 @@ const ToolsSection = () => {
       link: "/personal-element",
       category: "Feng Shui",
     },
-    {
+	{
       id: 3,
-      title: "Chinese Zodiac Horoscope",
-      description: "Get personalized daily, weekly, and yearly guidance based on your sign.",
-      icon: "🔮",
-      link: "/chinese-zodiac-calculator",
+      title: "Western Horoscope",
+      description: "Your daily forecast to navigate life's challenges and opportunities.",
+      icon: "🌠",
+      link: "western-horoscope",
       category: "Horoscope",
     },
   ];
@@ -35,27 +35,27 @@ const ToolsSection = () => {
   const extraTools = [
     {
       id: 4,
+      title: "Kua Number Calculator",
+      description: "Discover your best directions for success and harmony.",
+      icon: "☯",
+      link: "/kua-number-calculator",
+      category: "Feng Shui",
+    },
+    {
+      id: 5,
       title: "Western Zodiac Calculator",
       description: "Uncover your Western sun sign and its unique characteristics.",
-      icon: "♈",
+      icon: "♊",
       link: "/western-zodiac-calculator",
       category: "Astrology",
     },
     {
-      id: 5,
-      title: "Visiber Numerology",
-      description: "Explore the hidden meanings behind the numbers in your life.",
-      icon: "🔢",
-      link: "/visiber",
-      category: "Numerology",
-    },
-    {
       id: 6,
-      title: "Western Zodiac Horoscope",
-      description: "Your daily forecast to navigate life's challenges and opportunities.",
-      icon: "✨",
-      link: "western-horoscope",
-      category: "Horoscope",
+      title: "Chinese Zodiac Calculator",
+      description: "Get personalized daily, weekly, and yearly guidance based on your sign.",
+      icon: "🐲",
+      link: "/chinese-zodiac-calculator",
+      category: "Astrology",
     },
   ];
 

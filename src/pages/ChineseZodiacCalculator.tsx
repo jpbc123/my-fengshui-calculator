@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,9 @@ import Breadcrumb from "@/components/Breadcrumb";
 import { DatePickerInput } from "@/components/DatePickerInput";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { client } from "../../sanityClient";
+import { PortableText } from '@portabletext/react';
+import imageUrlBuilder from '@sanity/image-url';
 
 // Zodiac images
 import ratImg from "@/assets/chinese-zodiac/year-of-the-rat.png";
@@ -28,6 +31,12 @@ const breadcrumbs = [
   { label: "Astrology", path: "/astrology" },
   { label: "Chinese Zodiac Calculator" },
 ];
+
+// Interface for article data from Sanity
+interface SanityArticle {
+  title: string;
+  slug: string; 
+}
 
 interface ZodiacInfo {
   image?: string;
@@ -64,14 +73,58 @@ const chineseNewYearDates: Record<number, string> = {
   2026: "2026-02-17",
   2027: "2027-02-06",
   2028: "2028-01-26",
-  // add more as needed...
+  2029: "2029-02-13",
+  2030: "2030-02-03",
+  2031: "2031-01-23",
+  2032: "2032-02-11",
+  2033: "2033-01-31",
+  2034: "2034-02-19",
+  2035: "2035-02-08",
+  2036: "2036-01-28",
+  2037: "2037-02-15",
+  2038: "2038-02-04",
+  2039: "2039-01-24",
+  2040: "2040-02-12",
+  2041: "2041-02-01",
+  2042: "2042-01-22",
+  2043: "2043-02-10",
+  2044: "2044-01-30",
+  2045: "2045-02-17",
+  2046: "2046-02-06",
+  2047: "2047-01-26",
+  2048: "2048-02-14",
+  2049: "2049-02-02",
+  2050: "2050-01-23",
+  // add more as needed
 };
+
 
 const ChineseZodiacCalculator = () => {
   const [birthDate, setBirthDate] = useState<Date | null>(null);
   const [zodiacSign, setZodiacSign] = useState<string | null>(null);
   const [zodiacInfo, setZodiacInfo] = useState<ZodiacInfo | null>(null);
   const [showMore, setShowMore] = useState(false);
+  const [relatedArticles, setRelatedArticles] = useState<SanityArticle[]>([]);
+  const [loading, setLoading] = useState(true);
+  const RELATED_ARTICLES_LIMIT = 5;
+  
+  	useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const articles = await client.fetch<SanityArticle[]>(
+          `*[_type == "article" && ("chinese zodiac" in tags )] | order(publishDate desc)[0...${RELATED_ARTICLES_LIMIT}]{title, "slug": slug.current}`
+        );
+        setRelatedArticles(articles);
+      } catch (error) {
+        console.error("Error fetching data from Sanity:", error);
+        setLoading(false);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   const handleCalculate = () => {
     if (!birthDate) return;
@@ -105,8 +158,9 @@ const ChineseZodiacCalculator = () => {
 
     setZodiacSign(sign);
     setZodiacInfo(ChineseZodiacData2025[sign]);
-  };
-
+	
+};
+  
   return (
     <div className="flex flex-col min-h-screen bg-white text-black overflow-hidden">
       <Header />
@@ -264,17 +318,33 @@ const ChineseZodiacCalculator = () => {
 
             {/* Right side - related articles */}
             <div className="max-w-md mt-40 lg:mt-0">
-              <h2 className="text-xl font-semibold text-black mb-4">Related Articles</h2>
-              <ul className="space-y-2 text-sm">
-                <li><Link to="#" className="text-black/80 hover:text-gold">Feng Shui for Beginners: The Basics</Link></li>
-                <li><Link to="#" className="text-black/80 hover:text-gold">Balancing the Five Elements in Your Home</Link></li>
-                <li><Link to="#" className="text-black/80 hover:text-gold">Discover Your Personal Element</Link></li>
-              </ul>
-            </div>
+			<h2 className="text-xl font-semibold text-black mb-4">Related Articles</h2>
+			{loading ? (
+				<div className="space-y-2">
+				<div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+				<div className="h-4 bg-gray-200 rounded animate-pulse w-3/4"></div>
+				<div className="h-4 bg-gray-200 rounded animate-pulse w-1/2"></div>
+				</div>
+			) : relatedArticles.length > 0 ? (
+				<ul className="space-y-2 text-sm">
+				{relatedArticles.map((article, index) => (
+					<li key={index}>
+					<Link
+						to={`/article/${article.slug}`}
+						className="text-lg text-black/80 hover:text-gold"
+					>
+						{article.title}
+					</Link>
+					</li>
+				))}
+				</ul>
+			) : (
+				<p className="text-gray-500 text-sm">No related articles found</p>
+			)}
+			</div>
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 };

@@ -1,11 +1,10 @@
-// src/pages/ChineseZodiacLanding.tsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Header from '@/components/Header'; // Corrected import path
-import Footer from '@/components/Footer'; // Corrected import path
-import Breadcrumb from '@/components/Breadcrumb'; // Corrected import path
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import Breadcrumb from '@/components/Breadcrumb';
 
-// Image imports - corrected to use the assumed '@/assets/' alias
+// Image imports
 import ratImage from '@/assets/chinese-zodiac/year-of-the-rat.png';
 import oxImage from '@/assets/chinese-zodiac/year-of-the-ox.png';
 import tigerImage from '@/assets/chinese-zodiac/year-of-the-tiger.png';
@@ -20,13 +19,11 @@ import dogImage from '@/assets/chinese-zodiac/year-of-the-dog.png';
 import pigImage from '@/assets/chinese-zodiac/year-of-the-pig.png';
 
 
-// Define type for zodiac object (copied from HeroSection, keeping relevant fields)
 interface Zodiac {
     id: number;
     name: string;
     displayYears: string;
     image: string;
-    // color and traits are useful for the hover effect and can be kept
     color: string;
     traits: string;
 }
@@ -34,7 +31,6 @@ interface Zodiac {
 const ChineseZodiacLanding = () => {
     const navigate = useNavigate();
 
-    // Consolidated Chinese Zodiac data. This data is used to render the selection grid.
     const chineseZodiacs: Zodiac[] = [
         { id: 1, name: "Rat", displayYears: "2020, 2008, 1996, 1984", image: ratImage, color: "from-blue-500 to-blue-700", traits: "Intelligent, Adaptable, Quick-witted" },
         { id: 2, name: "Ox", displayYears: "2021, 2009, 1997, 1985", image: oxImage, color: "from-green-500 to-green-700", traits: "Reliable, Patient, Honest" },
@@ -50,113 +46,98 @@ const ChineseZodiacLanding = () => {
         { id: 12, name: "Pig", displayYears: "2031, 2019, 2007, 1995", image: pigImage, color: "from-teal-500 to-teal-700", traits: "Honest, Generous, Reliable" }
     ];
 
-    // Define breadcrumbs for this landing page
     const breadcrumbs = [
         { label: "Home", path: "/" },
-        { label: "Chinese Horoscope" }, // This is the current page's label
+		{ label: "Horoscope", path: "/horoscope" },
+        { label: "Chinese Horoscope" },
     ];
 
-    /**
-     * Handles the click event for a zodiac animal.
-     * Navigates to the Chinese Horoscope Result page for the selected zodiac.
-     * @param zodiac The selected zodiac object.
-     */
     const handleZodiacClick = (zodiac: Zodiac) => {
-        // Navigate to the ChineseHoroscopeResult page, passing the zodiac sign as a URL parameter.
-        // This will now route to the existing `/chinese-zodiac/:sign` route.
         navigate(`/zodiac/${zodiac.name.toLowerCase()}`);
     };
 
     return (
-        <div className="min-h-screen bg-white text-black flex flex-col">
-            <Header /> {/* Renders the site-wide header */}
-            <main className="flex-grow container mx-auto px-4 py-8 max-w-6xl mt-20">
-                <Breadcrumb items={breadcrumbs} /> {/* Renders breadcrumbs for navigation */}
+        <div className="flex flex-col min-h-screen bg-white text-black overflow-hidden">
+            <Header />
+            <main className="flex-grow"> {/* Removed alignment classes from here */}
+                {/* New container div for consistent alignment and spacing */}
+                <div className="pt-24 px-4 pb-16 max-w-5xl mx-auto">
+                    <Breadcrumb items={breadcrumbs} />
 
-                {/* Section title and description for selection */}
-                <div className="text-center mb-8 mt-8">
-                    <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-                        Choose Your Chinese Zodiac Sign
-                    </h1>
-                    <p className="text-lg text-gray-700 max-w-2xl mx-auto mb-10">
-                        Select your sign to discover your daily, weekly, and yearly horoscope.
-                    </p>
-                </div>
+                    {/* Section title and description for selection */}
+                    <div className="text-center mb-8 mt-8">
+                        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                            Choose Your Chinese Zodiac Sign
+                        </h1>
+                        <p className="text-lg text-gray-700 max-w-2xl mx-auto mb-10">
+                            Select your sign to discover your daily, weekly, and yearly horoscope.
+                        </p>
+                    </div>
 
-                {/* Grid for Chinese Zodiac selection */}
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
-                    {chineseZodiacs.map((zodiac) => (
-                        <div
-                            key={zodiac.id}
-                            onClick={() => handleZodiacClick(zodiac)}
-                            className="group relative cursor-pointer transform transition-all duration-300 hover:scale-105"
-                            role="button" // Indicate this is an interactive element
-                            tabIndex={0} // Make it focusable for keyboard navigation
-                            onKeyPress={(e) => {
-                                // Allow selection with Enter or Space key
-                                if (e.key === 'Enter' || e.key === ' ') {
-                                    handleZodiacClick(zodiac);
-                                }
-                            }}
-                            aria-label={`View ${zodiac.name} horoscope`} // Accessibility label
+                    {/* Grid for Chinese Zodiac selection */}
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+                        {chineseZodiacs.map((zodiac) => (
+                            <div
+                                key={zodiac.id}
+                                onClick={() => handleZodiacClick(zodiac)}
+                                className="group relative cursor-pointer transform transition-all duration-300 hover:scale-105"
+                                role="button"
+                                tabIndex={0}
+                                onKeyPress={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        handleZodiacClick(zodiac);
+                                    }
+                                }}
+                                aria-label={`View ${zodiac.name} horoscope`}
+                            >
+                                <div className="relative bg-gray-100 rounded-xl p-4 text-center text-black shadow-md border-2 border-gray-200 transition-all duration-300">
+                                    <div className="absolute inset-0 opacity-10 bg-gradient-to-br from-white to-transparent rounded-xl"></div>
+                                    <div className="relative mb-2 group-hover:scale-110 transition-transform duration-300">
+                                        <img
+                                            src={zodiac.image}
+                                            alt={zodiac.name}
+                                            className="w-16 h-16 md:w-20 md:h-20 mx-auto object-contain"
+                                        />
+                                    </div>
+                                    <h3 className="relative text-lg md:text-xl font-bold mb-1">
+                                        {zodiac.name}
+                                    </h3>
+                                    <p className="text-sm text-gray-600">{zodiac.displayYears}</p>
+                                </div>
+                                <div className="absolute inset-0 bg-gradient-to-r from-purple-900 via-black to-indigo-900 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center p-3 text-white shadow-xl hover:shadow-2xl">
+                                    <div className="mb-1">
+                                        <img
+                                            src={zodiac.image}
+                                            alt={zodiac.name}
+                                            className="w-10 h-10 mx-auto object-contain"
+                                        />
+                                    </div>
+                                    <h4 className="font-bold text-base mb-1">{zodiac.name}</h4>
+                                    <p className="text-xs text-center leading-relaxed">
+                                        {zodiac.traits}
+                                    </p>
+                                    <div className="mt-1 text-xs opacity-75">
+                                        Click to explore
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Call to action for finding their sign if unsure */}
+                    <div className="text-center mt-12 mb-8">
+                        <p className="text-gray-700 text-base">
+                            Unsure of your sign? Use our calculator to find out!
+                        </p>
+                        <button
+                            onClick={() => navigate('/chinese-zodiac-calculator')}
+                            className="bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors mt-4 inline-block"
                         >
-                            {/* Base card for the zodiac sign */}
-                            <div className="relative bg-gray-100 rounded-xl p-4 text-center text-black shadow-md border-2 border-gray-200 transition-all duration-300">
-                                {/* Subtle gradient overlay for aesthetic */}
-                                <div className="absolute inset-0 opacity-10 bg-gradient-to-br from-white to-transparent rounded-xl"></div>
-                                
-                                {/* Zodiac image, scales on hover */}
-                                <div className="relative mb-2 group-hover:scale-110 transition-transform duration-300">
-                                    <img
-                                        src={zodiac.image}
-                                        alt={zodiac.name}
-                                        className="w-16 h-16 md:w-20 md:h-20 mx-auto object-contain"
-                                    />
-                                </div>
-                                
-                                {/* Zodiac name and display years */}
-                                <h3 className="relative text-lg md:text-xl font-bold mb-1">
-                                    {zodiac.name}
-                                </h3>
-                                <p className="text-sm text-gray-600">{zodiac.displayYears}</p>
-                            </div>
-
-                            {/* The Hover Overlay: Provides more details on hover */}
-                            <div className="absolute inset-0 bg-gradient-to-r from-purple-900 via-black to-indigo-900 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center p-3 text-white shadow-xl hover:shadow-2xl">
-                                <div className="mb-1">
-                                    <img
-                                        src={zodiac.image}
-                                        alt={zodiac.name}
-                                        className="w-10 h-10 mx-auto object-contain"
-                                    />
-                                </div>
-                                <h4 className="font-bold text-base mb-1">{zodiac.name}</h4>
-                                <p className="text-xs text-center leading-relaxed">
-                                    {zodiac.traits}
-                                </p>
-                                <div className="mt-1 text-xs opacity-75">
-                                    Click to explore
-                                </div>
-                            </div>
-                        </div>
-                    ))}
+                            Calculate My Sign
+                        </button>
+                    </div>
                 </div>
-
-                {/* Call to action for finding their sign if unsure */}
-                <div className="text-center mt-12 mb-8">
-                    <p className="text-gray-700 text-base">
-                        Unsure of your sign? Use our calculator to find out!
-                    </p>
-                    <button
-                        onClick={() => navigate('/chinese-zodiac-calculator')}
-                        className="bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors mt-4 inline-block"
-                    >
-                        Calculate My Sign
-                    </button>
-                </div>
-
             </main>
-            <Footer /> {/* Renders the site-wide footer */}
         </div>
     );
 };

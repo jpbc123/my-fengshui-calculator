@@ -25,7 +25,6 @@ const DailyWisdomArticlePage = () => {
           </article>
         </div>
       </main>
-      <Footer />
     </div>
   );
 };

@@ -194,7 +194,6 @@ export default function AuraAnalysisPage() {
           </p>
         </div>
       </div>
-      <Footer />
     </div>
   );
 }

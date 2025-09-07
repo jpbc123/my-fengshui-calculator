@@ -21,6 +21,7 @@ const getTodayDate = () => {
 const DailyWisdomBanner = () => {
   const [partialMessage, setPartialMessage] = useState("Loading daily wisdom...");
   const [fullArticle, setFullArticle] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   const articlePath = "/daily-wisdom-article";
 
   useEffect(() => {
@@ -29,30 +30,43 @@ const DailyWisdomBanner = () => {
       const cachedMessage = localStorage.getItem(`dailyWisdom_${today}`);
       const cachedFullArticle = localStorage.getItem(`dailyWisdomFullArticle_${today}`);
 
-      if (cachedMessage && cachedFullArticle) {
+      // Only use cache if both quote AND article exist and article is not a fallback
+      if (cachedMessage && cachedFullArticle && !cachedFullArticle.includes('(This is a fallback message')) {
         setPartialMessage(cachedMessage);
         setFullArticle(cachedFullArticle);
+        setIsLoading(false);
         return;
       }
 
       let generatedQuote = "";
       let generatedArticle = "";
+      let usedFallback = false;
 
       try {
-        const response = await fetch('/api/daily-wisdom');
+        console.log('Fetching daily wisdom from API...');
+        // Try full URL if relative URL doesn't work
+        const response = await fetch('http://localhost:3001/api/daily-wisdom');
         
         if (!response.ok) {
-          throw new Error(`Server error: ${response.statusText}`);
+          throw new Error(`Server error: ${response.status} ${response.statusText}`);
         }
         
         const result = await response.json();
+        
+        // Check if the API returned valid data
+        if (!result.quote || !result.article) {
+          throw new Error('API returned incomplete data');
+        }
+        
         generatedQuote = result.quote;
         generatedArticle = result.article;
+        console.log('Successfully fetched from API');
       } catch (error) {
         console.error("Failed to fetch daily wisdom:", error);
         const randomIndex = Math.floor(Math.random() * fallbackMessages.length);
         generatedQuote = fallbackMessages[randomIndex];
-        generatedArticle = `**${generatedQuote}**\n\n(This is a fallback message. The full article would expand on this, perhaps with a short reflection on its meaning in daily life or a small task related to it. For example, if the quote is about 'peaceful home', the article could suggest decluttering one corner today.)`;
+        generatedArticle = `**${generatedQuote}**\n\n(This is a fallback message. Today's article cannot be found.)`;
+        usedFallback = true;
       }
 
       const displayMessage = generatedQuote.length > 80
@@ -62,8 +76,16 @@ const DailyWisdomBanner = () => {
       setPartialMessage(displayMessage);
       setFullArticle(generatedArticle);
       
-      localStorage.setItem(`dailyWisdom_${today}`, displayMessage);
-      localStorage.setItem(`dailyWisdomFullArticle_${today}`, generatedArticle);
+      // Only cache if we didn't use fallback
+      if (!usedFallback) {
+        localStorage.setItem(`dailyWisdom_${today}`, displayMessage);
+        localStorage.setItem(`dailyWisdomFullArticle_${today}`, generatedArticle);
+        console.log('Cached fresh content to localStorage');
+      } else {
+        console.log('Using fallback, not caching to localStorage');
+      }
+      
+      setIsLoading(false);
     };
 
     fetchAndSetDailyWisdom();
@@ -71,7 +93,17 @@ const DailyWisdomBanner = () => {
   }, []);
 
   const storeFullArticle = () => {
+    // Always store the current full article to sessionStorage when clicking
     sessionStorage.setItem('currentDailyWisdomArticle', fullArticle);
+    console.log('Stored article to sessionStorage:', fullArticle.substring(0, 100) + '...');
+  };
+
+  const clearTodayCache = () => {
+    const today = getTodayDate();
+    localStorage.removeItem(`dailyWisdom_${today}`);
+    localStorage.removeItem(`dailyWisdomFullArticle_${today}`);
+    console.log('Cleared today\'s cache');
+    window.location.reload();
   };
 
   return (
@@ -83,12 +115,13 @@ const DailyWisdomBanner = () => {
             <div className="flex flex-col text-center md:text-left flex-grow">
               <h2 className="text-xl md:text-2xl font-bold mb-2 text-gold">Today's Insight</h2>
               <p className="text-lg md:text-xl font-medium italic">
-                "{partialMessage}"
+                {isLoading ? "Loading daily wisdom..." : `"${partialMessage}"`}
               </p>
-              <div className="mt-4 md:mt-6">
+              <div className="mt-4 md:mt-6 flex flex-col sm:flex-row gap-2 items-center">
                 <button className="bg-gold text-black px-6 py-2 rounded-full font-semibold text-sm hover:bg-gold/80 transition-colors shadow-md">
                   Read More →
                 </button>
+
               </div>
             </div>
           </div>

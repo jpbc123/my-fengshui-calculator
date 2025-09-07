@@ -44,7 +44,7 @@ export default function FengShui() {
               to="/personal-element"
               className="bg-gradient-to-r from-purple-700 via-indigo-700 to-gray-800 border border-gold/30 rounded-xl p-6 hover:from-purple-600 hover:via-indigo-600 hover:to-gray-700 transition shadow-lg"
             >
-              <div className="flex justify-center w-3xl mb-3">🔥</div>
+              <div className="flex justify-center w-3xl mb-3 text-3xl">🌳</div>
               <h3 className="flex justify-center text-xl font-bold text-gold mb-2">Personal Element Analysis</h3>
               <p className="text-center text-white/70 text-sm">
                 Explore your elemental balance and Feng Shui alignment based on your birthdate.
@@ -90,7 +90,6 @@ export default function FengShui() {
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 }

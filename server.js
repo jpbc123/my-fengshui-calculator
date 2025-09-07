@@ -1,9 +1,16 @@
-// server.js
+// server.js (backend server) - FIXED VERSION
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import { createClient } from '@supabase/supabase-js';
-import { GoogleGenerativeAI } from '@google/generative-ai'; // Import Gemini API
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import { createClient as createSanityClient } from '@sanity/client';
+import dayjs from 'dayjs';
+import weekOfYear from 'dayjs/plugin/weekOfYear.js';
+import customParseFormat from 'dayjs/plugin/customParseFormat.js';
+
+dayjs.extend(weekOfYear);
+dayjs.extend(customParseFormat);
 
 dotenv.config();
 
@@ -21,9 +28,22 @@ const geminiApiKey = process.env.GEMINI_API_KEY;
 // Initialize Supabase client with the service role key
 const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
 
+// Initialize Sanity client for READING and WRITING data
+const sanityClient = createSanityClient({
+    projectId: process.env.VITE_SANITY_PROJECT_ID,
+    dataset: process.env.VITE_SANITY_DATASET,
+    apiVersion: '2025-08-31',
+    useCdn: false,
+    //token: process.env.SANITY_WRITE_TOKEN,
+    token: process.env.SANITY_API_WRITE_TOKEN,
+});
+
 // Initialize Gemini API
 const genAI = new GoogleGenerativeAI(geminiApiKey);
 const geminiModel = genAI.getGenerativeModel({ model: "gemini-2.5-flash-preview-05-20" });
+
+// In-memory cache to prevent duplicate requests
+const requestCache = new Map();
 
 // Define all Chinese zodiac signs for consistent generation and validation
 const allChineseZodiacs = [
@@ -38,31 +58,26 @@ const allWesternZodiacs = [
 ];
 
 // Helper function for exponential backoff for API calls
-async function fetchWithBackoff(url, options, retries = 5, baseDelay = 1000) {
+async function fetchWithBackoff(url, options, retries = 3, baseDelay = 1000) {
     for (let i = 0; i < retries; i++) {
         try {
             const response = await fetch(url, options);
 
-            // If a response is received, check if it's a rate limit error.
             if (response.status === 429 && i < retries - 1) {
                 const delay = Math.pow(2, i) * baseDelay + Math.random() * 1000;
                 console.warn(`Rate limit hit (429), retrying in ${Math.round(delay / 1000)}s...`);
                 await new Promise(resolve => setTimeout(resolve, delay));
-                continue; // Continue to the next loop iteration to retry
+                continue;
             }
 
-            // If the response is OK, return it.
             if (response.ok) {
                 return response;
             }
 
-            // If it's a different error, throw it so the outer catch block can handle it.
             throw new Error(`HTTP error! Status: ${response.status}, Body: ${await response.text()}`);
         } catch (error) {
-            // Log the error and decide whether to retry.
             console.error(`Fetch attempt ${i + 1} failed: ${error.message}`);
             if (i === retries - 1) {
-                // Last attempt, throw the error
                 throw error;
             }
 
@@ -71,13 +86,12 @@ async function fetchWithBackoff(url, options, retries = 5, baseDelay = 1000) {
             await new Promise(resolve => setTimeout(resolve, delay));
         }
     }
-    // If the loop finishes without a successful response
     throw new Error("Maximum retries exceeded for API call.");
 }
 
 // Function to calculate start and end dates of the current week (Sunday to Saturday)
 function getWeekDates(date = new Date()) {
-    const day = date.getDay(); // 0 = Sunday, 
+    const day = date.getDay();
     const diff = date.getDate() - day;
     
     const startOfWeek = new Date(date);
@@ -99,14 +113,14 @@ function getDailyDate(dayOffset = 0) {
     return targetDate.toISOString().slice(0, 10);
 }
 
-
-// ------------------- ENDPOINT FOR CHINESE HOROSCOPES (DAILY, WEEKLY, YEARLY) -------------------
+// ------------------- ENDPOINT FOR CHINESE HOROSCOPES (DAILY, WEEKLY, YEARLY) - SANITY.IO VERSION -------------------
 app.get('/api/chinese-horoscope/:zodiac', async (req, res) => {
     const { zodiac } = req.params;
-    const period = req.query.period || 'daily'; // 'daily', 'weekly', 'yearly'
+    const period = req.query.period || 'daily';
     const dayOffset = parseInt(req.query.dayOffset || '0', 10);
 
-    // Basic validation for the zodiac sign
+    console.log("Chinese Horoscope API called:", zodiac, period, dayOffset);
+     
     if (!allChineseZodiacs.includes(zodiac.toLowerCase())) {
         return res.status(400).json({ error: 'Invalid Chinese zodiac sign provided.' });
     }
@@ -115,114 +129,172 @@ app.get('/api/chinese-horoscope/:zodiac', async (req, res) => {
 
     try {
         let dataToReturn = null;
-        let tableName;
-        let identifierColumn;
+        let docType;
+        let query;
+        let params;
         let identifierValue;
-        let onConflictKeys;
         let promptText;
         let generatedData;
 
-        // Determine table and identifier based on period
         if (period === 'daily') {
-            tableName = 'daily_chinese_horoscope';
-            identifierColumn = 'for_date';
+            docType = 'dailyChineseHoroscope';
             identifierValue = getDailyDate(dayOffset);
-            onConflictKeys = ['sign', 'for_date'];
+            query = `*[_type == $docType && sign == $zodiac && forDate == $date][0]{
+                ...,
+                "for_date": forDate,
+                "horoscope_en": horoscopeEn,
+                "money_en": moneyEn,
+                "social_en": socialEn,
+                "career_en": careerEn,
+                "love_en": loveEn,
+                "lucky_color": luckyColor,
+                "lucky_color_en": luckyColorEn,
+                "lucky_number": luckyNumber,
+                "lucky_number_en": luckyNumberEn
+            }`;
+            params = { docType, zodiac: zodiac.toLowerCase(), date: identifierValue };
         } else if (period === 'weekly') {
-            tableName = 'weekly_chinese_horoscope';
-            identifierColumn = 'start_date';
-            identifierValue = getWeekDates().start;
-            onConflictKeys = ['sign', 'start_date'];
+            docType = 'weeklyChineseHoroscope';
+            const { start, end } = getWeekDates();
+            identifierValue = start;
+            query = `*[_type == $docType && sign == $zodiac && startDate == $startDate][0]{
+                ...,
+                "start_date": startDate,
+                "end_date": endDate,
+                "horoscope_en": horoscopeEn,
+                "money_en": moneyEn,
+                "social_en": socialEn,
+                "career_en": careerEn,
+                "love_en": loveEn,
+                "lucky_color": luckyColor,
+                "lucky_color_en": luckyColorEn,
+                "lucky_number": luckyNumber,
+                "lucky_number_en": luckyNumberEn
+            }`;
+            params = { docType, zodiac: zodiac.toLowerCase(), startDate: start };
         } else if (period === 'yearly') {
-            tableName = 'current_yr_general_chinese_horoscope';
-            identifierColumn = 'year';
+            docType = 'yearlyChineseHoroscope';
             identifierValue = new Date().getFullYear();
-            onConflictKeys = ['sign', 'year'];
+            query = `*[_type == $docType && sign == $zodiac && year == $year][0]{
+                ...,
+                "horoscope": overviewContent,
+                "horoscope_en": overviewContent,
+                "love": loveContent,
+                "love_en": loveContent,
+                "career": careerContent,
+                "career_en": careerContent,
+                "money": wealthContent,
+                "money_en": wealthContent,
+                "social": socialContent,
+                "social_en": socialContent,
+                "lucky_color": luckyColor,
+                "lucky_color_en": luckyColor,
+                "lucky_number": string(luckyNumber),
+                "lucky_number_en": string(luckyNumber)
+            }`;
+            params = { docType, zodiac: zodiac.toLowerCase(), year: identifierValue };
         } else {
             return res.status(400).json({ error: 'Invalid period specified. Use "daily", "weekly", or "yearly".' });
         }
 
-        // 1. Try to fetch from Supabase (cache)
-        console.log(`Checking Supabase for ${zodiac} ${period} horoscope...`);
-        const { data, error: supabaseFetchError } = await supabase
-            .from(tableName)
-            .select('*')
-            .eq('sign', zodiac.toLowerCase())
-            .eq(identifierColumn, identifierValue)
-            .single();
+        console.log(`Checking Sanity for ${zodiac} ${period} horoscope...`);
+        dataToReturn = await sanityClient.fetch(query, params);
         
-        if (data) {
-            console.log(`${period} horoscope for ${zodiac} found in Supabase.`);
-            dataToReturn = data;
-        } else if (supabaseFetchError && supabaseFetchError.code !== 'PGRST116') { // PGRST116 is "no rows found"
-            console.error(`Supabase fetch error for ${zodiac} ${period}:`, supabaseFetchError);
-            // Don't throw, just proceed to generate if cache error
+        if (dataToReturn) {
+            console.log(`${period} horoscope for ${zodiac} found in Sanity.`);
+            return res.json(dataToReturn);
         }
 
-        // 2. If no data is in cache, generate with Gemini API
-        if (!dataToReturn) {
-            console.log(`${period} horoscope for ${zodiac} not found. Generating with Gemini API...`);
+        // Check cache before making API call
+        const cacheKey = `${zodiac}-${period}-${identifierValue}`;
+        if (requestCache.has(cacheKey)) {
+            console.log(`Request for ${cacheKey} already in progress, waiting...`);
+            return res.status(202).json({ message: 'Request in progress, please try again in a moment' });
+        }
 
-            // Construct prompt based on period
-            if (period === 'daily') {
-                promptText = `Generate a detailed daily Chinese horoscope for the ${zodiac} sign for ${identifierValue}. Cover the following categories in both English and Chinese. Ensure the Chinese content is natural and culturally appropriate, and the English content is clear and engaging. The tone should be positive, insightful, and comprehensive for each section.
-                Provide the output as a JSON object with these exact keys:
-                {
-                  "horoscope": "中文生肖運勢", "horoscope_en": "English horoscope",
-                  "money": "中文財運", "money_en": "English money outlook",
-                  "social": "中文人際關係", "social_en": "English social outlook",
-                  "career": "中文事業運", "career_en": "English career outlook",
-                  "love": "中文愛情運", "love_en": "English love outlook",
-                  "lucky_color": "中文幸運顏色", "lucky_color_en": "English lucky color",
-                  "lucky_number": "中文幸運數字", "lucky_number_en": "English lucky number"
-                }`;
-            } else if (period === 'weekly') {
-                const { start, end } = getWeekDates();
-                promptText = `Generate a detailed general Chinese horoscope for the ${zodiac} sign for the current week (${start} to ${end}). Cover the following categories in both English and Chinese. Focus on a general outlook for the week. The tone should be positive, insightful, and comprehensive for each section.
-                Provide the output as a JSON object with these exact keys:
-                {
-                  "horoscope": "中文生肖運勢", "horoscope_en": "English horoscope",
-                  "money": "中文財運", "money_en": "English money outlook",
-                  "social": "中文人際關係", "social_en": "English social outlook",
-                  "career": "中文事業運", "career_en": "English career outlook",
-                  "love": "中文愛情運", "love_en": "English love outlook",
-                  "lucky_color": "中文幸運顏色", "lucky_color_en": "English lucky color",
-                  "lucky_number": "中文幸運數字", "lucky_number_en": "English lucky number"
-                }`;
-            } else if (period === 'yearly') {
-                promptText = `Generate a detailed general Chinese horoscope for the ${zodiac} sign for the current year ${identifierValue}. Cover the following categories in both English and Chinese. Focus on a broad outlook for the entire year. The tone should be positive, insightful, and comprehensive for each section.
-                Provide the output as a JSON object with these exact keys:
-                {
-                  "horoscope": "中文生肖運勢", "horoscope_en": "English horoscope",
-                  "money": "中文財運", "money_en": "English money outlook",
-                  "social": "中文人際關係", "social_en": "English social outlook",
-                  "career": "中文事業運", "career_en": "English career outlook",
-                  "love": "中文愛情運", "love_en": "English love outlook",
-                  "lucky_color": "中文幸運顏色", "lucky_color_en": "English lucky color",
-                  "lucky_number": "中文幸運數字", "lucky_number_en": "English lucky number"
-                }`;
-            }
+        requestCache.set(cacheKey, true);
 
-            const payload = {
-                contents: [{ role: "user", parts: [{ text: promptText }] }],
-                generationConfig: {
-                    responseMimeType: "application/json",
-                    responseSchema: {
-                        type: "OBJECT",
-                        properties: {
-                            "horoscope": { "type": "STRING" }, "horoscope_en": { "type": "STRING" },
-                            "money": { "type": "STRING" }, "money_en": { "type": "STRING" },
-                            "social": { "type": "STRING" }, "social_en": { "type": "STRING" },
-                            "career": { "type": "STRING" }, "career_en": { "type": "STRING" },
-                            "love": { "type": "STRING" }, "love_en": { "type": "STRING" },
-                            "lucky_color": { "type": "STRING" }, "lucky_color_en": { "type": "STRING" },
-                            "lucky_number": { "type": "STRING" }, "lucky_number_en": { "type": "STRING" }
-                        },
-                        required: ["horoscope", "horoscope_en", "money", "money_en", "social", "social_en", "career", "career_en", "love", "love_en", "lucky_color", "lucky_color_en", "lucky_number", "lucky_number_en"]
-                    }
+        console.log(`${period} horoscope for ${zodiac} not found. Generating with Gemini API...`);
+
+        if (period === 'daily') {
+            promptText = `Generate a detailed daily Chinese horoscope for the ${zodiac} sign for ${identifierValue}. Cover the following categories in both English and Chinese. Ensure the Chinese content is natural and culturally appropriate, and the English content is clear and engaging. The tone should be positive, insightful, and comprehensive for each section.
+            Provide the output as a JSON object with these exact keys:
+            {
+              "horoscope": "中文生肖运势", "horoscopeEn": "English horoscope",
+              "money": "中文财运", "moneyEn": "English money outlook",
+              "social": "中文人际关系", "socialEn": "English social outlook",
+              "career": "中文事业运", "careerEn": "English career outlook",
+              "love": "中文爱情运", "loveEn": "English love outlook",
+              "luckyColor": "中文幸运颜色", "luckyColorEn": "English lucky color",
+              "luckyNumber": "中文幸运数字", "luckyNumberEn": "English lucky number"
+            }`;
+        } else if (period === 'weekly') {
+            const { start, end } = getWeekDates();
+            promptText = `Generate a detailed general Chinese horoscope for the ${zodiac} sign for the current week (${start} to ${end}). Cover the following categories in both English and Chinese. Focus on a general outlook for the week. The tone should be positive, insightful, and comprehensive for each section.
+            Provide the output as a JSON object with these exact keys:
+            {
+              "horoscope": "中文生肖运势", "horoscopeEn": "English horoscope",
+              "money": "中文财运", "moneyEn": "English money outlook",
+              "social": "中文人际关系", "socialEn": "English social outlook",
+              "career": "中文事业运", "careerEn": "English career outlook",
+              "love": "中文爱情运", "loveEn": "English love outlook",
+              "luckyColor": "中文幸运颜色", "luckyColorEn": "English lucky color",
+              "luckyNumber": "中文幸运数字", "luckyNumberEn": "English lucky number"
+            }`;
+        } else if (period === 'yearly') {
+            promptText = `Generate a detailed general Chinese horoscope for the ${zodiac} sign for the current year ${identifierValue}. Provide comprehensive content in English only (we'll use the same content for both languages). Focus on a broad outlook for the entire year. The tone should be positive, insightful, and comprehensive for each section.
+            Provide the output as a JSON object with these exact keys:
+            {
+              "overviewContent": "Detailed yearly overview for ${zodiac}...",
+              "loveContent": "Yearly love and relationship forecast...",
+              "careerContent": "Career and professional outlook for the year...",
+              "wealthContent": "Financial and wealth prospects...",
+              "socialContent": "Social interactions and friendships...",
+              "luckyColor": "Red",
+              "luckyNumber": 7
+            }`;
+        }
+
+        const payload = {
+            contents: [{ role: "user", parts: [{ text: promptText }] }],
+            generationConfig: {
+                responseMimeType: "application/json",
+                responseSchema: period === 'yearly' ? {
+                    type: "OBJECT",
+                    properties: {
+                        "overviewContent": { "type": "STRING" },
+                        "loveContent": { "type": "STRING" },
+                        "careerContent": { "type": "STRING" },
+                        "wealthContent": { "type": "STRING" },
+                        "socialContent": { "type": "STRING" },
+                        "luckyColor": { "type": "STRING" },
+                        "luckyNumber": { "type": "INTEGER" }
+                    },
+                    required: ["overviewContent", "loveContent", "careerContent", "wealthContent", "socialContent", "luckyColor", "luckyNumber"]
+                } : {
+                    type: "OBJECT",
+                    properties: {
+                        "horoscope": { "type": "STRING" },
+                        "horoscopeEn": { "type": "STRING" },
+                        "money": { "type": "STRING" },
+                        "moneyEn": { "type": "STRING" },
+                        "social": { "type": "STRING" },
+                        "socialEn": { "type": "STRING" },
+                        "career": { "type": "STRING" },
+                        "careerEn": { "type": "STRING" },
+                        "love": { "type": "STRING" },
+                        "loveEn": { "type": "STRING" },
+                        "luckyColor": { "type": "STRING" },
+                        "luckyColorEn": { "type": "STRING" },
+                        "luckyNumber": { "type": "STRING" },
+                        "luckyNumberEn": { "type": "STRING" }
+                    },
+                    required: ["horoscope", "horoscopeEn", "money", "moneyEn", "social", "socialEn", "career", "careerEn", "love", "loveEn", "luckyColor", "luckyColorEn", "luckyNumber", "luckyNumberEn"]
                 }
-            };
+            }
+        };
 
+        try {
             const geminiResponse = await fetchWithBackoff(geminiApiUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -232,46 +304,73 @@ app.get('/api/chinese-horoscope/:zodiac', async (req, res) => {
             const jsonResponseText = geminiResult.candidates[0].content.parts[0].text;
             generatedData = JSON.parse(jsonResponseText);
 
-            // 3. Perform an upsert to store the data
-            const dataToUpsert = {
+            const documentToCreate = {
+                _type: docType,
                 sign: zodiac.toLowerCase(),
-                ...generatedData,
-                updated_at: new Date().toISOString()
+                ...generatedData
             };
+
             if (period === 'daily') {
-                dataToUpsert.for_date = identifierValue;
+                documentToCreate.forDate = identifierValue;
             } else if (period === 'weekly') {
                 const { start, end } = getWeekDates();
-                dataToUpsert.start_date = start;
-                dataToUpsert.end_date = end;
+                documentToCreate.startDate = start;
+                documentToCreate.endDate = end;
             } else if (period === 'yearly') {
-                dataToUpsert.year = identifierValue;
+                documentToCreate.year = identifierValue;
             }
 
-            // --- START OF MODIFIED LOGIC ---
-            // The `insert` statement below has been changed to `upsert` to match the Western horoscope logic.
-            // This ensures that new data is inserted or existing data is updated, preventing duplicate errors
-            // and making the endpoint a robust fallback cache.
-            console.log(`Upserting new ${period} horoscope for ${zodiac} in Supabase...`);
-            const { data: upsertedData, error: upsertError } = await supabase
-                .from(tableName)
-                .upsert(dataToUpsert, { onConflict: onConflictKeys })
-                .select()
-                .single();
+            console.log(`Creating new ${period} horoscope for ${zodiac} in Sanity...`);
+            const createdDocument = await sanityClient.create(documentToCreate);
 
-            if (upsertError) {
-                console.error(`Failed to upsert ${zodiac} ${period} horoscope into Supabase:`, upsertError);
-                throw new Error(`Failed to store ${period} Chinese horoscope.`);
+            if (!createdDocument) {
+                throw new Error(`Failed to create ${period} Chinese horoscope in Sanity.`);
             }
-            // --- END OF MODIFIED LOGIC ---
+
+            let transformedDocument = createdDocument;
             
-            dataToReturn = upsertedData;
-        }
+            if (period === 'daily' || period === 'weekly') {
+                transformedDocument = {
+                    ...createdDocument,
+                    for_date: createdDocument.forDate,
+                    start_date: createdDocument.startDate,
+                    end_date: createdDocument.endDate,
+                    horoscope_en: createdDocument.horoscopeEn,
+                    money_en: createdDocument.moneyEn,
+                    social_en: createdDocument.socialEn,
+                    career_en: createdDocument.careerEn,
+                    love_en: createdDocument.loveEn,
+                    lucky_color: createdDocument.luckyColor,
+                    lucky_color_en: createdDocument.luckyColorEn,
+                    lucky_number: createdDocument.luckyNumber,
+                    lucky_number_en: createdDocument.luckyNumberEn
+                };
+            } else if (period === 'yearly') {
+                transformedDocument = {
+                    ...createdDocument,
+                    horoscope: createdDocument.overviewContent,
+                    horoscope_en: createdDocument.overviewContent,
+                    love: createdDocument.loveContent,
+                    love_en: createdDocument.loveContent,
+                    career: createdDocument.careerContent,
+                    career_en: createdDocument.careerContent,
+                    money: createdDocument.wealthContent,
+                    money_en: createdDocument.wealthContent,
+                    social: createdDocument.socialContent,
+                    social_en: createdDocument.socialContent,
+                    lucky_color: createdDocument.luckyColor,
+                    lucky_color_en: createdDocument.luckyColor,
+                    lucky_number: createdDocument.luckyNumber.toString(),
+                    lucky_number_en: createdDocument.luckyNumber.toString()
+                };
+            }
 
-        if (dataToReturn) {
-            return res.json(dataToReturn);
-        } else {
-            return res.status(404).json({ error: 'Horoscope data not found and could not be generated.' });
+            requestCache.delete(cacheKey);
+            return res.json(transformedDocument);
+
+        } catch (geminiError) {
+            requestCache.delete(cacheKey);
+            throw geminiError;
         }
 
     } catch (error) {
@@ -280,165 +379,202 @@ app.get('/api/chinese-horoscope/:zodiac', async (req, res) => {
     }
 });
 
-// ------------------- NEW ENDPOINT FOR WESTERN HOROSCOPES (DAILY, WEEKLY, YEARLY) -------------------
-app.post('/api/western-horoscope', async (req, res) => {
-    const { sign, period, category, dateIdentifier, weekIdentifier, yearIdentifier } = req.body;
+// ------------------- ENDPOINT FOR WESTERN HOROSCOPES (DAILY, WEEKLY, YEARLY) - SANITY.IO VERSION -------------------
+// Replace your Western horoscope endpoint in server.js with this fixed version:
 
-    if (!sign || !period || !category) {
-        return res.status(400).json({ error: 'Missing sign, period, or category.' });
-    }
+// Replace your Western horoscope endpoint in server.js with this fixed version:
+
+app.get('/api/western-horoscope/:sign', async (req, res) => {
+    const { sign } = req.params;
+    const period = req.query.period || 'daily';
+    const dayOffset = parseInt(req.query.dayOffset || '0', 10);
+
+    console.log("Western Horoscope API called:", sign, period, dayOffset);
 
     if (!allWesternZodiacs.includes(sign.toLowerCase())) {
         return res.status(400).json({ error: 'Invalid Western zodiac sign provided.' });
     }
 
-    let tableName;
-    let identifierColumn;
-    let identifierValue;
-
-    switch (period) {
-        case 'today':
-        case 'yesterday':
-            tableName = 'daily_western_horoscopes';
-            identifierColumn = 'date';
-            identifierValue = dateIdentifier;
-            break;
-        case 'weekly':
-            tableName = 'weekly_western_horoscopes';
-            identifierColumn = 'week_identifier';
-            identifierValue = weekIdentifier;
-            break;
-        case 'yearly':
-            tableName = 'yearly_western_horoscopes';
-            identifierColumn = 'year';
-            identifierValue = yearIdentifier;
-            break;
-        default:
-            return res.status(400).json({ error: 'Invalid period specified. Use "today", "yesterday", "weekly", or "yearly".' });
-    }
+    const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${geminiApiKey}`;
 
     try {
-        // 1. Try to fetch from Supabase (cache)
-        let { data: cachedHoroscope, error: cacheError } = await supabase
-            .from(tableName)
-            .select('*')
-            .eq('sign', sign.toLowerCase())
-            .eq(identifierColumn, identifierValue)
-            .single();
+        let dataToReturn = null;
+        let docType;
+        let query;
+        let params;
+        let identifierValue;
+        let promptText;
+        let generatedData;
 
-        if (cacheError && cacheError.code !== 'PGRST116') { // PGRST116 means "no rows found"
-            console.error('Supabase cache error:', cacheError);
-            // Don't throw, just proceed to generate if cache error
-        }
-
-        // If specific category content exists, return the full cached object
-        // Otherwise, if the main record exists but is missing the category, we'll regenerate
-        if (cachedHoroscope && cachedHoroscope[`${category}_content`] && period !== 'yesterday') {
-             // For yesterday, we don't regenerate missing categories, just return what's there
-            return res.json({ horoscope: cachedHoroscope });
-        }
-        
-        // If cachedHoroscope exists but is missing the specific category (or if it's yesterday)
-        // or if no cachedHoroscope at all, generate with Gemini API
-        if (!cachedHoroscope || (period !== 'yesterday' && !cachedHoroscope[`${category}_content`])) {
-            console.log(`Generating Western horoscope for ${sign}, ${period}, ${category}. Cache hit: ${!!cachedHoroscope}`);
-
-            const promptText = `Generate a concise and insightful Western horoscope for ${sign} for ${period}.
-            Please provide the following categories as a JSON object. Ensure each category is a string.
-            - overview_content: A general daily/weekly/yearly forecast.
-            - love_content: Insights into romantic relationships.
-            - career_content: Guidance on professional life.
-            - wealth_content: Advice on financial matters.
-            - social_content: Tips for social interactions.
-            - lucky_color: A specific lucky color for the period (e.g., "Blue", "Green", "Gold").
-            - lucky_number: A specific lucky number for the period (e.g., 7, 3, 9).
-    
-            The response should be a JSON object with all the specified keys. Example for 'today' and 'aries':
-            {
-              "overview_content": "Aries, today is a day for bold moves...",
-              "love_content": "Your passion shines in relationships...",
-              "career_content": "New opportunities arise at work...",
-              "wealth_content": "Financial stability is within reach...",
-              "social_content": "Connect with friends old and new...",
-              "lucky_color": "Red",
-              "lucky_number": 9
+        if (period === 'daily') {
+            docType = 'dailyWesternHoroscope';
+            identifierValue = getDailyDate(dayOffset);
+            query = `*[_type == $docType && sign == $sign && forDate == $date][0]{
+                ...,
+                "for_date": forDate
             }`;
+            params = { docType, sign: sign.toLowerCase(), date: identifierValue };
+        } else if (period === 'weekly') {
+            docType = 'weeklyWesternHoroscope';
+            const { start, end } = getWeekDates();
+            identifierValue = start;
+            query = `*[_type == $docType && sign == $sign && startDate == $startDate][0]{
+                ...,
+                "start_date": startDate,
+                "end_date": endDate
+            }`;
+            params = { docType, sign: sign.toLowerCase(), startDate: start };
+        } else if (period === 'yearly') {
+            docType = 'yearlyWesternHoroscope';
+            identifierValue = new Date().getFullYear();
+            query = `*[_type == $docType && sign == $sign && year == $year][0]{
+                ...,
+                "horoscope": overviewContent,
+                "love": loveContent,
+                "career": careerContent,
+                "money": wealthContent,
+                "social": socialContent
+            }`;
+            params = { docType, sign: sign.toLowerCase(), year: identifierValue };
+        } else {
+            return res.status(400).json({ error: 'Invalid period specified. Use "daily", "weekly", or "yearly".' });
+        }
 
-            const payload = {
-                contents: [{ role: "user", parts: [{ text: promptText }] }],
-                generationConfig: {
-                    responseMimeType: "application/json",
-                    responseSchema: {
-                        type: "OBJECT",
-                        properties: {
-                            "overview_content": { "type": "STRING" },
-                            "love_content": { "type": "STRING" },
-                            "career_content": { "type": "STRING" },
-                            "wealth_content": { "type": "STRING" },
-                            "social_content": { "type": "STRING" },
-                            "lucky_color": { "type": "STRING" },
-                            "lucky_number": { "type": "INTEGER" }
-                        },
-                        required: ["overview_content", "love_content", "career_content", "wealth_content", "social_content", "lucky_color", "lucky_number"]
-                    }
-                }
-            };
+        console.log(`Checking Sanity for ${sign} ${period} horoscope...`);
+        dataToReturn = await sanityClient.fetch(query, params);
 
-            const geminiResponse = await fetchWithBackoff(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${geminiApiKey}`, {
+        if (dataToReturn) {
+            console.log(`${period} horoscope for ${sign} found in Sanity.`);
+            return res.json(dataToReturn);
+        }
+
+        // Check cache before making API call
+        const cacheKey = `western-${sign}-${period}-${identifierValue}`;
+        if (requestCache.has(cacheKey)) {
+            console.log(`Request for ${cacheKey} already in progress, waiting...`);
+            return res.status(202).json({ message: 'Request in progress, please try again in a moment' });
+        }
+
+        requestCache.set(cacheKey, true);
+
+        console.log(`${period} horoscope for ${sign} not found. Generating with Gemini API...`);
+
+        if (period === 'daily') {
+            promptText = `Generate a detailed daily Western horoscope for ${sign} on ${identifierValue}.
+            Provide the following keys in a JSON object:
+            {
+              "horoscope": "General forecast...",
+              "money": "Money outlook...",
+              "social": "Social interactions...",
+              "career": "Career outlook...",
+              "love": "Love forecast...",
+              "luckyColor": "Blue",
+              "luckyNumber": 7
+            }`;
+        } else if (period === 'weekly') {
+            const { start, end } = getWeekDates();
+            promptText = `Generate a detailed weekly Western horoscope for ${sign} for the period ${start} to ${end}.
+            Provide the following keys in a JSON object:
+            {
+              "horoscope": "General forecast...",
+              "money": "Money outlook...",
+              "social": "Social interactions...",
+              "career": "Career outlook...",
+              "love": "Love forecast...",
+              "luckyColor": "Green",
+              "luckyNumber": 3
+            }`;
+        } else if (period === 'yearly') {
+            promptText = `Generate a detailed yearly Western horoscope for ${sign} for the year ${identifierValue}.
+            Provide the following keys in a JSON object:
+            {
+              "overviewContent": "Yearly overview...",
+              "loveContent": "Love forecast...",
+              "careerContent": "Career outlook...",
+              "wealthContent": "Financial outlook...",
+              "socialContent": "Social interactions...",
+              "luckyColor": "Red",
+              "luckyNumber": 9
+            }`;
+        }
+
+        const payload = {
+            contents: [{ role: "user", parts: [{ text: promptText }] }],
+            generationConfig: {
+                responseMimeType: "application/json"
+            }
+        };
+
+        try {
+            const geminiResponse = await fetchWithBackoff(geminiApiUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
             const geminiResult = await geminiResponse.json();
             const jsonResponseText = geminiResult.candidates[0].content.parts[0].text;
-            let parsedGeminiData;
-            try {
-                 // The Gemini API might sometimes return the JSON wrapped in markdown code block.
-                const jsonMatch = jsonResponseText.match(/```json\n([\s\S]*?)\n```/);
-                parsedGeminiData = JSON.parse(jsonMatch ? jsonMatch[1] : jsonResponseText);
-            } catch (e) {
-                console.error("Failed to parse Gemini API response:", jsonResponseText, e);
-                throw new Error("Failed to parse horoscope content from AI.");
+            generatedData = JSON.parse(jsonResponseText);
+
+            // 👈 FIXED: Use consistent document ID pattern
+            let documentId;
+            if (period === 'daily') {
+                documentId = `daily-${sign.toLowerCase()}-${identifierValue}`;
+            } else if (period === 'weekly') {
+                documentId = `weekly-${sign.toLowerCase()}-${identifierValue}`;
+            } else if (period === 'yearly') {
+                documentId = `yearly-${sign.toLowerCase()}-${identifierValue}`;
             }
 
-            // 3. Store or Update in Supabase
-            const dataToUpsert = {
+            const documentToCreate = {
+                _type: docType,
+                _id: documentId, // 👈 FIXED: Set consistent ID
                 sign: sign.toLowerCase(),
-                overview_content: parsedGeminiData.overview_content,
-                love_content: parsedGeminiData.love_content,
-                career_content: parsedGeminiData.career_content,
-                wealth_content: parsedGeminiData.wealth_content,
-                social_content: parsedGeminiData.social_content,
-                lucky_color: parsedGeminiData.lucky_color,
-                lucky_number: parsedGeminiData.lucky_number,
-                updated_at: new Date().toISOString()
+                ...generatedData
             };
 
-            if (period === 'today' || period === 'yesterday') {
-                dataToUpsert.date = identifierValue;
+            if (period === 'daily') {
+                documentToCreate.forDate = identifierValue;
             } else if (period === 'weekly') {
-                dataToUpsert.week_identifier = identifierValue;
+                const { start, end } = getWeekDates();
+                documentToCreate.startDate = start;
+                documentToCreate.endDate = end;
             } else if (period === 'yearly') {
-                dataToUpsert.year = identifierValue;
+                documentToCreate.year = identifierValue;
             }
 
-            console.log(`Upserting Western horoscope for ${sign}, ${period} into ${tableName}...`);
-            const { data: upsertedData, error: upsertError } = await supabase
-                .from(tableName)
-                .upsert(dataToUpsert, { onConflict: ['sign', identifierColumn] })
-                .select()
-                .single();
+            console.log(`Creating new ${period} horoscope for ${sign} in Sanity...`);
+            const createdDocument = await sanityClient.createOrReplace(documentToCreate); // 👈 FIXED: Use createOrReplace
 
-            if (upsertError) {
-                console.error(`Failed to upsert Western horoscope into Supabase:`, upsertError);
-                throw new Error('Failed to store Western horoscope.');
+            let transformedDocument = createdDocument;
+            if (period === 'daily') {
+                transformedDocument = {
+                    ...createdDocument,
+                    for_date: createdDocument.forDate
+                };
+            } else if (period === 'weekly') {
+                transformedDocument = {
+                    ...createdDocument,
+                    start_date: createdDocument.startDate,
+                    end_date: createdDocument.endDate
+                };
+            } else if (period === 'yearly') {
+                transformedDocument = {
+                    ...createdDocument,
+                    horoscope: createdDocument.overviewContent,
+                    love: createdDocument.loveContent,
+                    career: createdDocument.careerContent,
+                    money: createdDocument.wealthContent,
+                    social: createdDocument.socialContent
+                };
             }
-            return res.json({ horoscope: upsertedData });
-        } else if (cachedHoroscope) {
-             // If cachedHoroscope exists and period is 'yesterday', return it without regenerating
-            return res.json({ horoscope: cachedHoroscope });
+
+            requestCache.delete(cacheKey);
+            return res.json(transformedDocument);
+
+        } catch (geminiError) {
+            requestCache.delete(cacheKey);
+            throw geminiError;
         }
-
 
     } catch (error) {
         console.error(`API call failed for ${sign} Western horoscope (${period}):`, error.message);
@@ -446,27 +582,336 @@ app.post('/api/western-horoscope', async (req, res) => {
     }
 });
 
+// ------------------- ENHANCED ENDPOINT FOR DAILY FENG SHUI TIP -------------------
 
-// ------------------- EXISTING ENDPOINT FOR DAILY WISDOM -------------------
+// Support Functions (add these at the top of your server file)
+function getRandomTheme() {
+  const themes = [
+    'wealth and prosperity', 'relationships and love', 'career advancement',
+    'health and vitality', 'creativity and inspiration', 'travel and adventure',
+    'family harmony', 'spiritual growth', 'protection and safety', 'mental clarity',
+    'home office energy', 'sleep quality', 'social connections', 'personal growth'
+  ];
+  return themes[Math.floor(Math.random() * themes.length)];
+}
+
+function getRandomElement() {
+  const elements = ['water', 'wood', 'fire', 'earth', 'metal'];
+  return elements[Math.floor(Math.random() * elements.length)];
+}
+
+function getSeason() {
+  const month = new Date().getMonth();
+  if (month >= 2 && month <= 4) return 'spring (renewal and growth)';
+  if (month >= 5 && month <= 7) return 'summer (energy and activity)';
+  if (month >= 8 && month <= 10) return 'autumn (harvest and reflection)';
+  return 'winter (rest and planning)';
+}
+
+function getWeeklyFocus() {
+  const now = new Date();
+  const onejan = new Date(now.getFullYear(), 0, 1);
+  const weekNumber = Math.ceil((((now - onejan) / 86400000) + onejan.getDay() + 1) / 7);
+  const focuses = [
+    'entrance and doorways', 'bedroom energy', 'kitchen and nourishment',
+    'workspace optimization', 'bathroom cleansing', 'living room harmony',
+    'color and lighting', 'outdoor spaces', 'storage and organization'
+  ];
+  return focuses[weekNumber % focuses.length];
+}
+
+function getDayOfWeekFocus() {
+  const dayOfWeek = new Date().getDay();
+  const dailyFocus = [
+    'new beginnings and intentions', // Sunday
+    'career and professional growth', // Monday  
+    'communication and relationships', // Tuesday
+    'creativity and self-expression', // Wednesday
+    'abundance and gratitude', // Thursday
+    'love and social connections', // Friday
+    'rest and spiritual practices' // Saturday
+  ];
+  return dailyFocus[dayOfWeek];
+}
+
+function getRandomRoom() {
+  const rooms = [
+    'entryway', 'living room', 'bedroom', 'kitchen', 'bathroom', 
+    'home office', 'dining room', 'closet', 'hallway', 'balcony'
+  ];
+  return rooms[Math.floor(Math.random() * rooms.length)];
+}
+
+function getRandomAction() {
+  const actions = [
+    'Place', 'Move', 'Add', 'Remove', 'Rearrange', 'Light', 'Open', 'Close',
+    'Clean', 'Declutter', 'Position', 'Activate', 'Balance', 'Enhance'
+  ];
+  return actions[Math.floor(Math.random() * actions.length)];
+}
+
+async function getRecentTips(sanityClient, days = 7) {
+  const cutoffDate = new Date();
+  cutoffDate.setDate(cutoffDate.getDate() - days);
+  const cutoffString = cutoffDate.toISOString().split('T')[0];
+  
+  try {
+    const recentTips = await sanityClient.fetch(
+      `*[_type == "dailyFengShuiTip" && date > $cutoffDate] | order(date desc) {tip}`,
+      { cutoffDate: cutoffString }
+    );
+    return recentTips.map(t => t.tip.toLowerCase());
+  } catch (err) {
+    console.warn('Could not fetch recent tips for uniqueness check:', err.message);
+    return [];
+  }
+}
+
+// ------------------- NEW: ENHANCED DAILY WISDOM PROMPT FUNCTION -------------------
+async function buildDailyWisdomPrompt(sanityClient) {
+  const topics = ['feng shui', 'numerology', 'astrology'];
+  const selectedTopic = topics[Math.floor(Math.random() * topics.length)];
+
+  const avoidanceClause = await getRecentTips(sanityClient, 7);
+  const avoidedTipsText = avoidanceClause.length > 0
+    ? `\n\nIMPORTANT: Avoid concepts similar to these recent tips: ${avoidanceClause.slice(0, 5).join(', ')}`
+    : '';
+
+  return `Generate a concise, uplifting motivational quote (under 15 words) 
+  related to ${selectedTopic}. Then, expand on that quote with a short, insightful article 
+  (about 250-300 words) that provides practical advice or deeper meaning. 
+  Format the output as a JSON object with 'quote' and 'article' keys.
+  
+  Topic focus: ${selectedTopic}. Ensure the entire response (quote and article) is exclusively about this topic.
+  ${avoidedTipsText}`;
+}
+
+app.get('/api/daily-fengshui-tip', async (req, res) => {
+  const today = getDailyDate();
+  const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${geminiApiKey}`;
+  
+  try {
+    console.log("Checking Sanity for today's feng shui tip...");
+    
+    // Check if today's tip already exists
+    const query = `*[_type == "dailyFengShuiTip" && date == $date][0]{tip}`;
+    const params = { date: today };
+    const existingDoc = await sanityClient.fetch(query, params);
+    
+    if (existingDoc?.tip) {
+      console.log("Feng shui tip found in Sanity. Returning cached data.");
+      return res.json({ tip: existingDoc.tip });
+    }
+
+    // Check cache before making API call
+    const cacheKey = `fengshui-tip-${today}`;
+    if (requestCache.has(cacheKey)) {
+      console.log(`Request for ${cacheKey} already in progress, waiting...`);
+      return res.status(202).json({ message: 'Request in progress, please try again in a moment' });
+    }
+    requestCache.set(cacheKey, true);
+
+    console.log("No feng shui tip found. Generating with enhanced prompt...");
+    
+    // Build enhanced prompt with context
+    const prompt = await buildEnhancedPrompt(today, sanityClient);
+    console.log("Enhanced prompt context:", {
+      theme: getRandomTheme(),
+      element: getRandomElement(),
+      season: getSeason(),
+      focus: getWeeklyFocus()
+    });
+
+    const payload = {
+      contents: [{ role: "user", parts: [{ text: prompt }] }],
+      generationConfig: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: "OBJECT",
+          properties: {
+            "tip": { "type": "STRING" }
+          },
+          required: ["tip"]
+        }
+      }
+    };
+
+    try {
+      const response = await fetchWithBackoff(geminiApiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await response.json();
+      const jsonResponse = result.candidates[0].content.parts[0].text;
+      const parsedJson = JSON.parse(jsonResponse);
+
+      // Store in Sanity with metadata
+      const createdDoc = await sanityClient.create({
+        _type: "dailyFengShuiTip",
+        date: today,
+        tip: parsedJson.tip,
+        createdAt: new Date().toISOString(),
+        metadata: {
+          generatedWith: 'enhanced-prompt-v2',
+          season: getSeason(),
+          theme: getRandomTheme(),
+          element: getRandomElement(),
+          focus: getWeeklyFocus()
+        }
+      });
+
+      if (!createdDoc) {
+        throw new Error('Failed to store feng shui tip in Sanity.');
+      }
+
+      requestCache.delete(cacheKey);
+      console.log(`Successfully generated and stored tip: "${parsedJson.tip}"`);
+      return res.json({ tip: parsedJson.tip });
+      
+    } catch (geminiError) {
+      requestCache.delete(cacheKey);
+      throw geminiError;
+    }
+    
+  } catch (error) {
+    console.error("Failed to get daily feng shui tip:", error.message);
+    res.status(500).json({ error: "Failed to retrieve or generate daily feng shui tip" });
+  }
+});
+
+// ------------------- ENDPOINT FOR PLANETARY OVERVIEW - FIXED -------------------
+app.get('/api/planetary-overview', async (req, res) => {
+  const today = getDailyDate();
+  const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${geminiApiKey}`;
+
+  try {
+    console.log("Checking Sanity for today's planetary overview...");
+    // Fixed: Use the correct schema name and fields
+    const query = `*[_type == "dailyPlanetaryOverview" && date == $date][0]{
+      date,
+      planetary_index,
+      summary,
+      article
+    }`;
+    const params = { date: today };
+    const existingDoc = await sanityClient.fetch(query, params);
+
+    if (existingDoc) {
+      console.log("Planetary overview found in Sanity. Returning cached data.");
+      return res.json({
+        date: existingDoc.date,
+        planetary_index: existingDoc.planetary_index,
+        summary: existingDoc.summary,
+        article: existingDoc.article
+      });
+    }
+
+    // Check cache before making API call
+    const cacheKey = `planetary-overview-${today}`;
+    if (requestCache.has(cacheKey)) {
+      console.log(`Request for ${cacheKey} already in progress, waiting...`);
+      return res.status(202).json({ message: 'Request in progress, please try again in a moment' });
+    }
+
+    requestCache.set(cacheKey, true);
+
+    console.log("No planetary overview found. Generating with Gemini...");
+    const prompt = `Generate a planetary overview for astrology enthusiasts for ${today}.
+    Include a planetary index (1-5 scale), a short summary (max 150 chars), and a detailed article.
+    Format as JSON:
+    {
+      "planetary_index": 3,
+      "summary": "Your short summary...",
+      "article": "Your detailed article..."
+    }`;
+
+    const payload = {
+      contents: [{ role: "user", parts: [{ text: prompt }] }],
+      generationConfig: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: "OBJECT",
+          properties: {
+            "planetary_index": { "type": "INTEGER", "minimum": 1, "maximum": 5 },
+            "summary": { "type": "STRING" },
+            "article": { "type": "STRING" }
+          },
+          required: ["planetary_index", "summary", "article"]
+        }
+      }
+    };
+
+    try {
+      const response = await fetchWithBackoff(geminiApiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const result = await response.json();
+      const jsonResponse = result.candidates[0].content.parts[0].text;
+      const parsedJson = JSON.parse(jsonResponse);
+
+      // Store in Sanity using correct schema
+      const createdDoc = await sanityClient.create({
+        _type: "dailyPlanetaryOverview",
+        date: today,
+        planetary_index: parsedJson.planetary_index,
+        summary: parsedJson.summary,
+        article: parsedJson.article
+      });
+
+      if (!createdDoc) {
+        throw new Error('Failed to store planetary overview in Sanity.');
+      }
+
+      requestCache.delete(cacheKey);
+      return res.json({
+        date: today,
+        planetary_index: parsedJson.planetary_index,
+        summary: parsedJson.summary,
+        article: parsedJson.article
+      });
+
+    } catch (geminiError) {
+      requestCache.delete(cacheKey);
+      throw geminiError;
+    }
+
+  } catch (error) {
+    console.error("Failed to get planetary overview:", error.message);
+    res.status(500).json({ error: "Failed to retrieve or generate planetary overview" });
+  }
+});
+
+// ------------------- ENDPOINT FOR DAILY WISDOM BANNER -------------------
 app.get('/api/daily-wisdom', async (req, res) => {
     const today = getDailyDate();
     const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${geminiApiKey}`;
 
     try {
-        console.log("Checking Supabase for today's daily wisdom...");
-        const { data, error } = await supabase
-            .from('daily_wisdom')
-            .select('quote, article')
-            .eq('date', today)
-            .single();
+        console.log("Checking Sanity for today's daily wisdom...");
+        const query = `*[_type == "dailyWisdom" && date == $date][0]`;
+        const existing = await sanityClient.fetch(query, { date: today });
 
-        if (data) {
-            console.log("Daily wisdom found in Supabase. Returning cached data.");
-            return res.json({ quote: data.quote, article: data.article });
+        if (existing) {
+            console.log("Daily wisdom found in Sanity. Returning cached data.");
+            return res.json({ quote: existing.quote, article: existing.article });
         }
 
+        const cacheKey = `daily-wisdom-${today}`;
+        if (requestCache.has(cacheKey)) {
+            console.log(`Request for ${cacheKey} already in progress, waiting...`);
+            return res.status(202).json({ message: 'Request in progress, please try again in a moment' });
+        }
+        requestCache.set(cacheKey, true);
+
         console.log("Daily wisdom not found. Generating a new one with Gemini API...");
-        const prompt = "Generate a concise, uplifting motivational quote (under 15 words) related to feng shui, numerology, or astrology. Then, expand on that quote with a short, insightful article (about 250-300 words) that provides practical advice or deeper meaning. Format the output as a JSON object with 'quote' and 'article' keys.";
+        
+        // Use the new, dynamic prompt function
+        const prompt = await buildDailyWisdomPrompt(sanityClient);
+
         const payload = {
             contents: [{ role: "user", parts: [{ text: prompt }] }],
             generationConfig: {
@@ -476,38 +921,45 @@ app.get('/api/daily-wisdom', async (req, res) => {
                     properties: {
                         "quote": { "type": "STRING" },
                         "article": { "type": "STRING" }
-                    }
+                    },
+                    required: ["quote", "article"]
                 }
             }
         };
 
-        const response = await fetchWithBackoff(geminiApiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
+        try {
+            const response = await fetchWithBackoff(geminiApiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
 
-        const result = await response.json();
-        const jsonResponse = result.candidates[0].content.parts[0].text;
-        const parsedJson = JSON.parse(jsonResponse);
-        const generatedQuote = parsedJson.quote;
-        const generatedArticle = parsedJson.article;
+            const result = await response.json();
+            const jsonResponse = result.candidates[0].content.parts[0].text;
+            const parsedJson = JSON.parse(jsonResponse);
 
-        console.log("Successfully generated new wisdom. Storing it in Supabase...");
-        const { error: insertError } = await supabase
-            .from('daily_wisdom')
-            .insert({
+            const generatedQuote = parsedJson.quote;
+            const generatedArticle = parsedJson.article;
+
+            console.log("Successfully generated new wisdom. Storing it in Sanity...");
+            const createdDoc = await sanityClient.create({
+                _type: 'dailyWisdom',
                 date: today,
                 quote: generatedQuote,
                 article: generatedArticle
             });
 
-        if (insertError) {
-            console.error("Failed to insert data into Supabase:", insertError);
-            throw new Error('Failed to store daily wisdom.');
-        }
+            if (!createdDoc) {
+                throw new Error('Failed to store daily wisdom in Sanity.');
+            }
 
-        res.json({ quote: generatedQuote, article: generatedArticle });
+            requestCache.delete(cacheKey);
+            res.json({ quote: generatedQuote, article: generatedArticle });
+
+        } catch (geminiError) {
+            requestCache.delete(cacheKey);
+            throw geminiError;
+        }
 
     } catch (error) {
         console.error("API call failed:", error.message);
@@ -515,6 +967,35 @@ app.get('/api/daily-wisdom', async (req, res) => {
     }
 });
 
+// ------------------- ENDPOINT FOR CONTACT US FORM -------------------
+app.post('/api/contact', async (req, res) => {
+  const { name, email, subject, message } = req.body;
+
+  // Basic server-side validation to ensure required fields are present
+  if (!name || !email || !message) {
+    return res.status(400).json({ error: 'Name, email, and message are required.' });
+  }
+
+  // Sanity document to be created
+  const docToSubmit = {
+    _type: 'contactMessage', // This must match the name in your Sanity schema
+    name,
+    email,
+    subject,
+    message,
+    createdAt: new Date().toISOString(),
+  };
+
+  try {
+    const result = await sanityClient.create(docToSubmit);
+    console.log('Successfully wrote to Sanity:', result);
+    return res.status(200).json({ success: true, message: 'Message submitted successfully.' });
+  } catch (error) {
+    console.error('Sanity write error:', error);
+    // Send a 500 error if there's an issue with the Sanity API
+    return res.status(500).json({ error: 'Failed to submit message to Sanity.' });
+  }
+});
 
 // Start the server
 app.listen(port, () => {

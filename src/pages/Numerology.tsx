@@ -78,7 +78,6 @@ export default function Numerology() {
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 }

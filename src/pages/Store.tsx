@@ -74,8 +74,6 @@ const Store = () => {
           Your price remains the same, and these commissions help support our work.
         </p>
       </main>
-
-      <Footer />
     </div>
   );
 };
