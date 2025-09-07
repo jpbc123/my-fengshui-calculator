@@ -1,4 +1,3 @@
-// vite.config.ts
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
@@ -7,7 +6,8 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
 
   return {
-    base: mode === "production" ? "/my-fengshui-calculator/" : "/",
+    // The base path is now always the root
+    base: '/',
     server: {
       port: 8080,
       proxy: {
@@ -53,6 +53,19 @@ export default defineConfig(({ mode }) => {
 	build: {
       sourcemap: false, // 🚫 disables source maps in production
       minify: "esbuild", // or "terser" if you need advanced minification
-	  },
+	},
   };
 });
+```
+eof
+
+### Final Steps to a Live Site
+
+1.  **Save** the `vite.config.ts` file with the corrected code.
+2.  Open your terminal, commit the change, and push it to GitHub.
+
+    ```bash
+    git add vite.config.ts
+    git commit -m "Fix base path for Vercel deployment"
+    git push
+    
