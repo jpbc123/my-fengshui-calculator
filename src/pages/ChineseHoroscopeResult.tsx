@@ -268,7 +268,7 @@ const allFeatureImages = useMemo(() =>
             // Since sync scripts generate data for tomorrow (+1 day):
             // - Today: fetch data with dayOffset=1 (gets today's data)
             // - Yesterday: fetch data with dayOffset=0 (gets yesterday's data)
-            const dayOffset = activePeriodTab === 'today' ? 1 : 0;
+            const dayOffset = activePeriodTab === 'today' ? 0 : -1;
             apiUrl += `?period=daily&dayOffset=${dayOffset}`;
 
         } else if (activePeriodTab === 'weekly') {

@@ -1,4 +1,4 @@
-// src/components/Breadcrumb.tsx
+// Replace your Breadcrumb component with:
 import { Link } from "react-router-dom";
 
 type Crumb = {
@@ -8,15 +8,20 @@ type Crumb = {
 
 interface BreadcrumbProps {
   items: Crumb[];
+  className?: string;
 }
 
-const Breadcrumb: React.FC<BreadcrumbProps> = ({ items = [] }) => {
+const Breadcrumb: React.FC<BreadcrumbProps> = ({ items = [], className = "" }) => {
   return (
-    <nav className="text-sm text-black/70 mb-4">
+    <nav className={`text-sm text-black/70 mb-4 ${className}`}>
       {items.map((item, idx) => (
-        <span key={idx}>
+        <span key={`breadcrumb-${idx}`}>
           {item.path ? (
-            <Link to={item.path} className="hover:text-gold transition-colors duration-200">
+            <Link 
+              to={item.path} 
+              className="hover:text-gold transition-colors duration-200"
+              onContextMenu={(e) => e.stopPropagation()}
+            >
               {item.label}
             </Link>
           ) : (

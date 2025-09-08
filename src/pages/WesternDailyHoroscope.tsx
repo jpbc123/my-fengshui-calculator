@@ -265,12 +265,9 @@ export default function WesternDailyHoroscope() {
     
     // FIXED: Correct the dayOffset logic
     if (period === 'today') {
-      // Since sync scripts generate data for tomorrow (+1 day):
-      // Today should fetch data with dayOffset=1 (gets today's data)
-      apiUrl += '?period=daily&dayOffset=1';
-    } else if (period === 'yesterday') {
-      // Yesterday should fetch data with dayOffset=0 (gets yesterday's data)
       apiUrl += '?period=daily&dayOffset=0';
+    } else if (period === 'yesterday') {
+      apiUrl += '?period=daily&dayOffset=-1';
     } else if (period === 'weekly') {
       apiUrl += '?period=weekly';
     } else if (period === 'yearly') {
