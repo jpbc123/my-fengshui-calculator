@@ -191,69 +191,6 @@ export default function WesternDailyHoroscope() {
     { id: 'lucky_number' as CategoryTabType, label: 'Lucky Number', icon: '' },
   ], []);
 
-  const renderPeriodDateInfo = () => {
-    if (!horoscopeContent) return null;
-
-    if (selectedPeriod === 'today' || selectedPeriod === 'yesterday') {
-      // For daily periods, try to get the date from the horoscope data
-      const dateString = horoscopeContent.forDate || horoscopeContent.for_date;
-      if (dateString) {
-        const date = new Date(dateString);
-        if (!isNaN(date.getTime())) {
-          return date.toLocaleDateString('en-US', { 
-            weekday: 'long', 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
-          });
-        }
-      }
-      
-      // Fallback to calculate based on selectedPeriod
-      const today = new Date();
-      if (selectedPeriod === 'yesterday') {
-        today.setDate(today.getDate() - 1);
-      }
-      return today.toLocaleDateString('en-US', { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-      });
-      
-    } else if (selectedPeriod === 'weekly') {
-      const startDateString = horoscopeContent.startDate || horoscopeContent.start_date;
-      const endDateString = horoscopeContent.endDate || horoscopeContent.end_date;
-      
-      if (startDateString && endDateString) {
-        const startDate = new Date(startDateString);
-        const endDate = new Date(endDateString);
-        
-        if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
-          const start = startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-          const end = endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-          return `Week of ${start} - ${end}`;
-        }
-      }
-      
-      // Fallback to current week
-      const today = new Date();
-      const day = today.getDay();
-      const diff = today.getDate() - day;
-      const startOfWeek = new Date(today.getFullYear(), today.getMonth(), diff);
-      const endOfWeek = new Date(today.getFullYear(), today.getMonth(), diff + 6);
-      const start = startOfWeek.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-      const end = endOfWeek.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-      return `Week of ${start} - ${end}`;
-      
-    } else if (selectedPeriod === 'yearly') {
-      const year = horoscopeContent.year || new Date().getFullYear();
-      return `Year ${year} General Outlook`;
-    }
-    
-    return null;
-  };
-
   const fetchHoroscope = useCallback(async (sign: string, period: PeriodTabType) => {
     if (!periodLoading) {
       setLoading(true);
@@ -467,10 +404,6 @@ export default function WesternDailyHoroscope() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.3, ease: "easeOut" }}
                       >
-                        {/* Add the date info display here */}
-                        <div className="text-gray-500 mb-4 text-center text-sm">
-                          {renderPeriodDateInfo()}
-                        </div>
                         <div className="text-black/80 leading-relaxed min-h-[100px]">
                           {renderHoroscopeText()}
                         </div>
