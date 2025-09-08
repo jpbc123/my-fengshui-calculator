@@ -1,4 +1,4 @@
-// sync-daily-wisdom.js - FIXED VERSION
+// sync-daily-wisdom.js
 import { createClient } from '@sanity/client';
 import dotenv from 'dotenv';
 import dayjs from 'dayjs';
@@ -6,7 +6,6 @@ import fetch from 'node-fetch';
 
 dotenv.config();
 
-// Setup Sanity client
 const sanityClient = createClient({
   projectId: process.env.VITE_SANITY_PROJECT_ID,
   dataset: process.env.VITE_SANITY_DATASET,
@@ -15,11 +14,9 @@ const sanityClient = createClient({
   useCdn: false,
 });
 
-// Gemini API setup
 const geminiApiKey = process.env.GEMINI_API_KEY;
 const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${geminiApiKey}`;
 
-// Helper for exponential backoff
 async function fetchWithBackoff(url, options, retries = 5, baseDelay = 5000) {
   for (let i = 0; i < retries; i++) {
     try {
@@ -43,13 +40,12 @@ async function fetchWithBackoff(url, options, retries = 5, baseDelay = 5000) {
   throw new Error('Max retries exceeded.');
 }
 
-// ------------------- NEW: RANDOM TOPIC SELECTION -------------------
-async function generateDailyWisdom(today) {
+async function generateDailyWisdom(targetDate) {
   const topics = ['feng shui', 'numerology', 'astrology'];
   const selectedTopic = topics[Math.floor(Math.random() * topics.length)];
 
   const prompt = `Generate a concise, uplifting motivational quote (under 15 words) 
-  related to ${selectedTopic}. Then expand on that quote with a short article (200-250 words) 
+  related to ${selectedTopic} for ${targetDate}. Then expand on that quote with a short article (200-250 words) 
   that provides practical advice. Format strictly as JSON: { "quote": "...", "article": "..." }.
   Ensure the content is focused exclusively on ${selectedTopic}.`;
 
@@ -80,35 +76,37 @@ async function generateDailyWisdom(today) {
 }
 
 async function syncDailyWisdom() {
-  const today = dayjs().format('YYYY-MM-DD');
-  console.log(`[${today}] Checking Sanity for existing Daily Wisdom...`);
+  // FIXED: Generate for TOMORROW instead of today
+  const tomorrow = dayjs().add(1, 'day').format('YYYY-MM-DD');
+  const tomorrowDay = dayjs().add(1, 'day').format('dddd');
+  
+  console.log(`[${dayjs().format('YYYY-MM-DD HH:mm:ss')}] Generating Daily Wisdom for TOMORROW: ${tomorrow} (${tomorrowDay})`);
 
   const existing = await sanityClient.fetch(
     `*[_type == "dailyWisdom" && date == $date][0]`,
-    { date: today }
+    { date: tomorrow }
   );
 
   if (existing) {
-    console.log(`[${today}] Already exists in Sanity. Skipping.`);
+    console.log(`[${tomorrow}] Already exists in Sanity. Skipping generation.`);
     return;
   }
 
-  console.log(`[${today}] Generating new Daily Wisdom...`);
-  const generated = await generateDailyWisdom(today);
+  console.log(`[${tomorrow}] Generating new Daily Wisdom for tomorrow...`);
+  const generated = await generateDailyWisdom(tomorrow);
 
   const doc = {
     _type: 'dailyWisdom',
-    _id: `daily-wisdom-${today}`,
-    date: today,
+    _id: `daily-wisdom-${tomorrow}`,
+    date: tomorrow,
     quote: generated.quote,
     article: generated.article,
   };
 
   await sanityClient.createOrReplace(doc);
-  console.log(`[${today}] Stored Daily Wisdom in Sanity.`);
+  console.log(`[${tomorrow}] Successfully stored Daily Wisdom for tomorrow.`);
 }
 
-// Run
 syncDailyWisdom().catch((err) => {
   console.error('Failed to sync daily wisdom:', err.message);
 });

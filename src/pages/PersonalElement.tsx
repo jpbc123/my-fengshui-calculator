@@ -1,4 +1,6 @@
 // src/pages/PersonalElement.tsx
+// Temporary version with inline Sanity client to fix import issues
+
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -11,9 +13,23 @@ import Breadcrumb from "@/components/Breadcrumb";
 import ReactMarkdown from 'react-markdown';
 import ShareResult from "@/components/ShareResult";
 import { Link } from "react-router-dom";
-import { client } from "../../sanityClient";
-import { PortableText } from '@portabletext/react';
-import imageUrlBuilder from '@sanity/image-url';
+import { createClient } from '@sanity/client';
+
+// Create Sanity client inline to avoid import issues
+const sanityClient = createClient({
+  projectId: import.meta.env.VITE_SANITY_PROJECT_ID,
+  dataset: import.meta.env.VITE_SANITY_DATASET,
+  apiVersion: import.meta.env.VITE_SANITY_API_VERSION || '2024-01-01',
+  useCdn: true,
+  perspective: 'published',
+});
+
+// Helper function to check if client is configured
+const isClientConfigured = () => {
+  const projectId = import.meta.env.VITE_SANITY_PROJECT_ID;
+  const dataset = import.meta.env.VITE_SANITY_DATASET;
+  return !!(projectId && dataset);
+};
 
 const elementByHeavenlyStem: Record<string, string> = {
   Jia: "Wood", Yi: "Wood",
@@ -46,7 +62,7 @@ const stemDescriptions: Record<string, string> = {
   Jia: `🌳 **Jia (甲) – Yang Wood**
 **Element:** Wood
 
-Jia is like a tall, sturdy tree — upright, dependable, and growth-oriented.
+Jia is like a tall, sturdy tree – upright, dependable, and growth-oriented.
 
 **Those with Jia as their Heavenly Stem often:**
 - Are principled and dependable
@@ -60,7 +76,7 @@ Jia is like a tall, sturdy tree — upright, dependable, and growth-oriented.
   Yi: `🌱 **Yi (乙) – Yin Wood**
 **Element:** Wood
 
-Yi is like climbing vines or delicate flowers — flexible, adaptive, and diplomatic.
+Yi is like climbing vines or delicate flowers – flexible, adaptive, and diplomatic.
 
 **Those with Yi as their Heavenly Stem often:**
 - Are creative and adaptable
@@ -74,7 +90,7 @@ Yi is like climbing vines or delicate flowers — flexible, adaptive, and diplom
   Bing: `🔥 **Bing (丙) – Yang Fire**
 **Element:** Fire
 
-Bing is like the sun — warm, bright, and energizing.
+Bing is like the sun – warm, bright, and energizing.
 
 **Those with Bing as their Heavenly Stem often:**
 - Inspire others with optimism
@@ -88,7 +104,7 @@ Bing is like the sun — warm, bright, and energizing.
   Ding: `🕯 **Ding (丁) – Yin Fire**
 **Element:** Fire
 
-Ding is like candlelight — subtle, nurturing, and refined.
+Ding is like candlelight – subtle, nurturing, and refined.
 
 **Those with Ding as their Heavenly Stem often:**
 - Offer emotional warmth and comfort
@@ -102,7 +118,7 @@ Ding is like candlelight — subtle, nurturing, and refined.
   Wu: `🏔 **Wu (戊) – Yang Earth**
 **Element:** Earth
 
-Wu is like a mountain — stable, protective, and reliable.
+Wu is like a mountain – stable, protective, and reliable.
 
 **Those with Wu as their Heavenly Stem often:**
 - Are trustworthy and responsible
@@ -116,10 +132,10 @@ Wu is like a mountain — stable, protective, and reliable.
   Ji: `🌾 **Ji (己) – Yin Earth**
 **Element:** Earth
 
-Ji is like fertile soil — nurturing, supportive, and grounded.
+Ji is like fertile soil – nurturing, supportive, and grounded.
 
 **Those with Ji as their Heavenly Stem often:**
-- Care deeply for others’ well-being
+- Care deeply for others' well-being
 - Offer practical solutions and guidance
 - Are humble and approachable
 
@@ -130,7 +146,7 @@ Ji is like fertile soil — nurturing, supportive, and grounded.
   Geng: `⚔ **Geng (庚) – Yang Metal**
 **Element:** Metal
 
-Geng is like an axe or raw metal — strong, bold, and decisive.
+Geng is like an axe or raw metal – strong, bold, and decisive.
 
 **Those with Geng as their Heavenly Stem often:**
 - Are courageous and ambitious
@@ -144,7 +160,7 @@ Geng is like an axe or raw metal — strong, bold, and decisive.
   Xin: `💎 **Xin (辛) – Yin Metal**
 **Element:** Metal
 
-Xin is like refined jewelry — elegant, sharp, and intelligent.
+Xin is like refined jewelry – elegant, sharp, and intelligent.
 
 **Those with Xin as their Heavenly Stem often:**
 - Possess great taste and attention to detail
@@ -158,7 +174,7 @@ Xin is like refined jewelry — elegant, sharp, and intelligent.
   Ren: `🌊 **Ren (壬) – Yang Water**
 **Element:** Water
 
-Ren is like the ocean — vast, deep, and adaptable.
+Ren is like the ocean – vast, deep, and adaptable.
 
 **Those with Ren as their Heavenly Stem often:**
 - Are resourceful and intelligent
@@ -172,7 +188,7 @@ Ren is like the ocean — vast, deep, and adaptable.
   Gui: `💧 **Gui (癸) – Yin Water**
 **Element:** Water
 
-Gui is like gentle rain — nurturing, subtle, and intuitive.
+Gui is like gentle rain – nurturing, subtle, and intuitive.
 
 **Those with Gui as their Heavenly Stem often:**
 - Are empathetic and understanding
@@ -236,8 +252,10 @@ const breadcrumbs = [
 
 // Interface for article data from Sanity
 interface SanityArticle {
+  _id: string;
   title: string;
-  slug: string; 
+  slug: string;
+  tags?: string[];
 }
 
 export default function PersonalElement() {
@@ -249,34 +267,84 @@ export default function PersonalElement() {
     stemDescription: string;
   } | null>(null);
   const [showMore, setShowMore] = useState(false);
-  const [loadingTips, setLoadingTips] = useState(true);
   const [relatedArticles, setRelatedArticles] = useState<SanityArticle[]>([]);
-  const [fetchError, setFetchError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const RELATED_ARTICLES_LIMIT = 5;
 
+  // Test environment variables on component mount
   useEffect(() => {
-    const fetchData = async () => {
+    console.log('Environment variables check:', {
+      projectId: import.meta.env.VITE_SANITY_PROJECT_ID,
+      dataset: import.meta.env.VITE_SANITY_DATASET,
+      apiVersion: import.meta.env.VITE_SANITY_API_VERSION,
+      hasProjectId: !!import.meta.env.VITE_SANITY_PROJECT_ID,
+      hasDataset: !!import.meta.env.VITE_SANITY_DATASET,
+    });
+  }, []);
+
+  // Fetch related articles on component mount
+  useEffect(() => {
+    const fetchRelatedArticles = async () => {
+      if (!isClientConfigured()) {
+        console.warn('Sanity client not configured properly');
+        setRelatedArticles([]);
+        return;
+      }
+      
       setLoading(true);
       try {
-        const [articles, kuaData] = await Promise.all([
-          client.fetch<SanityArticle[]>(
-		`*[_type == "article" && ("fengshui" in tags || "element" in tags)] | order(publishDate desc)[0...${RELATED_ARTICLES_LIMIT}]{title, "slug": slug.current}`
-		),
-        ]);
-        setRelatedArticles(articles);
+        // First, test basic fetch
+        console.log('Testing basic article fetch...');
+        const testQuery = `*[_type == "article"][0...3]{
+          _id,
+          title,
+          "slug": slug.current,
+          tags,
+          publishDate
+        }`;
+        
+        const testArticles = await sanityClient.fetch(testQuery);
+        console.log('Available articles:', testArticles);
+        
+        // Try filtered query
+        const query = `*[_type == "article" && defined(tags) && ("fengshui" in tags || "element" in tags || "feng-shui" in tags || "elements" in tags)] | order(publishDate desc)[0...${RELATED_ARTICLES_LIMIT}]{
+          _id,
+          title,
+          "slug": slug.current,
+          tags
+        }`;
+        
+        console.log('Fetching filtered articles...');
+        const articles = await sanityClient.fetch<SanityArticle[]>(query);
+        console.log('Filtered articles:', articles);
+        
+        // If no filtered articles, fall back to recent articles
+        if (articles.length === 0) {
+          console.log('No tagged articles found, falling back to recent articles');
+          const fallbackQuery = `*[_type == "article"] | order(publishDate desc)[0...${RELATED_ARTICLES_LIMIT}]{
+            _id,
+            title,
+            "slug": slug.current
+          }`;
+          const fallbackArticles = await sanityClient.fetch<SanityArticle[]>(fallbackQuery);
+          console.log('Fallback articles:', fallbackArticles);
+          setRelatedArticles(fallbackArticles);
+        } else {
+          setRelatedArticles(articles);
+        }
       } catch (error) {
-        console.error("Error fetching data from Sanity:", error);
+        console.error("Error fetching related articles:", error);
+        setRelatedArticles([]);
       } finally {
         setLoading(false);
       }
     };
-    fetchData();
+
+    fetchRelatedArticles();
   }, []);
   
   const handleCalculate = () => {
     if (!birthDate) return;
-	
 
     try {
       const lunar = Lunar.fromDate(new Date(birthDate));
@@ -284,7 +352,10 @@ export default function PersonalElement() {
       const stemChineseChar = dayGanZhi.charAt(0);
       const dayHeavenlyStem = stemEnglishNames[stemChineseChar];
 
-      if (!dayHeavenlyStem) throw new Error(`Unrecognized stem: ${stemChineseChar}`);
+      if (!dayHeavenlyStem) {
+        console.error(`Unrecognized stem: ${stemChineseChar}`);
+        return;
+      }
 
       const stemChinese = stemChineseNames[dayHeavenlyStem];
       const element = elementByHeavenlyStem[dayHeavenlyStem];
@@ -308,9 +379,9 @@ export default function PersonalElement() {
       <main className="flex-grow pt-6 px-1 pb-10">
         <div className="pt-24 px-4 pb-16 max-w-5xl mx-auto">
           {/* Two-column layout */}
-          <div className="flex flex-col lg:flex-row lg:justify-between">
+          <div className="flex flex-col lg:flex-row lg:justify-between lg:gap-8">
             {/* Left side - Calculator and Results */}
-            <div className="max-w-xl">
+            <div className="max-w-xl flex-1">
               {/* Breadcrumbs + title */}
               <div className="mb-8">
                 <Breadcrumb items={breadcrumbs} className="text-black/80" />
@@ -340,7 +411,7 @@ export default function PersonalElement() {
                 {/* Additional Info */}
                 {showMore && (
                   <div className="bg-gray-50 text-black/90 p-4 rounded-xl border border-gray-200 text-left">
-                    <p className="mb-2">The Five Elements (Wu Xing 五行) — Wood, Fire, Earth, Metal, and Water — are essential to Chinese metaphysics, philosophy, and medicine.</p>
+                    <p className="mb-2">The Five Elements (Wu Xing 五行) – Wood, Fire, Earth, Metal, and Water – are essential to Chinese metaphysics, philosophy, and medicine.</p>
                     <ul className="list-disc list-inside">
                       <li>Each person is born under a heavenly stem tied to one of these five elements.</li>
                       <li>Your element affects your strengths, personality, and compatibility with others and spaces.</li>
@@ -376,59 +447,69 @@ export default function PersonalElement() {
 
               {/* Result */}
               {result && (
-                <>
-                  <motion.div
-                    id="personalElementResult"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mt-8 p-6 rounded-xl bg-gray-50 border border-gray-200 text-left space-y-4 text-black"
-                  >
-                    <h2 className="text-xl font-bold text-gold">Your Element: {result.element}</h2>
-                    <p className="text-black/90"><strong>Heavenly Stem:</strong> {result.stem}</p>
-                    <div className="prose">
-                      <h3 className="text-gold font-semibold mb-1">Stem Meaning:</h3>
-                      <ReactMarkdown>{result.stemDescription}</ReactMarkdown>
-                    </div>
-                    <p className="text-black/90"><strong>Element Traits:</strong> {result.description}</p>
-                    <p className="text-black/90"><strong>Compatibility:</strong> {compatibilityInsights[result.element]}</p>
-                    <p className="text-black/90"><strong>Lucky Numbers:</strong> {luckyTips[result.element].numbers.join(", ")}</p>
-                    <p className="text-black/90"><strong>Lucky Colors:</strong> {luckyTips[result.element].colors.join(", ")}</p>
-                    <p className="text-black/90"><strong>Suggested Careers:</strong> {luckyTips[result.element].careers.join(", ")}</p>
-                    <p className="text-black/90"><strong>Feng Shui Tip:</strong> {fengShuiTips[result.element]}</p>
-                  </motion.div>
-                </>
+                <motion.div
+                  id="personalElementResult"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mt-8 p-6 rounded-xl bg-gray-50 border border-gray-200 text-left space-y-4 text-black"
+                >
+                  <h2 className="text-xl font-bold text-gold">Your Element: {result.element}</h2>
+                  <p className="text-black/90"><strong>Heavenly Stem:</strong> {result.stem}</p>
+                  <div className="prose max-w-none">
+                    <h3 className="text-gold font-semibold mb-1 text-base">Stem Meaning:</h3>
+                    <ReactMarkdown className="text-sm">{result.stemDescription}</ReactMarkdown>
+                  </div>
+                  <p className="text-black/90"><strong>Element Traits:</strong> {result.description}</p>
+                  <p className="text-black/90"><strong>Compatibility:</strong> {compatibilityInsights[result.element]}</p>
+                  <p className="text-black/90"><strong>Lucky Numbers:</strong> {luckyTips[result.element].numbers.join(", ")}</p>
+                  <p className="text-black/90"><strong>Lucky Colors:</strong> {luckyTips[result.element].colors.join(", ")}</p>
+                  <p className="text-black/90"><strong>Suggested Careers:</strong> {luckyTips[result.element].careers.join(", ")}</p>
+                  <p className="text-black/90"><strong>Feng Shui Tip:</strong> {fengShuiTips[result.element]}</p>
+                  
+                  {/* Share Result Component */}
+                  <div className="pt-4 border-t border-gray-200">
+                    <ShareResult 
+                      result={`My Personal Element is ${result.element} (${result.stem})`}
+                      url={window.location.href}
+                    />
+                  </div>
+                </motion.div>
               )}
             </div>
 
-            {/* Right side - related articles */}
-            <div className="max-w-md mt-40 lg:mt-0">
-			<h2 className="text-xl font-semibold text-black mb-4">Related Articles</h2>
-			{loading ? (
-				<div className="space-y-2">
-				<div className="h-4 bg-gray-200 rounded animate-pulse"></div>
-				<div className="h-4 bg-gray-200 rounded animate-pulse w-3/4"></div>
-				<div className="h-4 bg-gray-200 rounded animate-pulse w-1/2"></div>
-				</div>
-			) : relatedArticles.length > 0 ? (
-				<ul className="space-y-2 text-sm">
-				{relatedArticles.map((article, index) => (
-					<li key={index}>
-					<Link
-						to={`/articles/${article.slug}`}
-						className="text-lg text-black/80 hover:text-gold"
-					>
-						{article.title}
-					</Link>
-					</li>
-				))}
-				</ul>
-			) : (
-				<p className="text-gray-500 text-sm">No related articles found.</p>
-			)}
-			</div>
+            {/* Right side - Related Articles */}
+            <div className="max-w-md mt-12 lg:mt-0 lg:ml-8">
+              <h2 className="text-xl font-semibold text-black mb-4">Related Articles</h2>
+              {loading ? (
+                <div className="space-y-3">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <div key={i} className="animate-pulse">
+                      <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                      <div className="h-3 bg-gray-200 rounded w-3/4"></div>
+                    </div>
+                  ))}
+                </div>
+              ) : relatedArticles.length > 0 ? (
+                <div className="space-y-3">
+                  {relatedArticles.map((article) => (
+                    <div key={article._id}>
+                      <Link
+                        to={`/articles/${article.slug}`}
+                        className="block text-base font-medium text-black hover:text-gold transition-colors"
+                      >
+                        {article.title}
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-gray-500 text-sm">No related articles found.</p>
+              )}
+            </div>
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

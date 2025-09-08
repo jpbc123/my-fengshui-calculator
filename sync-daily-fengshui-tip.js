@@ -19,7 +19,6 @@ const sanityClient = createClient({
 const geminiApiKey = process.env.GEMINI_API_KEY;
 const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${geminiApiKey}`;
 
-// Support Functions for Enhanced Prompting
 function getRandomTheme() {
   const themes = [
     'wealth and prosperity', 'relationships and love', 'career advancement',
@@ -53,8 +52,8 @@ function getWeeklyFocus() {
   return focuses[weekNumber % focuses.length];
 }
 
-function getDayOfWeekFocus() {
-  const dayOfWeek = dayjs().day();
+function getDayOfWeekFocus(targetDate) {
+  const dayOfWeek = dayjs(targetDate).day();
   const dailyFocus = [
     'new beginnings and intentions', // Sunday
     'career and professional growth', // Monday  
@@ -83,7 +82,6 @@ function getRandomAction() {
   return actions[Math.floor(Math.random() * actions.length)];
 }
 
-// Helper: backoff retries
 async function fetchWithBackoff(url, options, retries = 5, baseDelay = 5000) {
   for (let i = 0; i < retries; i++) {
     try {
@@ -122,30 +120,30 @@ async function getRecentTips(days = 7) {
   }
 }
 
-async function buildEnhancedPrompt(today) {
+async function buildEnhancedPrompt(targetDate) {
   const theme = getRandomTheme();
   const element = getRandomElement();
   const season = getSeason();
   const weeklyFocus = getWeeklyFocus();
-  const dayFocus = getDayOfWeekFocus();
+  const dayFocus = getDayOfWeekFocus(targetDate);
   const room = getRandomRoom();
   const action = getRandomAction();
   
-  // Get recent tips to avoid repetition
   const recentTips = await getRecentTips(7);
   const avoidanceClause = recentTips.length > 0 
     ? `\n\nIMPORTANT: Avoid concepts similar to these recent tips: ${recentTips.slice(0, 5).join(', ')}`
     : '';
 
-  return `Generate a unique, specific daily Feng Shui tip for ${today}.
+  const dayName = dayjs(targetDate).format('dddd');
+
+  return `Generate a unique, specific daily Feng Shui tip for ${targetDate} (${dayName}).
 
 CONTEXT & REQUIREMENTS:
-- Date: ${today} (${dayjs(today).format('dddd')})
 - Primary theme: ${theme}
 - Element focus: ${element}  
 - Season: ${season}
 - Weekly focus area: ${weeklyFocus}
-- Today's energy: ${dayFocus}
+- Day's energy: ${dayFocus}
 
 SPECIFICATIONS:
 - Must be actionable and specific (15-30 words)
@@ -155,32 +153,27 @@ SPECIFICATIONS:
 - Avoid generic advice like "clear clutter", "add plants", "improve energy"
 - Make it seasonal and element-appropriate
 
-GOOD EXAMPLES:
-- "Place a small round mirror 6 inches left of your front door to activate wealth energy"
-- "Move your ${room} chair 3 inches away from the wall to improve ${theme}"  
-- "Light a ${element === 'fire' ? 'red' : element === 'water' ? 'blue' : 'white'} candle in your ${room} for exactly 9 minutes at sunset"
-- "Add 2 small crystals to your ${room} windowsill to enhance ${theme} this ${season.split(' ')[0]}"
-
 FORMAT: Return only the tip as a direct, specific instruction.${avoidanceClause}`;
 }
 
 async function syncDailyFengShuiTip() {
-  const today = dayjs().format('YYYY-MM-DD');
-  console.log(`[${dayjs().format('YYYY-MM-DD HH:mm:ss')}] Checking Sanity for Feng Shui tip for ${today}...`);
+  // FIXED: Generate for TOMORROW instead of today
+  const tomorrow = dayjs().add(1, 'day').format('YYYY-MM-DD');
+  const tomorrowDay = dayjs().add(1, 'day').format('dddd');
+  
+  console.log(`[${dayjs().format('YYYY-MM-DD HH:mm:ss')}] Generating Feng Shui tip for TOMORROW: ${tomorrow} (${tomorrowDay})`);
 
-  // Check if today's tip already exists
   const existing = await sanityClient.fetch(
-    `*[_type == "dailyFengShuiTip" && date == $today][0]`,
-    { today }
+    `*[_type == "dailyFengShuiTip" && date == $tomorrow][0]`,
+    { tomorrow }
   );
 
   if (existing) {
-    console.log(`[${dayjs().format('YYYY-MM-DD HH:mm:ss')}] Tip already exists for today. Skipping.`);
+    console.log(`[${tomorrow}] Tip already exists for tomorrow. Skipping generation.`);
     return;
   }
 
-  // Build enhanced prompt
-  const prompt = await buildEnhancedPrompt(today);
+  const prompt = await buildEnhancedPrompt(tomorrow);
 
   const payload = {
     contents: [{ role: "user", parts: [{ text: prompt }] }],
@@ -197,8 +190,7 @@ async function syncDailyFengShuiTip() {
   };
 
   try {
-    console.log(`[${dayjs().format('YYYY-MM-DD HH:mm:ss')}] Generating new Feng Shui tip...`);
-    console.log(`Theme: ${getRandomTheme()}, Element: ${getRandomElement()}, Focus: ${getWeeklyFocus()}`);
+    console.log(`[${tomorrow}] Generating new Feng Shui tip for tomorrow...`);
     
     const response = await fetchWithBackoff(geminiApiUrl, {
       method: 'POST',
@@ -211,11 +203,10 @@ async function syncDailyFengShuiTip() {
     const parsed = JSON.parse(jsonResponse);
     const tip = parsed.tip;
 
-    // Store in Sanity
     await sanityClient.createOrReplace({
       _type: 'dailyFengShuiTip',
-      _id: `fengshui-${today}`,
-      date: today,
+      _id: `fengshui-${tomorrow}`,
+      date: tomorrow,
       tip,
       createdAt: new Date().toISOString(),
       metadata: {
@@ -226,9 +217,9 @@ async function syncDailyFengShuiTip() {
       }
     });
 
-    console.log(`[${dayjs().format('YYYY-MM-DD HH:mm:ss')}] Successfully stored Feng Shui tip: "${tip}"`);
+    console.log(`[${tomorrow}] Successfully stored Feng Shui tip for tomorrow: "${tip}"`);
   } catch (err) {
-    console.error(`[${dayjs().format('YYYY-MM-DD HH:mm:ss')}] Failed to generate/store Feng Shui tip:`, err.message);
+    console.error(`[${tomorrow}] Failed to generate/store Feng Shui tip:`, err.message);
   }
 }
 

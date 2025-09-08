@@ -6,42 +6,10 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
 
   return {
-    // The base path is now always the root
-    base: mode === 'production' ? '/my-fengshui-calculator/' : '/',
+    // The base path must be '/' for Vercel deployments.
+    base: '/',
     server: {
       port: 8080,
-      proxy: {
-        // Daily Wisdom API
-        "/api/daily-wisdom": {
-          target: "http://localhost:3001",
-          changeOrigin: true,
-        },
-        // Chinese Horoscope API
-        "/api/chinese-horoscope": {
-          target: "http://localhost:3001",
-          changeOrigin: true,
-        },
-        // Western Horoscope API
-        "/api/western-horoscope": {
-          target: "http://localhost:3001",
-          changeOrigin: true,
-        },
-        // Daily Feng Shui Tip API
-        "/api/daily-fengshui-tip": {
-          target: "http://localhost:3001",
-          changeOrigin: true,
-        },
-        // Planetary Overview API
-        "/api/planetary-overview": {
-          target: "http://localhost:3001",
-          changeOrigin: true,
-        },
-        // Contact Us Form API
-        "/api/contact": {
-          target: "http://localhost:3001",
-          changeOrigin: true,
-        },
-      },
     },
     plugins: [react()],
     resolve: {
@@ -50,9 +18,9 @@ export default defineConfig(({ mode }) => {
         "~": path.resolve(__dirname, "./src"),
       },
     },
-	build: {
-      sourcemap: false, // 🚫 disables source maps in production
-      minify: "esbuild", // or "terser" if you need advanced minification
-	},
+    build: {
+      sourcemap: false,
+      minify: "esbuild",
+    },
   };
 });

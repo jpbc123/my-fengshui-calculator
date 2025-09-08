@@ -4,15 +4,31 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Breadcrumb from "../components/Breadcrumb";
 import dayjs from "dayjs";
-import { client } from "../../sanityClient";
+import { createClient } from '@sanity/client';
 import imageUrlBuilder from "@sanity/image-url";
 import { toPlainText } from "@portabletext/react";
 import { motion } from "framer-motion";
 
 import planetaryOverviewImage from '../assets/planetary-overview.jpg';
 
+// Create Sanity client inline
+const sanityClient = createClient({
+  projectId: import.meta.env.VITE_SANITY_PROJECT_ID,
+  dataset: import.meta.env.VITE_SANITY_DATASET,
+  apiVersion: import.meta.env.VITE_SANITY_API_VERSION || '2024-01-01',
+  useCdn: true,
+  perspective: 'published',
+});
+
+// Helper function to check if client is configured
+const isClientConfigured = () => {
+  const projectId = import.meta.env.VITE_SANITY_PROJECT_ID;
+  const dataset = import.meta.env.VITE_SANITY_DATASET;
+  return !!(projectId && dataset);
+};
+
 // Sanity image URL builder
-const builder = imageUrlBuilder(client);
+const builder = imageUrlBuilder(sanityClient);
 function urlFor(source: any) {
   return builder.image(source);
 }
@@ -76,7 +92,17 @@ export default function ArticlesPage() {
 
   useEffect(() => {
     async function fetchArticles() {
+      // Check if Sanity client is properly configured
+      if (!isClientConfigured()) {
+        console.warn('Sanity client not configured properly');
+        setError("Sanity client not configured properly");
+        setLoading(false);
+        return;
+      }
+
       try {
+        console.log('Fetching articles from Sanity...');
+        
         // Query for regular articles
         const articleQuery = `
           *[_type == "article"] | order(publishDate desc) {
@@ -106,9 +132,12 @@ export default function ArticlesPage() {
         `;
 
         const [fetchedArticles, fetchedPlanetary] = await Promise.all([
-          client.fetch(articleQuery),
-          client.fetch(planetaryQuery)
+          sanityClient.fetch(articleQuery),
+          sanityClient.fetch(planetaryQuery)
         ]);
+
+        console.log('Fetched articles:', fetchedArticles.length);
+        console.log('Fetched planetary overviews:', fetchedPlanetary.length);
 
         // Transform planetary overviews to match article structure
         const transformedPlanetary: CombinedArticle[] = fetchedPlanetary.map((item: DailyPlanetaryOverview) => ({
@@ -128,6 +157,7 @@ export default function ArticlesPage() {
         const combinedArticles = [...fetchedArticles, ...transformedPlanetary]
           .sort((a, b) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime());
 
+        console.log('Combined articles:', combinedArticles.length);
         setArticles(combinedArticles);
         setError(null);
       } catch (err) {
@@ -373,6 +403,7 @@ export default function ArticlesPage() {
           )}
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

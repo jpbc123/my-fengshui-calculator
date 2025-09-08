@@ -1,21 +1,9 @@
-// src/components/DailyWisdomBanner.tsx
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-
-const fallbackMessages = [
-  "Your home is a reflection of your inner self. Make it peaceful.",
-  "Small changes in your space can bring big changes in your life.",
-  "Today is the perfect day to align your environment with your goals.",
-  "Let positive energy flow through your living space today.",
-  "Harmony in your surroundings creates harmony within.",
-  "Your environment shapes your mindset. Choose to make it uplifting.",
-  "A balanced space fosters a balanced life.",
-  "Welcome positive chi into your home today."
-];
+import dayjs from 'dayjs';
 
 const getTodayDate = () => {
-  const date = new Date();
-  return date.toISOString().slice(0, 10);
+  return dayjs().format('YYYY-MM-DD');
 };
 
 const DailyWisdomBanner = () => {
@@ -25,85 +13,61 @@ const DailyWisdomBanner = () => {
   const articlePath = "/daily-wisdom-article";
 
   useEffect(() => {
-    const fetchAndSetDailyWisdom = async () => {
+    const fetchDailyWisdom = async () => {
       const today = getTodayDate();
-      const cachedMessage = localStorage.getItem(`dailyWisdom_${today}`);
-      const cachedFullArticle = localStorage.getItem(`dailyWisdomFullArticle_${today}`);
-
-      // Only use cache if both quote AND article exist and article is not a fallback
-      if (cachedMessage && cachedFullArticle && !cachedFullArticle.includes('(This is a fallback message')) {
-        setPartialMessage(cachedMessage);
-        setFullArticle(cachedFullArticle);
+      
+      // Check cache first
+      const cachedQuote = localStorage.getItem(`dailyWisdom_${today}`);
+      const cachedArticle = localStorage.getItem(`dailyWisdomFullArticle_${today}`);
+      
+      if (cachedQuote && cachedArticle) {
+        console.log(`Using cached daily wisdom for ${today}`);
+        setPartialMessage(cachedQuote);
+        setFullArticle(cachedArticle);
         setIsLoading(false);
         return;
       }
-
-      let generatedQuote = "";
-      let generatedArticle = "";
-      let usedFallback = false;
-
+      
       try {
-        console.log('Fetching daily wisdom from API...');
-        // Try full URL if relative URL doesn't work
-        const response = await fetch('http://localhost:3001/api/daily-wisdom');
+        const response = await fetch('/api/daily-wisdom');
         
         if (!response.ok) {
-          throw new Error(`Server error: ${response.status} ${response.statusText}`);
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
         
-        const result = await response.json();
-        
-        // Check if the API returned valid data
-        if (!result.quote || !result.article) {
-          throw new Error('API returned incomplete data');
+        const data = await response.json();
+
+        if (data && data.quote && data.article) {
+          setPartialMessage(data.quote);
+          setFullArticle(data.article);
+          
+          // Cache the data
+          localStorage.setItem(`dailyWisdom_${today}`, data.quote);
+          localStorage.setItem(`dailyWisdomFullArticle_${today}`, data.article);
+          console.log(`Cached daily wisdom for ${today}`);
+        } else {
+          setPartialMessage("Daily wisdom not available today. Please check back later.");
+          setFullArticle("");
         }
-        
-        generatedQuote = result.quote;
-        generatedArticle = result.article;
-        console.log('Successfully fetched from API');
       } catch (error) {
         console.error("Failed to fetch daily wisdom:", error);
-        const randomIndex = Math.floor(Math.random() * fallbackMessages.length);
-        generatedQuote = fallbackMessages[randomIndex];
-        generatedArticle = `**${generatedQuote}**\n\n(This is a fallback message. Today's article cannot be found.)`;
-        usedFallback = true;
+        setPartialMessage("Failed to load today's wisdom.");
+        setFullArticle("");
+      } finally {
+        setIsLoading(false);
       }
-
-      const displayMessage = generatedQuote.length > 80
-        ? generatedQuote.substring(0, 77) + "..."
-        : generatedQuote;
-
-      setPartialMessage(displayMessage);
-      setFullArticle(generatedArticle);
-      
-      // Only cache if we didn't use fallback
-      if (!usedFallback) {
-        localStorage.setItem(`dailyWisdom_${today}`, displayMessage);
-        localStorage.setItem(`dailyWisdomFullArticle_${today}`, generatedArticle);
-        console.log('Cached fresh content to localStorage');
-      } else {
-        console.log('Using fallback, not caching to localStorage');
-      }
-      
-      setIsLoading(false);
     };
 
-    fetchAndSetDailyWisdom();
-    
+    fetchDailyWisdom();
   }, []);
 
+  // FIXED: Store both article and quote in sessionStorage for immediate access
   const storeFullArticle = () => {
-    // Always store the current full article to sessionStorage when clicking
-    sessionStorage.setItem('currentDailyWisdomArticle', fullArticle);
-    console.log('Stored article to sessionStorage:', fullArticle.substring(0, 100) + '...');
-  };
-
-  const clearTodayCache = () => {
-    const today = getTodayDate();
-    localStorage.removeItem(`dailyWisdom_${today}`);
-    localStorage.removeItem(`dailyWisdomFullArticle_${today}`);
-    console.log('Cleared today\'s cache');
-    window.location.reload();
+    if (fullArticle && partialMessage) {
+      sessionStorage.setItem('currentDailyWisdomArticle', fullArticle);
+      sessionStorage.setItem('currentDailyWisdomQuote', partialMessage);
+      console.log('Stored daily wisdom in sessionStorage for article page');
+    }
   };
 
   return (
@@ -121,7 +85,6 @@ const DailyWisdomBanner = () => {
                 <button className="bg-gold text-black px-6 py-2 rounded-full font-semibold text-sm hover:bg-gold/80 transition-colors shadow-md">
                   Read More →
                 </button>
-
               </div>
             </div>
           </div>

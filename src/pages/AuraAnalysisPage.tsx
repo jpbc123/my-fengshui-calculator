@@ -135,7 +135,7 @@ export default function AuraAnalysisPage() {
   return (
     <div className="bg-white text-black min-h-screen">
       <Header />
-      <div className="container mx-auto px-4 py-12 mt-2">
+      <div className="container mx-auto px-4 py-12 mt-12">
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-gold mb-4">Discover Your Aura</h1>
           <p className="text-lg md:text-xl text-black max-w-2xl mx-auto">

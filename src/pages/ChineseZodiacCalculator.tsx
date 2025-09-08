@@ -8,9 +8,23 @@ import Breadcrumb from "@/components/Breadcrumb";
 import { DatePickerInput } from "@/components/DatePickerInput";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { client } from "../../sanityClient";
-import { PortableText } from '@portabletext/react';
-import imageUrlBuilder from '@sanity/image-url';
+import { createClient } from '@sanity/client';
+
+// Create Sanity client inline
+const sanityClient = createClient({
+  projectId: import.meta.env.VITE_SANITY_PROJECT_ID,
+  dataset: import.meta.env.VITE_SANITY_DATASET,
+  apiVersion: import.meta.env.VITE_SANITY_API_VERSION || '2024-01-01',
+  useCdn: true,
+  perspective: 'published',
+});
+
+// Helper function to check if client is configured
+const isClientConfigured = () => {
+  const projectId = import.meta.env.VITE_SANITY_PROJECT_ID;
+  const dataset = import.meta.env.VITE_SANITY_DATASET;
+  return !!(projectId && dataset);
+};
 
 // Zodiac images
 import ratImg from "@/assets/chinese-zodiac/year-of-the-rat.png";
@@ -34,8 +48,10 @@ const breadcrumbs = [
 
 // Interface for article data from Sanity
 interface SanityArticle {
+  _id: string;
   title: string;
-  slug: string; 
+  slug: string;
+  tags?: string[];
 }
 
 interface ZodiacInfo {
@@ -98,32 +114,61 @@ const chineseNewYearDates: Record<number, string> = {
   // add more as needed
 };
 
-
 const ChineseZodiacCalculator = () => {
   const [birthDate, setBirthDate] = useState<Date | null>(null);
   const [zodiacSign, setZodiacSign] = useState<string | null>(null);
   const [zodiacInfo, setZodiacInfo] = useState<ZodiacInfo | null>(null);
   const [showMore, setShowMore] = useState(false);
   const [relatedArticles, setRelatedArticles] = useState<SanityArticle[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const RELATED_ARTICLES_LIMIT = 5;
   
-  	useEffect(() => {
-    const fetchData = async () => {
+  // Fetch related articles on component mount
+  useEffect(() => {
+    const fetchRelatedArticles = async () => {
+      if (!isClientConfigured()) {
+        console.warn('Sanity client not configured properly');
+        setRelatedArticles([]);
+        return;
+      }
+      
       setLoading(true);
       try {
-        const articles = await client.fetch<SanityArticle[]>(
-          `*[_type == "article" && ("chinese zodiac" in tags )] | order(publishDate desc)[0...${RELATED_ARTICLES_LIMIT}]{title, "slug": slug.current}`
-        );
+        // Test basic fetch
+        console.log('Testing basic article fetch...');
+        const testQuery = `*[_type == "article"][0...3]{
+          _id,
+          title,
+          "slug": slug.current,
+          tags,
+          publishDate
+        }`;
+        
+        const testArticles = await sanityClient.fetch(testQuery);
+        console.log('Available articles:', testArticles);
+        
+        // Try filtered query
+        const query = `*[_type == "article" && defined(tags) && ("chinese zodiac" in tags || "chinese" in tags || "zodiac" in tags )] | order(publishDate desc)[0...${RELATED_ARTICLES_LIMIT}]{
+          _id,
+          title,
+          "slug": slug.current,
+          tags
+        }`;
+        
+        console.log('Fetching filtered articles...');
+        const articles = await sanityClient.fetch<SanityArticle[]>(query);
+        console.log('Filtered articles:', articles);
+        
         setRelatedArticles(articles);
       } catch (error) {
-        console.error("Error fetching data from Sanity:", error);
-        setLoading(false);
+        console.error("Error fetching related articles:", error);
+        setRelatedArticles([]);
       } finally {
         setLoading(false);
       }
     };
-    fetchData();
+
+    fetchRelatedArticles();
   }, []);
 
   const handleCalculate = () => {
@@ -158,8 +203,7 @@ const ChineseZodiacCalculator = () => {
 
     setZodiacSign(sign);
     setZodiacInfo(ChineseZodiacData2025[sign]);
-	
-};
+  };
   
   return (
     <div className="flex flex-col min-h-screen bg-white text-black overflow-hidden">
@@ -167,9 +211,9 @@ const ChineseZodiacCalculator = () => {
       <main className="flex-grow pt-6 px-1 pb-10">
         <div className="pt-24 px-4 pb-16 max-w-5xl mx-auto">
           {/* Two-column layout */}
-          <div className="flex flex-col lg:flex-row lg:justify-between">
+          <div className="flex flex-col lg:flex-row lg:justify-between lg:gap-8">
             {/* Left side - Calculator and Results */}
-            <div className="max-w-xl">
+            <div className="max-w-xl flex-1">
               {/* Breadcrumbs + title */}
               <div className="mb-8">
                 <Breadcrumb items={breadcrumbs} className="text-black/80" />
@@ -316,35 +360,39 @@ const ChineseZodiacCalculator = () => {
               )}
             </div>
 
-            {/* Right side - related articles */}
-            <div className="max-w-md mt-40 lg:mt-0">
-			<h2 className="text-xl font-semibold text-black mb-4">Related Articles</h2>
-			{loading ? (
-				<div className="space-y-2">
-				<div className="h-4 bg-gray-200 rounded animate-pulse"></div>
-				<div className="h-4 bg-gray-200 rounded animate-pulse w-3/4"></div>
-				<div className="h-4 bg-gray-200 rounded animate-pulse w-1/2"></div>
-				</div>
-			) : relatedArticles.length > 0 ? (
-				<ul className="space-y-2 text-sm">
-				{relatedArticles.map((article, index) => (
-					<li key={index}>
-					<Link
-						to={`/article/${article.slug}`}
-						className="text-lg text-black/80 hover:text-gold"
-					>
-						{article.title}
-					</Link>
-					</li>
-				))}
-				</ul>
-			) : (
-				<p className="text-gray-500 text-sm">No related articles found</p>
-			)}
-			</div>
+            {/* Right side - Related Articles */}
+            <div className="max-w-md mt-12 lg:mt-0 lg:ml-8">
+              <h2 className="text-xl font-semibold text-black mb-4">Related Articles</h2>
+              {loading ? (
+                <div className="space-y-3">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <div key={i} className="animate-pulse">
+                      <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                      <div className="h-3 bg-gray-200 rounded w-3/4"></div>
+                    </div>
+                  ))}
+                </div>
+              ) : relatedArticles.length > 0 ? (
+                <div className="space-y-3">
+                  {relatedArticles.map((article) => (
+                    <div key={article._id}>
+                      <Link
+                        to={`/articles/${article.slug}`}
+                        className="block text-base font-medium text-black hover:text-gold transition-colors"
+                      >
+                        {article.title}
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-gray-500 text-sm">No related articles found.</p>
+              )}
+            </div>
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 };

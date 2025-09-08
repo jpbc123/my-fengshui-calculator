@@ -55,7 +55,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter basename="/my-fengshui-calculator">
+      <BrowserRouter>
         <ScrollToTop />
 
         {/* App layout wrapper */}

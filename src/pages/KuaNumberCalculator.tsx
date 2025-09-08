@@ -9,9 +9,23 @@ import { motion } from "framer-motion";
 import { Info } from "lucide-react";
 import Breadcrumb from "@/components/Breadcrumb";
 import { Link } from "react-router-dom";
-import { client } from "../../sanityClient";
-import { PortableText } from '@portabletext/react';
-import imageUrlBuilder from '@sanity/image-url';
+import { createClient } from '@sanity/client';
+
+// Create Sanity client inline
+const sanityClient = createClient({
+  projectId: import.meta.env.VITE_SANITY_PROJECT_ID,
+  dataset: import.meta.env.VITE_SANITY_DATASET,
+  apiVersion: import.meta.env.VITE_SANITY_API_VERSION || '2024-01-01',
+  useCdn: true,
+  perspective: 'published',
+});
+
+// Helper function to check if client is configured
+const isClientConfigured = () => {
+  const projectId = import.meta.env.VITE_SANITY_PROJECT_ID;
+  const dataset = import.meta.env.VITE_SANITY_DATASET;
+  return !!(projectId && dataset);
+};
 
 const breadcrumbs = [
   { label: "Home", path: "/" },
@@ -79,7 +93,7 @@ const kuaProfiles: Record<
     unlucky: ["Southwest", "West", "Northwest", "Northeast"],
   },
   5: {
-    name: "Center (Earth) — Special Case",
+    name: "Center (Earth) – Special Case",
     traits: [
       "Balanced and grounded personality",
       "Natural leader with a sense of fairness",
@@ -87,10 +101,10 @@ const kuaProfiles: Record<
       "Must adapt based on gender in calculations",
     ],
     lucky: [
-      "Varies depending on gender — usually follows #2 for women and #8 for men",
+      "Varies depending on gender – usually follows #2 for women and #8 for men",
     ],
     unlucky: [
-      "Varies depending on gender — usually follows #2 for women and #8 for men",
+      "Varies depending on gender – usually follows #2 for women and #8 for men",
     ],
   },
   6: {
@@ -141,8 +155,10 @@ const kuaProfiles: Record<
 
 // Interface for article data from Sanity
 interface SanityArticle {
+  _id: string;
   title: string;
-  slug: string; 
+  slug: string;
+  tags?: string[];
 }
 
 const luckyDirections: Record<number, string[]> = {
@@ -166,48 +182,84 @@ export default function KuaNumberCalculator() {
   const [birthDate, setBirthDate] = useState<Date | null>(null);
   const [gender, setGender] = useState("male");
   const [kuaNumber, setKuaNumber] = useState<number | null>(null);
-  const [kuaTips, setKuaTips] = useState<SanityKuaTip[]>([]);
-  const [loadingTips, setLoadingTips] = useState(true);
+  const [kuaTips, setKuaTips] = useState<SanityKuaTip | null>(null);
+  const [loadingTips, setLoadingTips] = useState(false);
   const [relatedArticles, setRelatedArticles] = useState<SanityArticle[]>([]);
-  const [fetchError, setFetchError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const RELATED_ARTICLES_LIMIT = 5;
-  
+
+  // Fetch related articles on component mount
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchRelatedArticles = async () => {
+      if (!isClientConfigured()) {
+        console.warn('Sanity client not configured properly');
+        setRelatedArticles([]);
+        return;
+      }
+      
       setLoading(true);
       try {
-        const [articles, kuaData] = await Promise.all([
-          client.fetch<SanityArticle[]>(
-		`*[_type == "article" && ("feng shui" in tags || "kua" in tags || "ba zhai" in tags)] | order(publishDate desc)[0...${RELATED_ARTICLES_LIMIT}]{title, "slug": slug.current}`
-		),
-          client.fetch<SanityKuaData[]>(
-            `*[_type == "kua"]{kuaNumber, groupType, luckyDirections, unluckyDirections}`
-          ),
-        ]);
-        setRelatedArticles(articles);
+        // Test basic fetch
+        console.log('Testing basic article fetch...');
+        const testQuery = `*[_type == "article"][0...3]{
+          _id,
+          title,
+          "slug": slug.current,
+          tags,
+          publishDate
+        }`;
+        
+        const testArticles = await sanityClient.fetch(testQuery);
+        console.log('Available articles:', testArticles);
+        
+        // Try filtered query
+        const query = `*[_type == "article" && defined(tags) && ("feng shui" in tags || "kua" in tags || "ba zhai" in tags || "fengshui" in tags)] | order(publishDate desc)[0...${RELATED_ARTICLES_LIMIT}]{
+          _id,
+          title,
+          "slug": slug.current,
+          tags
+        }`;
+        
+        console.log('Fetching filtered articles...');
+        const articles = await sanityClient.fetch<SanityArticle[]>(query);
+        console.log('Filtered articles:', articles);
+        
+        // If no filtered articles, fall back to recent articles
+        if (articles.length === 0) {
+          console.log('No tagged articles found, falling back to recent articles');
+          const fallbackQuery = `*[_type == "article"] | order(publishDate desc)[0...${RELATED_ARTICLES_LIMIT}]{
+            _id,
+            title,
+            "slug": slug.current
+          }`;
+          const fallbackArticles = await sanityClient.fetch<SanityArticle[]>(fallbackQuery);
+          console.log('Fallback articles:', fallbackArticles);
+          setRelatedArticles(fallbackArticles);
+        } else {
+          setRelatedArticles(articles);
+        }
       } catch (error) {
-        console.error("Error fetching data from Sanity:", error);
+        console.error("Error fetching related articles:", error);
+        setRelatedArticles([]);
       } finally {
         setLoading(false);
       }
     };
-    fetchData();
+
+    fetchRelatedArticles();
   }, []);
   
-	useEffect(() => {
+  useEffect(() => {
     if (kuaNumber) {
       const fetchTips = async () => {
         setLoadingTips(true);
-        setFetchError(null);
         try {
-          // The updated GROQ query to fetch a single document based on kuaNumber
           const query = `*[_type == "fengShuiTip" && kuaNumber == $kuaNumber][0]{
             kuaNumber,
             tips
           }`;
           const params = { kuaNumber: kuaNumber };
-          const data = await client.fetch(query, params);
+          const data = await sanityClient.fetch(query, params);
 
           if (data) {
             setKuaTips(data);
@@ -216,7 +268,6 @@ export default function KuaNumberCalculator() {
           }
         } catch (err) {
           console.error("Failed to fetch Kua tips:", err);
-          setFetchError("Failed to load tips. Please try again.");
         } finally {
           setLoadingTips(false);
         }
@@ -225,41 +276,7 @@ export default function KuaNumberCalculator() {
     } else {
       setKuaTips(null);
     }
-}, [kuaNumber]);
-	
-	// Sanity image URL builder
-	const builder = imageUrlBuilder(client);
-	const urlFor = (source: any) => builder.image(source);
-	
-	// Portable Text components for rendering
-	const components = {
-	types: {
-		image: ({ value }: { value: any }) => (
-		<div className="my-8 rounded-xl overflow-hidden shadow-lg">
-			<img
-			src={urlFor(value).width(800).url()}
-			alt={value.alt || 'Kua Feng Shui Tip image'}
-			className="w-full h-auto object-cover"
-			onError={(e) => { e.currentTarget.src = 'https://placehold.co/800x450?text=Image+Unavailable'; e.currentTarget.onerror = null; }}
-			/>
-		</div>
-		),
-	},
-	block: {
-		h1: ({children}: {children: any}) => <h1 className="text-3xl font-bold mt-8 mb-4">{children}</h1>,
-		h2: ({children}: {children: any}) => <h2 className="text-2xl font-bold mt-6 mb-3">{children}</h2>,
-		h3: ({children}: {children: any}) => <h3 className="text-xl font-bold mt-5 mb-2">{children}</h3>,
-		normal: ({children}: {children: any}) => <p className="text-lg leading-relaxed mb-4">{children}</p>,
-	},
-	list: {
-		bullet: ({children}: {children: any}) => <ul className="list-disc list-inside space-y-2 mb-4 pl-4">{children}</ul>,
-		number: ({children}: {children: any}) => <ol className="list-decimal list-inside space-y-2 mb-4 pl-4">{children}</ol>,
-	},
-	listItem: {
-		bullet: ({children}: {children: any}) => <li>{children}</li>,
-		number: ({children}: {children: any}) => <li>{children}</li>,
-	},
-	};
+  }, [kuaNumber]);
           
   const calculateKuaNumber = () => {
     const year = birthDate!.getFullYear();
@@ -292,9 +309,9 @@ export default function KuaNumberCalculator() {
       <main className="flex-grow pt-6 px-1 pb-10">
         <div className="pt-24 px-4 pb-16 max-w-5xl mx-auto">
           {/* 2-column layout */}
-          <div className="flex flex-col lg:flex-row lg:justify-between">
+          <div className="flex flex-col lg:flex-row lg:justify-between lg:gap-8">
             {/* Left side - Calculator and Results */}
-            <div className="max-w-xl">
+            <div className="max-w-xl flex-1">
               {/* Breadcrumbs + title */}
               <div className="mb-8">
                 <Breadcrumb items={breadcrumbs} className="text-black/80" />
@@ -347,7 +364,7 @@ export default function KuaNumberCalculator() {
                         the I Ching.
                       </li>
                       <li>
-                        <span className="font-semibold">Yin—Yang theory</span> and the
+                        <span className="font-semibold">Yin–Yang theory</span> and the
                         <span className="font-semibold">Five Elements (Wood, Fire, Earth, Metal, Water)</span>.
                       </li>
                     </ul>
@@ -359,7 +376,7 @@ export default function KuaNumberCalculator() {
                     </p>
                     <p className="mb-2">
                       The <span className="font-semibold">Ming Gua (命卦, meaning "life trigram")</span> reflects the
-                      energy pattern you were born into — like an
+                      energy pattern you were born into – like an
                       <span className="font-semibold">energetic blueprint of your Qi</span>.
                     </p>
                     <p className="mb-2">
@@ -426,87 +443,90 @@ export default function KuaNumberCalculator() {
 
               {/* Result */}
               {kuaNumber !== null && (
-				<motion.div
-					initial={{ opacity: 0, y: 20 }}
-					animate={{ opacity: 1, y: 0 }}
-					className="mt-8 p-6 rounded-xl bg-gray-50 border border-gray-200 text-left"
-				>
-					<h2 className="text-xl font-bold text-gold mb-1">
-					Your Kua Number: {kuaNumber} — {kuaProfiles[kuaNumber].name}
-					</h2>
-					<p className="mb-4 text-black/90">
-					Group:{" "}
-					<span className="font-semibold">{kuaGroup(kuaNumber)}</span>
-					</p>
-					<div className="space-y-4 text-black/90">
-					<div>
-						<h3 className="font-semibold mb-1 text-gold">Key Traits:</h3>
-						<ul className="list-disc list-inside">
-						{kuaProfiles[kuaNumber].traits.map((trait, i) => (
-							<li key={i}>{trait}</li>
-						))}
-						</ul>
-					</div>
-					<div>
-						<h3 className="font-semibold mb-1 text-gold">Lucky Directions:</h3>
-						<ul className="list-disc list-inside">
-						{kuaProfiles[kuaNumber].lucky.map((dir, i) => (
-							<li key={i}>{dir}</li>
-						))}
-						</ul>
-					</div>
-					<div>
-						<h3 className="font-semibold mb-1 text-gold">Unlucky Directions:</h3>
-						<ul className="list-disc list-inside">
-						{kuaProfiles[kuaNumber].unlucky.map((dir, i) => (
-							<li key={i}>{dir}</li>
-						))}
-						</ul>
-					</div>
-					{/* Dynamic tips from Sanity */}
-					{loadingTips ? (
-						<div className="mt-6 text-center text-gray-500">
-						Loading tips...
-						</div>
-					) : kuaTips && kuaTips.tips && kuaTips.tips.length > 0 ? (
-						<div>
-						<h3 className="font-semibold mb-1 text-gold">Practical Tips:</h3>
-						<ul className="list-disc list-inside space-y-2">
-							{kuaTips.tips.map((tip, i) => (
-							<li key={i}>{tip}</li>
-							))}
-						</ul>
-						</div>
-					) : (
-						<p className="text-gray-500 text-sm">No tips found for this Kua number.</p>
-					)}
-					</div>
-				</motion.div>
-				)}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mt-8 p-6 rounded-xl bg-gray-50 border border-gray-200 text-left"
+                >
+                  <h2 className="text-xl font-bold text-gold mb-1">
+                    Your Kua Number: {kuaNumber} – {kuaProfiles[kuaNumber].name}
+                  </h2>
+                  <p className="mb-4 text-black/90">
+                    Group:{" "}
+                    <span className="font-semibold">{kuaGroup(kuaNumber)}</span>
+                  </p>
+                  <div className="space-y-4 text-black/90">
+                    <div>
+                      <h3 className="font-semibold mb-1 text-gold">Key Traits:</h3>
+                      <ul className="list-disc list-inside">
+                        {kuaProfiles[kuaNumber].traits.map((trait, i) => (
+                          <li key={i}>{trait}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold mb-1 text-gold">Lucky Directions:</h3>
+                      <ul className="list-disc list-inside">
+                        {kuaProfiles[kuaNumber].lucky.map((dir, i) => (
+                          <li key={i}>{dir}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold mb-1 text-gold">Unlucky Directions:</h3>
+                      <ul className="list-disc list-inside">
+                        {kuaProfiles[kuaNumber].unlucky.map((dir, i) => (
+                          <li key={i}>{dir}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    {/* Dynamic tips from Sanity */}
+                    {loadingTips ? (
+                      <div className="mt-6 text-center text-gray-500">
+                        Loading tips...
+                      </div>
+                    ) : kuaTips && kuaTips.tips && kuaTips.tips.length > 0 ? (
+                      <div>
+                        <h3 className="font-semibold mb-1 text-gold">Practical Tips:</h3>
+                        <ul className="list-disc list-inside space-y-2">
+                          {kuaTips.tips.map((tip, i) => (
+                            <li key={i}>{tip}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    ) : (
+                      <p className="text-gray-500 text-sm">No tips found for this Kua number.</p>
+                    )}
+                  </div>
+                </motion.div>
+              )}
             </div>
 
-            {/* Right side - related articles */}
-            <div className="max-w-md mt-40 lg:mt-0">
+            {/* Right side - Related Articles */}
+            <div className="max-w-md mt-12 lg:mt-0 lg:ml-8">
               <h2 className="text-xl font-semibold text-black mb-4">Related Articles</h2>
               {loading ? (
-                <div className="space-y-2">
-                  <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
-                  <div className="h-4 bg-gray-200 rounded animate-pulse w-3/4"></div>
-                  <div className="h-4 bg-gray-200 rounded animate-pulse w-1/2"></div>
+                <div className="space-y-3">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <div key={i} className="animate-pulse">
+                      <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                      <div className="h-3 bg-gray-200 rounded w-3/4"></div>
+                    </div>
+                  ))}
                 </div>
               ) : relatedArticles.length > 0 ? (
-                <ul className="space-y-2 text-sm">
-                  {relatedArticles.map((article, index) => (
-                    <li key={index}>
+                <div className="space-y-3">
+                  {relatedArticles.map((article) => (
+                    <div key={article._id}>
                       <Link
-                        to={`/articles/${article.slug}`} 
-                        className="text-lg text-black/80 hover:text-gold"
+                        to={`/articles/${article.slug}`}
+                        className="block text-base font-medium text-black hover:text-gold transition-colors"
                       >
                         {article.title}
                       </Link>
-                    </li>
+                    </div>
                   ))}
-                </ul>
+                </div>
               ) : (
                 <p className="text-gray-500 text-sm">No related articles found.</p>
               )}
@@ -514,6 +534,7 @@ export default function KuaNumberCalculator() {
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-// sync-western-horoscopes-sanity.js - FIXED VERSION
+// sync-western-horoscopes-sanity.js - UPDATED FOR DAY+1 GENERATION
 import { createClient } from '@sanity/client';
 import dotenv from 'dotenv';
 import dayjs from 'dayjs';
@@ -14,7 +14,6 @@ dotenv.config();
 const sanityClient = createClient({
   projectId: process.env.VITE_SANITY_PROJECT_ID,
   dataset: process.env.VITE_SANITY_DATASET,
-  //token: process.env.SANITY_WRITE_TOKEN,
   token: process.env.SANITY_API_WRITE_TOKEN,
   apiVersion: '2025-08-31',
   useCdn: false,
@@ -61,14 +60,15 @@ async function generateHoroscope(sign, type) {
   let promptText;
   let identifier;
 
+  // Updated: Generate for TOMORROW instead of today
   const currentYear = dayjs().year();
-  const currentWeekStart = dayjs().startOf('week').format('YYYY-MM-DD');
-  const currentWeekEnd = dayjs().endOf('week').format('YYYY-MM-DD');
-  const today = dayjs().format('YYYY-MM-DD');
+  const tomorrow = dayjs().add(1, 'day').format('YYYY-MM-DD');
+  const tomorrowWeekStart = dayjs().add(1, 'day').startOf('week').format('YYYY-MM-DD');
+  const tomorrowWeekEnd = dayjs().add(1, 'day').endOf('week').format('YYYY-MM-DD');
+  const tomorrowDayName = dayjs().add(1, 'day').format('dddd');
 
   if (type === 'daily') {
-    // 👈 FIXED: Updated to match Sanity schema field names
-    promptText = `Generate a concise yet insightful daily Western horoscope for ${sign} on ${today}.
+    promptText = `Generate a concise yet insightful daily Western horoscope for ${sign} on ${tomorrow} (${tomorrowDayName}).
     Cover overview, love, career, wealth, social. Also provide a lucky color and a lucky number.
     Respond as JSON with these exact keys:
     {
@@ -80,11 +80,10 @@ async function generateHoroscope(sign, type) {
       "luckyColor": "Blue",
       "luckyNumber": 7
     }`;
-    identifier = today;
+    identifier = tomorrow;
 
   } else if (type === 'weekly') {
-    // 👈 FIXED: Updated to match Sanity schema field names
-    promptText = `Generate a concise yet insightful weekly Western horoscope for ${sign}, covering ${currentWeekStart} to ${currentWeekEnd}.
+    promptText = `Generate a concise yet insightful weekly Western horoscope for ${sign}, covering ${tomorrowWeekStart} to ${tomorrowWeekEnd}.
     Cover overview, love, career, wealth, social. Also provide a lucky color and a lucky number.
     Respond as JSON with these exact keys:
     {
@@ -96,10 +95,9 @@ async function generateHoroscope(sign, type) {
       "luckyColor": "Green",
       "luckyNumber": 3
     }`;
-    identifier = currentWeekStart;
+    identifier = tomorrowWeekStart;
 
   } else if (type === 'yearly') {
-    // 👈 FIXED: Updated to match Sanity schema field names
     promptText = `Generate a detailed yearly Western horoscope for ${sign} for the year ${currentYear}.
     Cover overview, love, career, wealth, social. Also provide a lucky color and a lucky number.
     Respond as JSON with these exact keys:
@@ -133,17 +131,26 @@ async function generateHoroscope(sign, type) {
 
   return {
     ...(JSON.parse(jsonResponseText)),
-    identifier
+    identifier,
+    forDate: tomorrow,
+    startDate: tomorrowWeekStart,
+    endDate: tomorrowWeekEnd
   };
 }
 
 async function syncWesternHoroscopes() {
-  console.log(`[${dayjs().format('YYYY-MM-DD HH:mm:ss')}] Starting Sanity.io Western horoscope sync...`);
+  const tomorrow = dayjs().add(1, 'day').format('YYYY-MM-DD');
+  const tomorrowDay = dayjs().add(1, 'day').format('dddd');
+  
+  console.log(`[${dayjs().format('YYYY-MM-DD HH:mm:ss')}] Starting Western horoscope sync for TOMORROW: ${tomorrow} (${tomorrowDay})`);
+  console.log(`Generating content for ${westernZodiacSigns.length} zodiac signs...`);
 
   for (const sign of westernZodiacSigns) {
     const transaction = sanityClient.transaction();
 
     try {
+      console.log(`[${dayjs().format('HH:mm:ss')}] Processing ${sign.toUpperCase()}...`);
+
       // Daily
       const dailyData = await generateHoroscope(sign, 'daily');
       const dailyDoc = {
@@ -160,16 +167,16 @@ async function syncWesternHoroscopes() {
         luckyNumber: dailyData.luckyNumber
       };
       transaction.createOrReplace(dailyDoc);
-      console.log(`[${dayjs().format('HH:mm:ss')}] ${sign} → daily prepared`);
+      console.log(`   Daily prepared for ${tomorrow}`);
 
       // Weekly
       const weeklyData = await generateHoroscope(sign, 'weekly');
       const weeklyDoc = {
         _type: 'weeklyWesternHoroscope',
-        _id: `weekly-${sign}-${weeklyData.identifier}`,
+        _id: `weekly-${sign}-${weeklyData.startDate}`,
         sign,
-        startDate: weeklyData.identifier,
-        endDate: dayjs(weeklyData.identifier).endOf('week').format('YYYY-MM-DD'),
+        startDate: weeklyData.startDate,
+        endDate: weeklyData.endDate,
         horoscope: weeklyData.horoscope,
         love: weeklyData.love,
         career: weeklyData.career,
@@ -179,7 +186,7 @@ async function syncWesternHoroscopes() {
         luckyNumber: weeklyData.luckyNumber
       };
       transaction.createOrReplace(weeklyDoc);
-      console.log(`[${dayjs().format('HH:mm:ss')}] ${sign} → weekly prepared`);
+      console.log(`   Weekly prepared (${weeklyData.startDate} to ${weeklyData.endDate})`);
 
       // Yearly
       const yearlyData = await generateHoroscope(sign, 'yearly');
@@ -197,18 +204,20 @@ async function syncWesternHoroscopes() {
         luckyNumber: yearlyData.luckyNumber
       };
       transaction.createOrReplace(yearlyDoc);
-      console.log(`[${dayjs().format('HH:mm:ss')}] ${sign} → yearly prepared`);
+      console.log(`   Yearly prepared for ${yearlyData.identifier}`);
 
       await transaction.commit();
-      console.log(`[${dayjs().format('HH:mm:ss')}] Synced Western horoscopes for: ${sign}`);
+      console.log(`[${dayjs().format('HH:mm:ss')}] Synced Western horoscopes for: ${sign.toUpperCase()}`);
+      
+      // Add delay between signs to avoid rate limiting
+      await delay(2000);
+      
     } catch (error) {
-      console.error(`[${dayjs().format('HH:mm:ss')}] Failed for ${sign}:`, error.message);
+      console.error(`[${dayjs().format('HH:mm:ss')}] Failed for ${sign.toUpperCase()}:`, error.message);
     }
-
-    await delay(3000);
   }
 
-  console.log(`[${dayjs().format('YYYY-MM-DD HH:mm:ss')}] All Western horoscopes synced successfully.`);
+  console.log(`[${dayjs().format('YYYY-MM-DD HH:mm:ss')}] Western horoscope sync completed! All content prepared for ${tomorrow} (${tomorrowDay})`);
 }
 
 syncWesternHoroscopes();

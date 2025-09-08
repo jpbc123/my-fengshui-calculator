@@ -1,4 +1,4 @@
-// sync-daily-wisdom.js
+// sync-daily-wisdom.js - FIXED VERSION
 import { createClient } from '@sanity/client';
 import dotenv from 'dotenv';
 import dayjs from 'dayjs';
@@ -43,11 +43,15 @@ async function fetchWithBackoff(url, options, retries = 5, baseDelay = 5000) {
   throw new Error('Max retries exceeded.');
 }
 
+// ------------------- NEW: RANDOM TOPIC SELECTION -------------------
 async function generateDailyWisdom(today) {
+  const topics = ['feng shui', 'numerology', 'astrology'];
+  const selectedTopic = topics[Math.floor(Math.random() * topics.length)];
+
   const prompt = `Generate a concise, uplifting motivational quote (under 15 words) 
-  related to feng shui, numerology, or astrology. 
-  Then expand on that quote with a short article (200-250 words) that provides practical advice. 
-  Format strictly as JSON: { "quote": "...", "article": "..." }`;
+  related to ${selectedTopic}. Then expand on that quote with a short article (200-250 words) 
+  that provides practical advice. Format strictly as JSON: { "quote": "...", "article": "..." }.
+  Ensure the content is focused exclusively on ${selectedTopic}.`;
 
   const payload = {
     contents: [{ role: 'user', parts: [{ text: prompt }] }],
@@ -76,7 +80,7 @@ async function generateDailyWisdom(today) {
 }
 
 async function syncDailyWisdom() {
-  const today = dayjs().format('YYYY-MM-DD');
+  const tomorrow = dayjs().add(1, 'day').format('YYYY-MM-DD');
   console.log(`[${today}] Checking Sanity for existing Daily Wisdom...`);
 
   const existing = await sanityClient.fetch(
@@ -94,8 +98,8 @@ async function syncDailyWisdom() {
 
   const doc = {
     _type: 'dailyWisdom',
-    _id: `daily-wisdom-${today}`,
-    date: today,
+    _id: `daily-wisdom-${tomorrow}`,
+    date: tomorrow,
     quote: generated.quote,
     article: generated.article,
   };

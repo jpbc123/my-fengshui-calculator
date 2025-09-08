@@ -1,4 +1,4 @@
-// sync-daily-fengshui-tip.js
+// sync-daily-planetary-overview.js
 import { createClient } from '@sanity/client';
 import dotenv from 'dotenv';
 import dayjs from 'dayjs';
@@ -42,25 +42,23 @@ async function fetchWithBackoff(url, options, retries = 5, baseDelay = 5000) {
   }
 }
 
-async function syncDailyFengShuiTip() {
-  const today = dayjs().format('YYYY-MM-DD');
-  console.log(`[${dayjs().format('YYYY-MM-DD HH:mm:ss')}] Checking Sanity for Feng Shui tip for ${today}...`);
+async function syncDailyPlanetaryOverview() {
+  const tomorrow = dayjs().add(1, 'day').format('YYYY-MM-DD');
+  console.log(`[${dayjs().format('YYYY-MM-DD HH:mm:ss')}] Checking Sanity for planetary overview for ${today}...`);
 
-  // Check if today's tip already exists
+  // Check if today's overview already exists
   const existing = await sanityClient.fetch(
-    `*[_type == "dailyFengShuiTip" && date == $today][0]`,
-    { today }
+    `*[_type == "dailyPlanetaryOverview" && date == $tomorrow][0]`,
+    { tomorrow }
   );
 
   if (existing) {
-    console.log(`[${dayjs().format('YYYY-MM-DD HH:mm:ss')}] Tip already exists for today. Skipping.`);
+    console.log(`[${dayjs().format('YYYY-MM-DD HH:mm:ss')}] Overview already exists for today. Skipping.`);
     return;
   }
 
-  // Generate a new tip
-  const prompt = `Generate a single, unique, and actionable daily Feng Shui tip. 
-  The tip should be concise, around 10-20 words, and directly applicable. 
-  Example: "Clear your entryway to welcome positive chi into your home."`;
+  // Prompt (same as your Supabase version)
+  const prompt = `Using today's date, ${today}, and current astrological transits and planetary positions, generate a "Daily Planetary Overview". The response should be a JSON object ONLY, with the following properties: a 'planetary_index' (a number from 1 to 5), a concise 'summary' of no more than 150 characters, and a detailed 'article' of at least 150-200 words. The content should be insightful and easy to understand for a general audience.`;
 
   const payload = {
     contents: [{ role: "user", parts: [{ text: prompt }] }],
@@ -69,15 +67,17 @@ async function syncDailyFengShuiTip() {
       responseSchema: {
         type: "OBJECT",
         properties: {
-          tip: { type: "STRING" }
+          planetary_index: { type: "INTEGER" },
+          summary: { type: "STRING" },
+          article: { type: "STRING" }
         },
-        required: ["tip"]
+        required: ["planetary_index", "summary", "article"]
       }
     }
   };
 
   try {
-    console.log(`[${dayjs().format('YYYY-MM-DD HH:mm:ss')}] Generating new Feng Shui tip...`);
+    console.log(`[${dayjs().format('YYYY-MM-DD HH:mm:ss')}] Generating planetary overview...`);
     const response = await fetchWithBackoff(geminiApiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -87,21 +87,22 @@ async function syncDailyFengShuiTip() {
     const result = await response.json();
     const jsonResponse = result.candidates[0].content.parts[0].text;
     const parsed = JSON.parse(jsonResponse);
-    const tip = parsed.tip;
 
     // Store in Sanity
     await sanityClient.createOrReplace({
-      _type: 'dailyFengShuiTip',
-      _id: `fengshui-${today}`,
-      date: today,
-      tip,
+      _type: 'dailyPlanetaryOverview',
+      _id: `planetary-${tomorrow}`,
+      date: tomorrow,
+      planetary_index: parsed.planetary_index,
+      summary: parsed.summary,
+      article: parsed.article,
       createdAt: new Date().toISOString(),
     });
 
-    console.log(`[${dayjs().format('YYYY-MM-DD HH:mm:ss')}] Successfully stored Feng Shui tip: "${tip}"`);
+    console.log(`[${dayjs().format('YYYY-MM-DD HH:mm:ss')}] Successfully stored planetary overview for ${today}.`);
   } catch (err) {
-    console.error(`[${dayjs().format('YYYY-MM-DD HH:mm:ss')}] Failed to generate/store Feng Shui tip:`, err.message);
+    console.error(`[${dayjs().format('YYYY-MM-DD HH:mm:ss')}] Failed to generate/store planetary overview:`, err.message);
   }
 }
 
-syncDailyFengShuiTip();
+syncDailyPlanetaryOverview();

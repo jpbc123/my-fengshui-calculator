@@ -1,12 +1,12 @@
 // src/pages/WesternDailyHoroscope.tsx
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import { useNavigate } from 'react-router-dom'; // Add this import
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Breadcrumb from "@/components/Breadcrumb";
 import wheelImage from "@/assets/zodiac-wheel.png";
-import { ImageSwiper } from '../components/OlderImageSwiper'; 
+import { ImageSwiper } from '../components/OlderImageSwiper';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 
 import lotteryImage from '../assets/lottery.jpg';
@@ -51,9 +51,6 @@ const imageZodiacOrder = [
   "aries", "pisces", "aquarius", "capricorn", "sagittarius", "scorpio",
   "libra", "virgo", "leo", "cancer", "gemini", "taurus"
 ];
-
-// Fixed API base URL to match your server
-const API_BASE_URL = "http://localhost:3001";
 
 // Animated PeriodTabs component matching Chinese horoscope style
 const PeriodTabs = ({ tabs, activeTab, onTabClick }: PeriodTabsProps) => {
@@ -119,7 +116,7 @@ const HoroscopeTabs = ({ tabs, activeTab, onTabClick }: HoroscopeTabsProps) => {
 };
 
 export default function WesternDailyHoroscope() {
-  const navigate = useNavigate(); // Add this hook
+  const navigate = useNavigate();
   const [selectedSign, setSelectedSign] = useState<string | null>(null);
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodTabType>('today');
   const [selectedCategory, setSelectedCategory] = useState<CategoryTabType>('overview');
@@ -127,9 +124,8 @@ export default function WesternDailyHoroscope() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
-  // Add loading state specifically for period changes
   const [periodLoading, setPeriodLoading] = useState(false);
-  const [contentKey, setContentKey] = useState(0); // For triggering content animations
+  const [contentKey, setContentKey] = useState(0);
   const [activeCardIndex, setActiveCardIndex] = useState(0);
 
   const wheelRef = useRef<HTMLDivElement>(null);
@@ -140,7 +136,6 @@ export default function WesternDailyHoroscope() {
     setActiveCardIndex(newIndex);
   };
 
-  // Define tabs using useMemo for consistency
   const periodTabs = useMemo(() => [
     { id: 'yesterday' as PeriodTabType, label: 'Yesterday' },
     { id: 'today' as PeriodTabType, label: 'Today' },
@@ -148,7 +143,6 @@ export default function WesternDailyHoroscope() {
     { id: 'yearly' as PeriodTabType, label: 'Current Year' },
   ], []);
   
-  // DEFINE THE FEATURE CARDS WITH IMAGES AND LINKS - matching Chinese page structure
   const featureCards = useMemo(() => [
       {
           title: "Lucky Number Generator",
@@ -182,7 +176,6 @@ export default function WesternDailyHoroscope() {
       }
   ], []);
 
-  // Create string of all images for the swiper - matching Chinese page format
   const allFeatureImages = useMemo(() =>
     featureCards.map(card => card.images).join(','),
     [featureCards]
@@ -199,34 +192,32 @@ export default function WesternDailyHoroscope() {
   ], []);
 
   const fetchHoroscope = useCallback(async (sign: string, period: PeriodTabType) => {
-    // Don't show main loading for period changes
     if (!periodLoading) {
       setLoading(true);
     }
     setError(null);
 
     try {
-      // Fixed: Use GET request with correct URL pattern matching your server
-      let apiUrl = `${API_BASE_URL}/api/western-horoscope/${sign.toLowerCase()}`;
+      // FIXED: Use Vercel API routes instead of localhost:3001
+      let apiUrl = `/api/western-horoscope/${sign.toLowerCase()}`;
       
-      // Add period parameter
+      // FIXED: Map frontend periods to correct offsets
       if (period === 'today') {
-        apiUrl += '?period=daily&dayOffset=0';
+        apiUrl += '?period=daily&dayOffset=0'; // Request today's data
       } else if (period === 'yesterday') {
-        apiUrl += '?period=daily&dayOffset=-1';
+        apiUrl += '?period=daily&dayOffset=-1'; // Request yesterday's data
       } else if (period === 'weekly') {
         apiUrl += '?period=weekly';
       } else if (period === 'yearly') {
         apiUrl += '?period=yearly';
       }
 
-      console.log('Fetching from:', apiUrl); // Debug log
+      console.log('Fetching from:', apiUrl);
 
       const response = await fetch(apiUrl);
       
       if (!response.ok) {
         if (response.status === 202) {
-          // Request in progress, retry after delay
           setTimeout(() => fetchHoroscope(sign, period), 3000);
           return;
         }
@@ -234,7 +225,7 @@ export default function WesternDailyHoroscope() {
       }
 
       const data = await response.json();
-      console.log('Received data:', data); // Debug log
+      console.log('Received data:', data);
       setHoroscopeContent(data);
     } catch (err: any) {
       console.error('Error fetching horoscope:', err);
@@ -256,13 +247,12 @@ export default function WesternDailyHoroscope() {
     }
   }, [periodLoading]);
 
-  // Enhanced period tab handler with optimistic loading
   const handlePeriodTabChange = (newPeriod: PeriodTabType) => {
     if (newPeriod === selectedPeriod) return;
     
     setPeriodLoading(true);
     setSelectedPeriod(newPeriod);
-    setContentKey(prev => prev + 1); // Force content re-render with animation
+    setContentKey(prev => prev + 1);
   };
 
   useEffect(() => {
@@ -316,14 +306,12 @@ export default function WesternDailyHoroscope() {
     setSelectedCategory('overview');
   };
 
-  // FIXED: Return string instead of JSX to avoid DOM nesting issues
   const renderHoroscopeText = (): string => {
     if (loading && !horoscopeContent) return "Loading horoscope...";
     if (error && !horoscopeContent) return error;
     if (!selectedSign) return "Spin the wheel to reveal your horoscope.";
     if (!horoscopeContent) return "Horoscope not available.";
 
-    // Handle different data structures from your API
     switch (selectedCategory) {
       case 'overview': 
         return horoscopeContent.horoscope || horoscopeContent.overviewContent || "Your general horoscope insight is being prepared.";
@@ -355,15 +343,11 @@ export default function WesternDailyHoroscope() {
         <Breadcrumb items={breadcrumbs} />
         
         <div className="flex flex-col lg:flex-row gap-6 mt-8">
-          {/* Main Content Area - widened like Chinese page */}
           <div className="flex-1">
             <div className="space-y-8">
-              {/* EXISTING HOROSCOPE RESULTS BOX - widened */}
               <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
                 <div className="relative mx-auto mb-8 w-full max-w-sm sm:max-w-md lg:max-w-xl aspect-square">
-                  {/* Fixed Arrow for the Wheel*/}
                   <div className="absolute top-0 left-1/2 -translate-x-1/2 w-4 h-6 bg-gold rounded z-10"></div>
-                  {/* Rotating Wheel */}
                   <div
                     ref={wheelRef}
                     onPointerDown={handlePointerDown}
@@ -376,7 +360,6 @@ export default function WesternDailyHoroscope() {
                   </div>
                 </div>
 
-                {/* Updated Tabs */}
                 <div className="p-6 border border-gold/30 rounded-xl bg-gray-50 text-black">
                   {selectedSign && (
                     <div className="text-black text-xl font-semibold mb-4 text-center">
@@ -384,7 +367,6 @@ export default function WesternDailyHoroscope() {
                     </div>
                   )}
 
-                  {/* Period Tabs with loading indicator */}
                   <div className="gap-2 mb-6 relative">
                     <PeriodTabs
                       tabs={periodTabs}
@@ -398,7 +380,6 @@ export default function WesternDailyHoroscope() {
                     )}
                   </div>
 
-                  {/* Category Tabs using Framer Motion style */}
                   <div className="flex justify-start flex-wrap mb-6">
                     <HoroscopeTabs
                       tabs={categoryTabs}
@@ -407,7 +388,6 @@ export default function WesternDailyHoroscope() {
                     />
                   </div>
 
-                  {/* Content display area with enhanced animations */}
                   <div className="mb-8 p-4 bg-gray-50 rounded-lg border border-gray-200 shadow-inner relative">
                     {periodLoading && (
                       <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center rounded-lg z-10">
@@ -433,7 +413,6 @@ export default function WesternDailyHoroscope() {
                 </div>
               </div>
 
-              {/* ImageSwiper Section - matching Chinese page structure exactly */}
               <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
                 <h2 className="text-2xl md:text-3xl font-bold text-gray-800 text-center mb-8">
                   Play & Discover
@@ -447,9 +426,6 @@ export default function WesternDailyHoroscope() {
                   <div className="text-center mt-4">
                     <h3 className="text-lg font-semibold">{featureCards[activeCardIndex].title}</h3>
                     <p className="text-sm text-muted-foreground">{featureCards[activeCardIndex].description}</p>
-                    <p className="mt-1">
-                      <span className="font-semibold">{featureCards[activeCardIndex].price}</span>
-                    </p>
                     <button
                       onClick={() => navigate(featureCards[activeCardIndex].link)}
                       className="mt-4 bg-purple-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-purple-700 transition-colors"

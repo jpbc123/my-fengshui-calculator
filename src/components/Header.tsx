@@ -78,9 +78,9 @@ const Header = () => {
               Explore <ChevronDown size={16} className="transition-transform duration-200 group-hover:rotate-180" />
             </Link>
             <div className="absolute left-1/2 -translate-x-1/2 mt-2 w-max rounded-xl shadow-2xl bg-gray-900 text-white p-6 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-              <div className="grid grid-cols-3 gap-8 w-full">
+              <div className="grid grid-cols-3 gap-4 max-w-2xl">
                 {/* Wisdom */}
-                <div>
+                <div className="max-w-56">
                   <h3 className="text-xs uppercase tracking-wider text-white/50 mb-2">
                     {megaMenuConfig.explore.wisdom.title}
                   </h3>
@@ -88,22 +88,22 @@ const Header = () => {
                     {megaMenuConfig.explore.wisdom.items.map((item) => (
                       <li key={item.name}>
                         <Link to={item.href} className="block hover:text-gold transition-colors">
-                          <span className="font-semibold">{item.name}</span>
-                          <p className="text-xs text-white/70">{item.description}</p>
+                          <span className="font-semibold text-sm">{item.name}</span>
+                          <p className="text-xs text-white/70 leading-tight">{item.description}</p>
                         </Link>
                       </li>
                     ))}
                   </ul>
                 </div>
                 {/* Meditation */}
-                <div>
+                <div className="max-w-48">
                   <h3 className="text-xs uppercase tracking-wider text-white/50 mb-2">
                     {megaMenuConfig.explore.meditation.title}
                   </h3>
                   <ul className="space-y-2">
                     {megaMenuConfig.explore.meditation.items.map((item) => (
                       <li key={item.name}>
-                        <Link to={item.href} className="block hover:text-gold transition-colors">
+                        <Link to={item.href} className="block hover:text-gold transition-colors text-sm">
                           {item.name}
                         </Link>
                       </li>
@@ -111,14 +111,14 @@ const Header = () => {
                   </ul>
                 </div>
                 {/* Games */}
-                <div>
+                <div className="max-w-48">
                   <h3 className="text-xs uppercase tracking-wider text-white/50 mb-2">
                     {megaMenuConfig.explore.games.title}
                   </h3>
                   <ul className="space-y-2">
                     {megaMenuConfig.explore.games.items.map((item) => (
                       <li key={item.name}>
-                        <Link to={item.href} className="block hover:text-gold transition-colors">
+                        <Link to={item.href} className="block hover:text-gold transition-colors text-sm">
                           {item.name}
                         </Link>
                       </li>

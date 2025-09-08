@@ -265,8 +265,9 @@ const allFeatureImages = useMemo(() =>
             
             // Construct the API URL based on the active period tab
             if (activePeriodTab === 'today' || activePeriodTab === 'yesterday') {
-                const dayOffset = activePeriodTab === 'yesterday' ? -1 : 0;
-                apiUrl += `?period=daily&dayOffset=${dayOffset}`;
+			const dayOffset = activePeriodTab === 'yesterday' ? 0 : 1; // ✅ CORRECT
+			apiUrl += `?period=daily&dayOffset=${dayOffset}`;
+
             } else if (activePeriodTab === 'weekly') {
                 apiUrl += `?period=weekly`;
             } else if (activePeriodTab === 'yearly') {

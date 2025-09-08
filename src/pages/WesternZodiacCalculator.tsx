@@ -8,9 +8,23 @@ import { DatePickerInput } from "@/components/DatePickerInput";
 import { westernZodiacData } from "@/data/westernZodiacData";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { client } from "../../sanityClient";
-import { PortableText } from '@portabletext/react';
-import imageUrlBuilder from '@sanity/image-url';
+import { createClient } from '@sanity/client';
+
+// Create Sanity client inline
+const sanityClient = createClient({
+  projectId: import.meta.env.VITE_SANITY_PROJECT_ID,
+  dataset: import.meta.env.VITE_SANITY_DATASET,
+  apiVersion: import.meta.env.VITE_SANITY_API_VERSION || '2024-01-01',
+  useCdn: true,
+  perspective: 'published',
+});
+
+// Helper function to check if client is configured
+const isClientConfigured = () => {
+  const projectId = import.meta.env.VITE_SANITY_PROJECT_ID;
+  const dataset = import.meta.env.VITE_SANITY_DATASET;
+  return !!(projectId && dataset);
+};
 
 // Western zodiac images
 import ariesImg from "@/assets/western/aries.png";
@@ -34,8 +48,10 @@ const breadcrumbs = [
 
 // Interface for article data from Sanity
 interface SanityArticle {
+  _id: string;
   title: string;
-  slug: string; 
+  slug: string;
+  tags?: string[];
 }
 
 interface SignInfo {
@@ -112,7 +128,7 @@ const WesternZodiacCalculator = () => {
   const [signInfo, setSignInfo] = useState<SignInfo | null>(null);
   const [showMore, setShowMore] = useState(false);
   const [relatedArticles, setRelatedArticles] = useState<SanityArticle[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const RELATED_ARTICLES_LIMIT = 5;
 
   const handleCalculate = () => {
@@ -124,22 +140,65 @@ const WesternZodiacCalculator = () => {
     setSignInfo(sign ? (westernZodiacData as Record<string, SignInfo>)[sign] : null);
   };
   
+  // Fetch related articles on component mount
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchRelatedArticles = async () => {
+      if (!isClientConfigured()) {
+        console.warn('Sanity client not configured properly');
+        setRelatedArticles([]);
+        return;
+      }
+      
       setLoading(true);
       try {
-        const articles = await client.fetch<SanityArticle[]>(
-          `*[_type == "article" && ("western zodiac" in tags || "astrology" in tags)] | order(publishDate desc)[0...${RELATED_ARTICLES_LIMIT}]{title, "slug": slug.current}`
-        );
-        setRelatedArticles(articles);
+        // Test basic fetch
+        console.log('Testing basic article fetch...');
+        const testQuery = `*[_type == "article"][0...3]{
+          _id,
+          title,
+          "slug": slug.current,
+          tags,
+          publishDate
+        }`;
+        
+        const testArticles = await sanityClient.fetch(testQuery);
+        console.log('Available articles:', testArticles);
+        
+        // Try filtered query
+        const query = `*[_type == "article" && defined(tags) && ("western zodiac" in tags || "astrology" in tags || "western zodiac" in tags || "astrology" in tags)] | order(publishDate desc)[0...${RELATED_ARTICLES_LIMIT}]{
+          _id,
+          title,
+          "slug": slug.current,
+          tags
+        }`;
+        
+        console.log('Fetching filtered articles...');
+        const articles = await sanityClient.fetch<SanityArticle[]>(query);
+        console.log('Filtered articles:', articles);
+        
+        // If no filtered articles, fall back to recent articles
+        if (articles.length === 0) {
+          console.log('No tagged articles found, falling back to recent articles');
+          const fallbackQuery = `*[_type == "article"] | order(publishDate desc)[0...${RELATED_ARTICLES_LIMIT}]{
+            _id,
+            title,
+            "slug": slug.current
+          }`;
+          const fallbackArticles = await sanityClient.fetch<SanityArticle[]>(fallbackQuery);
+          console.log('Fallback articles:', fallbackArticles);
+          setRelatedArticles(fallbackArticles);
+        } else {
+          setRelatedArticles(articles);
+        }
       } catch (error) {
-        console.error("Error fetching data from Sanity:", error);
-        setLoading(false);
+        console.error("Error fetching related articles:", error);
+        setRelatedArticles([]);
       } finally {
         setLoading(false);
       }
     };
-    fetchData();
+
+    fetchRelatedArticles();
   }, []);
   
   return (
@@ -148,9 +207,9 @@ const WesternZodiacCalculator = () => {
       <main className="flex-grow pt-6 px-1 pb-10">
         <div className="pt-24 px-4 pb-16 max-w-5xl mx-auto">
           {/* Two-column layout */}
-          <div className="flex flex-col lg:flex-row lg:justify-between">
+          <div className="flex flex-col lg:flex-row lg:justify-between lg:gap-8">
             {/* Left side - Calculator and Results */}
-            <div className="max-w-xl">
+            <div className="max-w-xl flex-1">
               {/* Breadcrumbs + title */}
               <div className="mb-8">
                 <Breadcrumb items={breadcrumbs} className="text-black/80" />
@@ -182,13 +241,13 @@ const WesternZodiacCalculator = () => {
                 {showMore && (
                   <div className="bg-gray-50 text-black/90 p-4 rounded-xl border border-gray-200 text-left">
                     <p className="mb-2">
-                      The twelve zodiac signs — from Aries to Pisces — are each associated with unique strengths, challenges, and behavioral patterns.
+                      The twelve zodiac signs – from Aries to Pisces – are each associated with unique strengths, challenges, and behavioral patterns.
                     </p>
                     <p className="mb-2">
                       Your sign can offer insights into love compatibility, career paths, and personal growth themes.
                     </p>
                     <p>
-                      Unlike the Chinese zodiac, which follows the lunar calendar and assigns one animal to an entire birth year, the Western zodiac changes roughly every month, making it more focused on the season and Sun’s position rather than the year of birth.
+                      Unlike the Chinese zodiac, which follows the lunar calendar and assigns one animal to an entire birth year, the Western zodiac changes roughly every month, making it more focused on the season and Sun's position rather than the year of birth.
                     </p>
                   </div>
                 )}
@@ -292,35 +351,39 @@ const WesternZodiacCalculator = () => {
               )}
             </div>
 
-            {/* Right side - related articles */}
-            <div className="max-w-md mt-40 lg:mt-0">
-			<h2 className="text-xl font-semibold text-black mb-4">Related Articles</h2>
-			{loading ? (
-				<div className="space-y-2">
-				<div className="h-4 bg-gray-200 rounded animate-pulse"></div>
-				<div className="h-4 bg-gray-200 rounded animate-pulse w-3/4"></div>
-				<div className="h-4 bg-gray-200 rounded animate-pulse w-1/2"></div>
-				</div>
-			) : relatedArticles.length > 0 ? (
-				<ul className="space-y-2 text-sm">
-				{relatedArticles.map((article, index) => (
-					<li key={index}>
-					<Link
-						to={`/articles/${article.slug}`}
-						className="text-lg text-black/80 hover:text-gold"
-					>
-						{article.title}
-					</Link>
-					</li>
-				))}
-				</ul>
-			) : (
-				<p className="text-gray-500 text-sm">No related articles found</p>
-			)}
-			</div>
+            {/* Right side - Related Articles */}
+            <div className="max-w-md mt-12 lg:mt-0 lg:ml-8">
+              <h2 className="text-xl font-semibold text-black mb-4">Related Articles</h2>
+              {loading ? (
+                <div className="space-y-3">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <div key={i} className="animate-pulse">
+                      <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                      <div className="h-3 bg-gray-200 rounded w-3/4"></div>
+                    </div>
+                  ))}
+                </div>
+              ) : relatedArticles.length > 0 ? (
+                <div className="space-y-3">
+                  {relatedArticles.map((article) => (
+                    <div key={article._id}>
+                      <Link
+                        to={`/articles/${article.slug}`}
+                        className="block text-base font-medium text-black hover:text-gold transition-colors"
+                      >
+                        {article.title}
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-gray-500 text-sm">No related articles found.</p>
+              )}
+            </div>
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 };

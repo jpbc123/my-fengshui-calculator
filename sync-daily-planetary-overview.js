@@ -17,7 +17,6 @@ const sanityClient = createClient({
 const geminiApiKey = process.env.GEMINI_API_KEY;
 const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${geminiApiKey}`;
 
-// Helper: backoff retries
 async function fetchWithBackoff(url, options, retries = 5, baseDelay = 5000) {
   for (let i = 0; i < retries; i++) {
     try {
@@ -43,22 +42,23 @@ async function fetchWithBackoff(url, options, retries = 5, baseDelay = 5000) {
 }
 
 async function syncDailyPlanetaryOverview() {
-  const today = dayjs().format('YYYY-MM-DD');
-  console.log(`[${dayjs().format('YYYY-MM-DD HH:mm:ss')}] Checking Sanity for planetary overview for ${today}...`);
+  // FIXED: Generate for TOMORROW instead of today
+  const tomorrow = dayjs().add(1, 'day').format('YYYY-MM-DD');
+  const tomorrowDay = dayjs().add(1, 'day').format('dddd');
+  
+  console.log(`[${dayjs().format('YYYY-MM-DD HH:mm:ss')}] Generating planetary overview for TOMORROW: ${tomorrow} (${tomorrowDay})`);
 
-  // Check if today's overview already exists
   const existing = await sanityClient.fetch(
-    `*[_type == "dailyPlanetaryOverview" && date == $today][0]`,
-    { today }
+    `*[_type == "dailyPlanetaryOverview" && date == $tomorrow][0]`,
+    { tomorrow }
   );
 
   if (existing) {
-    console.log(`[${dayjs().format('YYYY-MM-DD HH:mm:ss')}] Overview already exists for today. Skipping.`);
+    console.log(`[${tomorrow}] Overview already exists for tomorrow. Skipping generation.`);
     return;
   }
 
-  // Prompt (same as your Supabase version)
-  const prompt = `Using today's date, ${today}, and current astrological transits and planetary positions, generate a "Daily Planetary Overview". The response should be a JSON object ONLY, with the following properties: a 'planetary_index' (a number from 1 to 5), a concise 'summary' of no more than 150 characters, and a detailed 'article' of at least 150-200 words. The content should be insightful and easy to understand for a general audience.`;
+  const prompt = `Using tomorrow's date, ${tomorrow} (${tomorrowDay}), and astrological transits and planetary positions for that day, generate a "Daily Planetary Overview". The response should be a JSON object ONLY, with the following properties: a 'planetary_index' (a number from 1 to 5), a concise 'summary' of no more than 150 characters, and a detailed 'article' of at least 150-200 words. The content should be insightful and easy to understand for a general audience.`;
 
   const payload = {
     contents: [{ role: "user", parts: [{ text: prompt }] }],
@@ -77,7 +77,7 @@ async function syncDailyPlanetaryOverview() {
   };
 
   try {
-    console.log(`[${dayjs().format('YYYY-MM-DD HH:mm:ss')}] Generating planetary overview...`);
+    console.log(`[${tomorrow}] Generating planetary overview for tomorrow...`);
     const response = await fetchWithBackoff(geminiApiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -88,20 +88,19 @@ async function syncDailyPlanetaryOverview() {
     const jsonResponse = result.candidates[0].content.parts[0].text;
     const parsed = JSON.parse(jsonResponse);
 
-    // Store in Sanity
     await sanityClient.createOrReplace({
       _type: 'dailyPlanetaryOverview',
-      _id: `planetary-${today}`,
-      date: today,
+      _id: `planetary-${tomorrow}`,
+      date: tomorrow,
       planetary_index: parsed.planetary_index,
       summary: parsed.summary,
       article: parsed.article,
       createdAt: new Date().toISOString(),
     });
 
-    console.log(`[${dayjs().format('YYYY-MM-DD HH:mm:ss')}] Successfully stored planetary overview for ${today}.`);
+    console.log(`[${tomorrow}] Successfully stored planetary overview for tomorrow.`);
   } catch (err) {
-    console.error(`[${dayjs().format('YYYY-MM-DD HH:mm:ss')}] Failed to generate/store planetary overview:`, err.message);
+    console.error(`[${tomorrow}] Failed to generate/store planetary overview:`, err.message);
   }
 }
 

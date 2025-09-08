@@ -1,4 +1,4 @@
-// src/components/RightSidebar.tsx - FIXED VERSION WITH BETTER CACHE MANAGEMENT
+// src/components/RightSidebar.tsx - FIXED FOR CURRENT DATE DATA
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState, useEffect } from "react";
 import dayjs from "dayjs";
@@ -7,11 +7,9 @@ import timezone from 'dayjs/plugin/timezone';
 import { Link } from "react-router-dom";
 import { StarsBackground } from "./Stars";
 
-// Enable timezone plugins
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-// Define the data type for the planetary overview content
 interface PlanetaryOverviewData {
   date: string;
   planetary_index?: number;
@@ -19,28 +17,19 @@ interface PlanetaryOverviewData {
   article?: string;
 }
 
+interface FengShuiTipData {
+  tip: string;
+}
+
 export default function RightSidebar() {
   const [todaysTip, setTodaysTip] = useState("Loading...");
-  const [luckyNumber, setLuckyNumber] = useState<number | null>(null);
-
-  const [planetaryOverviewData, setPlanetaryOverviewData] =
-    useState<PlanetaryOverviewData | null>(null);
-  const [loadingPlanetaryOverview, setLoadingPlanetaryOverview] =
-    useState(true);
+  const [planetaryOverviewData, setPlanetaryOverviewData] = useState<PlanetaryOverviewData | null>(null);
+  const [loadingPlanetaryOverview, setLoadingPlanetaryOverview] = useState(true);
   const [loadingFengShuiTip, setLoadingFengShuiTip] = useState(true);
 
-  // FIXED: Use UTC date to ensure consistency across devices and timezones
-  const today = dayjs.utc().format("YYYY-MM-DD");
+  // Use current date for display
+  const today = dayjs().format("YYYY-MM-DD");
   
-  // Also get local date for debugging
-  const localToday = dayjs().format("YYYY-MM-DD");
-  
-  console.log(`UTC Date: ${today}, Local Date: ${localToday}`);
-
-  // Fixed API base URL to match server port
-  const API_BASE_URL = "http://localhost:3001";
-
-  // IMPROVED: Cache validation function
   const isCacheValid = (cacheKey: string, expectedDate: string): boolean => {
     const cachedData = localStorage.getItem(cacheKey);
     if (!cachedData) return false;
@@ -59,12 +48,10 @@ export default function RightSidebar() {
     }
   };
 
-  // IMPROVED: Cache cleanup function
   const cleanupOldCache = () => {
     const keys = Object.keys(localStorage);
     const cacheKeys = keys.filter(key => 
       key.startsWith('fengshuiTip_') || 
-      key.startsWith('fengshuiLucky_') || 
       key.startsWith('planetaryOverview_')
     );
     
@@ -77,55 +64,25 @@ export default function RightSidebar() {
     });
   };
 
-  // Clean up old cache on component mount
   useEffect(() => {
     cleanupOldCache();
   }, [today]);
 
-  // Debug function to clear today's cache
-  const clearTodayCache = () => {
-    console.log(`Clearing cache for ${today}`);
-    localStorage.removeItem(`fengshuiTip_${today}`);
-    localStorage.removeItem(`fengshuiLucky_${today}`);
-    localStorage.removeItem(`planetaryOverview_${today}`);
-    
-    // Also clear yesterday's cache just in case
-    const yesterday = dayjs.utc().subtract(1, 'day').format("YYYY-MM-DD");
-    localStorage.removeItem(`planetaryOverview_${yesterday}`);
-    
-    window.location.reload();
-  };
-
-  // FIXED: Fetch Feng Shui Tip with improved cache validation
+  // FIXED: Fetch Feng Shui Tip using Vercel API routes
   useEffect(() => {
     const tipCacheKey = `fengshuiTip_${today}`;
-    const luckyCacheKey = `fengshuiLucky_${today}`;
-
-    // Check if both cache entries are valid for today
     const tipCached = localStorage.getItem(tipCacheKey);
-    const luckyCached = localStorage.getItem(luckyCacheKey);
     
-    if (tipCached && luckyCached) {
+    if (tipCached && isCacheValid(tipCacheKey, today)) {
       try {
         const tipData = JSON.parse(tipCached);
-        const luckyData = JSON.parse(luckyCached);
-        
-        // Validate cache dates
-        if (tipData.cached_date === today && luckyData.cached_date === today) {
-          console.log(`Using cached feng shui data for ${today}`);
-          setTodaysTip(tipData.tip);
-          setLuckyNumber(luckyData.lucky_number);
-          setLoadingFengShuiTip(false);
-          return;
-        } else {
-          console.log(`Feng shui cache date mismatch, clearing and fetching fresh`);
-          localStorage.removeItem(tipCacheKey);
-          localStorage.removeItem(luckyCacheKey);
-        }
+        console.log(`Using cached feng shui tip for ${today}`);
+        setTodaysTip(tipData.tip);
+        setLoadingFengShuiTip(false);
+        return;
       } catch (error) {
         console.error(`Error parsing feng shui cache:`, error);
         localStorage.removeItem(tipCacheKey);
-        localStorage.removeItem(luckyCacheKey);
       }
     }
 
@@ -133,32 +90,21 @@ export default function RightSidebar() {
       try {
         setLoadingFengShuiTip(true);
         console.log(`Fetching feng shui tip for ${today}...`);
-        const response = await fetch(`${API_BASE_URL}/api/daily-fengshui-tip`);
+        
+        // FIXED: Use Vercel API route instead of Sanity client
+        const response = await fetch('/api/daily-fengshui-tip');
         
         if (!response.ok) {
-          if (response.status === 202) {
-            // Request in progress, retry after delay
-            setTimeout(() => fetchDailyFengshuiTip(), 3000);
-            return;
-          }
           throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
-
+        
         const result = await response.json();
-        const tip = result.tip || "Clear your mind to welcome positive chi.";
-        const lucky = result.lucky_number || 8;
+        const tip = result?.tip || "Clear your mind to welcome positive chi.";
 
         setTodaysTip(tip);
-        setLuckyNumber(lucky);
 
-        // IMPROVED: Cache with date validation
         localStorage.setItem(tipCacheKey, JSON.stringify({
           tip,
-          cached_date: today,
-          cached_at: new Date().toISOString()
-        }));
-        localStorage.setItem(luckyCacheKey, JSON.stringify({
-          lucky_number: lucky,
           cached_date: today,
           cached_at: new Date().toISOString()
         }));
@@ -167,22 +113,19 @@ export default function RightSidebar() {
       } catch (error) {
         console.error("Failed to fetch daily feng shui tip:", error);
         setTodaysTip("Clear your mind to welcome positive chi.");
-        setLuckyNumber(8);
       } finally {
         setLoadingFengShuiTip(false);
       }
     };
 
     fetchDailyFengshuiTip();
-  }, [today, API_BASE_URL]);
+  }, [today]);
 
-  // FIXED: Planetary Overview with better cache validation
+  // FIXED: Fetch Planetary Overview using Vercel API routes
   useEffect(() => {
     const cacheKey = `planetaryOverview_${today}`;
-
     console.log(`Checking planetary overview cache for key: ${cacheKey}`);
 
-    // Improved cache validation
     if (isCacheValid(cacheKey, today)) {
       const cachedData = localStorage.getItem(cacheKey);
       try {
@@ -201,42 +144,44 @@ export default function RightSidebar() {
       try {
         setLoadingPlanetaryOverview(true);
         console.log(`Fetching planetary overview for ${today}...`);
-        const response = await fetch(`${API_BASE_URL}/api/planetary-overview`);
+        
+        // FIXED: Use Vercel API route instead of Sanity client
+        const response = await fetch('/api/planetary-overview');
         
         if (!response.ok) {
-          if (response.status === 202) {
-            // Request in progress, retry after delay
-            console.log(`Request in progress, retrying in 3 seconds...`);
-            setTimeout(() => fetchPlanetaryOverview(), 3000);
-            return;
-          }
           throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
-
+        
         const result = await response.json();
-        console.log(`Fetched planetary overview:`, result);
         
-        // FIXED: Normalize the date to ensure consistency
-        const normalizedResult = {
-          ...result,
-          date: today, // Force today's date for cache consistency
-          cached_date: today,
-          cached_at: new Date().toISOString()
-        };
-        
-        setPlanetaryOverviewData(normalizedResult);
-
-        // IMPROVED: Cache with validation metadata
-        localStorage.setItem(cacheKey, JSON.stringify(normalizedResult));
-        console.log(`Cached planetary overview for ${today}`);
+        if (result) {
+          const normalizedResult = {
+            ...result,
+            date: today,
+            cached_date: today,
+            cached_at: new Date().toISOString()
+          };
+          setPlanetaryOverviewData(normalizedResult);
+          localStorage.setItem(cacheKey, JSON.stringify(normalizedResult));
+          console.log(`Cached planetary overview for ${today}`);
+        } else {
+          const fallbackData = {
+            date: today,
+            planetary_index: 2,
+            summary: "Universal energies are in transition today. Take time for reflection and avoid making hasty decisions.",
+            article: "Today brings a blend of practical and intuitive energies. The planetary alignments suggest focusing on balance and mindful decision-making.",
+            cached_date: today,
+            cached_at: new Date().toISOString(),
+            is_fallback: true
+          };
+          setPlanetaryOverviewData(fallbackData);
+        }
       } catch (error) {
         console.error("Failed to fetch planetary overview:", error);
-        // Fallback data
         const fallbackData = {
           date: today,
           planetary_index: 2,
-          summary:
-            "Universal energies are in transition today. Take time for reflection and avoid making hasty decisions.",
+          summary: "Universal energies are in transition today. Take time for reflection and avoid making hasty decisions.",
           article: "Today brings a blend of practical and intuitive energies. The planetary alignments suggest focusing on balance and mindful decision-making.",
           cached_date: today,
           cached_at: new Date().toISOString(),
@@ -249,11 +194,10 @@ export default function RightSidebar() {
     };
 
     fetchPlanetaryOverview();
-  }, [today, API_BASE_URL]);
+  }, [today]);
 
   return (
     <div className="space-y-6">
-      {/* Today's Feng Shui Tip Widget */}
       <Card className="bg-gradient-to-br from-indigo-950 to-gray-900 text-white shadow-xl border-gold/10 p-6">
         <CardHeader className="py-2">
           <CardTitle className="text-lg text-gold flex items-center gap-2">
@@ -273,23 +217,11 @@ export default function RightSidebar() {
         </CardContent>
       </Card>
 
-      {/* Daily Planetary Overview Widget */}
       <StarsBackground className="relative overflow-hidden rounded-xl">
         <Card className="relative z-10 bg-transparent text-white shadow-xl border-transparent">
           <CardHeader className="pb-3">
             <CardTitle className="text-lg text-gold flex items-center gap-2 relative z-10">
               🪐 Daily Planetary Overview
-              {/* Debug info - remove in production */}
-			  {/*
-              <span className="text-xs text-gray-400 ml-2">({today})</span>
-              <button 
-                onClick={clearTodayCache}
-                className="ml-auto bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600 transition-colors"
-                title="Clear cache and refresh"
-              >
-                🗑️
-              </button>
-			  */}
             </CardTitle>
           </CardHeader>
           <CardContent className="relative z-10">
@@ -331,7 +263,6 @@ export default function RightSidebar() {
         </Card>
       </StarsBackground>
 
-      {/* Featured Tool Widget */}
       <Card className="bg-gradient-to-br from-indigo-950 to-gray-900 text-white shadow-xl border-gold/10">
         <CardContent className="p-6">
           <div className="bg-gradient-to-br from-purple-800 to-indigo-800 rounded-lg p-6 text-center">
