@@ -383,7 +383,6 @@ const WesternZodiacCalculator = () => {
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 };

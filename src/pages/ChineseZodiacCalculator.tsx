@@ -392,7 +392,6 @@ const ChineseZodiacCalculator = () => {
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 };

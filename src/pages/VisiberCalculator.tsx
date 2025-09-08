@@ -659,14 +659,7 @@ const VisiberCalculator = () => {
 
                           {/* Share Button */}
                           <div className="flex justify-center pt-4">
-                            <Button
-                              onClick={handleShare}
-                              variant="outline"
-                              className="flex items-center gap-2"
-                            >
-                              <Share2 size={16} />
-                              {copied ? "Copied!" : "Share Result"}
-                            </Button>
+
                           </div>
                         </>
                       )}
@@ -708,7 +701,6 @@ const VisiberCalculator = () => {
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 };

@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
+All colors MUST be HSL. src
 */
 
 @layer base {
@@ -136,22 +136,32 @@ All colors MUST be HSL.
 
 
 @font-face {
-  font-family: 'Days of Charity';
-  src: url('/src/assets/fonts/DaysOfCharity.otf') format('opentype');
+  font-family: 'DaysOfCharity';
+  src: url('/fonts/DaysofCharity.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
+}
+
+/* Add similar @font-face declarations for your other fonts if you have them */
+@font-face {
+  font-family: 'GelatoScript';
+  src: url('/fonts/GelatoScript.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
   font-family: 'Brilliant Signature';
-  src: url('/src/assets/fonts/brilliant-signature-regular.otf') format('opentype');
+  src: url('/fonts/brilliant-signature-regular.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'Lucky Field';
-  src: url('/src/assets/fonts/luckyfield.ttf') format('opentype');
+  src: url('/fonts/luckyfield.ttf') format('opentype');
   font-weight: normal;
   font-style: normal;
 }
@@ -159,42 +169,42 @@ All colors MUST be HSL.
 
 @font-face {
   font-family: 'Luckily';
-  src: url('/src/assets/fonts/luckily.ttf') format('opentype');
+  src: url('/fonts/luckily.ttf') format('opentype');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'Breathing';
-  src: url('/src/assets/fonts/breathing.ttf') format('opentype');
+  src: url('/fonts/breathing.ttf') format('opentype');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'Marquette';
-  src: url('/src/assets/fonts/marquette.otf') format('opentype');
+  src: url('/fonts/marquette.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'Heisenberg';
-  src: url('/src/assets/fonts/heisenberg.otf') format('opentype');
+  src: url('/fonts/heisenberg.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'Romantically';
-  src: url('/src/assets/fonts/romantically.otf') format('opentype');
+  src: url('/fonts/romantically.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'SouthHampton';
-  src: url('/src/assets/fonts/southhampton.ttf') format('opentype');
+  src: url('/fonts/southhampton.ttf') format('opentype');
   font-weight: normal;
   font-style: normal;
 }

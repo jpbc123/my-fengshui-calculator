@@ -534,7 +534,6 @@ export default function KuaNumberCalculator() {
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 }

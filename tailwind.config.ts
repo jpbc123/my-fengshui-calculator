@@ -18,18 +18,18 @@ export default {
       },
     },
     extend: {
-	  fontFamily: {
-		gelato: ["Gelato Script", "cursive"],
-		signature: ["Brilliant Signature", "cursive"],
-		charity: ["Days of Charity", "cursive"],
-		luckyfield: ["Luckyfield", "cursive"],
-		luckily: ["Luckily", "cursive"],
-		breathing: ["Breathing", "cursive"],
-		marquette: ["Marquette", "cursive"],
-		heisenberg: ["Heisenberg", "cursive"],
-		romantically: ["Romantically", "cursive"],
-		southhampton: ["SouthHampton", "cursive"],
-		},
+      fontFamily: {
+        gelato: ["GelatoScript", "cursive"],
+        signature: ["BrilliantSignature", "cursive"],
+        charity: ["DaysofCharity", "cursive"],
+        luckyfield: ["Luckyfield", "cursive"],
+        luckily: ["Luckily", "cursive"],
+        breathing: ["Breathing", "cursive"],
+        marquette: ["Marquette", "cursive"],
+        heisenberg: ["Heisenberg", "cursive"],
+        romantically: ["Romantically", "cursive"],
+        southhampton: ["SouthHampton", "cursive"],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -112,7 +112,6 @@ export default {
           "0%": { backgroundPosition: "-200% 0" },
           "100%": { backgroundPosition: "200% 0" },
         },
-        // 🌀 New Qi Animation
         qi: {
           "0%, 100%": { backgroundPosition: "0% 50%" },
           "50%": { backgroundPosition: "100% 50%" },
@@ -123,7 +122,6 @@ export default {
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fade-in 0.3s ease-out",
         shimmer: "shimmer 2s linear infinite",
-        // 🌀 New Qi Animation
         qi: "qi 15s ease infinite",
       },
       backgroundImage: {
@@ -139,5 +137,3 @@ export default {
   },
   plugins: [require("tailwindcss-animate")],
 } satisfies Config;
-
-

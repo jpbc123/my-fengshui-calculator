@@ -25,10 +25,16 @@ const breadcrumbs = [
 // Meditation options data
 const meditationOptions = [
   {
-    title: "Yoga Pose for the Day",
-    description: "Stretch and energize your body with a simple daily pose",
-    image: yogaImage,
-    link: "/meditate-yoga-pose",
+    title: "Evening Relaxation",
+    description: "Unwind and release tension before sleep for a peaceful night",
+    image: eveningImage,
+    link: "/meditate-evening",
+  },
+  {
+    title: "Morning Mindfulness",
+    description: "Start your day calm, centered, and ready for opportunities",
+    image: morningImage,
+    link: "/meditate-morning",
   },
   {
     title: "Daily Affirmations",
@@ -43,16 +49,10 @@ const meditationOptions = [
     link: "/meditate-visualization",
   },
   {
-    title: "Morning Mindfulness",
-    description: "Start your day calm, centered, and ready for opportunities",
-    image: morningImage,
-    link: "/meditate-morning",
-  },
-  {
-    title: "Evening Relaxation",
-    description: "Unwind and release tension before sleep for a peaceful night",
-    image: eveningImage,
-    link: "/meditate-evening",
+    title: "Yoga Pose for the Day",
+    description: "Stretch and energize your body with a simple daily pose",
+    image: yogaImage,
+    link: "/meditate-yoga-pose",
   },
 ];
 

@@ -72,7 +72,7 @@ type CombinedArticle = SanityArticle | (DailyPlanetaryOverview & {
   metaDescription?: string;
 });
 
-const ARTICLES_PER_PAGE = 6;
+const ARTICLES_PER_PAGE = 9;
 
 const categories = [
   "All",
@@ -177,24 +177,22 @@ export default function ArticlesPage() {
   ];
 
   // Filtering by category
-  const filteredArticles = selectedCategory === "All"
-    ? articles
-    : articles.filter((article) => {
-        if (article._type === 'dailyPlanetaryOverview') {
-          // Daily planetary overviews always belong to "Planetary Overview" category
-          const belongs = selectedCategory === "Planetary Overview";
-          console.log(`Planetary article ${article._id} belongs to category:`, belongs);
-          return belongs;
-        } else {
-          // Regular articles use tags
-          const regularArticle = article as SanityArticle;
-          const belongs = regularArticle.tags?.some(
-            (tag) => tag.toLowerCase() === selectedCategory.toLowerCase()
-          );
-          console.log(`Regular article ${article._id} with tags [${regularArticle.tags?.join(', ')}] belongs to category ${selectedCategory}:`, belongs);
-          return belongs;
-        }
-      });
+const filteredArticles = selectedCategory === "All"
+  ? articles.filter(article => article._type !== 'dailyPlanetaryOverview') // Exclude planetary overviews from "All"
+  : selectedCategory === "Planetary Overview"
+  ? articles.filter(article => article._type === 'dailyPlanetaryOverview') // Only show planetary overviews
+  : articles.filter((article) => {
+      // For other categories, only check regular articles
+      if (article._type === 'dailyPlanetaryOverview') {
+        return false; // Planetary overviews don't belong to other categories
+      }
+      const regularArticle = article as SanityArticle;
+      const belongs = regularArticle.tags?.some(
+        (tag) => tag.toLowerCase() === selectedCategory.toLowerCase()
+      );
+      console.log(`Regular article ${article._id} with tags [${regularArticle.tags?.join(', ')}] belongs to category ${selectedCategory}:`, belongs);
+      return belongs;
+    });
 
   console.log(`Filtered articles for category "${selectedCategory}":`, filteredArticles.length);
 
@@ -403,7 +401,6 @@ export default function ArticlesPage() {
           )}
         </div>
       </main>
-      <Footer />
     </div>
   );
 }

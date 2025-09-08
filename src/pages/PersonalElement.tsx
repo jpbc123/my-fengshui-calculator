@@ -1,5 +1,4 @@
 // src/pages/PersonalElement.tsx
-// Temporary version with inline Sanity client to fix import issues
 
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
@@ -457,7 +456,7 @@ export default function PersonalElement() {
                   <p className="text-black/90"><strong>Heavenly Stem:</strong> {result.stem}</p>
                   <div className="prose max-w-none">
                     <h3 className="text-gold font-semibold mb-1 text-base">Stem Meaning:</h3>
-                    <ReactMarkdown className="text-sm">{result.stemDescription}</ReactMarkdown>
+                    <ReactMarkdown>{result.stemDescription}</ReactMarkdown>
                   </div>
                   <p className="text-black/90"><strong>Element Traits:</strong> {result.description}</p>
                   <p className="text-black/90"><strong>Compatibility:</strong> {compatibilityInsights[result.element]}</p>
@@ -465,14 +464,6 @@ export default function PersonalElement() {
                   <p className="text-black/90"><strong>Lucky Colors:</strong> {luckyTips[result.element].colors.join(", ")}</p>
                   <p className="text-black/90"><strong>Suggested Careers:</strong> {luckyTips[result.element].careers.join(", ")}</p>
                   <p className="text-black/90"><strong>Feng Shui Tip:</strong> {fengShuiTips[result.element]}</p>
-                  
-                  {/* Share Result Component */}
-                  <div className="pt-4 border-t border-gray-200">
-                    <ShareResult 
-                      result={`My Personal Element is ${result.element} (${result.stem})`}
-                      url={window.location.href}
-                    />
-                  </div>
                 </motion.div>
               )}
             </div>
@@ -509,7 +500,6 @@ export default function PersonalElement() {
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 }
