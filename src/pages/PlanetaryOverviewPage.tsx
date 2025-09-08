@@ -1,4 +1,4 @@
-// src/components/PlanetaryOverviewPage.tsx - UPDATED TO USE UTC DATES
+// src/components/PlanetaryOverviewPage.tsx - FIXED TO USE VERCEL API ROUTES
 import { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import utc from 'dayjs/plugin/utc';
@@ -31,13 +31,8 @@ export default function PlanetaryOverviewPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    // Dynamic API base URL - use window.location.hostname for network access
-    const API_BASE_URL = window.location.hostname === 'localhost' 
-        ? "http://localhost:3001" 
-        : `http://${window.location.hostname}:3001`;
-
-    // FIXED: Use UTC date to ensure consistency
-    const today = dayjs.utc().format("YYYY-MM-DD");
+    // Use current date for consistency
+    const today = dayjs().format("YYYY-MM-DD");
 
     useEffect(() => {
         const fetchTodayData = async () => {
@@ -46,7 +41,9 @@ export default function PlanetaryOverviewPage() {
             
             try {
                 console.log(`Fetching planetary overview for ${today}...`);
-                const response = await fetch(`${API_BASE_URL}/api/planetary-overview`);
+                
+                // FIXED: Use Vercel API route instead of localhost:3001
+                const response = await fetch('/api/planetary-overview');
                 
                 if (!response.ok) {
                     if (response.status === 202) {
@@ -75,7 +72,7 @@ export default function PlanetaryOverviewPage() {
                 console.error("Failed to fetch planetary overview:", error);
                 setError("Failed to load today's planetary overview. Please try again later.");
                 
-                // Set fallback data with UTC date
+                // Set fallback data with current date
                 setData({
                     date: today,
                     planetary_index: 3,
@@ -88,7 +85,7 @@ export default function PlanetaryOverviewPage() {
         };
 
         fetchTodayData();
-    }, [API_BASE_URL, today]);
+    }, [today]);
 
     return (
         <div className="flex flex-col min-h-screen bg-white text-black overflow-hidden">
@@ -166,8 +163,6 @@ export default function PlanetaryOverviewPage() {
                                 )}
                             </div>
                         </div>
-                        
-
                     </div>
                 </div>
             </main>

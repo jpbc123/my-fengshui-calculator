@@ -246,55 +246,58 @@ const allFeatureImages = useMemo(() =>
     };
 
     useEffect(() => {
-        const fetchHoroscopeData = async () => {
-            if (!zodiac) {
-                setLoading(false);
-                setPeriodLoading(false);
-                setHoroscopeData(null);
-                setError(null);
-                return;
-            }
-
-            // Don't show main loading for period changes
-            if (!periodLoading) {
-                setLoading(true);
-            }
+    const fetchHoroscopeData = async () => {
+        if (!zodiac) {
+            setLoading(false);
+            setPeriodLoading(false);
+            setHoroscopeData(null);
             setError(null);
+            return;
+        }
 
-            let apiUrl = `/api/chinese-horoscope/${zodiac.toLowerCase()}`;
-            
-            // Construct the API URL based on the active period tab
-            if (activePeriodTab === 'today' || activePeriodTab === 'yesterday') {
-			const dayOffset = activePeriodTab === 'yesterday' ? 0 : 1; // ✅ CORRECT
-			apiUrl += `?period=daily&dayOffset=${dayOffset}`;
+        // Don't show main loading for period changes
+        if (!periodLoading) {
+            setLoading(true);
+        }
+        setError(null);
 
-            } else if (activePeriodTab === 'weekly') {
-                apiUrl += `?period=weekly`;
-            } else if (activePeriodTab === 'yearly') {
-                apiUrl += `?period=yearly`;
+        let apiUrl = `/api/chinese-horoscope/${zodiac.toLowerCase()}`;
+        
+        // FIXED: Correct the dayOffset logic
+        if (activePeriodTab === 'today' || activePeriodTab === 'yesterday') {
+            // Since sync scripts generate data for tomorrow (+1 day):
+            // - Today: fetch data with dayOffset=1 (gets today's data)
+            // - Yesterday: fetch data with dayOffset=0 (gets yesterday's data)
+            const dayOffset = activePeriodTab === 'today' ? 1 : 0;
+            apiUrl += `?period=daily&dayOffset=${dayOffset}`;
+
+        } else if (activePeriodTab === 'weekly') {
+            apiUrl += `?period=weekly`;
+        } else if (activePeriodTab === 'yearly') {
+            apiUrl += `?period=yearly`;
+        }
+
+        try {
+            const response = await fetch(apiUrl);
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || `Server error: ${response.statusText}`);
             }
+            const data: HoroscopeDataType = await response.json();
+            console.log('Received horoscope data:', data); // Debug log
+            setHoroscopeData(data);
+        } catch (err: any) {
+            console.error("Failed to fetch horoscope data:", err);
+            setError(err.message || 'Failed to fetch horoscope data. Please try again.');
+            setHoroscopeData(null);
+        } finally {
+            setLoading(false);
+            setPeriodLoading(false);
+        }
+    };
 
-            try {
-                const response = await fetch(apiUrl);
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || `Server error: ${response.statusText}`);
-                }
-                const data: HoroscopeDataType = await response.json();
-                console.log('Received horoscope data:', data); // Debug log
-                setHoroscopeData(data);
-            } catch (err: any) {
-                console.error("Failed to fetch horoscope data:", err);
-                setError(err.message || 'Failed to fetch horoscope data. Please try again.');
-                setHoroscopeData(null);
-            } finally {
-                setLoading(false);
-                setPeriodLoading(false);
-            }
-        };
-
-        fetchHoroscopeData();
-    }, [zodiac, activePeriodTab]);
+    fetchHoroscopeData();
+}, [zodiac, activePeriodTab]);
 
     const renderContent = () => {
         if (loading && !periodLoading) return null;

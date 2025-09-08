@@ -255,60 +255,62 @@ export default function WesternDailyHoroscope() {
   };
 
   const fetchHoroscope = useCallback(async (sign: string, period: PeriodTabType) => {
-    if (!periodLoading) {
-      setLoading(true);
+  if (!periodLoading) {
+    setLoading(true);
+  }
+  setError(null);
+
+  try {
+    let apiUrl = `/api/western-horoscope/${sign.toLowerCase()}`;
+    
+    // FIXED: Correct the dayOffset logic
+    if (period === 'today') {
+      // Since sync scripts generate data for tomorrow (+1 day):
+      // Today should fetch data with dayOffset=1 (gets today's data)
+      apiUrl += '?period=daily&dayOffset=1';
+    } else if (period === 'yesterday') {
+      // Yesterday should fetch data with dayOffset=0 (gets yesterday's data)
+      apiUrl += '?period=daily&dayOffset=0';
+    } else if (period === 'weekly') {
+      apiUrl += '?period=weekly';
+    } else if (period === 'yearly') {
+      apiUrl += '?period=yearly';
     }
-    setError(null);
 
-    try {
-      // FIXED: Use Vercel API routes instead of localhost:3001
-      let apiUrl = `/api/western-horoscope/${sign.toLowerCase()}`;
-      
-      // FIXED: Map frontend periods to correct offsets
-      if (period === 'today') {
-        apiUrl += '?period=daily&dayOffset=0'; // Request today's data
-      } else if (period === 'yesterday') {
-        apiUrl += '?period=daily&dayOffset=-1'; // Request yesterday's data
-      } else if (period === 'weekly') {
-        apiUrl += '?period=weekly';
-      } else if (period === 'yearly') {
-        apiUrl += '?period=yearly';
+    console.log('Fetching from:', apiUrl);
+
+    const response = await fetch(apiUrl);
+    
+    if (!response.ok) {
+      if (response.status === 202) {
+        setTimeout(() => fetchHoroscope(sign, period), 3000);
+        return;
       }
-
-      console.log('Fetching from:', apiUrl);
-
-      const response = await fetch(apiUrl);
-      
-      if (!response.ok) {
-        if (response.status === 202) {
-          setTimeout(() => fetchHoroscope(sign, period), 3000);
-          return;
-        }
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      console.log('Received data:', data);
-      setHoroscopeContent(data);
-    } catch (err: any) {
-      console.error('Error fetching horoscope:', err);
-      setError(err.message || "Could not load horoscope. Please try again later.");
-      
-      // Set fallback data
-      setHoroscopeContent({
-        horoscope: "The stars suggest focusing on balance and mindful decision-making today. Trust your intuition and embrace new opportunities.",
-        love: "Romantic energies are favorable. Open communication will strengthen your relationships.",
-        career: "Professional matters require attention to detail. Your hard work will be recognized.",
-        money: "Financial stability is within reach. Avoid impulsive spending decisions.",
-        social: "Social connections bring positive energy. Collaborate with others for mutual benefit.",
-        luckyColor: "Blue",
-        luckyNumber: 7
-      });
-    } finally {
-      setLoading(false);
-      setPeriodLoading(false);
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
-  }, [periodLoading]);
+
+    const data = await response.json();
+    console.log('Received data:', data);
+    setHoroscopeContent(data);
+  } catch (err: any) {
+    console.error('Error fetching horoscope:', err);
+    setError(err.message || "Could not load horoscope. Please try again later.");
+    
+    // Set fallback data
+    setHoroscopeContent({
+      horoscope: "The stars suggest focusing on balance and mindful decision-making today. Trust your intuition and embrace new opportunities.",
+      love: "Romantic energies are favorable. Open communication will strengthen your relationships.",
+      career: "Professional matters require attention to detail. Your hard work will be recognized.",
+      money: "Financial stability is within reach. Avoid impulsive spending decisions.",
+      social: "Social connections bring positive energy. Collaborate with others for mutual benefit.",
+      luckyColor: "Blue",
+      luckyNumber: 7
+    });
+  } finally {
+    setLoading(false);
+    setPeriodLoading(false);
+  }
+}, [periodLoading]);
 
   const handlePeriodTabChange = (newPeriod: PeriodTabType) => {
     if (newPeriod === selectedPeriod) return;
