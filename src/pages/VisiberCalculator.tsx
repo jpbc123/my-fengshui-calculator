@@ -253,21 +253,19 @@ const visiberMeanings: Record<number, string> = {
 };
 
 function calculateVisiberNumber(date: Date): { number: number; breakdown: any } {
-  const year = date.getFullYear().toString();
-  const month = (date.getMonth() + 1).toString().padStart(2, "0");
   const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const year = date.getFullYear().toString();
 
-  const birthDigits = (year + month + day).split("").map(Number);
-  
-  // Helper function to sum digits and reduce to single digit
+  const birthDigits = [...day, ...month, ...year];
+
   const sumDigits = (str: string) =>
     str.split("").reduce((sum, d) => sum + parseInt(d), 0);
-  const reduceToSingleDigit = (num: number): number =>
-    num > 9 ? reduceToSingleDigit(sumDigits(num.toString())) : num;
+  const reduceToSingleDigit = (num: number) =>
+    num > 9 ? sumDigits(num.toString()) : num;
 
-  // Calculate each position
-  const daySum = reduceToSingleDigit(sumDigits(day));
-  const monthSum = reduceToSingleDigit(sumDigits(month));
+  const daySum = sumDigits(day);
+  const monthSum = sumDigits(month);
   const yearFirstSum = reduceToSingleDigit(sumDigits(year.slice(0, 2)));
   const yearLastSum = reduceToSingleDigit(sumDigits(year.slice(2)));
 
@@ -275,15 +273,6 @@ function calculateVisiberNumber(date: Date): { number: number; breakdown: any } 
   const rightMiddleSum = reduceToSingleDigit(yearFirstSum + yearLastSum);
 
   const finalNumber = reduceToSingleDigit(leftMiddleSum + rightMiddleSum);
-
-  // Additional calculations for K, L, M, H, I, J
-  const K = reduceToSingleDigit(daySum + yearFirstSum);
-  const L = reduceToSingleDigit(monthSum + yearLastSum);
-  const M = reduceToSingleDigit(K + L);
-
-  const H = reduceToSingleDigit(daySum + monthSum);
-  const I = reduceToSingleDigit(yearFirstSum + yearLastSum);
-  const J = reduceToSingleDigit(H + I);
 
   return {
     number: finalNumber,
@@ -298,13 +287,6 @@ function calculateVisiberNumber(date: Date): { number: number; breakdown: any } 
       yearLastSum,
       leftMiddleSum,
       rightMiddleSum,
-      finalNumber,
-      K,
-      L,
-      M,
-      H,
-      I,
-      J
     }
   };
 }
@@ -495,69 +477,68 @@ const VisiberCalculator = () => {
 
                       {/* Triangle Diagram */}
                       <svg
-                        viewBox="0 0 380 380"
-                        className="mx-auto -mt-10"
-                        width="380"
-                        height="380"
-                      >
-                        <polygon
-                          points="60,60 320,60 190,320"
-                          fill="none"
-                          stroke="gold" 
-                          strokeWidth="1.6"
-                        />
-                        <line
-                          x1="190"
-                          y1="60"
-                          x2="190"
-                          y2="220"
-                          stroke="gold" 
-                          strokeWidth="1.3"
-                        />
-                        <line
-                          x1="100"
-                          y1="140"
-                          x2="280"
-                          y2="140"
-                          stroke="gold" 
-                          strokeWidth="1.3"
-                        />
-                        <line
-                          x1="140"
-                          y1="220"
-                          x2="240"
-                          y2="220"
-                          stroke="gold" 
-                          strokeWidth="1.3"
-                        />
+                          viewBox="0 0 380 380"
+                          className="w-full h-auto -mt-10"
+                          preserveAspectRatio="xMidYMid meet"
+                        >
+                          <polygon
+                            points="60,60 320,60 190,320"
+                            fill="none"
+                            stroke="gold" 
+                            strokeWidth="1.6"
+                          />
+                          <line
+                            x1="190"
+                            y1="60"
+                            x2="190"
+                            y2="220"
+                            stroke="gold" 
+                            strokeWidth="1.3"
+                          />
+                          <line
+                            x1="100"
+                            y1="140"
+                            x2="280"
+                            y2="140"
+                            stroke="gold" 
+                            strokeWidth="1.3"
+                          />
+                          <line
+                            x1="140"
+                            y1="220"
+                            x2="240"
+                            y2="220"
+                            stroke="gold" 
+                            strokeWidth="1.3"
+                          />
 
-                        {/* Top row */}
-                        <text x="118" y="105" fill="black" fontSize="18" textAnchor="middle" fontFamily="monospace">
-                          {breakdown.daySum}
-                        </text>
-                        <text x="158" y="105" fill="black" fontSize="18" textAnchor="middle" fontFamily="monospace">
-                          {breakdown.monthSum}
-                        </text>
-                        <text x="222" y="105" fill="black" fontSize="18" textAnchor="middle" fontFamily="monospace">
-                          {breakdown.yearFirstSum}
-                        </text>
-                        <text x="262" y="105" fill="black" fontSize="18" textAnchor="middle" fontFamily="monospace">
-                          {breakdown.yearLastSum}
-                        </text>
+                          {/* Top row */}
+                          <text x="118" y="105" fill="black" fontSize="18" textAnchor="middle" fontFamily="monospace">
+                            {breakdown.daySum}
+                          </text>
+                          <text x="158" y="105" fill="black" fontSize="18" textAnchor="middle" fontFamily="monospace">
+                            {breakdown.monthSum}
+                          </text>
+                          <text x="222" y="105" fill="black" fontSize="18" textAnchor="middle" fontFamily="monospace">
+                            {breakdown.yearFirstSum}
+                          </text>
+                          <text x="262" y="105" fill="black" fontSize="18" textAnchor="middle" fontFamily="monospace">
+                            {breakdown.yearLastSum}
+                          </text>
 
-                        {/* Middle row */}
-                        <text x="155" y="182" fill="black" fontSize="18" textAnchor="middle" fontFamily="monospace">
-                          {breakdown.leftMiddleSum}
-                        </text>
-                        <text x="225" y="182" fill="black" fontSize="18" textAnchor="middle" fontFamily="monospace">
-                          {breakdown.rightMiddleSum}
-                        </text>
+                          {/* Middle row */}
+                          <text x="155" y="182" fill="black" fontSize="18" textAnchor="middle" fontFamily="monospace">
+                            {breakdown.leftMiddleSum}
+                          </text>
+                          <text x="225" y="182" fill="black" fontSize="18" textAnchor="middle" fontFamily="monospace">
+                            {breakdown.rightMiddleSum}
+                          </text>
 
-                        {/* Final number */}
-                        <text x="190" y="266" fill="black" fontSize="30" fontWeight="bold" textAnchor="middle" fontFamily="monospace">
-                          {visiberNumber}
-                        </text>
-                      </svg>
+                          {/* Final number */}
+                          <text x="190" y="266" fill="black" fontSize="30" fontWeight="bold" textAnchor="middle" fontFamily="monospace">
+                            {visiberNumber}
+                          </text>
+                        </svg>
                     </div>
 
                     {/* Comprehensive Character Analysis */}

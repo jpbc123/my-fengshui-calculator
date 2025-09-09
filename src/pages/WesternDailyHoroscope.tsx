@@ -254,7 +254,7 @@ export default function WesternDailyHoroscope() {
     return null;
   };
 
-  const fetchHoroscope = useCallback(async (sign: string, period: PeriodTabType) => {
+const fetchHoroscope = useCallback(async (sign: string, period: PeriodTabType) => {
   if (!periodLoading) {
     setLoading(true);
   }
@@ -263,11 +263,11 @@ export default function WesternDailyHoroscope() {
   try {
     let apiUrl = `/api/western-horoscope/${sign.toLowerCase()}`;
     
-    // FIXED: Correct the dayOffset logic
+    // FIXED: Match Chinese horoscope logic exactly
     if (period === 'today') {
-      apiUrl += '?period=daily&dayOffset=0';
+      apiUrl += '?period=daily&dayOffset=0';  // Changed from -1 to 0
     } else if (period === 'yesterday') {
-      apiUrl += '?period=daily&dayOffset=-1';
+      apiUrl += '?period=daily&dayOffset=-1'; // Changed from -2 to -1
     } else if (period === 'weekly') {
       apiUrl += '?period=weekly';
     } else if (period === 'yearly') {

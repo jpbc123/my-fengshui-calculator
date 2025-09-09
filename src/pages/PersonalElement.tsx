@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { DatePickerInput } from "@/components/DatePickerInput";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Info } from "lucide-react";
 import { Solar, Lunar } from "lunar-typescript";
@@ -57,11 +57,35 @@ const elementDescriptions: Record<string, string> = {
   Water: "Water people are intuitive, wise, and flexible. They adapt well and value wisdom, communication, and philosophy.",
 };
 
+const elementEmojis: Record<string, string> = {
+  Wood: "🌳",
+  Fire: "🔥",
+  Earth: "🏔️",
+  Metal: "⚔️",
+  Water: "🌊",
+};
+
+const elementColors: Record<string, string> = {
+  Wood: "text-green-600",
+  Fire: "text-red-600",
+  Earth: "text-yellow-600",
+  Metal: "text-gray-600",
+  Water: "text-blue-600",
+};
+
+const elementBgColors: Record<string, string> = {
+  Wood: "bg-green-50 border-green-200",
+  Fire: "bg-red-50 border-red-200",
+  Earth: "bg-yellow-50 border-yellow-200",
+  Metal: "bg-gray-50 border-gray-200",
+  Water: "bg-blue-50 border-blue-200",
+};
+
 const stemDescriptions: Record<string, string> = {
-  Jia: `🌳 **Jia (甲) – Yang Wood**
+  Jia: `🌳 **Jia (甲) — Yang Wood**
 **Element:** Wood
 
-Jia is like a tall, sturdy tree – upright, dependable, and growth-oriented.
+Jia is like a tall, sturdy tree — upright, dependable, and growth-oriented.
 
 **Those with Jia as their Heavenly Stem often:**
 - Are principled and dependable
@@ -72,10 +96,10 @@ Jia is like a tall, sturdy tree – upright, dependable, and growth-oriented.
 - Be stubborn or inflexible
 - Struggle with adapting quickly to change`,
 
-  Yi: `🌱 **Yi (乙) – Yin Wood**
+  Yi: `🌱 **Yi (乙) — Yin Wood**
 **Element:** Wood
 
-Yi is like climbing vines or delicate flowers – flexible, adaptive, and diplomatic.
+Yi is like climbing vines or delicate flowers — flexible, adaptive, and diplomatic.
 
 **Those with Yi as their Heavenly Stem often:**
 - Are creative and adaptable
@@ -86,10 +110,10 @@ Yi is like climbing vines or delicate flowers – flexible, adaptive, and diplom
 - Be overly dependent on others
 - Avoid confrontation even when necessary`,
 
-  Bing: `🔥 **Bing (丙) – Yang Fire**
+  Bing: `🔥 **Bing (丙) — Yang Fire**
 **Element:** Fire
 
-Bing is like the sun – warm, bright, and energizing.
+Bing is like the sun — warm, bright, and energizing.
 
 **Those with Bing as their Heavenly Stem often:**
 - Inspire others with optimism
@@ -100,10 +124,10 @@ Bing is like the sun – warm, bright, and energizing.
 - Be impatient or restless
 - Overextend themselves trying to help everyone`,
 
-  Ding: `🕯 **Ding (丁) – Yin Fire**
+  Ding: `🕯 **Ding (丁) — Yin Fire**
 **Element:** Fire
 
-Ding is like candlelight – subtle, nurturing, and refined.
+Ding is like candlelight — subtle, nurturing, and refined.
 
 **Those with Ding as their Heavenly Stem often:**
 - Offer emotional warmth and comfort
@@ -114,10 +138,10 @@ Ding is like candlelight – subtle, nurturing, and refined.
 - Be overly sensitive or moody
 - Struggle with self-confidence`,
 
-  Wu: `🏔 **Wu (戊) – Yang Earth**
+  Wu: `🏔 **Wu (戊) — Yang Earth**
 **Element:** Earth
 
-Wu is like a mountain – stable, protective, and reliable.
+Wu is like a mountain — stable, protective, and reliable.
 
 **Those with Wu as their Heavenly Stem often:**
 - Are trustworthy and responsible
@@ -128,10 +152,10 @@ Wu is like a mountain – stable, protective, and reliable.
 - Be overly cautious or resistant to change
 - Struggle with expressing emotions`,
 
-  Ji: `🌾 **Ji (己) – Yin Earth**
+  Ji: `🌾 **Ji (己) — Yin Earth**
 **Element:** Earth
 
-Ji is like fertile soil – nurturing, supportive, and grounded.
+Ji is like fertile soil — nurturing, supportive, and grounded.
 
 **Those with Ji as their Heavenly Stem often:**
 - Care deeply for others' well-being
@@ -142,10 +166,10 @@ Ji is like fertile soil – nurturing, supportive, and grounded.
 - Worry too much about small details
 - Be prone to self-doubt`,
 
-  Geng: `⚔ **Geng (庚) – Yang Metal**
+  Geng: `⚔ **Geng (庚) — Yang Metal**
 **Element:** Metal
 
-Geng is like an axe or raw metal – strong, bold, and decisive.
+Geng is like an axe or raw metal — strong, bold, and decisive.
 
 **Those with Geng as their Heavenly Stem often:**
 - Are courageous and ambitious
@@ -156,10 +180,10 @@ Geng is like an axe or raw metal – strong, bold, and decisive.
 - Be overly critical or harsh
 - Have a short temper`,
 
-  Xin: `💎 **Xin (辛) – Yin Metal**
+  Xin: `💎 **Xin (辛) — Yin Metal**
 **Element:** Metal
 
-Xin is like refined jewelry – elegant, sharp, and intelligent.
+Xin is like refined jewelry — elegant, sharp, and intelligent.
 
 **Those with Xin as their Heavenly Stem often:**
 - Possess great taste and attention to detail
@@ -170,10 +194,10 @@ Xin is like refined jewelry – elegant, sharp, and intelligent.
 - Be passive-aggressive when upset
 - Struggle with inner vulnerability`,
 
-  Ren: `🌊 **Ren (壬) – Yang Water**
+  Ren: `🌊 **Ren (壬) — Yang Water**
 **Element:** Water
 
-Ren is like the ocean – vast, deep, and adaptable.
+Ren is like the ocean — vast, deep, and adaptable.
 
 **Those with Ren as their Heavenly Stem often:**
 - Are resourceful and intelligent
@@ -184,10 +208,10 @@ Ren is like the ocean – vast, deep, and adaptable.
 - Be unpredictable or secretive
 - Struggle with commitment`,
 
-  Gui: `💧 **Gui (癸) – Yin Water**
+  Gui: `💧 **Gui (癸) — Yin Water**
 **Element:** Water
 
-Gui is like gentle rain – nurturing, subtle, and intuitive.
+Gui is like gentle rain — nurturing, subtle, and intuitive.
 
 **Those with Gui as their Heavenly Stem often:**
 - Are empathetic and understanding
@@ -386,7 +410,7 @@ export default function PersonalElement() {
                 <Breadcrumb items={breadcrumbs} className="text-black/80" />
                 <h1 className="text-2xl font-bold text-gold mt-4 mb-6">Personal Element Analysis</h1>
                 <p className="text-black/80 mb-6">
-                  Discover your <span className="font-semibold">Personal Element</span> and unlock a deeper understanding of your inner nature, strengths, and ideal environment. This tool analyzes your birthdate to reveal your **Five Element** profile.
+                  Discover your <span className="font-semibold">Personal Element</span> and unlock a deeper understanding of your inner nature, strengths, and ideal environment. This tool analyzes your birthdate to reveal your <span className="font-semibold">Five Element</span> profile.
                 </p>
               </div>
 
@@ -410,8 +434,8 @@ export default function PersonalElement() {
                 {/* Additional Info */}
                 {showMore && (
                   <div className="bg-gray-50 text-black/90 p-4 rounded-xl border border-gray-200 text-left">
-                    <p className="mb-2">The Five Elements (Wu Xing 五行) – Wood, Fire, Earth, Metal, and Water – are essential to Chinese metaphysics, philosophy, and medicine.</p>
-                    <ul className="list-disc list-inside">
+                    <p className="mb-2">The Five Elements (Wu Xing 五行) — Wood, Fire, Earth, Metal, and Water — are essential to Chinese metaphysics, philosophy, and medicine.</p>
+                    <ul className="list-disc list-inside space-y-1">
                       <li>Each person is born under a heavenly stem tied to one of these five elements.</li>
                       <li>Your element affects your strengths, personality, and compatibility with others and spaces.</li>
                     </ul>
@@ -439,33 +463,88 @@ export default function PersonalElement() {
                     disabled={!birthDate}
                     className="px-8 h-14 text-lg font-semibold whitespace-nowrap"
                   >
-                    Calculate Personal Element
+                    Calculate
                   </Button>
                 </div>
               </div>
 
               {/* Result */}
-              {result && (
-                <motion.div
-                  id="personalElementResult"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="mt-8 p-6 rounded-xl bg-gray-50 border border-gray-200 text-left space-y-4 text-black"
-                >
-                  <h2 className="text-xl font-bold text-gold">Your Element: {result.element}</h2>
-                  <p className="text-black/90"><strong>Heavenly Stem:</strong> {result.stem}</p>
-                  <div className="prose max-w-none">
-                    <h3 className="text-gold font-semibold mb-1 text-base">Stem Meaning:</h3>
-                    <ReactMarkdown>{result.stemDescription}</ReactMarkdown>
-                  </div>
-                  <p className="text-black/90"><strong>Element Traits:</strong> {result.description}</p>
-                  <p className="text-black/90"><strong>Compatibility:</strong> {compatibilityInsights[result.element]}</p>
-                  <p className="text-black/90"><strong>Lucky Numbers:</strong> {luckyTips[result.element].numbers.join(", ")}</p>
-                  <p className="text-black/90"><strong>Lucky Colors:</strong> {luckyTips[result.element].colors.join(", ")}</p>
-                  <p className="text-black/90"><strong>Suggested Careers:</strong> {luckyTips[result.element].careers.join(", ")}</p>
-                  <p className="text-black/90"><strong>Feng Shui Tip:</strong> {fengShuiTips[result.element]}</p>
-                </motion.div>
-              )}
+              <AnimatePresence>
+                {result && (
+                  <motion.div
+                    key="result"
+                    initial={{ opacity: 0, y: 40 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="mt-8 space-y-6"
+                  >
+                    {/* Main Element Display */}
+                    <div className={`p-6 rounded-xl border text-center ${elementBgColors[result.element]}`}>
+                      <div className="text-6xl mb-4">{elementEmojis[result.element]}</div>
+                      <h2 className="text-2xl font-bold text-gold mb-2">
+                        Your Element: <span className={elementColors[result.element]}>{result.element}</span>
+                      </h2>
+                      <p className="text-lg text-black/80 mb-4">
+                        <strong>Heavenly Stem:</strong> {result.stem}
+                      </p>
+                      <p className="text-black/90 leading-relaxed">{result.description}</p>
+                    </div>
+
+                    {/* Detailed Analysis */}
+                    <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 space-y-6">
+                      <h3 className="text-xl font-bold text-gold text-center mb-4">Detailed Analysis</h3>
+                      
+                      {/* Stem Description */}
+                      <div className="prose max-w-none">
+                        <ReactMarkdown 
+                          components={{
+                            h3: ({children}) => <h4 className="text-gold font-semibold mb-2 text-base">{children}</h4>,
+                            p: ({children}) => <p className="text-black/90 mb-3">{children}</p>,
+                            li: ({children}) => <li className="text-black/90">{children}</li>,
+                            ul: ({children}) => <ul className="list-disc list-inside space-y-1 mb-3">{children}</ul>,
+                            strong: ({children}) => <strong className="font-semibold text-black">{children}</strong>
+                          }}
+                        >
+                          {result.stemDescription}
+                        </ReactMarkdown>
+                      </div>
+
+                      {/* Compatibility & Tips Grid */}
+                      <div className="grid md:grid-cols-2 gap-4 mt-6">
+                        <div className="bg-white p-4 rounded-lg border border-gray-200">
+                          <h4 className="font-semibold text-gold mb-2">Element Compatibility</h4>
+                          <p className="text-black/90 text-sm">{compatibilityInsights[result.element]}</p>
+                        </div>
+                        
+                        <div className="bg-white p-4 rounded-lg border border-gray-200">
+                          <h4 className="font-semibold text-gold mb-2">Feng Shui Tip</h4>
+                          <p className="text-black/90 text-sm">{fengShuiTips[result.element]}</p>
+                        </div>
+                      </div>
+
+                      {/* Lucky Elements */}
+                      <div className="bg-white p-4 rounded-lg border border-gray-200">
+                        <h4 className="font-semibold text-gold mb-3">Your Lucky Elements</h4>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+                          <div>
+                            <span className="font-medium text-black">Numbers:</span>
+                            <p className="text-black/80">{luckyTips[result.element].numbers.join(", ")}</p>
+                          </div>
+                          <div>
+                            <span className="font-medium text-black">Colors:</span>
+                            <p className="text-black/80">{luckyTips[result.element].colors.join(", ")}</p>
+                          </div>
+                          <div>
+                            <span className="font-medium text-black">Career Paths:</span>
+                            <p className="text-black/80">{luckyTips[result.element].careers.join(", ")}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {/* Right side - Related Articles */}

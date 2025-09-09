@@ -76,35 +76,90 @@ async function generateDailyWisdom(targetDate) {
 }
 
 async function syncDailyWisdom() {
-  // FIXED: Generate for TOMORROW instead of today
-  const tomorrow = dayjs().add(1, 'day').format('YYYY-MM-DD');
-  const tomorrowDay = dayjs().add(1, 'day').format('dddd');
-  
-  console.log(`[${dayjs().format('YYYY-MM-DD HH:mm:ss')}] Generating Daily Wisdom for TOMORROW: ${tomorrow} (${tomorrowDay})`);
+  try {
+    // Parse command line arguments for date control
+    const args = process.argv.slice(2);
+    let dateToGenerate;
+    
+    if (args.includes('--today')) {
+      dateToGenerate = dayjs().format('YYYY-MM-DD');
+    } else if (args.includes('--tomorrow')) {
+      dateToGenerate = dayjs().add(1, 'day').format('YYYY-MM-DD');
+    } else if (args.includes('--yesterday')) {
+      dateToGenerate = dayjs().subtract(1, 'day').format('YYYY-MM-DD');
+    } else {
+      const customDateArg = args.find(arg => arg.startsWith('--date='));
+      if (customDateArg) {
+        const customDate = customDateArg.split('=')[1];
+        if (dayjs(customDate).isValid()) {
+          dateToGenerate = dayjs(customDate).format('YYYY-MM-DD');
+        } else {
+          console.error('Invalid date format. Use YYYY-MM-DD');
+          process.exit(1);
+        }
+      } else {
+        dateToGenerate = dayjs().add(1, 'day').format('YYYY-MM-DD'); // Default to tomorrow
+      }
+    }
+    
+    const shouldForceRegenerate = args.includes('--force');
+    const targetDay = dayjs(dateToGenerate).format('dddd');
+    
+    console.log(`[${dayjs().format('YYYY-MM-DD HH:mm:ss')}] Generating Daily Wisdom for ${dateToGenerate} (${targetDay})`);
 
-  const existing = await sanityClient.fetch(
-    `*[_type == "dailyWisdom" && date == $date][0]`,
-    { date: tomorrow }
-  );
+    // Check if content already exists
+    const existing = await sanityClient.fetch(
+      `*[_type == "dailyWisdom" && date == $date][0]`,
+      { date: dateToGenerate }
+    );
 
-  if (existing) {
-    console.log(`[${tomorrow}] Already exists in Sanity. Skipping generation.`);
-    return;
+    if (existing && !shouldForceRegenerate) {
+      console.log(`Daily wisdom already exists for ${dateToGenerate}. Use --force to regenerate.`);
+      return;
+    }
+
+    console.log(`Generating new Daily Wisdom for ${dateToGenerate}...`);
+    const generated = await generateDailyWisdom(dateToGenerate);
+
+    const doc = {
+      _type: 'dailyWisdom',
+      _id: `daily-wisdom-${dateToGenerate}`,
+      date: dateToGenerate,
+      quote: generated.quote,
+      article: generated.article,
+      createdAt: new Date().toISOString(),
+      lastUpdated: new Date().toISOString(),
+    };
+
+    await sanityClient.createOrReplace(doc);
+    console.log(`Successfully generated daily wisdom for ${dateToGenerate}`);
+    console.log(`Quote: "${generated.quote}"`);
+    
+  } catch (error) {
+    console.error('Failed to generate daily wisdom:', error.message);
+    process.exit(1);
   }
+}
 
-  console.log(`[${tomorrow}] Generating new Daily Wisdom for tomorrow...`);
-  const generated = await generateDailyWisdom(tomorrow);
+// Show usage if help requested
+if (process.argv.includes('--help') || process.argv.includes('-h')) {
+  console.log(`
+Usage: node sync-daily-wisdom.js [options]
 
-  const doc = {
-    _type: 'dailyWisdom',
-    _id: `daily-wisdom-${tomorrow}`,
-    date: tomorrow,
-    quote: generated.quote,
-    article: generated.article,
-  };
+Options:
+  --today           Generate for today
+  --tomorrow        Generate for tomorrow (default)
+  --yesterday       Generate for yesterday  
+  --date=YYYY-MM-DD Generate for specific date
+  --force           Force regenerate even if exists
+  --help, -h        Show this help message
 
-  await sanityClient.createOrReplace(doc);
-  console.log(`[${tomorrow}] Successfully stored Daily Wisdom for tomorrow.`);
+Examples:
+  node sync-daily-wisdom.js --today
+  node sync-daily-wisdom.js --date=2025-01-15
+  node sync-daily-wisdom.js --tomorrow --force
+  `);
+  process.exit(0);
 }
 
 syncDailyWisdom().catch((err) => {

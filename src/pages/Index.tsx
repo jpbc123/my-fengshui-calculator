@@ -6,7 +6,7 @@ import HeroSection from "@/components/HeroSection";
 import ToolsSection from "@/components/ToolsSection";
 import RightSidebar from "@/components/RightSidebar"; 
 import DailyWisdomBanner from "@/components/DailyWisdomBanner";
-import Footer from "@/components/Footer";
+import MeditationBanner from "@/components/MeditationBanner";
 
 const Index = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -29,6 +29,7 @@ const Index = () => {
             </div>
           </div>
 		  <DailyWisdomBanner />
+		  <MeditationBanner />
         </div>
 		
       </main>

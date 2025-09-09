@@ -25,12 +25,14 @@ import PlanetaryOverviewPage from "@/pages/PlanetaryOverviewPage";
 import ArticlePage from './pages/ArticlePage';
 import ArticleMainPage from './pages/ArticleMainPage';
 
+import GamesFunLanding from "./pages/GamesFunLanding";
 import GameLuckyNumber from "./pages/GameLuckyNumber";
 import GameNameCompatibility from "./pages/GameNameCompatibility";
 import GameChineseCompatibility from "./pages/GameChineseCompatibility";
 import GameWesternCompatibility from "./pages/GameWesternCompatibility";
 import GameFortuneCookie from "./pages/GameFortuneCookie";
 
+import MeditationLanding from "./pages/MeditationLanding";
 import MeditateVisualizationExercise from "./pages/MeditateVisualizationExercise";
 import MeditateYogaPose from "./pages/MeditateYogaPose";
 import MeditateAffirmation from "./pages/MeditateAffirmation";
@@ -96,6 +98,7 @@ const App = () => (
               <Route path="/planetary-overview" element={<PlanetaryOverviewPage />} />
               
               {/* Games Section */}
+			  <Route path="/games-fun" element={<GamesFunLanding />} />
               <Route path="/lucky-numbers" element={<GameLuckyNumber />} />
               <Route path="/name-compatibility" element={<GameNameCompatibility />} />
               <Route path="/chinese-compatibility" element={<GameChineseCompatibility />} />
@@ -103,6 +106,7 @@ const App = () => (
               <Route path="/fortune-cookie" element={<GameFortuneCookie />} />
 			  
 			  {/* Meditation */}
+			  <Route path="/meditation" element={<MeditationLanding />} />
               <Route path="/meditate-visualization" element={<MeditateVisualizationExercise />} />
 			  <Route path="/meditate-yoga-pose" element={<MeditateYogaPose />} />
 			  <Route path="/meditate-affirmation" element={<MeditateAffirmation />} />

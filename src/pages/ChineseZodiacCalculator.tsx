@@ -2,12 +2,12 @@ import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { Info } from "lucide-react";
+import { Info, ChevronDown, ChevronRight } from "lucide-react";
 import { ChineseZodiacData2025 } from "@/data/ChineseZodiacData2025";
 import Breadcrumb from "@/components/Breadcrumb";
 import { DatePickerInput } from "@/components/DatePickerInput";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from '@sanity/client';
 
 // Create Sanity client inline
@@ -111,7 +111,6 @@ const chineseNewYearDates: Record<number, string> = {
   2048: "2048-02-14",
   2049: "2049-02-02",
   2050: "2050-01-23",
-  // add more as needed
 };
 
 const ChineseZodiacCalculator = () => {
@@ -121,6 +120,15 @@ const ChineseZodiacCalculator = () => {
   const [showMore, setShowMore] = useState(false);
   const [relatedArticles, setRelatedArticles] = useState<SanityArticle[]>([]);
   const [loading, setLoading] = useState(false);
+  const [expandedSections, setExpandedSections] = useState({
+    traits: false,
+    forecast: false,
+    compatibility: false,
+    lucky: false,
+    career: false,
+    fengshui: false,
+    personality: false
+  });
   const RELATED_ARTICLES_LIMIT = 5;
   
   // Fetch related articles on component mount
@@ -187,22 +195,19 @@ const ChineseZodiacCalculator = () => {
 
     const zodiacIndex = (zodiacYear - 4) % 12;
     const sign = [
-      "Rat",
-      "Ox",
-      "Tiger",
-      "Rabbit",
-      "Dragon",
-      "Snake",
-      "Horse",
-      "Goat",
-      "Monkey",
-      "Rooster",
-      "Dog",
-      "Pig",
+      "Rat", "Ox", "Tiger", "Rabbit", "Dragon", "Snake",
+      "Horse", "Goat", "Monkey", "Rooster", "Dog", "Pig",
     ][zodiacIndex];
 
     setZodiacSign(sign);
     setZodiacInfo(ChineseZodiacData2025[sign]);
+  };
+
+  const toggleSection = (section: keyof typeof expandedSections) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
   };
   
   return (
@@ -221,13 +226,12 @@ const ChineseZodiacCalculator = () => {
                   Chinese Zodiac Calculator
                 </h1>
                 <p className="text-black/80 mb-6">
-                  Find your <span className="font-semibold">Chinese Zodiac</span> animal to discover your personality traits, strengths, and compatibility.
+                  Discover your <span className="font-semibold">Chinese Zodiac</span> animal and unlock insights into your personality traits, strengths, and compatibility based on ancient wisdom.
                 </p>
               </div>
 
               {/* Summary Box */}
               <div className="flex flex-col gap-2 mb-8">
-                <h2 className="sr-only">Chinese Zodiac Information</h2>
                 <div className="flex items-start gap-2 text-black/80 bg-gray-50 p-4 rounded-xl border border-gray-200">
                   <Info size={20} className="text-gold mt-1 shrink-0" />
                   <div className="text-left">
@@ -249,7 +253,7 @@ const ChineseZodiacCalculator = () => {
                       Each animal in the Chinese Zodiac is linked to certain characteristics. For example, those born in the year of the <span className="font-semibold">Dragon</span> are said to be confident and ambitious, while <span className="font-semibold">Rabbits</span> are gentle and compassionate.
                     </p>
                     <p className="mb-2">
-                      Because the Chinese zodiac follows the <span className="font-semibold">lunar calendar</span>, the zodiac year does not start on January 1 but rather on <span className="font-semibold">Chinese New Year</span>, which usually falls between late January and mid-February. This means your zodiac sign depends on both your <span className="font-semibold">birth date</span> and the exact start of the <span className="font-semibold">lunar year</span>.
+                      Because the Chinese zodiac follows the <span className="font-semibold">lunar calendar</span>, the zodiac year does not start on January 1 but rather on <span className="font-semibold">Chinese New Year</span>, which usually falls between late January and mid-February.
                     </p>
                     <p>
                       The Chinese Zodiac also plays a role in <span className="font-semibold">compatibility</span>, <span className="font-semibold">career paths</span>, and <span className="font-semibold">feng shui practices</span>.
@@ -258,13 +262,14 @@ const ChineseZodiacCalculator = () => {
                 )}
               </div>
 
-              {/* Input */}
-              <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
+              {/* Input and Button Box */}
+              <div className="space-y-4 bg-gray-50 p-6 rounded-xl border border-gray-200">
                 <div className="flex flex-col sm:flex-row gap-4 items-stretch">
                   <DatePickerInput
                     date={birthDate}
                     onDateChange={setBirthDate}
                     placeholder="Enter your birthdate"
+                    className="bg-white text-black border border-gray-300"
                   />
                   <Button
                     variant="gold"
@@ -273,91 +278,170 @@ const ChineseZodiacCalculator = () => {
                     disabled={!birthDate}
                     className="px-8 h-14 text-lg font-semibold whitespace-nowrap"
                   >
-                    Calculate Chinese Zodiac
+                    Calculate
                   </Button>
                 </div>
               </div>
 
               {/* Result */}
-              {zodiacSign && zodiacInfo && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5 }}
-                  className="mt-8 p-6 bg-gray-50 rounded-xl border border-gray-200 text-left"
-                >
-                  <h2 className="text-2xl font-bold text-gold mb-4 text-center">
-                    Your Chinese Zodiac Sign is: <span className="text-black">{zodiacSign}</span>
-                  </h2>
+              <AnimatePresence>
+                {zodiacSign && zodiacInfo && (
+                  <motion.div
+                    key="result"
+                    initial={{ opacity: 0, y: 40 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="mt-8 space-y-6"
+                  >
+                    {/* Main Zodiac Display */}
+                    <div className="p-6 bg-red-50 border border-red-200 rounded-xl text-center">
+                      <div className="mb-4">
+                        <img
+                          src={zodiacImages[zodiacSign]}
+                          alt={zodiacSign}
+                          className="w-32 h-32 mx-auto object-contain"
+                        />
+                      </div>
+                      <h2 className="text-2xl font-bold text-gold mb-2">
+                        Your Chinese Zodiac: <span className="text-red-600">{zodiacSign}</span>
+                      </h2>
+                      <p className="text-black/80 leading-relaxed">
+                        People born in the Year of the {zodiacSign} are known for their distinctive traits and characteristics rooted in ancient Chinese wisdom.
+                      </p>
+                    </div>
 
-                  <img
-                    src={zodiacImages[zodiacSign]}
-                    alt={zodiacSign}
-                    className="w-40 h-40 mx-auto object-contain"
-                  />
-                  <div className="flex flex-col gap-4 mt-8">
-                    {zodiacInfo.traits && (
-                      <div>
-                        <h3 className="text-lg font-semibold text-black mb-2">Traits:</h3>
-                        <p className="text-black/80">{zodiacInfo.traits}</p>
+                    {/* Detailed Analysis Sections */}
+                    <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 space-y-4">
+                      <h3 className="text-xl font-bold text-gold text-center mb-4">Your Complete Profile</h3>
+                      
+                      {/* Traits */}
+                      {zodiacInfo.traits && (
+                        <div className="border border-gray-200 rounded-lg overflow-hidden">
+                          <button
+                            onClick={() => toggleSection('traits')}
+                            className="w-full flex items-center justify-between p-4 bg-white hover:bg-gray-50 transition-colors"
+                          >
+                            <h4 className="text-lg font-semibold text-gold">Core Traits</h4>
+                            {expandedSections.traits ? (
+                              <ChevronDown size={20} className="text-gold" />
+                            ) : (
+                              <ChevronRight size={20} className="text-gold" />
+                            )}
+                          </button>
+                          {expandedSections.traits && (
+                            <div className="p-4 bg-white border-t border-gray-200">
+                              <p className="text-black/90 leading-relaxed">{zodiacInfo.traits}</p>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* 2025 Forecast */}
+                      {zodiacInfo.yearAnalysis && (
+                        <div className="border border-gray-200 rounded-lg overflow-hidden">
+                          <button
+                            onClick={() => toggleSection('forecast')}
+                            className="w-full flex items-center justify-between p-4 bg-white hover:bg-gray-50 transition-colors"
+                          >
+                            <h4 className="text-lg font-semibold text-green-600">2025 Forecast</h4>
+                            {expandedSections.forecast ? (
+                              <ChevronDown size={20} className="text-green-600" />
+                            ) : (
+                              <ChevronRight size={20} className="text-green-600" />
+                            )}
+                          </button>
+                          {expandedSections.forecast && (
+                            <div className="p-4 bg-white border-t border-gray-200">
+                              <p className="text-black/90 leading-relaxed">{zodiacInfo.yearAnalysis}</p>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Compatibility */}
+                      {zodiacInfo.compatibility && (
+                        <div className="border border-gray-200 rounded-lg overflow-hidden">
+                          <button
+                            onClick={() => toggleSection('compatibility')}
+                            className="w-full flex items-center justify-between p-4 bg-white hover:bg-gray-50 transition-colors"
+                          >
+                            <h4 className="text-lg font-semibold text-purple-600">Compatibility</h4>
+                            {expandedSections.compatibility ? (
+                              <ChevronDown size={20} className="text-purple-600" />
+                            ) : (
+                              <ChevronRight size={20} className="text-purple-600" />
+                            )}
+                          </button>
+                          {expandedSections.compatibility && (
+                            <div className="p-4 bg-white border-t border-gray-200">
+                              <p className="text-black/90 leading-relaxed">{zodiacInfo.compatibility}</p>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Lucky Elements Grid */}
+                      <div className="bg-white p-4 rounded-lg border border-gray-200">
+                        <h4 className="font-semibold text-gold mb-3">Your Lucky Elements</h4>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+                          {zodiacInfo.luckyNumbers && (
+                            <div>
+                              <span className="font-medium text-black">Numbers:</span>
+                              <p className="text-black/80">{zodiacInfo.luckyNumbers}</p>
+                            </div>
+                          )}
+                          {zodiacInfo.luckyColors && (
+                            <div>
+                              <span className="font-medium text-black">Colors:</span>
+                              <p className="text-black/80">{zodiacInfo.luckyColors}</p>
+                            </div>
+                          )}
+                          {zodiacInfo.luckyDirections && (
+                            <div>
+                              <span className="font-medium text-black">Directions:</span>
+                              <p className="text-black/80">{zodiacInfo.luckyDirections}</p>
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    )}
-                    {zodiacInfo.yearAnalysis && (
-                      <div>
-                        <h3 className="text-lg font-semibold text-black mb-2">2025 Forecast:</h3>
-                        <p className="text-black/80">{zodiacInfo.yearAnalysis}</p>
+
+                      {/* Additional Insights */}
+                      {zodiacInfo.careerAdvice && (
+                        <div className="border border-gray-200 rounded-lg overflow-hidden">
+                          <button
+                            onClick={() => toggleSection('career')}
+                            className="w-full flex items-center justify-between p-4 bg-white hover:bg-gray-50 transition-colors"
+                          >
+                            <h4 className="text-lg font-semibold text-blue-600">Career Guidance</h4>
+                            {expandedSections.career ? (
+                              <ChevronDown size={20} className="text-blue-600" />
+                            ) : (
+                              <ChevronRight size={20} className="text-blue-600" />
+                            )}
+                          </button>
+                          {expandedSections.career && (
+                            <div className="p-4 bg-white border-t border-gray-200">
+                              <p className="text-black/90 leading-relaxed">{zodiacInfo.careerAdvice}</p>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Horoscope Link */}
+                      <div className="bg-white p-4 rounded-lg border border-gray-200 text-center">
+                        <Link 
+                          to={`/zodiac/${zodiacSign.toLowerCase()}`} 
+                          className="inline-flex items-center gap-2 text-gold hover:text-gold/80 font-semibold transition-colors"
+                        >
+                          Get Your Daily Chinese Horoscope
+                          <span>→</span>
+                        </Link>
                       </div>
-                    )}
-                    {zodiacInfo.compatibility && (
-                      <div>
-                        <h3 className="text-lg font-semibold text-black mb-2">Compatibility:</h3>
-                        <p className="text-black/80">{zodiacInfo.compatibility}</p>
-                      </div>
-                    )}
-                    {zodiacInfo.luckyNumbers && (
-                      <div>
-                        <h3 className="text-lg font-semibold text-black mb-2">Lucky Numbers:</h3>
-                        <p className="text-black/80">{zodiacInfo.luckyNumbers}</p>
-                      </div>
-                    )}
-                    {zodiacInfo.luckyColors && (
-                      <div>
-                        <h3 className="text-lg font-semibold text-black mb-2">Lucky Colors:</h3>
-                        <p className="text-black/80">{zodiacInfo.luckyColors}</p>
-                      </div>
-                    )}
-                    {zodiacInfo.luckyDirections && (
-                      <div>
-                        <h3 className="text-lg font-semibold text-black mb-2">Lucky Directions:</h3>
-                        <p className="text-black/80">{zodiacInfo.luckyDirections}</p>
-                      </div>
-                    )}
-                    {zodiacInfo.careerAdvice && (
-                      <div>
-                        <h3 className="text-lg font-semibold text-black mb-2">Career Advice:</h3>
-                        <p className="text-black/80">{zodiacInfo.careerAdvice}</p>
-                      </div>
-                    )}
-                    {zodiacInfo.fengShuiTips && (
-                      <div>
-                        <h3 className="text-lg font-semibold text-black mb-2">Feng Shui Tips:</h3>
-                        <p className="text-black/80">{zodiacInfo.fengShuiTips}</p>
-                      </div>
-                    )}
-                    {zodiacInfo.personalityInsights && (
-                      <div>
-                        <h3 className="text-lg font-semibold text-black mb-2">Personality Insights:</h3>
-                        <p className="text-black/80">{zodiacInfo.personalityInsights}</p>
-                      </div>
-                    )}
-                  </div>
-                  <div className="mt-8 pt-4 border-t border-gray-300 text-center">
-                    <Link to={`/zodiac/${zodiacSign.toLowerCase()}`} className="text-sm font-semibold text-black/80 hover:text-gold hover:underline">
-                      Discover Your Daily Chinese Horoscope →
-                    </Link>
-                  </div>
-                </motion.div>
-              )}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {/* Right side - Related Articles */}

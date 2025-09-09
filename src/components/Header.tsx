@@ -12,7 +12,7 @@ const megaMenuConfig = {
   ],
   explore: {
     wisdom: {
-      title: "Explore by Wisdom",
+      title: "Ancient Wisdom",
       items: [
         { name: "Feng Shui", href: "/feng-shui", description: "Align your space for harmony and prosperity." },
         { name: "Astrology", href: "/astrology", description: "Gain insights from the stars and cosmic energies." },
@@ -20,24 +20,24 @@ const megaMenuConfig = {
         { name: "Horoscope", href: "/horoscope", description: "Navigate your future with daily insights from both Chinese and Western horoscopes." },
       ],
     },
-    meditation: {
-      title: "Meditation",
+    wellness: {
+      title: "Wellness & Mindfulness",
       items: [
-        { name: "Yoga Pose for the Day", href: "/meditate-yoga-pose" },
-        { name: "Daily Affirmations", href: "/meditate-affirmation" },
-        { name: "Visualization Exercises", href: "/meditate-visualization" },
-		{ name: "Morning Mindfulness", href: "/meditate-morning" },
-		{ name: "Evening Relaxation", href: "/meditate-evening" },
+        { name: "Meditation Hub", href: "/meditation", description: "Explore all meditation practices in one place" },
+        { name: "Morning Mindfulness", href: "/meditate-morning-mindfulness", description: "Start your day with intention" },
+        { name: "Evening Relaxation", href: "/meditate-evening-relaxation", description: "Unwind peacefully" },
+        { name: "Daily Affirmations", href: "/meditate-affirmation", description: "Positive daily mantras" },
+        { name: "Yoga Poses", href: "/meditate-yoga-pose", description: "Daily physical practice" },
       ],
     },
-    games: {
+    fun: {
       title: "Games & Fun",
       items: [
-        { name: "Lucky Numbers Generator", href: "/lucky-numbers" },
-        { name: "Name Compatibility", href: "/name-compatibility" },
-        { name: "Fortune Cookie", href: "/fortune-cookie" },
-        { name: "Chinese Zodiac Compatibility", href: "/chinese-compatibility" },
-        { name: "Western Zodiac Compatibility", href: "/western-compatibility" },
+        { name: "Games Hub", href: "/games-fun", description: "Explore all games and compatibility tools" },
+        { name: "Aura Analysis", href: "/aura-analysis", description: "Discover your spiritual energy" },
+        { name: "Western Zodiac Compatibility", href: "/western-compatibility", description: "Western astrology matches" },
+        { name: "Chinese Zodiac Compatibility", href: "/chinese-compatibility", description: "Eastern zodiac insights" },
+        { name: "Fortune Cookie", href: "/fortune-cookie", description: "Daily wisdom and guidance" },
       ],
     },
   },
@@ -78,10 +78,11 @@ const Header = () => {
               Explore <ChevronDown size={16} className="transition-transform duration-200 group-hover:rotate-180" />
             </Link>
             <div className="absolute left-1/2 -translate-x-1/2 mt-2 w-max rounded-xl shadow-2xl bg-gray-900 text-white p-6 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-              <div className="grid grid-cols-3 gap-4 max-w-2xl">
-                {/* Wisdom */}
-                <div className="max-w-56">
-                  <h3 className="text-xs uppercase tracking-wider text-white/50 mb-2">
+              <div className="grid grid-cols-3 gap-6 max-w-3xl">
+                
+                {/* Ancient Wisdom */}
+                <div className="max-w-64">
+                  <h3 className="text-xs uppercase tracking-wider text-gold mb-3 font-semibold">
                     {megaMenuConfig.explore.wisdom.title}
                   </h3>
                   <ul className="space-y-2">
@@ -89,42 +90,47 @@ const Header = () => {
                       <li key={item.name}>
                         <Link to={item.href} className="block hover:text-gold transition-colors">
                           <span className="font-semibold text-sm">{item.name}</span>
-                          <p className="text-xs text-white/70 leading-tight">{item.description}</p>
+                          <p className="text-xs text-white/70 leading-tight mt-1">{item.description}</p>
                         </Link>
                       </li>
                     ))}
                   </ul>
                 </div>
-                {/* Meditation */}
-                <div className="max-w-48">
-                  <h3 className="text-xs uppercase tracking-wider text-white/50 mb-2">
-                    {megaMenuConfig.explore.meditation.title}
+
+                {/* Wellness & Mindfulness */}
+                <div className="max-w-64">
+                  <h3 className="text-xs uppercase tracking-wider text-gold mb-3 font-semibold">
+                    {megaMenuConfig.explore.wellness.title}
                   </h3>
                   <ul className="space-y-2">
-                    {megaMenuConfig.explore.meditation.items.map((item) => (
+                    {megaMenuConfig.explore.wellness.items.map((item) => (
                       <li key={item.name}>
-                        <Link to={item.href} className="block hover:text-gold transition-colors text-sm">
-                          {item.name}
+                        <Link to={item.href} className="block hover:text-gold transition-colors">
+                          <span className="font-semibold text-sm">{item.name}</span>
+                          <p className="text-xs text-white/70 leading-tight mt-1">{item.description}</p>
                         </Link>
                       </li>
                     ))}
                   </ul>
                 </div>
-                {/* Games */}
-                <div className="max-w-48">
-                  <h3 className="text-xs uppercase tracking-wider text-white/50 mb-2">
-                    {megaMenuConfig.explore.games.title}
+
+                {/* Games & Fun */}
+                <div className="max-w-64">
+                  <h3 className="text-xs uppercase tracking-wider text-gold mb-3 font-semibold">
+                    {megaMenuConfig.explore.fun.title}
                   </h3>
                   <ul className="space-y-2">
-                    {megaMenuConfig.explore.games.items.map((item) => (
+                    {megaMenuConfig.explore.fun.items.map((item) => (
                       <li key={item.name}>
-                        <Link to={item.href} className="block hover:text-gold transition-colors text-sm">
-                          {item.name}
+                        <Link to={item.href} className="block hover:text-gold transition-colors">
+                          <span className="font-semibold text-sm">{item.name}</span>
+                          <p className="text-xs text-white/70 leading-tight mt-1">{item.description}</p>
                         </Link>
                       </li>
                     ))}
                   </ul>
                 </div>
+
               </div>
             </div>
           </div>
@@ -139,7 +145,7 @@ const Header = () => {
             <button className="flex items-center gap-1 cursor-pointer hover:text-gold transition-colors">
               About <ChevronDown size={16} className="transition-transform duration-200 group-hover:rotate-180" />
             </button>
-            <div className="absolute top-full left-0 mt-2 min-w-40 rounded-md shadow-lg bg-gray-900 text-white opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-1 z-50">
+            <div className="absolute top-full left-0 mt-2 min-w-48 rounded-md shadow-lg bg-gray-900 text-white opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-1 z-50">
               {megaMenuConfig.about.items.map((item) => (
                 <Link
                   key={item.name}
@@ -163,26 +169,27 @@ const Header = () => {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden absolute top-16 left-0 w-full bg-indigo-900 border-t border-gold/20 text-white px-4 pb-6 pt-4 space-y-4">
+        <div className="md:hidden absolute top-16 left-0 w-full bg-indigo-900 border-t border-gold/20 text-white px-4 pb-6 pt-4 space-y-4 max-h-96 overflow-y-auto">
+          
           {/* Articles */}
           <Link
             to="/article"
-            className="block text-sm text-white/90 hover:text-gold transition"
+            className="block text-sm font-medium text-white hover:text-gold transition py-1"
             onClick={() => setMobileMenuOpen(false)}
           >
             Articles
           </Link>
 
-          {/* Explore Sections */}
+          {/* Ancient Wisdom Section */}
           <div className="space-y-2">
-            <h3 className="text-xs uppercase tracking-wider text-white/50 mt-4 mb-1 select-none">
+            <h3 className="text-xs uppercase tracking-wider text-gold font-semibold mt-4 mb-2 select-none border-b border-gold/20 pb-1">
               {megaMenuConfig.explore.wisdom.title}
             </h3>
             {megaMenuConfig.explore.wisdom.items.map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
-                className="block text-sm text-white/90 hover:text-gold transition"
+                className="block text-sm text-white/90 hover:text-gold transition pl-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {item.name}
@@ -190,15 +197,16 @@ const Header = () => {
             ))}
           </div>
 
+          {/* Wellness & Mindfulness Section */}
           <div className="space-y-2">
-            <h3 className="text-xs uppercase tracking-wider text-white/50 mt-4 mb-1 select-none">
-              {megaMenuConfig.explore.meditation.title}
+            <h3 className="text-xs uppercase tracking-wider text-gold font-semibold mt-4 mb-2 select-none border-b border-gold/20 pb-1">
+              {megaMenuConfig.explore.wellness.title}
             </h3>
-            {megaMenuConfig.explore.meditation.items.map((item) => (
+            {megaMenuConfig.explore.wellness.items.map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
-                className="block text-sm text-white/90 hover:text-gold transition"
+                className="block text-sm text-white/90 hover:text-gold transition pl-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {item.name}
@@ -206,15 +214,16 @@ const Header = () => {
             ))}
           </div>
 
+          {/* Games & Fun Section */}
           <div className="space-y-2">
-            <h3 className="text-xs uppercase tracking-wider text-white/50 mt-4 mb-1 select-none">
-              {megaMenuConfig.explore.games.title}
+            <h3 className="text-xs uppercase tracking-wider text-gold font-semibold mt-4 mb-2 select-none border-b border-gold/20 pb-1">
+              {megaMenuConfig.explore.fun.title}
             </h3>
-            {megaMenuConfig.explore.games.items.map((item) => (
+            {megaMenuConfig.explore.fun.items.map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
-                className="block text-sm text-white/90 hover:text-gold transition"
+                className="block text-sm text-white/90 hover:text-gold transition pl-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {item.name}
@@ -225,7 +234,7 @@ const Header = () => {
           {/* Store */}
           <Link
             to="/coming-store"
-            className="block text-sm text-white/90 hover:text-gold transition"
+            className="block text-sm font-medium text-white hover:text-gold transition py-1 border-t border-white/10 pt-3 mt-4"
             onClick={() => setMobileMenuOpen(false)}
           >
             Store
@@ -233,14 +242,14 @@ const Header = () => {
 
           {/* About */}
           <div className="space-y-2">
-            <h3 className="text-xs uppercase tracking-wider text-white/50 mt-4 mb-1 select-none">
+            <h3 className="text-xs uppercase tracking-wider text-gold font-semibold mt-4 mb-2 select-none border-b border-gold/20 pb-1">
               {megaMenuConfig.about.title}
             </h3>
             {megaMenuConfig.about.items.map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
-                className="block text-sm text-white/90 hover:text-gold transition"
+                className="block text-sm text-white/90 hover:text-gold transition pl-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {item.name}

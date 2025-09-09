@@ -17,6 +17,7 @@ import breathingImage from '../assets/meditate-breathing.jpg';
 
 const breadcrumbs = [
   { label: "Home", path: "/" },
+  { label: "Games & Fun", path: "/games-fun" },
   { label: "Lucky Numbers Generator" },
 ];
 

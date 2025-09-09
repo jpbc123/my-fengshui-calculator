@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 
 const breadcrumbs = [
   { label: "Home", path: "/" },
+  { label: "Meditation", path: "/meditation" },
   { label: "Morning Mindfulness" },
 ];
 

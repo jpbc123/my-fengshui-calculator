@@ -3,7 +3,7 @@ import Footer from "@/components/Footer";
 import { Link } from "react-router-dom";
 import Breadcrumb from "@/components/Breadcrumb";
 import numerologyImage from "@/assets/numerology.jpg";
-// The useEffect hook and background CSS for particle effects have been removed to align with the FengShui page style.
+import { ArrowRight, Calculator, Clock } from "lucide-react";
 
 const breadcrumbs = [
   { label: "Home", path: "/" },
@@ -27,35 +27,45 @@ export default function Numerology() {
 
           {/* Tool Cards */}
           <div className="grid gap-6 md:grid-cols-2 mb-12">
+            {/* Visiber Calculator Card */}
             <Link
               to="/visiber-calculator"
-              className="bg-gradient-to-r from-purple-700 via-indigo-700 to-gray-800 border border-gold/30 rounded-xl p-6 hover:from-purple-600 hover:via-indigo-600 hover:to-gray-700 transition shadow-lg"
+              className="group bg-gray-50 border border-gray-200 hover:border-gold/50 rounded-xl p-6 transition-all duration-300 hover:shadow-lg hover:bg-gray-100"
             >
-              <div className="flex justify-center text-3xl mb-3">🔢</div>
-              <h3 className="flex justify-center text-xl font-bold text-gold mb-2">Visiber Calculator</h3>
-              <p className="text-center text-black/70 text-sm">
-                Explore your Visiber number and understand how it shapes your destiny, personality, and relationships.
+              <div className="flex items-center justify-center w-16 h-16 bg-purple-100 rounded-full mb-4 mx-auto group-hover:bg-purple-200 transition-colors">
+                <Calculator size={32} className="text-purple-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gold mb-3 text-center">Visiber Calculator</h3>
+              <p className="text-black/80 text-sm mb-4 text-center leading-relaxed">
+                Explore your Visiber number and understand how it shapes your destiny, personality, and relationships through ancient wisdom.
               </p>
+              <div className="flex items-center justify-center text-gold group-hover:text-gold/80 transition-colors">
+                <span className="text-sm font-medium mr-2">Calculate Now</span>
+                <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+              </div>
             </Link>
 
-            <Link
-              to="#"
-              className="bg-gray-50 border border-gold/30 rounded-xl p-6 opacity-50 cursor-not-allowed pointer-events-none shadow-lg"
-            >
-              <div className="flex justify-center text-3xl mb-3">⏳</div>
-              <h3 className="flex justify-center text-xl font-bold text-gold mb-2">Coming Soon</h3>
-              <p className="text-center text-black/70 text-sm">
-                More numerology tools will be added here to deepen your insights.
+            {/* Coming Soon Card */}
+            <div className="bg-gray-100 border border-gray-300 rounded-xl p-6 opacity-60 cursor-not-allowed">
+              <div className="flex items-center justify-center w-16 h-16 bg-gray-200 rounded-full mb-4 mx-auto">
+                <Clock size={32} className="text-gray-500" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-500 mb-3 text-center">Coming Soon</h3>
+              <p className="text-gray-500 text-sm mb-4 text-center leading-relaxed">
+                More numerology tools will be added here to deepen your insights into the mystical world of numbers.
               </p>
-            </Link>
+              <div className="flex items-center justify-center text-gray-400">
+                <span className="text-sm font-medium">Stay Tuned</span>
+              </div>
+            </div>
           </div>
 
           {/* "What is Numerology" Section */}
           <div>
             <h2 className="text-2xl font-bold text-gold mb-4">What is Numerology?</h2>
-            <div className="border-t-4 border-gold w-32 mb-4"></div>
+            <div className="border-t-4 border-gold w-32 mb-6"></div>
 
-            <p className="mb-6 text-black/80">
+            <p className="mb-6 text-black/80 leading-relaxed">
               <span className="font-semibold">Numerology</span> is the study of the mystical significance of <span className="font-semibold">numbers and their influence on human life</span>. It interprets patterns found in your name, birth date, and other personal details to reveal insights about your <span className="font-semibold">personality, strengths, challenges, and life path</span>.
             </p>
 
@@ -68,11 +78,11 @@ export default function Numerology() {
               />
             </div>
 
-            <p className="mb-6 text-black/80">
+            <p className="mb-6 text-black/80 leading-relaxed">
               At its core, numerology sees numbers as more than mere quantities—they are <span className="font-semibold">energetic symbols</span> that carry meaning. By decoding these numbers, you can better understand yourself and make informed decisions in relationships, career, and personal growth.
             </p>
 
-            <p className="mb-10 text-black/80">
+            <p className="mb-10 text-black/80 leading-relaxed">
               From ancient <span className="font-semibold">Pythagorean teachings</span> to modern interpretations, <span className="font-semibold">numerology</span> remains a powerful tool for self-discovery and guidance.
             </p>
           </div>

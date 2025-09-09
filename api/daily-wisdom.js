@@ -10,42 +10,81 @@ const sanityClient = createSanityClient({
 });
 
 export default async function handler(req, res) {
+    // CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
+    // Handle preflight OPTIONS request
     if (req.method === 'OPTIONS') {
         return res.status(200).end();
     }
 
+    // Only allow GET requests
     if (req.method !== 'GET') {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    // FIXED: Get TODAY's date for frontend consumption
-    const today = new Date().toISOString().slice(0, 10);
+    // Support flexible date parameter, default to today
+    const requestedDate = req.query.date || new Date().toLocaleDateString('en-CA');
+    
+    // Validate date format (YYYY-MM-DD)
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(requestedDate)) {
+        return res.status(400).json({ 
+            error: 'Invalid date format. Use YYYY-MM-DD',
+            example: '2025-09-09'
+        });
+    }
 
     try {
-        console.log(`Fetching daily wisdom for TODAY: ${today}`);
+        console.log(`Fetching daily wisdom for: ${requestedDate}`);
         
-        const query = `*[_type == "dailyWisdom" && date == $today][0]{quote, article}`;
-        const result = await sanityClient.fetch(query, { today });
+        // Query Sanity for daily wisdom by date
+        const query = `*[_type == "dailyWisdom" && date == $requestedDate][0]{
+            quote,
+            article,
+            date,
+            _createdAt,
+            _updatedAt
+        }`;
+        
+        const result = await sanityClient.fetch(query, { requestedDate });
 
-        if (result?.quote && result?.article) {
-            console.log(`Found daily wisdom for ${today}`);
-            return res.json({ 
+        if (result && result.quote && result.article) {
+            console.log(`Found daily wisdom for ${requestedDate}`);
+            return res.status(200).json({ 
                 quote: result.quote, 
-                article: result.article 
+                article: result.article,
+                date: requestedDate,
+                isFallback: false,
+                metadata: {
+                    createdAt: result._createdAt,
+                    updatedAt: result._updatedAt
+                }
             });
         } else {
-            console.log(`No daily wisdom found for ${today}, returning fallback`);
-            return res.json({ 
+            console.log(`No daily wisdom found for ${requestedDate}, returning fallback`);
+            return res.status(200).json({ 
                 quote: "Wisdom comes to those who seek it with an open heart.",
-                article: "Today brings opportunities for growth and self-reflection. Take time to listen to your inner voice and trust your intuition."
+                article: "Today brings opportunities for growth and self-reflection. Take time to listen to your inner voice and trust your intuition. Every moment offers a chance to learn something new about yourself and the world around you.",
+                date: requestedDate,
+                isFallback: true,
+                metadata: {
+                    message: "Fallback content - no specific wisdom found for this date"
+                }
             });
         }
     } catch (error) {
         console.error('Error fetching daily wisdom:', error);
-        return res.status(500).json({ error: 'Failed to fetch daily wisdom' });
+        
+        // Return more detailed error information in development
+        const isDevelopment = process.env.NODE_ENV === 'development';
+        
+        return res.status(500).json({ 
+            error: 'Failed to fetch daily wisdom',
+            details: isDevelopment ? error.message : 'Internal server error',
+            date: requestedDate,
+            timestamp: new Date().toISOString()
+        });
     }
 }

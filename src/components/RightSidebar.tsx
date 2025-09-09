@@ -1,4 +1,4 @@
-// src/components/RightSidebar.tsx - FIXED FOR CURRENT DATE DATA
+// src/components/RightSidebar.tsx - UPDATED TO USE ARTICLEPAGE
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState, useEffect } from "react";
 import dayjs from "dayjs";
@@ -68,7 +68,7 @@ export default function RightSidebar() {
     cleanupOldCache();
   }, [today]);
 
-  // FIXED: Fetch Feng Shui Tip using Vercel API routes
+  // Fetch Feng Shui Tip using Vercel API routes
   useEffect(() => {
     const tipCacheKey = `fengshuiTip_${today}`;
     const tipCached = localStorage.getItem(tipCacheKey);
@@ -91,7 +91,6 @@ export default function RightSidebar() {
         setLoadingFengShuiTip(true);
         console.log(`Fetching feng shui tip for ${today}...`);
         
-        // FIXED: Use Vercel API route instead of Sanity client
         const response = await fetch('/api/daily-fengshui-tip');
         
         if (!response.ok) {
@@ -121,7 +120,7 @@ export default function RightSidebar() {
     fetchDailyFengshuiTip();
   }, [today]);
 
-  // FIXED: Fetch Planetary Overview using Vercel API routes
+  // Fetch Planetary Overview using Vercel API routes
   useEffect(() => {
     const cacheKey = `planetaryOverview_${today}`;
     console.log(`Checking planetary overview cache for key: ${cacheKey}`);
@@ -145,7 +144,6 @@ export default function RightSidebar() {
         setLoadingPlanetaryOverview(true);
         console.log(`Fetching planetary overview for ${today}...`);
         
-        // FIXED: Use Vercel API route instead of Sanity client
         const response = await fetch('/api/planetary-overview');
         
         if (!response.ok) {
@@ -246,8 +244,9 @@ export default function RightSidebar() {
                   <p className="text-sm text-gray-200">
                     {planetaryOverviewData.summary}
                   </p>
+                  {/* UPDATED: Use ArticlePage with planetary slug format */}
                   <Link
-                    to="/planetary-overview"
+                    to={`/articles/planetary-${today}`}
                     className="text-gold text-sm font-semibold hover:underline mt-2 inline-block"
                   >
                     Read full overview

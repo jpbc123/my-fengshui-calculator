@@ -1,7 +1,6 @@
 // api/chinese-horoscope/[zodiac].js
 import { createClient as createSanityClient } from '@sanity/client';
 
-// Initialize Sanity client
 const sanityClient = createSanityClient({
     projectId: process.env.VITE_SANITY_PROJECT_ID,
     dataset: process.env.VITE_SANITY_DATASET,
@@ -15,33 +14,27 @@ const allChineseZodiacs = [
     "goat", "monkey", "rooster", "dog", "pig"
 ];
 
-// In-memory cache to prevent duplicate requests
 const requestCache = new Map();
 
-// Helper function for exponential backoff
 async function fetchWithBackoff(url, options, retries = 3, baseDelay = 1000) {
     for (let i = 0; i < retries; i++) {
         try {
             const response = await fetch(url, options);
-
             if (response.status === 429 && i < retries - 1) {
                 const delay = Math.pow(2, i) * baseDelay + Math.random() * 1000;
                 console.warn(`Rate limit hit (429), retrying in ${Math.round(delay / 1000)}s...`);
                 await new Promise(resolve => setTimeout(resolve, delay));
                 continue;
             }
-
             if (response.ok) {
                 return response;
             }
-
             throw new Error(`HTTP error! Status: ${response.status}, Body: ${await response.text()}`);
         } catch (error) {
             console.error(`Fetch attempt ${i + 1} failed: ${error.message}`);
             if (i === retries - 1) {
                 throw error;
             }
-
             const delay = Math.pow(2, i) * baseDelay + Math.random() * 1000;
             console.warn(`Retrying in ${Math.round(delay / 1000)}s...`);
             await new Promise(resolve => setTimeout(resolve, delay));
@@ -50,8 +43,9 @@ async function fetchWithBackoff(url, options, retries = 3, baseDelay = 1000) {
     throw new Error("Maximum retries exceeded for API call.");
 }
 
-function getWeekDates(date = new Date()) {
-    const day = date.getDay();
+// Get current week starting Sunday
+function getCurrentWeekDates(date = new Date()) {
+    const day = date.getDay(); // 0 = Sunday
     const diff = date.getDate() - day;
     
     const startOfWeek = new Date(date);
@@ -66,14 +60,14 @@ function getWeekDates(date = new Date()) {
     };
 }
 
-function getDailyDate(dayOffset = 0) {
+// Get today's date
+function getTodayDate(dayOffset = 0) {
     const targetDate = new Date();
     targetDate.setDate(targetDate.getDate() + dayOffset);
     return targetDate.toISOString().slice(0, 10);
 }
 
 export default async function handler(req, res) {
-    // Enable CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -88,7 +82,7 @@ export default async function handler(req, res) {
 
     const { zodiac } = req.query;
     const period = req.query.period || 'daily';
-    const dayOffset = parseInt(req.query.dayOffset || '1', 10); // Now correctly inside the handler
+    const dayOffset = parseInt(req.query.dayOffset || '0', 10);
 
     console.log("Chinese Horoscope API called:", zodiac, period, dayOffset);
      
@@ -105,11 +99,11 @@ export default async function handler(req, res) {
         let params;
         let identifierValue;
         let promptText;
-        let generatedData;
 
         if (period === 'daily') {
             docType = 'dailyChineseHoroscope';
-            identifierValue = getDailyDate(dayOffset);
+            // Get today's date + offset for daily queries
+            identifierValue = getTodayDate(dayOffset);
             query = `*[_type == $docType && sign == $zodiac && forDate == $date][0]{
                 ...,
                 "for_date": forDate,
@@ -126,7 +120,8 @@ export default async function handler(req, res) {
             params = { docType, zodiac: zodiac.toLowerCase(), date: identifierValue };
         } else if (period === 'weekly') {
             docType = 'weeklyChineseHoroscope';
-            const { start, end } = getWeekDates();
+            // Get current week starting Sunday
+            const { start, end } = getCurrentWeekDates();
             identifierValue = start;
             query = `*[_type == $docType && sign == $zodiac && startDate == $startDate][0]{
                 ...,
@@ -200,7 +195,7 @@ export default async function handler(req, res) {
               "luckyNumber": "中文幸运数字", "luckyNumberEn": "English lucky number"
             }`;
         } else if (period === 'weekly') {
-            const { start, end } = getWeekDates();
+            const { start, end } = getCurrentWeekDates();
             promptText = `Generate a detailed general Chinese horoscope for the ${zodiac} sign for the current week (${start} to ${end}). Cover the following categories in both English and Chinese. Focus on a general outlook for the week. The tone should be positive, insightful, and comprehensive for each section.
             Provide the output as a JSON object with these exact keys:
             {
@@ -229,39 +224,7 @@ export default async function handler(req, res) {
         const payload = {
             contents: [{ role: "user", parts: [{ text: promptText }] }],
             generationConfig: {
-                responseMimeType: "application/json",
-                responseSchema: period === 'yearly' ? {
-                    type: "OBJECT",
-                    properties: {
-                        "overviewContent": { "type": "STRING" },
-                        "loveContent": { "type": "STRING" },
-                        "careerContent": { "type": "STRING" },
-                        "wealthContent": { "type": "STRING" },
-                        "socialContent": { "type": "STRING" },
-                        "luckyColor": { "type": "STRING" },
-                        "luckyNumber": { "type": "INTEGER" }
-                    },
-                    required: ["overviewContent", "loveContent", "careerContent", "wealthContent", "socialContent", "luckyColor", "luckyNumber"]
-                } : {
-                    type: "OBJECT",
-                    properties: {
-                        "horoscope": { "type": "STRING" },
-                        "horoscopeEn": { "type": "STRING" },
-                        "money": { "type": "STRING" },
-                        "moneyEn": { "type": "STRING" },
-                        "social": { "type": "STRING" },
-                        "socialEn": { "type": "STRING" },
-                        "career": { "type": "STRING" },
-                        "careerEn": { "type": "STRING" },
-                        "love": { "type": "STRING" },
-                        "loveEn": { "type": "STRING" },
-                        "luckyColor": { "type": "STRING" },
-                        "luckyColorEn": { "type": "STRING" },
-                        "luckyNumber": { "type": "STRING" },
-                        "luckyNumberEn": { "type": "STRING" }
-                    },
-                    required: ["horoscope", "horoscopeEn", "money", "moneyEn", "social", "socialEn", "career", "careerEn", "love", "loveEn", "luckyColor", "luckyColorEn", "luckyNumber", "luckyNumberEn"]
-                }
+                responseMimeType: "application/json"
             }
         };
 
@@ -273,7 +236,7 @@ export default async function handler(req, res) {
             });
             const geminiResult = await geminiResponse.json();
             const jsonResponseText = geminiResult.candidates[0].content.parts[0].text;
-            generatedData = JSON.parse(jsonResponseText);
+            const generatedData = JSON.parse(jsonResponseText);
 
             const documentToCreate = {
                 _type: docType,
@@ -284,7 +247,7 @@ export default async function handler(req, res) {
             if (period === 'daily') {
                 documentToCreate.forDate = identifierValue;
             } else if (period === 'weekly') {
-                const { start, end } = getWeekDates();
+                const { start, end } = getCurrentWeekDates();
                 documentToCreate.startDate = start;
                 documentToCreate.endDate = end;
             } else if (period === 'yearly') {

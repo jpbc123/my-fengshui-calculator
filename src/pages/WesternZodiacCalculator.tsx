@@ -2,12 +2,12 @@ import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { Info } from "lucide-react";
+import { Info, ChevronDown, ChevronRight } from "lucide-react";
 import Breadcrumb from "@/components/Breadcrumb";
 import { DatePickerInput } from "@/components/DatePickerInput";
 import { westernZodiacData } from "@/data/westernZodiacData";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from '@sanity/client';
 
 // Create Sanity client inline
@@ -25,20 +25,6 @@ const isClientConfigured = () => {
   const dataset = import.meta.env.VITE_SANITY_DATASET;
   return !!(projectId && dataset);
 };
-
-// Western zodiac images
-import ariesImg from "@/assets/western/aries.png";
-import taurusImg from "@/assets/western/taurus.png";
-import geminiImg from "@/assets/western/gemini.png";
-import cancerImg from "@/assets/western/cancer.png";
-import leoImg from "@/assets/western/leo.png";
-import virgoImg from "@/assets/western/virgo.png";
-import libraImg from "@/assets/western/libra.png";
-import scorpioImg from "@/assets/western/scorpio.png";
-import sagittariusImg from "@/assets/western/sagittarius.png";
-import capricornImg from "@/assets/western/capricorn.png";
-import aquariusImg from "@/assets/western/aquarius.png";
-import piscesImg from "@/assets/western/pisces.png";
 
 const breadcrumbs = [
   { label: "Home", path: "/" },
@@ -65,19 +51,36 @@ interface SignInfo {
   personalityInsights?: string;
 }
 
-const westernZodiacImages: { [key: string]: string } = {
-  Aries: ariesImg,
-  Taurus: taurusImg,
-  Gemini: geminiImg,
-  Cancer: cancerImg,
-  Leo: leoImg,
-  Virgo: virgoImg,
-  Libra: libraImg,
-  Scorpio: scorpioImg,
-  Sagittarius: sagittariusImg,
-  Capricorn: capricornImg,
-  Aquarius: aquariusImg,
-  Pisces: piscesImg,
+// Unicode zodiac symbols
+const zodiacSymbols: { [key: string]: string } = {
+  Aries: "♈",
+  Taurus: "♉",
+  Gemini: "♊", 
+  Cancer: "♋",
+  Leo: "♌",
+  Virgo: "♍",
+  Libra: "♎",
+  Scorpio: "♏",
+  Sagittarius: "♐",
+  Capricorn: "♑",
+  Aquarius: "♒",
+  Pisces: "♓",
+};
+
+// Sign-specific colors for display
+const signColors: { [key: string]: string } = {
+  Aries: "text-red-600 bg-red-50 border-red-200",
+  Taurus: "text-green-600 bg-green-50 border-green-200",
+  Gemini: "text-yellow-600 bg-yellow-50 border-yellow-200",
+  Cancer: "text-blue-600 bg-blue-50 border-blue-200",
+  Leo: "text-orange-600 bg-orange-50 border-orange-200",
+  Virgo: "text-emerald-600 bg-emerald-50 border-emerald-200",
+  Libra: "text-pink-600 bg-pink-50 border-pink-200",
+  Scorpio: "text-purple-600 bg-purple-50 border-purple-200",
+  Sagittarius: "text-indigo-600 bg-indigo-50 border-indigo-200",
+  Capricorn: "text-gray-600 bg-gray-50 border-gray-200",
+  Aquarius: "text-cyan-600 bg-cyan-50 border-cyan-200",
+  Pisces: "text-teal-600 bg-teal-50 border-teal-200",
 };
 
 const zodiacSigns = [
@@ -129,6 +132,13 @@ const WesternZodiacCalculator = () => {
   const [showMore, setShowMore] = useState(false);
   const [relatedArticles, setRelatedArticles] = useState<SanityArticle[]>([]);
   const [loading, setLoading] = useState(false);
+  const [expandedSections, setExpandedSections] = useState({
+    traits: false,
+    forecast: false,
+    compatibility: false,
+    career: false,
+    personality: false
+  });
   const RELATED_ARTICLES_LIMIT = 5;
 
   const handleCalculate = () => {
@@ -151,41 +161,22 @@ const WesternZodiacCalculator = () => {
       
       setLoading(true);
       try {
-        // Test basic fetch
-        console.log('Testing basic article fetch...');
-        const testQuery = `*[_type == "article"][0...3]{
-          _id,
-          title,
-          "slug": slug.current,
-          tags,
-          publishDate
-        }`;
-        
-        const testArticles = await sanityClient.fetch(testQuery);
-        console.log('Available articles:', testArticles);
-        
-        // Try filtered query
-        const query = `*[_type == "article" && defined(tags) && ("western zodiac" in tags || "astrology" in tags || "western zodiac" in tags || "astrology" in tags)] | order(publishDate desc)[0...${RELATED_ARTICLES_LIMIT}]{
+        const query = `*[_type == "article" && defined(tags) && ("western zodiac" in tags || "astrology" in tags || "western" in tags)] | order(publishDate desc)[0...${RELATED_ARTICLES_LIMIT}]{
           _id,
           title,
           "slug": slug.current,
           tags
         }`;
         
-        console.log('Fetching filtered articles...');
         const articles = await sanityClient.fetch<SanityArticle[]>(query);
-        console.log('Filtered articles:', articles);
         
-        // If no filtered articles, fall back to recent articles
         if (articles.length === 0) {
-          console.log('No tagged articles found, falling back to recent articles');
           const fallbackQuery = `*[_type == "article"] | order(publishDate desc)[0...${RELATED_ARTICLES_LIMIT}]{
             _id,
             title,
             "slug": slug.current
           }`;
           const fallbackArticles = await sanityClient.fetch<SanityArticle[]>(fallbackQuery);
-          console.log('Fallback articles:', fallbackArticles);
           setRelatedArticles(fallbackArticles);
         } else {
           setRelatedArticles(articles);
@@ -200,6 +191,13 @@ const WesternZodiacCalculator = () => {
 
     fetchRelatedArticles();
   }, []);
+
+  const toggleSection = (section: keyof typeof expandedSections) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
   
   return (
     <div className="flex flex-col min-h-screen bg-white text-black overflow-hidden">
@@ -217,7 +215,7 @@ const WesternZodiacCalculator = () => {
                   Western Zodiac Calculator
                 </h1>
                 <p className="text-black/80 mb-6">
-                  Find your <span className="font-semibold">Western Zodiac</span> animal to discover your personality traits, strengths, and compatibility.
+                  Discover your <span className="font-semibold">Western Zodiac</span> sign and unlock insights into your personality traits, strengths, and astrological influences.
                 </p>
               </div>
 
@@ -227,7 +225,7 @@ const WesternZodiacCalculator = () => {
                   <Info size={20} className="text-gold mt-1 shrink-0" />
                   <div className="text-left">
                     <p>
-                      The <span className="font-semibold">Western Zodiac</span> is based on twelve constellations, each linked to specific date ranges and personality traits. Your sign is determined by the position of the Sun at the exact time of your birth according to the solar (Gregorian) calendar.
+                      The <span className="font-semibold">Western Zodiac</span> is based on twelve constellations, each linked to specific date ranges and personality traits. Your sign is determined by the position of the Sun at the time of your birth.
                     </p>
                     <button
                       onClick={() => setShowMore(!showMore)}
@@ -241,25 +239,26 @@ const WesternZodiacCalculator = () => {
                 {showMore && (
                   <div className="bg-gray-50 text-black/90 p-4 rounded-xl border border-gray-200 text-left">
                     <p className="mb-2">
-                      The twelve zodiac signs – from Aries to Pisces – are each associated with unique strengths, challenges, and behavioral patterns.
+                      The twelve zodiac signs — from Aries to Pisces — are each associated with unique strengths, challenges, and behavioral patterns rooted in ancient astronomical observations.
                     </p>
                     <p className="mb-2">
-                      Your sign can offer insights into love compatibility, career paths, and personal growth themes.
+                      Your sign can offer insights into love compatibility, career paths, and personal growth themes based on the elemental associations (Fire, Earth, Air, Water).
                     </p>
                     <p>
-                      Unlike the Chinese zodiac, which follows the lunar calendar and assigns one animal to an entire birth year, the Western zodiac changes roughly every month, making it more focused on the season and Sun's position rather than the year of birth.
+                      Unlike the Chinese zodiac, which follows the lunar calendar, the Western zodiac changes roughly every month based on the Sun's position in the ecliptic.
                     </p>
                   </div>
                 )}
               </div>
 
-              {/* Input */}
-              <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
+              {/* Input and Button Box */}
+              <div className="space-y-4 bg-gray-50 p-6 rounded-xl border border-gray-200">
                 <div className="flex flex-col sm:flex-row gap-4 items-stretch">
                   <DatePickerInput
                     date={birthDate}
                     onDateChange={setBirthDate}
                     placeholder="Enter your birthdate"
+                    className="bg-white text-black border border-gray-300"
                   />
                   <Button
                     variant="gold"
@@ -268,87 +267,190 @@ const WesternZodiacCalculator = () => {
                     disabled={!birthDate}
                     className="px-8 h-14 text-lg font-semibold whitespace-nowrap"
                   >
-                    Calculate Western Zodiac
+                    Calculate
                   </Button>
                 </div>
               </div>
 
               {/* Result */}
-              {zodiacSign && signInfo && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5 }}
-                  className="mt-8 p-6 bg-gray-50 rounded-xl border border-gray-200 text-left"
-                >
-                  <h2 className="text-2xl font-bold text-gold mb-4 text-center">
-                    Your Western Zodiac Sign is: <span className="text-black">{zodiacSign}</span>
-                  </h2>
+              <AnimatePresence>
+                {zodiacSign && signInfo && (
+                  <motion.div
+                    key="result"
+                    initial={{ opacity: 0, y: 40 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="mt-8 space-y-6"
+                  >
+                    {/* Main Zodiac Display */}
+                    <div className={`p-6 rounded-xl text-center ${signColors[zodiacSign]}`}>
+                      <div className="text-8xl mb-4">
+                        {zodiacSymbols[zodiacSign]}
+                      </div>
+                      <h2 className="text-2xl font-bold text-gold mb-2">
+                        Your Zodiac Sign: <span className={signColors[zodiacSign].split(' ')[0]}>{zodiacSign}</span>
+                      </h2>
+                      <p className="text-black/80 leading-relaxed">
+                        Born under the constellation of {zodiacSign}, you carry the celestial influences and characteristics of this powerful astrological sign.
+                      </p>
+                    </div>
 
-                  <img
-                    src={westernZodiacImages[zodiacSign]}
-                    alt={zodiacSign}
-                    className="w-40 h-40 mx-auto object-contain"
-                  />
-                  <div className="flex flex-col gap-4 mt-8">
-                    {signInfo.traits && (
-                      <div>
-                        <h3 className="text-lg font-semibold text-black mb-2">Traits:</h3>
-                        <p className="text-black/80">
-                          {Array.isArray(signInfo.traits) ? signInfo.traits.join(", ") : signInfo.traits}
-                        </p>
+                    {/* Detailed Analysis Sections */}
+                    <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 space-y-4">
+                      <h3 className="text-xl font-bold text-gold text-center mb-4">Your Astrological Profile</h3>
+                      
+                      {/* Traits */}
+                      {signInfo.traits && (
+                        <div className="border border-gray-200 rounded-lg overflow-hidden">
+                          <button
+                            onClick={() => toggleSection('traits')}
+                            className="w-full flex items-center justify-between p-4 bg-white hover:bg-gray-50 transition-colors"
+                          >
+                            <h4 className="text-lg font-semibold text-gold">Core Personality Traits</h4>
+                            {expandedSections.traits ? (
+                              <ChevronDown size={20} className="text-gold" />
+                            ) : (
+                              <ChevronRight size={20} className="text-gold" />
+                            )}
+                          </button>
+                          {expandedSections.traits && (
+                            <div className="p-4 bg-white border-t border-gray-200">
+                              <p className="text-black/90 leading-relaxed">
+                                {Array.isArray(signInfo.traits) ? signInfo.traits.join(", ") : signInfo.traits}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* 2025 Forecast */}
+                      {signInfo.yearAnalysis && (
+                        <div className="border border-gray-200 rounded-lg overflow-hidden">
+                          <button
+                            onClick={() => toggleSection('forecast')}
+                            className="w-full flex items-center justify-between p-4 bg-white hover:bg-gray-50 transition-colors"
+                          >
+                            <h4 className="text-lg font-semibold text-green-600">2025 Astrological Forecast</h4>
+                            {expandedSections.forecast ? (
+                              <ChevronDown size={20} className="text-green-600" />
+                            ) : (
+                              <ChevronRight size={20} className="text-green-600" />
+                            )}
+                          </button>
+                          {expandedSections.forecast && (
+                            <div className="p-4 bg-white border-t border-gray-200">
+                              <p className="text-black/90 leading-relaxed">{signInfo.yearAnalysis}</p>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Compatibility */}
+                      {signInfo.compatibility && (
+                        <div className="border border-gray-200 rounded-lg overflow-hidden">
+                          <button
+                            onClick={() => toggleSection('compatibility')}
+                            className="w-full flex items-center justify-between p-4 bg-white hover:bg-gray-50 transition-colors"
+                          >
+                            <h4 className="text-lg font-semibold text-purple-600">Love & Compatibility</h4>
+                            {expandedSections.compatibility ? (
+                              <ChevronDown size={20} className="text-purple-600" />
+                            ) : (
+                              <ChevronRight size={20} className="text-purple-600" />
+                            )}
+                          </button>
+                          {expandedSections.compatibility && (
+                            <div className="p-4 bg-white border-t border-gray-200">
+                              <p className="text-black/90 leading-relaxed">
+                                {Array.isArray(signInfo.compatibility) ? signInfo.compatibility.join(", ") : signInfo.compatibility}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Lucky Elements Grid */}
+                      <div className="bg-white p-4 rounded-lg border border-gray-200">
+                        <h4 className="font-semibold text-gold mb-3">Your Astrological Elements</h4>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                          {signInfo.luckyNumbers && (
+                            <div>
+                              <span className="font-medium text-black">Lucky Numbers:</span>
+                              <p className="text-black/80">
+                                {Array.isArray(signInfo.luckyNumbers) ? signInfo.luckyNumbers.join(", ") : signInfo.luckyNumbers}
+                              </p>
+                            </div>
+                          )}
+                          {signInfo.luckyColors && (
+                            <div>
+                              <span className="font-medium text-black">Lucky Colors:</span>
+                              <p className="text-black/80">
+                                {Array.isArray(signInfo.luckyColors) ? signInfo.luckyColors.join(", ") : signInfo.luckyColors}
+                              </p>
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    )}
-                    {signInfo.yearAnalysis && (
-                      <div>
-                        <h3 className="text-lg font-semibold text-black mb-2">2025 Forecast:</h3>
-                        <p className="text-black/80">{signInfo.yearAnalysis}</p>
+
+                      {/* Career Advice */}
+                      {signInfo.careerAdvice && (
+                        <div className="border border-gray-200 rounded-lg overflow-hidden">
+                          <button
+                            onClick={() => toggleSection('career')}
+                            className="w-full flex items-center justify-between p-4 bg-white hover:bg-gray-50 transition-colors"
+                          >
+                            <h4 className="text-lg font-semibold text-blue-600">Career & Life Path</h4>
+                            {expandedSections.career ? (
+                              <ChevronDown size={20} className="text-blue-600" />
+                            ) : (
+                              <ChevronRight size={20} className="text-blue-600" />
+                            )}
+                          </button>
+                          {expandedSections.career && (
+                            <div className="p-4 bg-white border-t border-gray-200">
+                              <p className="text-black/90 leading-relaxed">{signInfo.careerAdvice}</p>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Personality Insights */}
+                      {signInfo.personalityInsights && (
+                        <div className="border border-gray-200 rounded-lg overflow-hidden">
+                          <button
+                            onClick={() => toggleSection('personality')}
+                            className="w-full flex items-center justify-between p-4 bg-white hover:bg-gray-50 transition-colors"
+                          >
+                            <h4 className="text-lg font-semibold text-indigo-600">Deep Personality Insights</h4>
+                            {expandedSections.personality ? (
+                              <ChevronDown size={20} className="text-indigo-600" />
+                            ) : (
+                              <ChevronRight size={20} className="text-indigo-600" />
+                            )}
+                          </button>
+                          {expandedSections.personality && (
+                            <div className="p-4 bg-white border-t border-gray-200">
+                              <p className="text-black/90 leading-relaxed">{signInfo.personalityInsights}</p>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Horoscope Link */}
+                      <div className="bg-white p-4 rounded-lg border border-gray-200 text-center">
+                        <Link 
+                          to="/western-horoscope" 
+                          className="inline-flex items-center gap-2 text-gold hover:text-gold/80 font-semibold transition-colors"
+                        >
+                          Get Your Daily Western Horoscope
+                          <span>→</span>
+                        </Link>
                       </div>
-                    )}
-                    {signInfo.compatibility && (
-                      <div>
-                        <h3 className="text-lg font-semibold text-black mb-2">Compatibility:</h3>
-                        <p className="text-black/80">
-                          {Array.isArray(signInfo.compatibility) ? signInfo.compatibility.join(", ") : signInfo.compatibility}
-                        </p>
-                      </div>
-                    )}
-                    {signInfo.luckyNumbers && (
-                      <div>
-                        <h3 className="text-lg font-semibold text-black mb-2">Lucky Numbers:</h3>
-                        <p className="text-black/80">
-                          {Array.isArray(signInfo.luckyNumbers) ? signInfo.luckyNumbers.join(", ") : signInfo.luckyNumbers}
-                        </p>
-                      </div>
-                    )}
-                    {signInfo.luckyColors && (
-                      <div>
-                        <h3 className="text-lg font-semibold text-black mb-2">Lucky Colors:</h3>
-                        <p className="text-black/80">
-                          {Array.isArray(signInfo.luckyColors) ? signInfo.luckyColors.join(", ") : signInfo.luckyColors}
-                        </p>
-                      </div>
-                    )}
-                    {signInfo.careerAdvice && (
-                      <div>
-                        <h3 className="text-lg font-semibold text-black mb-2">Career Advice:</h3>
-                        <p className="text-black/80">{signInfo.careerAdvice}</p>
-                      </div>
-                    )}
-                    {signInfo.personalityInsights && (
-                      <div>
-                        <h3 className="text-lg font-semibold text-black mb-2">Personality Insights:</h3>
-                        <p className="text-black/80">{signInfo.personalityInsights}</p>
-                      </div>
-                    )}
-                  </div>
-                  <div className="mt-8 pt-4 border-t border-gray-300 text-center">
-                    <Link to={`/western-horoscope`} className="text-sm font-semibold text-black/80 hover:text-gold hover:underline">
-                      Discover Your Daily Western Horoscope →
-                    </Link>
-                  </div>
-                </motion.div>
-              )}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {/* Right side - Related Articles */}

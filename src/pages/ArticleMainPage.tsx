@@ -8,6 +8,7 @@ import { createClient } from '@sanity/client';
 import imageUrlBuilder from "@sanity/image-url";
 import { toPlainText } from "@portabletext/react";
 import { motion } from "framer-motion";
+import { Calendar, Tag, ArrowRight, Search } from "lucide-react";
 
 import planetaryOverviewImage from '../assets/planetary-overview.jpg';
 
@@ -75,12 +76,12 @@ type CombinedArticle = SanityArticle | (DailyPlanetaryOverview & {
 const ARTICLES_PER_PAGE = 9;
 
 const categories = [
-  "All",
-  "Feng Shui",
-  "Astrology",
-  "Numerology",
-  "Celebrity",
-  "Planetary Overview",
+  { name: "All", icon: null, color: "bg-gray-100 text-gray-700 hover:bg-gray-200" },
+  { name: "Feng Shui", icon: null, color: "bg-blue-100 text-blue-700 hover:bg-blue-200" },
+  { name: "Astrology", icon: null, color: "bg-purple-100 text-purple-700 hover:bg-purple-200" },
+  { name: "Numerology", icon: null, color: "bg-green-100 text-green-700 hover:bg-green-200" },
+  { name: "Celebrity", icon: null, color: "bg-pink-100 text-pink-700 hover:bg-pink-200" },
+  { name: "Planetary Overview", icon: null, color: "bg-orange-100 text-orange-700 hover:bg-orange-200" },
 ];
 
 export default function ArticlesPage() {
@@ -177,22 +178,22 @@ export default function ArticlesPage() {
   ];
 
   // Filtering by category
-const filteredArticles = selectedCategory === "All"
-  ? articles.filter(article => article._type !== 'dailyPlanetaryOverview') // Exclude planetary overviews from "All"
-  : selectedCategory === "Planetary Overview"
-  ? articles.filter(article => article._type === 'dailyPlanetaryOverview') // Only show planetary overviews
-  : articles.filter((article) => {
-      // For other categories, only check regular articles
-      if (article._type === 'dailyPlanetaryOverview') {
-        return false; // Planetary overviews don't belong to other categories
-      }
-      const regularArticle = article as SanityArticle;
-      const belongs = regularArticle.tags?.some(
-        (tag) => tag.toLowerCase() === selectedCategory.toLowerCase()
-      );
-      console.log(`Regular article ${article._id} with tags [${regularArticle.tags?.join(', ')}] belongs to category ${selectedCategory}:`, belongs);
-      return belongs;
-    });
+  const filteredArticles = selectedCategory === "All"
+    ? articles.filter(article => article._type !== 'dailyPlanetaryOverview') // Exclude planetary overviews from "All"
+    : selectedCategory === "Planetary Overview"
+    ? articles.filter(article => article._type === 'dailyPlanetaryOverview') // Only show planetary overviews
+    : articles.filter((article) => {
+        // For other categories, only check regular articles
+        if (article._type === 'dailyPlanetaryOverview') {
+          return false; // Planetary overviews don't belong to other categories
+        }
+        const regularArticle = article as SanityArticle;
+        const belongs = regularArticle.tags?.some(
+          (tag) => tag.toLowerCase() === selectedCategory.toLowerCase()
+        );
+        console.log(`Regular article ${article._id} with tags [${regularArticle.tags?.join(', ')}] belongs to category ${selectedCategory}:`, belongs);
+        return belongs;
+      });
 
   console.log(`Filtered articles for category "${selectedCategory}":`, filteredArticles.length);
 
@@ -204,21 +205,53 @@ const filteredArticles = selectedCategory === "All"
 
   const renderPaginationButtons = () => {
     const buttons = [];
-    for (let i = 1; i <= totalPages; i++) {
+    
+    // Previous button
+    if (currentPage > 1) {
+      buttons.push(
+        <button
+          key="prev"
+          onClick={() => setCurrentPage(currentPage - 1)}
+          className="px-4 py-2 mx-1 rounded-lg font-medium bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
+        >
+          Previous
+        </button>
+      );
+    }
+
+    // Page numbers (show max 5 pages)
+    const startPage = Math.max(1, currentPage - 2);
+    const endPage = Math.min(totalPages, startPage + 4);
+    
+    for (let i = startPage; i <= endPage; i++) {
       buttons.push(
         <button
           key={i}
           onClick={() => setCurrentPage(i)}
-          className={`px-4 py-2 mx-1 rounded-full font-medium transition-colors ${
+          className={`px-4 py-2 mx-1 rounded-lg font-medium transition-colors ${
             currentPage === i
-              ? "bg-gold text-white shadow"
-              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              ? "bg-gold text-white shadow-md"
+              : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
           }`}
         >
           {i}
         </button>
       );
     }
+
+    // Next button
+    if (currentPage < totalPages) {
+      buttons.push(
+        <button
+          key="next"
+          onClick={() => setCurrentPage(currentPage + 1)}
+          className="px-4 py-2 mx-1 rounded-lg font-medium bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
+        >
+          Next
+        </button>
+      );
+    }
+
     return buttons;
   };
 
@@ -229,8 +262,6 @@ const filteredArticles = selectedCategory === "All"
 
   const getArticleLink = (article: CombinedArticle) => {
     if (article._type === 'dailyPlanetaryOverview') {
-      // You might want to create a special route for planetary overviews
-      // or handle them differently. For now, using the generated slug:
       return `/articles/${article.slug.current}`;
     }
     return `/articles/${article.slug.current}`;
@@ -245,12 +276,19 @@ const filteredArticles = selectedCategory === "All"
     return regularArticle.metaDescription || (regularArticle.body && regularArticle.body.length > 0 ? toPlainText(regularArticle.body) : '');
   };
 
+  const getCategoryData = (categoryName: string) => {
+    return categories.find(cat => cat.name === categoryName) || categories[0];
+  };
+
   if (loading) {
     return (
-      <div className="flex flex-col min-h-screen font-sans bg-gray-50">
+      <div className="flex flex-col min-h-screen font-sans bg-white">
         <Header />
         <main className="flex-grow pt-16 flex items-center justify-center">
-          <div className="text-center text-gray-500">Loading articles...</div>
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold mx-auto mb-4"></div>
+            <div className="text-gray-500">Loading articles...</div>
+          </div>
         </main>
         <Footer />
       </div>
@@ -259,7 +297,7 @@ const filteredArticles = selectedCategory === "All"
 
   if (error) {
     return (
-      <div className="flex flex-col min-h-screen font-sans bg-gray-50">
+      <div className="flex flex-col min-h-screen font-sans bg-white">
         <Header />
         <main className="flex-grow pt-16 flex items-center justify-center">
           <div className="text-center text-red-500">Error: {error}</div>
@@ -271,7 +309,7 @@ const filteredArticles = selectedCategory === "All"
 
   if (articles.length === 0) {
     return (
-      <div className="flex flex-col min-h-screen font-sans bg-gray-50">
+      <div className="flex flex-col min-h-screen font-sans bg-white">
         <Header />
         <main className="flex-grow pt-16">
           <div className="container mx-auto px-4 py-8 md:py-16">
@@ -288,71 +326,105 @@ const filteredArticles = selectedCategory === "All"
   }
 
   return (
-    <div className="flex flex-col min-h-screen font-sans bg-gray-50">
+    <div className="flex flex-col min-h-screen font-sans bg-white">
       <Header />
       <main className="flex-grow pt-16">
         <div className="container mx-auto px-4 py-8 md:py-16">
           <Breadcrumb items={breadcrumbs} />
-          <h1 className="text-3xl sm:text-4xl font-bold text-black mt-8">
-            Articles
-          </h1>
+          
+          {/* Header Section */}
+          <div className="mb-12">
+            <h1 className="text-3xl sm:text-4xl font-bold text-black mt-8 mb-4">
+              Articles
+            </h1>
+            <p className="text-gray-600 text-lg">
+              Explore our collection of articles on astrology, numerology, feng shui, and more. 
+              Discover insights that can guide your personal journey.
+            </p>
+          </div>
 
-          {/* Category Filter */}
-          <div className="flex flex-wrap justify-center gap-3 mt-6 mb-10">
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => {
-                  setSelectedCategory(category);
-                  setCurrentPage(1); // reset to page 1 when switching category
-                }}
-                className={`px-4 py-2 rounded-full border transition ${
-                  selectedCategory === category
-                    ? "bg-gold text-white font-bold"
-                    : "border-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-              >
-                {category}
-              </button>
-            ))}
+          {/* Modern Category Filter */}
+          <div className="mb-12">
+            <div className="flex items-center gap-3 mb-6">
+              <Tag size={20} className="text-gold" />
+              <h2 className="text-xl font-semibold text-black">Categories</h2>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              {categories.map((category) => {
+                const isSelected = selectedCategory === category.name;
+                return (
+                  <button
+                    key={category.name}
+                    onClick={() => {
+                      setSelectedCategory(category.name);
+                      setCurrentPage(1);
+                    }}
+                    className={`px-6 py-3 rounded-full font-medium transition-all duration-200 ${
+                      isSelected
+                        ? "bg-gold text-white shadow-lg transform scale-105"
+                        : `${category.color} border border-transparent hover:shadow-md`
+                    }`}
+                  >
+                    {category.name}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Results Summary */}
+          <div className="mb-8">
+            <div className="flex items-center justify-between">
+              <p className="text-gray-600">
+                Showing {paginatedArticles.length} of {filteredArticles.length} articles
+                {selectedCategory !== "All" && (
+                  <span className="ml-2 px-3 py-1 bg-gold/10 text-gold rounded-full text-sm font-medium">
+                    {selectedCategory}
+                  </span>
+                )}
+              </p>
+            </div>
           </div>
 
           {/* Articles Grid */}
-          <div className="mt-8 grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-            {paginatedArticles.map((article) => (
+          <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            {paginatedArticles.map((article, index) => (
               <motion.div
                 key={article._id}
                 initial="hidden"
                 animate="visible"
                 variants={articleCardVariants}
-                className="bg-white rounded-2xl shadow-lg overflow-hidden transition-transform duration-300 ease-in-out hover:scale-[1.02] border border-gray-200"
+                transition={{ delay: index * 0.1 }}
+                className="group bg-white rounded-2xl shadow-md overflow-hidden transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 border border-gray-100"
               >
-                <Link to={getArticleLink(article)}>
+                <Link to={getArticleLink(article)} className="block">
                   {article._type === 'article' && (article as SanityArticle).mainImage?.asset?._ref ? (
-                    <img
-                      src={
-                        urlFor((article as SanityArticle).mainImage).width(500).url() || undefined
-                      }
-                      alt={(article as SanityArticle).mainImage?.alt || article.title}
-                      className="w-full h-48 object-cover"
-                      onError={(e) => {
-                        e.currentTarget.src =
-                          "https://placehold.co/500x300/E5E7EB/4B5563?text=Image+Not+Found";
-                        e.currentTarget.onerror = null;
-                      }}
-                    />
+                    <div className="relative overflow-hidden">
+                      <img
+                        src={
+                          urlFor((article as SanityArticle).mainImage).width(500).url() || undefined
+                        }
+                        alt={(article as SanityArticle).mainImage?.alt || article.title}
+                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                        onError={(e) => {
+                          e.currentTarget.src =
+                            "https://placehold.co/500x300/E5E7EB/4B5563?text=Image+Not+Found";
+                          e.currentTarget.onerror = null;
+                        }}
+                      />
+                    </div>
                   ) : article._type === 'dailyPlanetaryOverview' ? (
-                    <div className="relative w-full h-48">
+                    <div className="relative w-full h-48 overflow-hidden">
                       <img
                         src={planetaryOverviewImage}
                         alt="Planetary Overview"
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
-                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end justify-center p-4">
                         <div className="text-center text-white">
                           <div className="text-sm font-medium">Planetary Overview</div>
                           {(article as DailyPlanetaryOverview).planetary_index && (
-                            <div className="text-xs mt-1">
+                            <div className="text-xs mt-1 opacity-90">
                               Energy Level: {(article as DailyPlanetaryOverview).planetary_index}/5
                             </div>
                           )}
@@ -360,43 +432,50 @@ const filteredArticles = selectedCategory === "All"
                       </div>
                     </div>
                   ) : (
-                    <div className="w-full h-48 bg-gray-200 flex items-center justify-center">
-                      <span className="text-gray-500 text-lg">No Image</span>
+                    <div className="w-full h-48 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                      <span className="text-gray-400 text-lg">No Image</span>
                     </div>
                   )}
                 </Link>
+                
                 <div className="p-6">
-                  <h2 className="text-xl font-bold text-black mb-2">
-                    <Link
-                      to={getArticleLink(article)}
-                      className="hover:text-gold transition-colors"
-                    >
+                  <div className="flex items-center gap-2 mb-3">
+                    <Calendar size={16} className="text-gray-400" />
+                    <p className="text-sm text-gray-500">
+                      {dayjs(article.publishDate).format("MMMM D, YYYY")}
+                    </p>
+                  </div>
+                  
+                  <h2 className="text-xl font-bold text-black mb-3 group-hover:text-gold transition-colors">
+                    <Link to={getArticleLink(article)}>
                       {article.title}
                     </Link>
                   </h2>
-                  <p className="text-sm text-gray-500 mb-4">
-                    Published: {dayjs(article.publishDate).format("MMMM D, YYYY")}
-                  </p>
+                  
                   {getArticleDescription(article) && (
-                    <p className="text-black/80 text-base mb-4 line-clamp-3">
+                    <p className="text-gray-600 text-base mb-4 line-clamp-3 leading-relaxed">
                       {getArticleDescription(article)}
                     </p>
                   )}
+                  
                   <Link
                     to={getArticleLink(article)}
-                    className="inline-block text-gold font-semibold hover:underline transition-colors"
+                    className="inline-flex items-center gap-2 text-gold font-semibold hover:gap-3 transition-all duration-200"
                   >
-                    Read More &rarr;
+                    Read More 
+                    <ArrowRight size={16} />
                   </Link>
                 </div>
               </motion.div>
             ))}
           </div>
 
-          {/* Pagination */}
+          {/* Enhanced Pagination */}
           {totalPages > 1 && (
-            <div className="mt-12 flex justify-center">
-              {renderPaginationButtons()}
+            <div className="mt-16 flex justify-center">
+              <div className="flex items-center gap-2">
+                {renderPaginationButtons()}
+              </div>
             </div>
           )}
         </div>

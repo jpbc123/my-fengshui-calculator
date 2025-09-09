@@ -5,8 +5,8 @@ import Footer from "@/components/Footer";
 import { DatePickerInput } from "@/components/DatePickerInput";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { motion } from "framer-motion";
-import { Info } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Info, Compass, TrendingUp, TrendingDown } from "lucide-react";
 import Breadcrumb from "@/components/Breadcrumb";
 import { Link } from "react-router-dom";
 import { createClient } from '@sanity/client';
@@ -39,6 +39,42 @@ interface SanityKuaTip {
   tips: string[];
 }
 
+const kuaEmojis: Record<number, string> = {
+  1: "🌊", // Water
+  2: "🏔️", // Earth
+  3: "⚡", // Wood/Thunder
+  4: "🌳", // Wood/Wind
+  5: "🎯", // Center/Earth
+  6: "⚔️", // Metal/Heaven
+  7: "💎", // Metal/Lake
+  8: "🏔️", // Earth/Mountain
+  9: "🔥", // Fire
+};
+
+const kuaColors: Record<number, string> = {
+  1: "text-blue-600",
+  2: "text-yellow-600", 
+  3: "text-green-600",
+  4: "text-green-600",
+  5: "text-yellow-600",
+  6: "text-gray-600",
+  7: "text-gray-600",
+  8: "text-yellow-600",
+  9: "text-red-600",
+};
+
+const kuaBgColors: Record<number, string> = {
+  1: "bg-blue-50 border-blue-200",
+  2: "bg-yellow-50 border-yellow-200",
+  3: "bg-green-50 border-green-200", 
+  4: "bg-green-50 border-green-200",
+  5: "bg-yellow-50 border-yellow-200",
+  6: "bg-gray-50 border-gray-200",
+  7: "bg-gray-50 border-gray-200",
+  8: "bg-yellow-50 border-yellow-200",
+  9: "bg-red-50 border-red-200",
+};
+
 const kuaProfiles: Record<
   number,
   {
@@ -46,10 +82,14 @@ const kuaProfiles: Record<
     traits: string[];
     lucky: string[];
     unlucky: string[];
+    element: string;
+    description: string;
   }
 > = {
   1: {
     name: "Kan (Water)",
+    element: "Water",
+    description: "Like flowing water, you are adaptable and intuitive, able to navigate life's challenges with wisdom and grace.",
     traits: [
       "Adaptable and resourceful",
       "Strong intuition and insight",
@@ -61,6 +101,8 @@ const kuaProfiles: Record<
   },
   2: {
     name: "Kun (Earth)",
+    element: "Earth",
+    description: "Grounded like the earth itself, you provide stability and nurturing support to those around you.",
     traits: [
       "Reliable, patient, and steady",
       "Strong family values",
@@ -72,6 +114,8 @@ const kuaProfiles: Record<
   },
   3: {
     name: "Zhen (Wood)",
+    element: "Wood",
+    description: "Dynamic like thunder, you bring energy and initiative to everything you do, inspiring growth and progress.",
     traits: [
       "Energetic and driven",
       "Thrives on taking initiative",
@@ -83,6 +127,8 @@ const kuaProfiles: Record<
   },
   4: {
     name: "Xun (Wood)",
+    element: "Wood",
+    description: "Gentle like the wind, you influence others through diplomacy and charm rather than force.",
     traits: [
       "Diplomatic and persuasive",
       "Highly creative and adaptable",
@@ -93,7 +139,9 @@ const kuaProfiles: Record<
     unlucky: ["Southwest", "West", "Northwest", "Northeast"],
   },
   5: {
-    name: "Center (Earth) – Special Case",
+    name: "Center (Earth)",
+    element: "Earth",
+    description: "Balanced at the center of all energies, you possess natural leadership and the ability to bring harmony to any situation.",
     traits: [
       "Balanced and grounded personality",
       "Natural leader with a sense of fairness",
@@ -101,14 +149,16 @@ const kuaProfiles: Record<
       "Must adapt based on gender in calculations",
     ],
     lucky: [
-      "Varies depending on gender – usually follows #2 for women and #8 for men",
+      "Varies depending on gender — usually follows #2 for women and #8 for men",
     ],
     unlucky: [
-      "Varies depending on gender – usually follows #2 for women and #8 for men",
+      "Varies depending on gender — usually follows #2 for women and #8 for men",
     ],
   },
   6: {
     name: "Qian (Metal)",
+    element: "Metal",
+    description: "Strong like heaven itself, you possess natural authority and the determination to achieve your highest goals.",
     traits: [
       "Strong, determined, and disciplined",
       "Respected for leadership skills",
@@ -120,6 +170,8 @@ const kuaProfiles: Record<
   },
   7: {
     name: "Dui (Metal)",
+    element: "Metal",
+    description: "Joyful like a serene lake, you bring happiness and communication skills that brighten any gathering.",
     traits: [
       "Charming and sociable",
       "Enjoys communication and fun activities",
@@ -131,6 +183,8 @@ const kuaProfiles: Record<
   },
   8: {
     name: "Gen (Earth)",
+    element: "Earth",
+    description: "Steady like a mountain, you possess deep wisdom and the patience to build lasting success through careful planning.",
     traits: [
       "Calm, patient, and steady",
       "Values knowledge and self-improvement",
@@ -142,6 +196,8 @@ const kuaProfiles: Record<
   },
   9: {
     name: "Li (Fire)",
+    element: "Fire",
+    description: "Brilliant like fire, you illuminate the world with your passion, creativity, and natural ability to inspire others.",
     traits: [
       "Passionate and ambitious",
       "Creative and expressive",
@@ -161,21 +217,13 @@ interface SanityArticle {
   tags?: string[];
 }
 
-const luckyDirections: Record<number, string[]> = {
-  1: ["North", "South", "Southeast", "East"],
-  2: ["Southwest", "West", "Northwest", "Northeast"],
-  3: ["North", "South", "Southeast", "East"],
-  4: ["North", "South", "Southeast", "East"],
-  5: ["Southwest", "West", "Northwest", "Northeast"],
-  6: ["Southwest", "West", "Northwest", "Northeast"],
-  7: ["Southwest", "West", "Northwest", "Northeast"],
-  8: ["Southwest", "West", "Northwest", "Northeast"],
-  9: ["North", "South", "Southeast", "East"],
-};
-
 const kuaGroup = (kua: number) =>
   [1, 3, 4, 9].includes(kua) ? "East Group" : "West Group";
 
+const groupColors = {
+  "East Group": "text-green-600",
+  "West Group": "text-blue-600"
+};
 
 export default function KuaNumberCalculator() {
   const [showMore, setShowMore] = useState(false);
@@ -303,6 +351,9 @@ export default function KuaNumberCalculator() {
     setKuaNumber(kua);
   };
 
+  const profile = kuaNumber ? kuaProfiles[kuaNumber] : null;
+  const group = kuaNumber ? kuaGroup(kuaNumber) : null;
+
   return (
     <div className="flex flex-col min-h-screen bg-white text-black overflow-hidden">
       <Header />
@@ -322,9 +373,9 @@ export default function KuaNumberCalculator() {
                   Discover how <span className="font-semibold">Feng Shui</span> can
                   guide <span className="font-semibold">harmony, balance, and positive energy</span> in
                   your life. Start with our free tools below to explore your
-                  <span className="font-semibold">personal Feng Shui insights</span>, including
+                  <span className="font-semibold"> personal Feng Shui insights</span>, including
                   your <span className="font-semibold">Kua number</span> and
-                  <span className="font-semibold">lucky directions</span>.
+                  <span className="font-semibold"> lucky directions</span>.
                 </p>
               </div>
 
@@ -336,9 +387,9 @@ export default function KuaNumberCalculator() {
                     <p>
                       Your <span className="font-semibold">Kua Number (Ming Gua 命卦)</span> is an
                       essential part of Ba Zhai Feng Shui. Calculated from your
-                      <span className="font-semibold">birth year and gender</span>, it reveals
+                      <span className="font-semibold"> birth year and gender</span>, it reveals
                       your personal Feng Shui energy type. Use your
-                      <span className="font-semibold">lucky directions</span> to find the best
+                      <span className="font-semibold"> lucky directions</span> to find the best
                       positions for <span className="font-semibold">health, wealth, love, and growth</span>.
                     </p>
                     <button
@@ -355,20 +406,20 @@ export default function KuaNumberCalculator() {
                   <div className="bg-gray-50 text-black/90 p-4 rounded-xl border border-gray-200 text-left">
                     <p className="mb-2">
                       The <span className="font-semibold">Kua system</span> comes from the
-                      <span className="font-semibold">Ba Zhai (Eight Mansions) school of Feng Shui</span>,
+                      <span className="font-semibold"> Ba Zhai (Eight Mansions) school of Feng Shui</span>,
                       rooted in:
                     </p>
-                    <ul className="list-disc list-inside">
+                    <ul className="list-disc list-inside space-y-1">
                       <li>
                         The <span className="font-semibold">Eight Trigrams (Bagua 八卦)</span> from
                         the I Ching.
                       </li>
                       <li>
                         <span className="font-semibold">Yin–Yang theory</span> and the
-                        <span className="font-semibold">Five Elements (Wood, Fire, Earth, Metal, Water)</span>.
+                        <span className="font-semibold"> Five Elements (Wood, Fire, Earth, Metal, Water)</span>.
                       </li>
                     </ul>
-                    <p className="mb-2">
+                    <p className="mb-2 mt-2">
                       <span className="font-semibold">Feng Shui practitioners</span> in ancient China
                       used this system to align a person's living environment
                       with <span className="font-semibold">cosmic energies</span> to bring harmony,
@@ -376,23 +427,18 @@ export default function KuaNumberCalculator() {
                     </p>
                     <p className="mb-2">
                       The <span className="font-semibold">Ming Gua (命卦, meaning "life trigram")</span> reflects the
-                      energy pattern you were born into – like an
-                      <span className="font-semibold">energetic blueprint of your Qi</span>.
-                    </p>
-                    <p className="mb-2">
-                      For example, those born in the year of the Dragon are said
-                      to be confident and ambitious, while Rabbits are known to
-                      be gentle and compassionate.
+                      energy pattern you were born into — like an
+                      <span className="font-semibold"> energetic blueprint of your Qi</span>.
                     </p>
                     <p className="mb-2">
                       <span className="font-semibold">Favorable directions</span> are used for sleeping
                       positions, desk placement, and door orientation to attract
-                      <span className="font-semibold">positive Qi</span>.
+                      <span className="font-semibold"> positive Qi</span>.
                     </p>
                     <p>
                       Knowing your <span className="font-semibold">Kua Number</span> can help you
                       arrange your space to support
-                      <span className="font-semibold">prosperity, health, and harmonious relationships</span>.
+                      <span className="font-semibold"> prosperity, health, and harmonious relationships</span>.
                     </p>
                   </div>
                 )}
@@ -442,64 +488,111 @@ export default function KuaNumberCalculator() {
               </div>
 
               {/* Result */}
-              {kuaNumber !== null && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="mt-8 p-6 rounded-xl bg-gray-50 border border-gray-200 text-left"
-                >
-                  <h2 className="text-xl font-bold text-gold mb-1">
-                    Your Kua Number: {kuaNumber} – {kuaProfiles[kuaNumber].name}
-                  </h2>
-                  <p className="mb-4 text-black/90">
-                    Group:{" "}
-                    <span className="font-semibold">{kuaGroup(kuaNumber)}</span>
-                  </p>
-                  <div className="space-y-4 text-black/90">
-                    <div>
-                      <h3 className="font-semibold mb-1 text-gold">Key Traits:</h3>
-                      <ul className="list-disc list-inside">
-                        {kuaProfiles[kuaNumber].traits.map((trait, i) => (
-                          <li key={i}>{trait}</li>
-                        ))}
-                      </ul>
+              <AnimatePresence>
+                {kuaNumber !== null && profile && (
+                  <motion.div
+                    key="result"
+                    initial={{ opacity: 0, y: 40 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="mt-8 space-y-6"
+                  >
+                    {/* Main Kua Display */}
+                    <div className={`p-6 rounded-xl border text-center ${kuaBgColors[kuaNumber]}`}>
+                      <div className="text-6xl mb-4">{kuaEmojis[kuaNumber]}</div>
+                      <h2 className="text-2xl font-bold text-gold mb-2">
+                        Kua Number: <span className={kuaColors[kuaNumber]}>{kuaNumber}</span>
+                      </h2>
+                      <h3 className="text-xl font-semibold text-black mb-1">{profile.name}</h3>
+                      <p className="text-lg mb-3">
+                        <span className="font-medium">Element:</span> {profile.element} • 
+                        <span className={`font-semibold ml-1 ${groupColors[group!]}`}>{group}</span>
+                      </p>
+                      <p className="text-black/90 leading-relaxed">{profile.description}</p>
                     </div>
-                    <div>
-                      <h3 className="font-semibold mb-1 text-gold">Lucky Directions:</h3>
-                      <ul className="list-disc list-inside">
-                        {kuaProfiles[kuaNumber].lucky.map((dir, i) => (
-                          <li key={i}>{dir}</li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold mb-1 text-gold">Unlucky Directions:</h3>
-                      <ul className="list-disc list-inside">
-                        {kuaProfiles[kuaNumber].unlucky.map((dir, i) => (
-                          <li key={i}>{dir}</li>
-                        ))}
-                      </ul>
-                    </div>
-                    {/* Dynamic tips from Sanity */}
-                    {loadingTips ? (
-                      <div className="mt-6 text-center text-gray-500">
-                        Loading tips...
-                      </div>
-                    ) : kuaTips && kuaTips.tips && kuaTips.tips.length > 0 ? (
-                      <div>
-                        <h3 className="font-semibold mb-1 text-gold">Practical Tips:</h3>
-                        <ul className="list-disc list-inside space-y-2">
-                          {kuaTips.tips.map((tip, i) => (
-                            <li key={i}>{tip}</li>
+
+                    {/* Detailed Analysis */}
+                    <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 space-y-6">
+                      <h3 className="text-xl font-bold text-gold text-center mb-4">Your Feng Shui Profile</h3>
+                      
+                      {/* Key Traits */}
+                      <div className="bg-white p-4 rounded-lg border border-gray-200">
+                        <h4 className="font-semibold text-gold mb-3 flex items-center gap-2">
+                          <Compass size={18} />
+                          Key Personality Traits
+                        </h4>
+                        <ul className="space-y-2">
+                          {profile.traits.map((trait, i) => (
+                            <li key={i} className="flex items-start">
+                              <span className="w-2 h-2 bg-gold rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                              <span className="text-black/90">{trait}</span>
+                            </li>
                           ))}
                         </ul>
                       </div>
-                    ) : (
-                      <p className="text-gray-500 text-sm">No tips found for this Kua number.</p>
-                    )}
-                  </div>
-                </motion.div>
-              )}
+
+                      {/* Directions Grid */}
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div className="bg-white p-4 rounded-lg border border-green-200">
+                          <h4 className="font-semibold text-green-600 mb-3 flex items-center gap-2">
+                            <TrendingUp size={18} />
+                            Lucky Directions
+                          </h4>
+                          <ul className="space-y-2">
+                            {profile.lucky.map((dir, i) => (
+                              <li key={i} className="flex items-start">
+                                <span className="w-2 h-2 bg-green-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                <span className="text-black/90">{dir}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        
+                        <div className="bg-white p-4 rounded-lg border border-red-200">
+                          <h4 className="font-semibold text-red-600 mb-3 flex items-center gap-2">
+                            <TrendingDown size={18} />
+                            Unlucky Directions
+                          </h4>
+                          <ul className="space-y-2">
+                            {profile.unlucky.map((dir, i) => (
+                              <li key={i} className="flex items-start">
+                                <span className="w-2 h-2 bg-red-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                <span className="text-black/90">{dir}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+
+                      {/* Dynamic tips from Sanity */}
+                      {loadingTips ? (
+                        <div className="bg-white p-4 rounded-lg border border-gray-200">
+                          <div className="text-center text-gray-500">Loading personalized tips...</div>
+                        </div>
+                      ) : kuaTips && kuaTips.tips && kuaTips.tips.length > 0 ? (
+                        <div className="bg-white p-4 rounded-lg border border-gray-200">
+                          <h4 className="font-semibold text-gold mb-3">Practical Feng Shui Tips</h4>
+                          <ul className="space-y-2">
+                            {kuaTips.tips.map((tip, i) => (
+                              <li key={i} className="flex items-start">
+                                <span className="w-2 h-2 bg-gold rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                <span className="text-black/90">{tip}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ) : (
+                        <div className="bg-white p-4 rounded-lg border border-gray-200">
+                          <p className="text-gray-500 text-sm text-center">
+                            Use your lucky directions for sleeping, working, and meditation to enhance positive energy flow.
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {/* Right side - Related Articles */}
