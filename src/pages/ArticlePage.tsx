@@ -11,6 +11,7 @@ import imageUrlBuilder from '@sanity/image-url';
 import { PortableText, PortableTextComponents } from '@portabletext/react';
 import { toPlainText } from '@portabletext/react';
 import { Calendar, Tag, Star, ArrowLeft, Share2 } from "lucide-react";
+import useDocumentTitle from '@/hooks/useDocumentTitle';
 
 // Define the interface for your article data from Sanity
 interface SanityArticle {
@@ -160,6 +161,9 @@ export default function ArticlePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+
+  // Use the document title hook - this will automatically manage the browser tab title
+  useDocumentTitle(article?.title || (loading ? 'Loading Article' : 'Article Not Found'));
 
   useEffect(() => {
     async function fetchArticle() {
@@ -399,7 +403,7 @@ export default function ArticlePage() {
     <div className="flex flex-col min-h-screen font-sans bg-white">
       {/* SEO Meta Tags */}
       <Helmet>
-        <title>{article.title} | Your Site Name</title>
+        <title>{article.title} | Feng Shui & Beyond</title>
         <meta name="description" content={metaDescription} />
         <meta property="og:title" content={article.title} />
         <meta property="og:description" content={metaDescription} />
@@ -414,7 +418,7 @@ export default function ArticlePage() {
           <meta name="twitter:image" content={urlFor((article as SanityArticle).mainImage).width(1200).height(630).url()} />
         )}
         {article.tags && <meta name="keywords" content={article.tags.join(', ')} />}
-        <meta name="author" content="Your Site Name" />
+        <meta name="author" content="Feng Shui & Beyond" />
         <meta name="publish-date" content={article.publishDate} />
         <link rel="canonical" href={`${window.location.origin}/articles/${slug}`} />
       </Helmet>
