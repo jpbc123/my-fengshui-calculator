@@ -9,11 +9,22 @@ const sanityClient = createSanityClient({
     token: process.env.SANITY_API_WRITE_TOKEN,
 });
 
+// Helper function to get consistent date format
+const getCurrentDate = () => {
+    const now = new Date();
+    return now.getFullYear() + '-' + 
+           String(now.getMonth() + 1).padStart(2, '0') + '-' + 
+           String(now.getDate()).padStart(2, '0');
+};
+
 export default async function handler(req, res) {
     // CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
 
     // Handle preflight OPTIONS request
     if (req.method === 'OPTIONS') {
@@ -25,14 +36,15 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    // Support flexible date parameter, default to today
-    const requestedDate = req.query.date || new Date().toLocaleDateString('en-CA');
+    // Use consistent date handling - default to current date
+    const requestedDate = req.query.date || getCurrentDate();
+    console.log(`API called for daily wisdom - requested date: ${requestedDate}, current date: ${getCurrentDate()}`);
     
     // Validate date format (YYYY-MM-DD)
     if (!/^\d{4}-\d{2}-\d{2}$/.test(requestedDate)) {
         return res.status(400).json({ 
             error: 'Invalid date format. Use YYYY-MM-DD',
-            example: '2025-09-09'
+            example: '2025-09-10'
         });
     }
 
@@ -56,6 +68,7 @@ export default async function handler(req, res) {
                 quote: result.quote, 
                 article: result.article,
                 date: requestedDate,
+                timestamp: new Date().toISOString(),
                 isFallback: false,
                 metadata: {
                     createdAt: result._createdAt,
@@ -68,6 +81,7 @@ export default async function handler(req, res) {
                 quote: "Wisdom comes to those who seek it with an open heart.",
                 article: "Today brings opportunities for growth and self-reflection. Take time to listen to your inner voice and trust your intuition. Every moment offers a chance to learn something new about yourself and the world around you.",
                 date: requestedDate,
+                timestamp: new Date().toISOString(),
                 isFallback: true,
                 metadata: {
                     message: "Fallback content - no specific wisdom found for this date"

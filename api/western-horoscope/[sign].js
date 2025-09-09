@@ -1,4 +1,4 @@
-// api/western-horoscope/[sign].js - Updated to match Chinese API logic
+// api/western-horoscope/[sign].js - Fixed timezone issue
 import { createClient as createSanityClient } from '@sanity/client';
 
 const sanityClient = createSanityClient({
@@ -43,7 +43,7 @@ async function fetchWithBackoff(url, options, retries = 3, baseDelay = 1000) {
     throw new Error("Maximum retries exceeded for API call.");
 }
 
-// Get current week starting Sunday
+// Get current week starting Sunday - FIXED to use local time
 function getCurrentWeekDates(date = new Date()) {
     const day = date.getDay(); // 0 = Sunday
     const diff = date.getDate() - day;
@@ -54,23 +54,37 @@ function getCurrentWeekDates(date = new Date()) {
     const endOfWeek = new Date(startOfWeek);
     endOfWeek.setDate(startOfWeek.getDate() + 6);
 
+    // Use local time instead of UTC
+    const formatLocalDate = (date) => {
+        return date.getFullYear() + '-' + 
+               String(date.getMonth() + 1).padStart(2, '0') + '-' + 
+               String(date.getDate()).padStart(2, '0');
+    };
+
     return {
-        start: startOfWeek.toISOString().slice(0, 10),
-        end: endOfWeek.toISOString().slice(0, 10)
+        start: formatLocalDate(startOfWeek),
+        end: formatLocalDate(endOfWeek)
     };
 }
 
-// Get today's date (matching Chinese API logic - no +1 offset)
+// Get today's date - FIXED to use consistent local time
 function getTodayDate(dayOffset = 0) {
     const targetDate = new Date();
     targetDate.setDate(targetDate.getDate() + dayOffset);
-    return targetDate.toISOString().slice(0, 10);
+    
+    // Use local time format to match other APIs
+    return targetDate.getFullYear() + '-' + 
+           String(targetDate.getMonth() + 1).padStart(2, '0') + '-' + 
+           String(targetDate.getDate()).padStart(2, '0');
 }
 
 export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
 
     if (req.method === 'OPTIONS') {
         return res.status(200).end();
@@ -102,8 +116,10 @@ export default async function handler(req, res) {
 
         if (period === 'daily') {
             docType = 'dailyWesternHoroscope';
-            // Get today's date + offset for daily queries
+            // Get today's date + offset for daily queries - FIXED timezone
             identifierValue = getTodayDate(dayOffset);
+            console.log(`Fetching daily horoscope for ${sign} on ${identifierValue} (offset: ${dayOffset})`);
+            
             query = `*[_type == $docType && sign == $sign && forDate == $date][0]{
                 ...,
                 "for_date": forDate
@@ -111,9 +127,11 @@ export default async function handler(req, res) {
             params = { docType, sign: sign.toLowerCase(), date: identifierValue };
         } else if (period === 'weekly') {
             docType = 'weeklyWesternHoroscope';
-            // Get current week starting Sunday
+            // Get current week starting Sunday - FIXED timezone
             const { start, end } = getCurrentWeekDates();
             identifierValue = start;
+            console.log(`Fetching weekly horoscope for ${sign} for week ${start} to ${end}`);
+            
             query = `*[_type == $docType && sign == $sign && startDate == $startDate][0]{
                 ...,
                 "start_date": startDate,
@@ -123,6 +141,8 @@ export default async function handler(req, res) {
         } else if (period === 'yearly') {
             docType = 'yearlyWesternHoroscope';
             identifierValue = new Date().getFullYear();
+            console.log(`Fetching yearly horoscope for ${sign} for year ${identifierValue}`);
+            
             query = `*[_type == $docType && sign == $sign && year == $year][0]{
                 ...,
                 "horoscope": overviewContent,
@@ -141,7 +161,11 @@ export default async function handler(req, res) {
 
         if (dataToReturn) {
             console.log(`${period} horoscope for ${sign} found in Sanity.`);
-            return res.json(dataToReturn);
+            return res.json({
+                ...dataToReturn,
+                timestamp: new Date().toISOString(),
+                isFallback: false
+            });
         }
 
         // Check cache before making API call
@@ -263,7 +287,11 @@ export default async function handler(req, res) {
             }
 
             requestCache.delete(cacheKey);
-            return res.json(transformedDocument);
+            return res.json({
+                ...transformedDocument,
+                timestamp: new Date().toISOString(),
+                isFallback: false
+            });
 
         } catch (geminiError) {
             requestCache.delete(cacheKey);
@@ -272,6 +300,9 @@ export default async function handler(req, res) {
 
     } catch (error) {
         console.error(`API call failed for ${sign} Western horoscope (${period}):`, error.message);
-        res.status(500).json({ error: `Failed to retrieve or generate ${sign} horoscope. ${error.message}` });
+        res.status(500).json({ 
+            error: `Failed to retrieve or generate ${sign} horoscope. ${error.message}`,
+            timestamp: new Date().toISOString()
+        });
     }
 }

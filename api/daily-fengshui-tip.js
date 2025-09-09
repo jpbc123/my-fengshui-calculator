@@ -9,10 +9,21 @@ const sanityClient = createSanityClient({
     token: process.env.SANITY_API_WRITE_TOKEN,
 });
 
+// Helper function to get consistent date format
+const getCurrentDate = () => {
+    const now = new Date();
+    return now.getFullYear() + '-' + 
+           String(now.getMonth() + 1).padStart(2, '0') + '-' + 
+           String(now.getDate()).padStart(2, '0');
+};
+
 export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
 
     if (req.method === 'OPTIONS') {
         return res.status(200).end();
@@ -22,8 +33,9 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    // Support flexible date parameter, default to today
-    const requestedDate = req.query.date || new Date().toISOString().slice(0, 10);
+    // Use consistent date handling - default to current date
+    const requestedDate = req.query.date || getCurrentDate();
+    console.log(`API called for feng shui tip - requested date: ${requestedDate}, current date: ${getCurrentDate()}`);
     
     // Validate date format
     if (!/^\d{4}-\d{2}-\d{2}$/.test(requestedDate)) {
@@ -40,18 +52,24 @@ export default async function handler(req, res) {
             console.log(`Found feng shui tip for ${requestedDate}`);
             return res.json({ 
                 tip: result.tip,
-                date: requestedDate
+                date: requestedDate,
+                timestamp: new Date().toISOString(),
+                isFallback: false
             });
         } else {
             console.log(`No feng shui tip found for ${requestedDate}, returning fallback`);
             return res.json({ 
                 tip: "Clear your mind to welcome positive chi.",
                 date: requestedDate,
+                timestamp: new Date().toISOString(),
                 isFallback: true
             });
         }
     } catch (error) {
         console.error('Error fetching feng shui tip:', error);
-        return res.status(500).json({ error: 'Failed to fetch feng shui tip' });
+        return res.status(500).json({ 
+            error: 'Failed to fetch feng shui tip',
+            timestamp: new Date().toISOString()
+        });
     }
 }
