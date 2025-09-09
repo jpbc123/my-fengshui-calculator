@@ -6,7 +6,7 @@ import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
 import Breadcrumb from "@/components/Breadcrumb";
 import dayjs from 'dayjs';
-import { client } from "../../sanityClient";
+import { client } from "@root/sanityClient";
 import imageUrlBuilder from '@sanity/image-url';
 import { PortableText, PortableTextComponents } from '@portabletext/react';
 import { toPlainText } from '@portabletext/react';
@@ -408,6 +408,12 @@ export default function ArticlePage() {
         <meta property="og:title" content={article.title} />
         <meta property="og:description" content={metaDescription} />
         <meta property="og:type" content="article" />
+		<meta property="og:image" content={
+    (article._type === 'article' && (article as SanityArticle).mainImage) 
+      ? urlFor((article as SanityArticle).mainImage).width(1200).height(630).url()
+      : "https://fengshuiandbeyond.com/og-default.jpg"  // Add your default image here
+  } />
+  
         {article._type === 'article' && (article as SanityArticle).mainImage && (
           <meta property="og:image" content={urlFor((article as SanityArticle).mainImage).width(1200).height(630).url()} />
         )}

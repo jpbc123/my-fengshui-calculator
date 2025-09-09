@@ -14,14 +14,13 @@ export default defineConfig(({ mode }) => {
     plugins: [react()],
     resolve: {
       alias: {
-        "@": path.resolve(__dirname, "./src"),
-        "@root": path.resolve(__dirname, "./"),  // Add this line
+"@": path.resolve(__dirname, "./src"),
       },
     },
     build: {
       sourcemap: false,
       minify: "esbuild",
-      // Ensure proper handling of assets
+	  // Ensure proper handling of assets
       assetsDir: "assets",
       // Generate clean URLs
       rollupOptions: {

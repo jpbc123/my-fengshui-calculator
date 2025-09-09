@@ -60,7 +60,7 @@ const Header = () => {
         {/* Logo + Title */}
         <Link to="/" className="flex items-center gap-3 no-underline flex-shrink-0">
           <LogoIcon />
-          <h1 className="text-2xl sm:text-3xl font-bold text-gold font-charity leading-snug break-words">
+          <h1 className="text-3xl sm:text-3xl font-bold text-gold font-charity leading-snug break-words">
             Feng Shui & Beyond
           </h1>
         </Link>
