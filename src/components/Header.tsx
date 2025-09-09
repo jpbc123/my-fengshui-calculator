@@ -24,8 +24,8 @@ const megaMenuConfig = {
       title: "Wellness & Mindfulness",
       items: [
         { name: "Meditation Hub", href: "/meditation", description: "Explore all meditation practices in one place" },
-        { name: "Morning Mindfulness", href: "/meditate-morning-mindfulness", description: "Start your day with intention" },
-        { name: "Evening Relaxation", href: "/meditate-evening-relaxation", description: "Unwind peacefully" },
+        { name: "Morning Mindfulness", href: "/meditate-morning", description: "Start your day with intention" },
+        { name: "Evening Relaxation", href: "/meditate-evening", description: "Unwind peacefully" },
         { name: "Daily Affirmations", href: "/meditate-affirmation", description: "Positive daily mantras" },
         { name: "Yoga Poses", href: "/meditate-yoga-pose", description: "Daily physical practice" },
       ],

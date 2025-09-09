@@ -329,7 +329,6 @@ const GamesFunLanding = () => {
           </motion.div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 };

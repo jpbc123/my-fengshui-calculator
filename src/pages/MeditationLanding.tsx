@@ -39,7 +39,7 @@ const MeditationLanding = () => {
       title: 'Morning Mindfulness',
       description: 'Start your day with intention, gratitude, and mindful awareness. Set a positive tone through breathing, gratitude, and daily intentions.',
       icon: Sunrise,
-      link: '/meditate-morning-mindfulness',
+      link: '/meditate-morning',
       gradient: 'from-yellow-400 via-orange-400 to-red-400',
       bgGradient: 'from-yellow-50 to-orange-50',
       duration: '15-20 min',
@@ -52,7 +52,7 @@ const MeditationLanding = () => {
       title: 'Visualization Exercises',
       description: 'Create peaceful mental imagery to reduce stress and find clarity. Journey within through guided imagery and healing light meditations.',
       icon: Eye,
-      link: '/meditate-visualization-exercise',
+      link: '/meditate-visualization',
       gradient: 'from-purple-400 via-indigo-400 to-blue-400',
       bgGradient: 'from-purple-50 to-indigo-50',
       duration: '10-15 min',
@@ -78,7 +78,7 @@ const MeditationLanding = () => {
       title: 'Evening Relaxation',
       description: 'Unwind and prepare for restful sleep with calming practices. Reflect, release tension, and transition peacefully into night.',
       icon: Moon,
-      link: '/meditate-evening-relaxation',
+      link: '/meditate-evening',
       gradient: 'from-slate-400 via-gray-400 to-zinc-400',
       bgGradient: 'from-slate-50 to-gray-50',
       duration: '15-25 min',
@@ -282,7 +282,6 @@ const MeditationLanding = () => {
           </motion.div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 };

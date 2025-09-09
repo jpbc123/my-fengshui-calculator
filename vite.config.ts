@@ -20,6 +20,14 @@ export default defineConfig(({ mode }) => {
     build: {
       sourcemap: false,
       minify: "esbuild",
+	  // Ensure proper handling of assets
+      assetsDir: "assets",
+      // Generate clean URLs
+      rollupOptions: {
+        output: {
+          manualChunks: undefined,
+        }
+      }
     },
   };
 });

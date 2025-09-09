@@ -422,7 +422,7 @@ export default function ArticlePage() {
       <Header />
       <main className="flex-grow pt-16">
         <div className="container mx-auto px-4 py-8 md:py-16 max-w-4xl">
-          <Breadcrumb items={breadcrumbs} />
+         
           
           {/* Back to Articles Button */}
           <div className="mt-8 mb-6">
