@@ -261,7 +261,7 @@ const fetchHoroscope = useCallback(async (sign: string, period: PeriodTabType) =
   setError(null);
 
   try {
-    let apiUrl = `/api/western-horoscope/${sign.toLowerCase()}`;
+    let apiUrl = `/api/western-horoscope?sign=${sign.toLowerCase()}`;
     
     // FIXED: Match Chinese horoscope logic exactly
     if (period === 'today') {

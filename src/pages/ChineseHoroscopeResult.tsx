@@ -261,7 +261,7 @@ const allFeatureImages = useMemo(() =>
         }
         setError(null);
 
-        let apiUrl = `/api/chinese-horoscope/${zodiac.toLowerCase()}`;
+        let apiUrl = `/api/chinese-horoscope?zodiac=${zodiac.toLowerCase()}`;
         
         // FIXED: Correct the dayOffset logic
         if (activePeriodTab === 'today' || activePeriodTab === 'yesterday') {
