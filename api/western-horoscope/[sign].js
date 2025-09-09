@@ -94,9 +94,9 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    const { sign } = req.query;
-    const period = req.query.period || 'daily';
-    const dayOffset = parseInt(req.query.dayOffset || '0', 10);
+    export default async function handler(req, res) {
+  const sign = req.query.sign; // Get from query parameter instead of path
+  const period = req.query.period || 'daily';
 
     console.log("Western Horoscope API called:", sign, period, dayOffset);
 
