@@ -1,4 +1,4 @@
-// api/chinese-horoscope/[zodiac].js - Fixed with consistent timezone
+// api/chinese-horoscope.js - Fixed with ES6 syntax
 import { createClient as createSanityClient } from '@sanity/client';
 
 const sanityClient = createSanityClient({
@@ -94,9 +94,9 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    export default async function handler(req, res) {
-  const zodiac = req.query.zodiac; // Get from query parameter instead of path
-  const period = req.query.period || 'daily';
+    const zodiac = req.query.zodiac; // Get from query parameter instead of path
+    const period = req.query.period || 'daily';
+    const dayOffset = parseInt(req.query.dayOffset || '0', 10);
 
     console.log("Chinese Horoscope API called:", zodiac, period, dayOffset);
      

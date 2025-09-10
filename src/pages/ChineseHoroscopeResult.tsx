@@ -261,21 +261,16 @@ const allFeatureImages = useMemo(() =>
         }
         setError(null);
 
-        let apiUrl = `/api/chinese-horoscope?zodiac=${zodiac.toLowerCase()}`;
-        
-        // FIXED: Correct the dayOffset logic
-        if (activePeriodTab === 'today' || activePeriodTab === 'yesterday') {
-            // Since sync scripts generate data for tomorrow (+1 day):
-            // - Today: fetch data with dayOffset=1 (gets today's data)
-            // - Yesterday: fetch data with dayOffset=0 (gets yesterday's data)
-            const dayOffset = activePeriodTab === 'today' ? 0 : -1;
-            apiUrl += `?period=daily&dayOffset=${dayOffset}`;
-
-        } else if (activePeriodTab === 'weekly') {
-            apiUrl += `?period=weekly`;
-        } else if (activePeriodTab === 'yearly') {
-            apiUrl += `?period=yearly`;
-        }
+		let apiUrl = `/api/chinese-horoscope?zodiac=${zodiac.toLowerCase()}`;
+		
+		if (activePeriodTab === 'today' || activePeriodTab === 'yesterday') {
+			const dayOffset = activePeriodTab === 'today' ? 0 : -1;
+			apiUrl = `/api/chinese-horoscope?zodiac=${zodiac.toLowerCase()}&period=daily&dayOffset=${dayOffset}`;
+		} else if (activePeriodTab === 'weekly') {
+			apiUrl = `/api/chinese-horoscope?zodiac=${zodiac.toLowerCase()}&period=weekly`;
+		} else if (activePeriodTab === 'yearly') {
+			apiUrl = `/api/chinese-horoscope?zodiac=${zodiac.toLowerCase()}&period=yearly`;
+		}
 
         try {
             const response = await fetch(apiUrl);

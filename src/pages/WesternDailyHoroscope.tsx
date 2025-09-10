@@ -262,16 +262,15 @@ const fetchHoroscope = useCallback(async (sign: string, period: PeriodTabType) =
 
   try {
     let apiUrl = `/api/western-horoscope?sign=${sign.toLowerCase()}`;
-    
-    // FIXED: Match Chinese horoscope logic exactly
-    if (period === 'today') {
-      apiUrl += '?period=daily&dayOffset=0';  // Changed from -1 to 0
-    } else if (period === 'yesterday') {
-      apiUrl += '?period=daily&dayOffset=-1'; // Changed from -2 to -1
+
+    // Change activePeriodTab to period (the parameter)
+    if (period === 'today' || period === 'yesterday') {
+        const dayOffset = period === 'today' ? 0 : -1;
+        apiUrl = `/api/western-horoscope?sign=${sign.toLowerCase()}&period=daily&dayOffset=${dayOffset}`;
     } else if (period === 'weekly') {
-      apiUrl += '?period=weekly';
+        apiUrl = `/api/western-horoscope?sign=${sign.toLowerCase()}&period=weekly`;
     } else if (period === 'yearly') {
-      apiUrl += '?period=yearly';
+        apiUrl = `/api/western-horoscope?sign=${sign.toLowerCase()}&period=yearly`;
     }
 
     console.log('Fetching from:', apiUrl);

@@ -1,4 +1,4 @@
-// api/western-horoscope/[sign].js - Fixed timezone issue
+// api/western-horoscope.js - Fixed with ES6 syntax
 import { createClient as createSanityClient } from '@sanity/client';
 
 const sanityClient = createSanityClient({
@@ -94,9 +94,9 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    export default async function handler(req, res) {
-  const sign = req.query.sign; // Get from query parameter instead of path
-  const period = req.query.period || 'daily';
+    const sign = req.query.sign; // Get from query parameter instead of path
+    const period = req.query.period || 'daily';
+    const dayOffset = parseInt(req.query.dayOffset || '0', 10);
 
     console.log("Western Horoscope API called:", sign, period, dayOffset);
 
@@ -300,7 +300,7 @@ export default async function handler(req, res) {
 
     } catch (error) {
         console.error(`API call failed for ${sign} Western horoscope (${period}):`, error.message);
-        res.status(500).json({ 
+        return res.status(500).json({ 
             error: `Failed to retrieve or generate ${sign} horoscope. ${error.message}`,
             timestamp: new Date().toISOString()
         });
