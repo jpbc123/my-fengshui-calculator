@@ -2,7 +2,7 @@ name: Daily Content Sync
 
 on:
   schedule:
-    # Run at 2 AM UTC daily (generates tomorrow's content)
+    # Run at 5:10 AM UTC daily (generates tomorrow's content)
     - cron: '10 5 * * *'
   workflow_dispatch: # Allow manual triggering
 
@@ -51,16 +51,24 @@ jobs:
       run: node sync-chinese-horoscopes-sanity.js --tomorrow --daily-only
       
     - name: Generate Weekly Content (Sundays only)
-      if: github.event.schedule == '0 2 * * 0' # Only on Sundays
       run: |
-        node sync-western-horoscopes-sanity.js --tomorrow --weekly-only
-        node sync-chinese-horoscopes-sanity.js --tomorrow --weekly-only
+        if [ $(date -u +%u) -eq 7 ]; then
+          echo "It's Sunday, generating weekly content..."
+          node sync-western-horoscopes-sanity.js --tomorrow --weekly-only
+          node sync-chinese-horoscopes-sanity.js --tomorrow --weekly-only
+        else
+          echo "Not Sunday, skipping weekly content"
+        fi
         
-    - name: Generate Yearly Content (January 1st only)
-      if: github.event.schedule == '0 2 1 1 *' # Only on January 1st
+    - name: Generate Yearly Content (December 31st only)
       run: |
-        node sync-western-horoscopes-sanity.js --tomorrow --yearly-only
-        node sync-chinese-horoscopes-sanity.js --tomorrow --yearly-only
+        if [ $(date -u +%m-%d) = "12-31" ]; then
+          echo "It's December 31st, generating next year's content..."
+          node sync-western-horoscopes-sanity.js --tomorrow --yearly-only
+          node sync-chinese-horoscopes-sanity.js --tomorrow --yearly-only
+        else
+          echo "Not December 31st, skipping yearly content"
+        fi
 
   # Separate job for error handling and notifications
   notify-on-failure:
