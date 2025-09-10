@@ -1,4 +1,4 @@
-// src/components/RightSidebar.tsx - UPDATED TO USE ARTICLEPAGE
+// src/components/RightSidebar.tsx - UPDATED WITH SMART CACHING
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState, useEffect } from "react";
 import dayjs from "dayjs";
@@ -21,6 +21,59 @@ interface FengShuiTipData {
   tip: string;
 }
 
+// Smart cleanup - only removes yesterday's cache, keeps today's
+const cleanupOldCache = (type: string) => {
+  const today = dayjs().format("YYYY-MM-DD");
+  const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+  
+  // Clean up yesterday's cache for this type
+  const yesterdayKey = `${type}_${yesterday}`;
+  localStorage.removeItem(yesterdayKey);
+  
+  // Clean up any cache older than yesterday
+  Object.keys(localStorage).forEach(key => {
+    if (key.startsWith(`${type}_`)) {
+      const match = key.match(/(\d{4}-\d{2}-\d{2})/);
+      if (match) {
+        const cacheDate = match[1];
+        if (cacheDate < yesterday) {
+          console.log(`Removing old cache: ${key}`);
+          localStorage.removeItem(key);
+        }
+      }
+    }
+  });
+};
+
+const getCachedData = (type: string, date: string) => {
+  const cacheKey = `${type}_${date}`;
+  const cached = localStorage.getItem(cacheKey);
+  
+  if (cached) {
+    try {
+      return JSON.parse(cached);
+    } catch (error) {
+      console.error(`Error parsing cached ${type}:`, error);
+      localStorage.removeItem(cacheKey);
+    }
+  }
+  return null;
+};
+
+const setCachedData = (type: string, date: string, data: any) => {
+  const cacheKey = `${type}_${date}`;
+  try {
+    localStorage.setItem(cacheKey, JSON.stringify({
+      ...data,
+      date,
+      cached_at: new Date().toISOString()
+    }));
+    console.log(`Cached ${type} for ${date}`);
+  } catch (error) {
+    console.error(`Error caching ${type}:`, error);
+  }
+};
+
 export default function RightSidebar() {
   const [todaysTip, setTodaysTip] = useState("Loading...");
   const [planetaryOverviewData, setPlanetaryOverviewData] = useState<PlanetaryOverviewData | null>(null);
@@ -29,64 +82,22 @@ export default function RightSidebar() {
 
   // Use current date for display
   const today = dayjs().format("YYYY-MM-DD");
-  
-  const isCacheValid = (cacheKey: string, expectedDate: string): boolean => {
-    const cachedData = localStorage.getItem(cacheKey);
-    if (!cachedData) return false;
-    
-    try {
-      const parsed = JSON.parse(cachedData);
-      const cacheDate = parsed.date || parsed.cached_date;
-      const isValid = cacheDate === expectedDate;
+
+  // Fetch Feng Shui Tip with smart caching
+  useEffect(() => {
+    const fetchFengShuiTip = async () => {
+      // Clean up old cache first
+      cleanupOldCache('fengshuiTip');
       
-      console.log(`Cache validation for ${cacheKey}: cached=${cacheDate}, expected=${expectedDate}, valid=${isValid}`);
-      return isValid;
-    } catch (error) {
-      console.error(`Error parsing cache for ${cacheKey}:`, error);
-      localStorage.removeItem(cacheKey);
-      return false;
-    }
-  };
-
-  const cleanupOldCache = () => {
-    const keys = Object.keys(localStorage);
-    const cacheKeys = keys.filter(key => 
-      key.startsWith('fengshuiTip_') || 
-      key.startsWith('planetaryOverview_')
-    );
-    
-    cacheKeys.forEach(key => {
-      const date = key.split('_')[1];
-      if (date && date !== today) {
-        console.log(`Removing old cache: ${key}`);
-        localStorage.removeItem(key);
-      }
-    });
-  };
-
-  useEffect(() => {
-    cleanupOldCache();
-  }, [today]);
-
-  // Fetch Feng Shui Tip using Vercel API routes
-  useEffect(() => {
-    const tipCacheKey = `fengshuiTip_${today}`;
-    const tipCached = localStorage.getItem(tipCacheKey);
-    
-    if (tipCached && isCacheValid(tipCacheKey, today)) {
-      try {
-        const tipData = JSON.parse(tipCached);
+      // Check for today's cached data
+      const cached = getCachedData('fengshuiTip', today);
+      if (cached) {
         console.log(`Using cached feng shui tip for ${today}`);
-        setTodaysTip(tipData.tip);
+        setTodaysTip(cached.tip);
         setLoadingFengShuiTip(false);
         return;
-      } catch (error) {
-        console.error(`Error parsing feng shui cache:`, error);
-        localStorage.removeItem(tipCacheKey);
       }
-    }
 
-    const fetchDailyFengshuiTip = async () => {
       try {
         setLoadingFengShuiTip(true);
         console.log(`Fetching feng shui tip for ${today}...`);
@@ -101,14 +112,8 @@ export default function RightSidebar() {
         const tip = result?.tip || "Clear your mind to welcome positive chi.";
 
         setTodaysTip(tip);
-
-        localStorage.setItem(tipCacheKey, JSON.stringify({
-          tip,
-          cached_date: today,
-          cached_at: new Date().toISOString()
-        }));
+        setCachedData('fengshuiTip', today, { tip });
         
-        console.log(`Cached feng shui tip for ${today}`);
       } catch (error) {
         console.error("Failed to fetch daily feng shui tip:", error);
         setTodaysTip("Clear your mind to welcome positive chi.");
@@ -117,29 +122,24 @@ export default function RightSidebar() {
       }
     };
 
-    fetchDailyFengshuiTip();
+    fetchFengShuiTip();
   }, [today]);
 
-  // Fetch Planetary Overview using Vercel API routes
+  // Fetch Planetary Overview with smart caching
   useEffect(() => {
-    const cacheKey = `planetaryOverview_${today}`;
-    console.log(`Checking planetary overview cache for key: ${cacheKey}`);
-
-    if (isCacheValid(cacheKey, today)) {
-      const cachedData = localStorage.getItem(cacheKey);
-      try {
-        const parsedData = JSON.parse(cachedData!);
+    const fetchPlanetaryOverview = async () => {
+      // Clean up old cache first
+      cleanupOldCache('planetaryOverview');
+      
+      // Check for today's cached data
+      const cached = getCachedData('planetaryOverview', today);
+      if (cached) {
         console.log(`Using cached planetary overview for ${today}`);
-        setPlanetaryOverviewData(parsedData);
+        setPlanetaryOverviewData(cached);
         setLoadingPlanetaryOverview(false);
         return;
-      } catch (error) {
-        console.error(`Error parsing planetary overview cache:`, error);
-        localStorage.removeItem(cacheKey);
       }
-    }
 
-    const fetchPlanetaryOverview = async () => {
       try {
         setLoadingPlanetaryOverview(true);
         console.log(`Fetching planetary overview for ${today}...`);
@@ -153,26 +153,22 @@ export default function RightSidebar() {
         const result = await response.json();
         
         if (result) {
-          const normalizedResult = {
+          const planetaryData = {
             ...result,
-            date: today,
-            cached_date: today,
-            cached_at: new Date().toISOString()
+            date: today
           };
-          setPlanetaryOverviewData(normalizedResult);
-          localStorage.setItem(cacheKey, JSON.stringify(normalizedResult));
-          console.log(`Cached planetary overview for ${today}`);
+          setPlanetaryOverviewData(planetaryData);
+          setCachedData('planetaryOverview', today, planetaryData);
         } else {
           const fallbackData = {
             date: today,
             planetary_index: 2,
             summary: "Universal energies are in transition today. Take time for reflection and avoid making hasty decisions.",
             article: "Today brings a blend of practical and intuitive energies. The planetary alignments suggest focusing on balance and mindful decision-making.",
-            cached_date: today,
-            cached_at: new Date().toISOString(),
             is_fallback: true
           };
           setPlanetaryOverviewData(fallbackData);
+          setCachedData('planetaryOverview', today, fallbackData);
         }
       } catch (error) {
         console.error("Failed to fetch planetary overview:", error);
@@ -181,8 +177,6 @@ export default function RightSidebar() {
           planetary_index: 2,
           summary: "Universal energies are in transition today. Take time for reflection and avoid making hasty decisions.",
           article: "Today brings a blend of practical and intuitive energies. The planetary alignments suggest focusing on balance and mindful decision-making.",
-          cached_date: today,
-          cached_at: new Date().toISOString(),
           is_fallback: true
         };
         setPlanetaryOverviewData(fallbackData);
@@ -244,7 +238,6 @@ export default function RightSidebar() {
                   <p className="text-sm text-gray-200">
                     {planetaryOverviewData.summary}
                   </p>
-                  {/* UPDATED: Use ArticlePage with planetary slug format */}
                   <Link
                     to={`/articles/planetary-${today}`}
                     className="text-gold text-sm font-semibold hover:underline mt-2 inline-block"

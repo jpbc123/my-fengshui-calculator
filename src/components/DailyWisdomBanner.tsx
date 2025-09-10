@@ -6,6 +6,29 @@ const getTodayDate = () => {
   return dayjs().format('YYYY-MM-DD');
 };
 
+// Smart cleanup - only removes yesterday's cache, keeps today's
+const cleanupOldCache = (type: string) => {
+  const today = getTodayDate();
+  const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+  
+  // Clean up yesterday's cache for this type
+  const yesterdayKey = `${type}_${yesterday}`;
+  localStorage.removeItem(yesterdayKey);
+  
+  // Clean up any cache older than yesterday
+  Object.keys(localStorage).forEach(key => {
+    if (key.startsWith(`${type}_`)) {
+      const match = key.match(/(\d{4}-\d{2}-\d{2})/);
+      if (match) {
+        const cacheDate = match[1];
+        if (cacheDate < yesterday) {
+          localStorage.removeItem(key);
+        }
+      }
+    }
+  });
+};
+
 const DailyWisdomBanner = () => {
   const [partialMessage, setPartialMessage] = useState("Loading daily wisdom...");
   const [fullArticle, setFullArticle] = useState("");
@@ -17,17 +40,25 @@ const DailyWisdomBanner = () => {
     const fetchDailyWisdom = async () => {
       const today = getTodayDate();
       
-      // Check cache first - using in-memory storage instead of localStorage
+      // Clean up old cache first
+      cleanupOldCache('dailyWisdom');
+      
+      // Check cache first - now using localStorage for consistency
       const cacheKey = `dailyWisdom_${today}`;
-      const cachedData = sessionStorage.getItem(cacheKey);
+      const cachedData = localStorage.getItem(cacheKey);
       
       if (cachedData) {
-        const { quote, article } = JSON.parse(cachedData);
-        console.log(`Using cached daily wisdom for ${today}`);
-        setPartialMessage(quote);
-        setFullArticle(article);
-        setIsLoading(false);
-        return;
+        try {
+          const { quote, article } = JSON.parse(cachedData);
+          console.log(`Using cached daily wisdom for ${today}`);
+          setPartialMessage(quote);
+          setFullArticle(article);
+          setIsLoading(false);
+          return;
+        } catch (error) {
+          console.error('Error parsing cached daily wisdom:', error);
+          localStorage.removeItem(cacheKey);
+        }
       }
       
       try {
@@ -43,10 +74,12 @@ const DailyWisdomBanner = () => {
           setPartialMessage(data.quote);
           setFullArticle(data.article);
           
-          // Cache the data in sessionStorage
-          sessionStorage.setItem(cacheKey, JSON.stringify({
+          // Cache the data in localStorage (changed from sessionStorage)
+          localStorage.setItem(cacheKey, JSON.stringify({
             quote: data.quote,
-            article: data.article
+            article: data.article,
+            date: today,
+            cached_at: new Date().toISOString()
           }));
           console.log(`Cached daily wisdom for ${today}`);
         } else {
@@ -67,6 +100,7 @@ const DailyWisdomBanner = () => {
 
   const storeFullArticle = () => {
     if (fullArticle && partialMessage) {
+      // Still using sessionStorage for article page data since it's temporary navigation state
       sessionStorage.setItem('currentDailyWisdomArticle', fullArticle);
       sessionStorage.setItem('currentDailyWisdomQuote', partialMessage);
       console.log('Stored daily wisdom in sessionStorage for article page');

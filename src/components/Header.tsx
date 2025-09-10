@@ -23,7 +23,7 @@ const megaMenuConfig = {
     wellness: {
       title: "Wellness & Mindfulness",
       items: [
-        { name: "Meditation Hub", href: "/meditation", description: "Explore all meditation practices in one place" },
+        { name: "Meditation", href: "/meditation", description: "Explore all meditation practices in one place" },
         { name: "Morning Mindfulness", href: "/meditate-morning", description: "Start your day with intention" },
         { name: "Evening Relaxation", href: "/meditate-evening", description: "Unwind peacefully" },
         { name: "Daily Affirmations", href: "/meditate-affirmation", description: "Positive daily mantras" },
@@ -33,7 +33,7 @@ const megaMenuConfig = {
     fun: {
       title: "Games & Fun",
       items: [
-        { name: "Games Hub", href: "/games-fun", description: "Explore all games and compatibility tools" },
+        { name: "Games & Fun", href: "/games-fun", description: "Explore all games and compatibility tools" },
         { name: "Aura Analysis", href: "/aura-analysis", description: "Discover your spiritual energy" },
         { name: "Western Zodiac Compatibility", href: "/western-compatibility", description: "Western astrology matches" },
         { name: "Chinese Zodiac Compatibility", href: "/chinese-compatibility", description: "Eastern zodiac insights" },
