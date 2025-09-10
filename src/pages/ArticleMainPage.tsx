@@ -119,9 +119,10 @@ export default function ArticlesPage() {
           }
         `;
 
-        // Query for daily planetary overviews
+        // Query for daily planetary overviews (only today and earlier)
+        const today = dayjs().format('YYYY-MM-DD');
         const planetaryQuery = `
-          *[_type == "dailyPlanetaryOverview"] | order(date desc) {
+          *[_type == "dailyPlanetaryOverview" && date <= $today] | order(date desc) {
             _id,
             _type,
             date,
@@ -134,7 +135,7 @@ export default function ArticlesPage() {
 
         const [fetchedArticles, fetchedPlanetary] = await Promise.all([
           sanityClient.fetch(articleQuery),
-          sanityClient.fetch(planetaryQuery)
+          sanityClient.fetch(planetaryQuery, { today })
         ]);
 
         console.log('Fetched articles:', fetchedArticles.length);
