@@ -555,7 +555,7 @@ const FengShuiWeddingDates = () => {
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat',
-              backgroundAttachment: 'local'
+              backgroundAttachment: 'fixed'
             }}
           >
             {/* Adjustable blur overlay - change backdrop-blur-sm to backdrop-blur-md, backdrop-blur-lg, or backdrop-blur-xl for more blur */}

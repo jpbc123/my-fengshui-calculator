@@ -12,6 +12,7 @@ import RecentArticlesPreview from "@/components/RecentArticlesPreview";
 import CombinedDailyInsightsBanner from "@/components/CombinedDailyInsightsBanner";
 import FengShuiWeddingDatesBanner from "@/components/FengShuiWeddingDatesBanner";
 import BirthChartBanner from "@/components/BirthChartBanner";
+import ToolsShowcaseBanner from "@/components/ToolsShowcaseBanner"; // ADD THIS IMPORT
 
 const Index = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -24,7 +25,7 @@ const Index = () => {
         
         {/* Full-width compatibility banner */}
         <ChineseZodiacCompatibilityBanner />
-        
+             
         {/* Existing engagement section */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -99,6 +100,9 @@ const Index = () => {
           </div>
         </section>
         
+        {/* ADD THE TOOLS SHOWCASE BANNER HERE - after compatibility, before articles */}
+        <ToolsShowcaseBanner />
+		
         {/* Existing content continues below */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <MeditationBanner />

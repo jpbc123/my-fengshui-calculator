@@ -45,7 +45,7 @@ const BirthChartBanner = () => {
               <Star className="w-5 h-5 text-yellow-300" />
             </div>
             <h2 className="text-2xl md:text-3xl font-bold">
-              AI Birth Chart Analysis
+              Birth Chart Analysis
             </h2>
           </div>
           
@@ -106,10 +106,7 @@ const BirthChartBanner = () => {
               <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
             </Link>
             
-            <div className="flex items-center gap-2 text-yellow-300 text-xs font-medium">
-              <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
-              <span>No Payment Required</span>
-            </div>
+
           </div>
         </div>
       </div>

@@ -269,23 +269,24 @@ const HeroSection = () => {
               );
             })}
           </div>
-          
-          <p className="text-black/80 text-sm mt-10">
-            Don't know your Chinese zodiac sign? 
-            <span className="text-gold font-semibold cursor-pointer hover:underline ml-1">
-              <Link 
-                to="/chinese-zodiac-calculator" 
-                className="text-gold font-semibold cursor-pointer hover:underline hover:text-yellow-500 transition-colors"
-              >
-                Use our Chinese Zodiac Calculator →
-              </Link>
-            </span>
-          </p>
-        </div>
         
-        <p className="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto">
+		<p className="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto mt-10">
           Explore your unique traits and a path to balance, prosperity, and clarity through ancient Chinese astrology.
         </p>
+		
+		<p className="text-black/80 text-sm mt-8">
+		Prefer Western astrology instead? 
+		<span className="text-gold font-semibold cursor-pointer hover:underline ml-1">
+			<Link 
+			to="/western-horoscope" 
+			className="text-gold font-semibold cursor-pointer hover:underline hover:text-yellow-500 transition-colors"
+			>
+			Check your Western Zodiac daily horoscope →
+			</Link>
+		</span>
+		</p>
+        </div>
+
       </div>
     </section>
   );
