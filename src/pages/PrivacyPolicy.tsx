@@ -87,6 +87,8 @@ const PrivacyPolicy = () => {
                 <li><strong className="text-black">Analytics:</strong> Google Analytics for website performance tracking</li>
                 <li><strong className="text-black">Hosting:</strong> Vercel for website hosting and deployment</li>
                 <li><strong className="text-black">Email Services:</strong> For account-related communications (when available)</li>
+				<li><strong className="text-black">Content Sources:</strong> Images and visual content on our website are sourced from open-source platforms including Pexels, FlatIcon, Freepik, and other royalty-free resources, properly attributed where required.</li>
+				<li><strong className="text-black">Trademark Clarification:</strong> Feng Shui & Beyond operates independently and has no affiliation with any Facebook groups, social media pages, or other entities using similar names. We are a standalone digital service provider.</li>
               </ul>
               <p>
                 These services have their own privacy policies, and we encourage you to review them. We are not responsible for the privacy practices of these third-party services.

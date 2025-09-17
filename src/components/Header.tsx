@@ -1,12 +1,12 @@
 // src/components/Header.tsx
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import LogoIcon from "@/components/LogoIcon";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronDown, ChevronUp } from "lucide-react";
 
 const megaMenuConfig = {
   main: [
-    { label: "Articles", href: "/article" },
+    { label: "Articles", id: "articles" },
     { label: "Calculators", id: "calculators" },
     { label: "Horoscope", id: "horoscope" },
     { label: "Meditation", id: "meditation" },
@@ -15,6 +15,16 @@ const megaMenuConfig = {
     { label: "Store", href: "/coming-store" },
     { label: "About", id: "about" },
   ],
+  articles: {
+    title: "Articles",
+    items: [
+      { name: "All Articles", href: "/article", description: "Browse all our published articles." },
+      { name: "Feng Shui", href: "/article?category=Feng Shui", description: "Harmonize your environment and energy." },
+      { name: "Astrology", href: "/article?category=Astrology", description: "Explore celestial influences on your life." },
+      { name: "Numerology", href: "/article?category=Numerology", description: "Discover the power of numbers in your destiny." },
+      { name: "Celebrity", href: "/article?category=Celebrity", description: "Astrological insights into famous personalities." },
+    ],
+  },
   calculators: {
     title: "Calculators & Tools",
     items: [
@@ -33,9 +43,9 @@ const megaMenuConfig = {
   meditation: {
     title: "Wellness & Mindfulness",
     items: [
-	  { name: "Daily Affirmations", href: "/meditate-affirmation", description: "Positive daily mantras" },
-	  { name: "Morning Mindfulness", href: "/meditate-morning", description: "Start your day with intention" },
-	  { name: "Yoga Poses", href: "/meditate-yoga-pose", description: "Daily physical practice" },
+      { name: "Daily Affirmations", href: "/meditate-affirmation", description: "Positive daily mantras" },
+      { name: "Morning Mindfulness", href: "/meditate-morning", description: "Start your day with intention" },
+      { name: "Yoga Poses", href: "/meditate-yoga-pose", description: "Daily physical practice" },
       { name: "Visualization Exercises", href: "/meditate-visualization", description: "Create peaceful mental imagery to reduce stress" },
       { name: "Evening Relaxation", href: "/meditate-evening", description: "Unwind peacefully" },
     ],
@@ -44,34 +54,59 @@ const megaMenuConfig = {
     title: "Professional Services",
     items: [
       { name: "Birth Chart Analysis", href: "/birth-chart", description: "Professional natal chart reading and detailed analysis." },
-	  { name: "Wedding Date Selector", href: "/auspicious-wedding-date", description: "Professional natal chart reading and detailed analysis." },
+      { name: "Wedding Date Selector", href: "/auspicious-wedding-date", description: "Professional natal chart reading and detailed analysis." },
     ],
   },
   games: {
     title: "Games & Fun",
     items: [
-	  { name: "Aura Analysis", href: "/aura-analysis", description: "Discover your spiritual energy" },
+      { name: "Aura Analysis", href: "/aura-analysis", description: "Discover your spiritual energy" },
       { name: "Name Compatibility", href: "/name-compatibility", description: "Cosmic bond between names" },      
       { name: "Western Zodiac Compatibility", href: "/western-compatibility", description: "Western astrology matches" },
       { name: "Chinese Zodiac Compatibility", href: "/chinese-compatibility", description: "Eastern zodiac insights" },
       { name: "Fortune Cookie", href: "/fortune-cookie", description: "Daily wisdom and guidance" },
-	  { name: "Lucky Numbers Generator", href: "/lucky-numbers", description: "Try your luck with our lucky number generator" },
+      { name: "Lucky Numbers Generator", href: "/lucky-numbers", description: "Try your luck with our lucky number generator" },
     ],
   },
   about: {
-    title: "About Us",
+    title: "About",
     items: [
       { name: "About Us", href: "/about-us", description: "Learn about our mission and philosophy." },
       { name: "Contact Us", href: "/contact-us", description: "Get in touch with our support team." },
       { name: "Privacy Policy", href: "/privacy-policy", description: "Your data is safe with us." },
+	  { name: "Terms of Service", href: "/terms-of-service", description: "Our service terms and usage policies." },
     ],
   },
 };
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [openAccordion, setOpenAccordion] = useState<string | null>(null);
+  const navigate = useNavigate();
 
-  const renderDropdownMenu = (menuKey, position = 'center') => {
+  // Handle article category navigation
+  const handleArticleCategoryClick = (href: string) => {
+    // Extract category from URL params
+    const url = new URL(href, window.location.origin);
+    const category = url.searchParams.get('category');
+    
+    if (category) {
+      // Navigate to articles page and set the category
+      navigate(`/article?category=${encodeURIComponent(category)}`);
+    } else {
+      // Navigate to all articles
+      navigate('/article');
+    }
+    
+    // Close mobile menu if open
+    setMobileMenuOpen(false);
+  };
+
+  const toggleAccordion = (menuKey: string) => {
+    setOpenAccordion(openAccordion === menuKey ? null : menuKey);
+  };
+
+  const renderDropdownMenu = (menuKey: string, position = 'center') => {
     const menuData = megaMenuConfig[menuKey];
     if (!menuData) return null;
 
@@ -89,10 +124,20 @@ const Header = () => {
         <ul className="space-y-3">
           {menuData.items.map((item) => (
             <li key={item.name}>
-              <Link to={item.href} className="block hover:text-gold transition-colors group/item">
-                <span className="font-semibold text-sm group-hover/item:text-gold">{item.name}</span>
-                <p className="text-xs text-white/70 leading-tight mt-1 group-hover/item:text-white/90">{item.description}</p>
-              </Link>
+              {menuKey === 'articles' ? (
+                <button
+                  onClick={() => handleArticleCategoryClick(item.href)}
+                  className="block w-full text-left hover:text-gold transition-colors group/item"
+                >
+                  <span className="font-semibold text-sm group-hover/item:text-gold">{item.name}</span>
+                  <p className="text-xs text-white/70 leading-tight mt-1 group-hover/item:text-white/90">{item.description}</p>
+                </button>
+              ) : (
+                <Link to={item.href} className="block hover:text-gold transition-colors group/item">
+                  <span className="font-semibold text-sm group-hover/item:text-gold">{item.name}</span>
+                  <p className="text-xs text-white/70 leading-tight mt-1 group-hover/item:text-white/90">{item.description}</p>
+                </Link>
+              )}
             </li>
           ))}
         </ul>
@@ -113,10 +158,13 @@ const Header = () => {
 
         {/* Desktop Navigation - Added more space from logo */}
         <nav className="hidden lg:flex items-center gap-6 text-white font-medium ml-16">
-          {/* Articles */}
-          <Link to="/article" className="cursor-pointer hover:text-gold transition-colors whitespace-nowrap">
-            Articles
-          </Link>
+          {/* Articles Dropdown */}
+          <div className="relative group">
+            <button className="cursor-pointer hover:text-gold transition-colors whitespace-nowrap">
+              Articles
+            </button>
+            {renderDropdownMenu('articles', 'left')}
+          </div>
 
           {/* Calculators Dropdown */}
           <div className="relative group">
@@ -180,138 +228,228 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Mobile Menu - Full Screen */}
+      {/* Mobile Menu - Full Screen with Accordion */}
       {mobileMenuOpen && (
-        <div className="lg:hidden fixed top-16 left-0 w-full h-[calc(100vh-4rem)] bg-indigo-900 border-t border-gold/20 text-white px-4 pb-6 pt-4 space-y-4 overflow-y-auto z-40">
+        <div className="lg:hidden fixed top-16 left-0 w-full h-[calc(100vh-4rem)] bg-indigo-900 border-t border-gold/20 text-white px-4 pb-6 pt-4 space-y-2 overflow-y-auto z-40">
           
-          {/* Articles */}
-          <div className="space-y-2">
-            <h3 className="text-xs uppercase tracking-wider text-gold font-semibold mt-4 mb-2 select-none border-b border-gold/20 pb-1">
-              Articles
-            </h3>
-            <Link
-              to="/article"
-              className="block text-sm text-white/90 hover:text-gold transition pl-2"
-              onClick={() => setMobileMenuOpen(false)}
+          {/* Articles Accordion */}
+          <div className="border-b border-gold/10 pb-2">
+            <button
+              onClick={() => toggleAccordion('articles')}
+              className="flex items-center justify-between w-full text-left text-gold font-semibold py-3 hover:text-yellow-400 transition-colors"
             >
-              Articles
-            </Link>
+              <span>{megaMenuConfig.articles.title}</span>
+              {openAccordion === 'articles' ? (
+                <ChevronUp size={18} />
+              ) : (
+                <ChevronDown size={18} />
+              )}
+            </button>
+            {openAccordion === 'articles' && (
+              <div className="pl-4 space-y-2 mt-2 border-l border-gold/20">
+                {megaMenuConfig.articles.items.map((item) => (
+                  <button
+                    key={item.name}
+                    onClick={() => handleArticleCategoryClick(item.href)}
+                    className="block w-full text-left text-sm text-white/90 hover:text-gold transition py-2"
+                  >
+                    <div className="font-medium">{item.name}</div>
+                    <div className="text-xs text-white/70 mt-1">{item.description}</div>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
-          {/* Calculators Section */}
-          <div className="space-y-2">
-            <h3 className="text-xs uppercase tracking-wider text-gold font-semibold mt-4 mb-2 select-none border-b border-gold/20 pb-1">
-              {megaMenuConfig.calculators.title}
-            </h3>
-            {megaMenuConfig.calculators.items.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className="block text-sm text-white/90 hover:text-gold transition pl-2"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {item.name}
-              </Link>
-            ))}
+          {/* Calculators Accordion */}
+          <div className="border-b border-gold/10 pb-2">
+            <button
+              onClick={() => toggleAccordion('calculators')}
+              className="flex items-center justify-between w-full text-left text-gold font-semibold py-3 hover:text-yellow-400 transition-colors"
+            >
+              <span>{megaMenuConfig.calculators.title}</span>
+              {openAccordion === 'calculators' ? (
+                <ChevronUp size={18} />
+              ) : (
+                <ChevronDown size={18} />
+              )}
+            </button>
+            {openAccordion === 'calculators' && (
+              <div className="pl-4 space-y-2 mt-2 border-l border-gold/20">
+                {megaMenuConfig.calculators.items.map((item) => (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className="block text-sm text-white/90 hover:text-gold transition py-2"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <div className="font-medium">{item.name}</div>
+                    <div className="text-xs text-white/70 mt-1">{item.description}</div>
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
 
-          {/* Horoscope Section */}
-          <div className="space-y-2">
-            <h3 className="text-xs uppercase tracking-wider text-gold font-semibold mt-4 mb-2 select-none border-b border-gold/20 pb-1">
-              {megaMenuConfig.horoscope.title}
-            </h3>
-            {megaMenuConfig.horoscope.items.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className="block text-sm text-white/90 hover:text-gold transition pl-2"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {item.name}
-              </Link>
-            ))}
+          {/* Horoscope Accordion */}
+          <div className="border-b border-gold/10 pb-2">
+            <button
+              onClick={() => toggleAccordion('horoscope')}
+              className="flex items-center justify-between w-full text-left text-gold font-semibold py-3 hover:text-yellow-400 transition-colors"
+            >
+              <span>{megaMenuConfig.horoscope.title}</span>
+              {openAccordion === 'horoscope' ? (
+                <ChevronUp size={18} />
+              ) : (
+                <ChevronDown size={18} />
+              )}
+            </button>
+            {openAccordion === 'horoscope' && (
+              <div className="pl-4 space-y-2 mt-2 border-l border-gold/20">
+                {megaMenuConfig.horoscope.items.map((item) => (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className="block text-sm text-white/90 hover:text-gold transition py-2"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <div className="font-medium">{item.name}</div>
+                    <div className="text-xs text-white/70 mt-1">{item.description}</div>
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
 
-          {/* Meditation Section */}
-          <div className="space-y-2">
-            <h3 className="text-xs uppercase tracking-wider text-gold font-semibold mt-4 mb-2 select-none border-b border-gold/20 pb-1">
-              {megaMenuConfig.meditation.title}
-            </h3>
-            {megaMenuConfig.meditation.items.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className="block text-sm text-white/90 hover:text-gold transition pl-2"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {item.name}
-              </Link>
-            ))}
+          {/* Meditation Accordion */}
+          <div className="border-b border-gold/10 pb-2">
+            <button
+              onClick={() => toggleAccordion('meditation')}
+              className="flex items-center justify-between w-full text-left text-gold font-semibold py-3 hover:text-yellow-400 transition-colors"
+            >
+              <span>{megaMenuConfig.meditation.title}</span>
+              {openAccordion === 'meditation' ? (
+                <ChevronUp size={18} />
+              ) : (
+                <ChevronDown size={18} />
+              )}
+            </button>
+            {openAccordion === 'meditation' && (
+              <div className="pl-4 space-y-2 mt-2 border-l border-gold/20">
+                {megaMenuConfig.meditation.items.map((item) => (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className="block text-sm text-white/90 hover:text-gold transition py-2"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <div className="font-medium">{item.name}</div>
+                    <div className="text-xs text-white/70 mt-1">{item.description}</div>
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
 
-          {/* Services Section */}
-          <div className="space-y-2">
-            <h3 className="text-xs uppercase tracking-wider text-gold font-semibold mt-4 mb-2 select-none border-b border-gold/20 pb-1">
-              {megaMenuConfig.services.title}
-            </h3>
-            {megaMenuConfig.services.items.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className="block text-sm text-white/90 hover:text-gold transition pl-2"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {item.name}
-              </Link>
-            ))}
+          {/* Services Accordion */}
+          <div className="border-b border-gold/10 pb-2">
+            <button
+              onClick={() => toggleAccordion('services')}
+              className="flex items-center justify-between w-full text-left text-gold font-semibold py-3 hover:text-yellow-400 transition-colors"
+            >
+              <span>{megaMenuConfig.services.title}</span>
+              {openAccordion === 'services' ? (
+                <ChevronUp size={18} />
+              ) : (
+                <ChevronDown size={18} />
+              )}
+            </button>
+            {openAccordion === 'services' && (
+              <div className="pl-4 space-y-2 mt-2 border-l border-gold/20">
+                {megaMenuConfig.services.items.map((item) => (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className="block text-sm text-white/90 hover:text-gold transition py-2"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <div className="font-medium">{item.name}</div>
+                    <div className="text-xs text-white/70 mt-1">{item.description}</div>
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
 
-          {/* Games & Fun Section */}
-          <div className="space-y-2">
-            <h3 className="text-xs uppercase tracking-wider text-gold font-semibold mt-4 mb-2 select-none border-b border-gold/20 pb-1">
-              {megaMenuConfig.games.title}
-            </h3>
-            {megaMenuConfig.games.items.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className="block text-sm text-white/90 hover:text-gold transition pl-2"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {item.name}
-              </Link>
-            ))}
+          {/* Games & Fun Accordion */}
+          <div className="border-b border-gold/10 pb-2">
+            <button
+              onClick={() => toggleAccordion('games')}
+              className="flex items-center justify-between w-full text-left text-gold font-semibold py-3 hover:text-yellow-400 transition-colors"
+            >
+              <span>{megaMenuConfig.games.title}</span>
+              {openAccordion === 'games' ? (
+                <ChevronUp size={18} />
+              ) : (
+                <ChevronDown size={18} />
+              )}
+            </button>
+            {openAccordion === 'games' && (
+              <div className="pl-4 space-y-2 mt-2 border-l border-gold/20">
+                {megaMenuConfig.games.items.map((item) => (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className="block text-sm text-white/90 hover:text-gold transition py-2"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <div className="font-medium">{item.name}</div>
+                    <div className="text-xs text-white/70 mt-1">{item.description}</div>
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
 
-          {/* Store */}
-          <div className="space-y-2">
-            <h3 className="text-xs uppercase tracking-wider text-gold font-semibold mt-4 mb-2 select-none border-b border-gold/20 pb-1">
-              Store
-            </h3>
+          {/* Store - Simple Link */}
+          <div className="border-b border-gold/10 pb-2">
             <Link
               to="/coming-store"
-              className="block text-sm text-white/90 hover:text-gold transition pl-2"
+              className="block text-gold font-semibold py-3 hover:text-yellow-400 transition-colors"
               onClick={() => setMobileMenuOpen(false)}
             >
               Store
             </Link>
           </div>
 
-          {/* About */}
-          <div className="space-y-2">
-            <h3 className="text-xs uppercase tracking-wider text-gold font-semibold mt-4 mb-2 select-none border-b border-gold/20 pb-1">
-              {megaMenuConfig.about.title}
-            </h3>
-            {megaMenuConfig.about.items.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className="block text-sm text-white/90 hover:text-gold transition pl-2"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {item.name}
-              </Link>
-            ))}
+          {/* About Accordion */}
+          <div className="border-b border-gold/10 pb-2">
+            <button
+              onClick={() => toggleAccordion('about')}
+              className="flex items-center justify-between w-full text-left text-gold font-semibold py-3 hover:text-yellow-400 transition-colors"
+            >
+              <span>{megaMenuConfig.about.title}</span>
+              {openAccordion === 'about' ? (
+                <ChevronUp size={18} />
+              ) : (
+                <ChevronDown size={18} />
+              )}
+            </button>
+            {openAccordion === 'about' && (
+              <div className="pl-4 space-y-2 mt-2 border-l border-gold/20">
+                {megaMenuConfig.about.items.map((item) => (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className="block text-sm text-white/90 hover:text-gold transition py-2"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <div className="font-medium">{item.name}</div>
+                    <div className="text-xs text-white/70 mt-1">{item.description}</div>
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}

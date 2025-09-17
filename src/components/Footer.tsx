@@ -29,7 +29,18 @@ const Footer = () => {
             Games & Fun
           </Link>
         </div>
+		<div className="w-full flex justify-center gap-6 md:gap-8 mt-2 text-sm">
+			<Link to="/sitemap" className="hover:text-gold transition-colors">
+				Sitemap
+			</Link>
+			<Link to="/credits" className="hover:text-gold transition-colors">
+				Credits
+			</Link>
+		</div>
       </div>
+	  
+
+
 
       {/* Bottom Bar */}
       <div className="border-t border-gold/10">

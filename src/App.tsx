@@ -43,6 +43,9 @@ import MeditateEveningRelaxation from "./pages/MeditateEveningRelaxation";
 import AboutUs from "./pages/AboutUs";
 import ContactUs from "./pages/ContactUs";  
 import PrivacyPolicy from "./pages/PrivacyPolicy"; 
+import TermsOfService from "./pages/TermsOfService";
+import Sitemap from "./pages/Sitemap";
+import Credits from "./pages/Credits";
 
 import ComingSoonPage from "@/pages/ComingSoonPage";
 import ComingSoonStore from "@/pages/ComingSoonStore";
@@ -51,7 +54,6 @@ import Store from "./pages/Store";
 
 import BirthChart from "./pages/BirthChart";
 import FengShuiWeddingDates from "./pages/FengShuiWeddingDates";
-
 
 
 import ScrollToTop from "@/components/ScrollToTop";
@@ -83,6 +85,9 @@ const App = () => (
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/about-us" element={<AboutUs />} />
                 <Route path="/contact-us" element={<ContactUs />} />
+				<Route path="/terms-of-service" element={<TermsOfService />} />
+				<Route path="/credits" element={<Credits />} />
+				<Route path="/sitemap" element={<Sitemap />} />
                 
                 {/* Submenu-Feng Shui */}
                 <Route path="/personal-element" element={<PersonalElement />} />

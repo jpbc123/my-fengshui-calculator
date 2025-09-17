@@ -219,7 +219,7 @@ const RecentArticlesPreview = () => {
       <div className="mt-8 pt-6 border-t border-gray-100">
         <div className="text-center">
           <Link
-            to="/articles"
+            to="/article"
             className="inline-flex items-center gap-2 px-6 py-3 bg-gold text-white rounded-full font-medium hover:bg-gold/90 transition-colors"
           >
             Explore All Articles

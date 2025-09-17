@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Breadcrumb from "../components/Breadcrumb";
@@ -9,6 +9,8 @@ import imageUrlBuilder from "@sanity/image-url";
 import { toPlainText } from "@portabletext/react";
 import { motion } from "framer-motion";
 import { Calendar, Tag, ArrowRight, Search } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom"; 
 
 import planetaryOverviewImage from '../assets/planetary-overview.jpg';
 
@@ -89,24 +91,7 @@ export default function ArticlesPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-
-  // Get URL search parameters
-  const [searchParams, setSearchParams] = useSearchParams();
-  const categoryFromUrl = searchParams.get('category');
-  const [selectedCategory, setSelectedCategory] = useState(categoryFromUrl || "All");
-
-  // Update URL when category changes
-  const handleCategoryChange = (category: string) => {
-    setSelectedCategory(category);
-    setCurrentPage(1);
-    
-    // Update URL parameters
-    const newSearchParams = new URLSearchParams();
-    if (category !== "All") {
-      newSearchParams.set('category', category);
-    }
-    setSearchParams(newSearchParams);
-  };
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
   useEffect(() => {
     async function fetchArticles() {
@@ -373,7 +358,10 @@ export default function ArticlesPage() {
                 return (
                   <button
                     key={category.name}
-                    onClick={() => handleCategoryChange(category.name)}
+                    onClick={() => {
+                      setSelectedCategory(category.name);
+                      setCurrentPage(1);
+                    }}
                     className={`px-6 py-3 rounded-full font-medium transition-all duration-200 ${
                       isSelected
                         ? "bg-gold text-white shadow-lg transform scale-105"

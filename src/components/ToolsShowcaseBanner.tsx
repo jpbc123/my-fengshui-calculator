@@ -93,7 +93,7 @@ const ToolsShowcaseBanner = () => {
               <Calculator className="w-6 h-6 text-gold" />
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-              Ancient Wisdom Calculators
+              Self-Discovery Tools
             </h2>
             <div className="p-3 bg-gradient-to-r from-yellow-400/20 to-gold/20 rounded-full">
               <Zap className="w-6 h-6 text-gold" />

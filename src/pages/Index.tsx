@@ -6,13 +6,12 @@ import HeroSection from "@/components/HeroSection";
 import ToolsSection from "@/components/ToolsSection";
 import RightSidebar from "@/components/RightSidebar"; 
 import DailyWisdomBanner from "@/components/DailyWisdomBanner";
-import MeditationBanner from "@/components/MeditationBanner";
 import ChineseZodiacCompatibilityBanner from "@/components/ChineseZodiacCompatibilityBanner";
 import RecentArticlesPreview from "@/components/RecentArticlesPreview";
 import CombinedDailyInsightsBanner from "@/components/CombinedDailyInsightsBanner";
 import FengShuiWeddingDatesBanner from "@/components/FengShuiWeddingDatesBanner";
 import BirthChartBanner from "@/components/BirthChartBanner";
-import ToolsShowcaseBanner from "@/components/ToolsShowcaseBanner"; // ADD THIS IMPORT
+import ToolsShowcaseBanner from "@/components/ToolsShowcaseBanner";
 
 const Index = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -21,26 +20,13 @@ const Index = () => {
     <div className="min-h-screen bg-white text-foreground flex flex-col overflow-hidden">
       <Header />
       <main>
+        {/* 1. Hero Section */}
         <HeroSection />
         
-        {/* Full-width compatibility banner */}
+        {/* 2. Compatibility Banner */}
         <ChineseZodiacCompatibilityBanner />
-             
-        {/* Existing engagement section */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Left Column: Recent Articles (70% width) */}
-            <div className="lg:col-span-2">
-              <RecentArticlesPreview />
-            </div>
-            {/* Right Column: Combined Daily Insights (30% width) */}
-            <div className="lg:col-span-1">
-              <CombinedDailyInsightsBanner />
-            </div>
-          </div>
-        </div>
         
-        {/* Premium Services Section */}
+        {/* 3. Premium Services Section - MOVED UP */}
         <section className="w-full px-4 sm:px-6 lg:px-8 py-12 bg-gradient-to-b from-gray-50 to-white">
           <div className="max-w-7xl mx-auto">
             {/* Section Header */}
@@ -100,13 +86,24 @@ const Index = () => {
           </div>
         </section>
         
-        {/* ADD THE TOOLS SHOWCASE BANNER HERE - after compatibility, before articles */}
+        {/* 4. Tools Showcase Banner */}
         <ToolsShowcaseBanner />
-		
-        {/* Existing content continues below */}
+        
+        {/* 5. Articles + Daily Insights Section */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <MeditationBanner />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Left Column: Recent Articles (70% width) */}
+            <div className="lg:col-span-2">
+              <RecentArticlesPreview />
+            </div>
+            {/* Right Column: Combined Daily Insights (30% width) */}
+            <div className="lg:col-span-1">
+              <CombinedDailyInsightsBanner />
+            </div>
+          </div>
         </div>
+        
+        {/* 6. End - No extra banner needed, removed MeditationBanner */}
       </main>
     </div>
   );

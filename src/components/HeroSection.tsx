@@ -281,7 +281,7 @@ const HeroSection = () => {
 			to="/western-horoscope" 
 			className="text-gold font-semibold cursor-pointer hover:underline hover:text-yellow-500 transition-colors"
 			>
-			Check your Western Zodiac daily horoscope →
+			Check your Western Zodiac daily horoscope here →
 			</Link>
 		</span>
 		</p>
