@@ -172,6 +172,7 @@ const Credits = () => {
                 <ul className="text-sm text-gray-700 space-y-2">
                   <li><strong>Pexels</strong> - Free stock photography under Pexels License</li>
                   <li><strong>Unsplash</strong> - Free high-resolution photos under Unsplash License</li>
+				  <li><strong>Flickr</strong> - Creative Commons licensed photography contributed by talented photographers worldwide.</li>
                   <li><strong>Custom Graphics</strong> - Original illustrations created specifically for Feng Shui & Beyond</li>
                 </ul>
               </div>

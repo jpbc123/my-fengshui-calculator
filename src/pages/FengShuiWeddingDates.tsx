@@ -533,7 +533,7 @@ const FengShuiWeddingDates = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-pink-50 to-red-50 text-slate-800">
+    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-pink-50 to-red-50 text-slate-800 overflow-x-hidden">
       <Header />
       
       {/* Decorative Elements */}
@@ -544,7 +544,7 @@ const FengShuiWeddingDates = () => {
       </div>
 
       <main className="relative z-10 pt-24 pb-16">
-        <div className="container mx-auto px-4 max-w-7xl">
+        <div className="container mx-auto px-4 max-w-7xl overflow-x-hidden">
           <Breadcrumb items={breadcrumbs} />
 
           {/* Hero + FAQ Section with Single Background Image */}
@@ -555,7 +555,7 @@ const FengShuiWeddingDates = () => {
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat',
-              backgroundAttachment: 'fixed'
+              backgroundAttachment: 'local'
             }}
           >
             {/* Adjustable blur overlay - change backdrop-blur-sm to backdrop-blur-md, backdrop-blur-lg, or backdrop-blur-xl for more blur */}
@@ -638,7 +638,7 @@ const FengShuiWeddingDates = () => {
             </div>
           </div>
 
-          <div className="grid lg:grid-cols-12 gap-12">
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12">
             {/* Main Content */}
             <div className="lg:col-span-8">
               {/* Form Card */}
@@ -653,7 +653,7 @@ const FengShuiWeddingDates = () => {
                   <p className="text-slate-600">We'll analyze your compatibility and provide guidance for wedding dates throughout the year</p>
                 </div>
 
-                <div className="grid md:grid-cols-3 gap-8 mb-8">
+                <div className="grid sm:grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-8">
                   {/* Partner One */}
                   <div className="relative">
                     <div className="bg-gradient-to-br from-rose-500 to-pink-600 rounded-2xl p-6 text-white shadow-lg">
@@ -792,25 +792,25 @@ const FengShuiWeddingDates = () => {
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.5, delay: index * 0.05 }}
-                            className={`group bg-gradient-to-r from-white to-rose-50/30 rounded-2xl p-6 border-2 ${auspiciousnessConfig.borderColor} hover:shadow-lg transition-all duration-300`}
+                            className={`group bg-gradient-to-r from-white to-rose-50/30 rounded-2xl p-4 sm:p-6 border-2 ${auspiciousnessConfig.borderColor} hover:shadow-lg transition-all duration-300 w-full`}
                           >
-                            <div className="flex items-start justify-between">
-                              <div className="flex-1">
+                            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between">
+                              <div className="flex-1 min-w-0">
                                 {/* Date Header */}
                                 <div className="mb-4">
                                   <div className="flex items-center mb-2">
-                                    <div className="w-3 h-3 bg-gradient-to-r from-rose-500 to-pink-600 rounded-full mr-3" />
-                                    <h4 className="text-xl font-bold text-slate-800">{formattedDate}</h4>
+                                    <div className="w-3 h-3 bg-gradient-to-r from-rose-500 to-pink-600 rounded-full mr-3 flex-shrink-0" />
+                                    <h4 className="text-lg sm:text-xl font-bold text-slate-800 break-words">{formattedDate}</h4>
                                   </div>
-                                  <div className="flex items-center space-x-4 text-sm text-slate-500">
+                                  <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 text-sm text-slate-500 space-y-1 sm:space-y-0">
                                     <span className="font-medium">{dateInfo.dayName}</span>
-                                    <span>•</span>
+                                    <span className="hidden sm:inline">•</span>
                                     <span>Lunar: {dateInfo.lunarDate}</span>
                                   </div>
                                   {dateInfo.auspiciousTimes && (
                                     <div className="mt-2 text-sm text-slate-600">
                                       <span className="font-medium">Auspicious Times: </span>
-                                      <span className="font-mono text-xs bg-slate-100 px-2 py-1 rounded">
+                                      <span className="font-mono text-xs bg-slate-100 px-2 py-1 rounded block sm:inline mt-1 sm:mt-0">
                                         {dateInfo.auspiciousTimes}
                                       </span>
                                     </div>
@@ -841,7 +841,7 @@ const FengShuiWeddingDates = () => {
                                   </div>
                                 )}
                               </div>
-                              <div className="ml-4 text-right">
+                              <div className="ml-0 mt-3 sm:ml-4 sm:mt-0 text-left sm:text-right flex-shrink-0">
                                 <div className={`inline-flex items-center px-3 py-1 ${auspiciousnessConfig.bgColor} ${auspiciousnessConfig.textColor} text-xs font-medium rounded-full`}>
                                   {auspiciousnessConfig.icon}
                                   {auspiciousnessConfig.label}
@@ -855,31 +855,31 @@ const FengShuiWeddingDates = () => {
                       
                       {/* Pagination Controls */}
                       {auspiciousDates.length > resultsPerPage && (
-                        <div className="mt-8 flex items-center justify-between">
+                        <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
                           <button
                             onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                             disabled={currentPage === 1}
-                            className="flex items-center px-4 py-2 bg-white text-slate-600 rounded-xl border border-slate-200 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+                            className="flex items-center px-4 py-2 bg-white text-slate-600 rounded-xl border border-slate-200 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 w-full sm:w-auto justify-center"
                           >
                             <ChevronDown className="w-4 h-4 mr-2 rotate-90" />
                             Previous
                           </button>
                           
-                          <div className="flex items-center space-x-2">
+                          <div className="flex items-center space-x-1 sm:space-x-2 overflow-x-auto pb-2 sm:pb-0">
                             {Array.from({ length: Math.ceil(auspiciousDates.length / resultsPerPage) }, (_, i) => i + 1)
                               .filter(page => 
                                 page === 1 || 
                                 page === Math.ceil(auspiciousDates.length / resultsPerPage) ||
-                                Math.abs(page - currentPage) <= 2
+                                Math.abs(page - currentPage) <= 1
                               )
                               .map((page, index, arr) => (
                                 <div key={page} className="flex items-center">
                                   {index > 0 && arr[index - 1] !== page - 1 && (
-                                    <span className="px-2 text-slate-400">...</span>
+                                    <span className="px-1 sm:px-2 text-slate-400">...</span>
                                   )}
                                   <button
                                     onClick={() => setCurrentPage(page)}
-                                    className={`w-10 h-10 rounded-xl font-semibold transition-all duration-300 ${
+                                    className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base ${
                                       currentPage === page
                                         ? 'bg-gradient-to-r from-rose-500 to-pink-600 text-white'
                                         : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'
@@ -895,7 +895,7 @@ const FengShuiWeddingDates = () => {
                           <button
                             onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(auspiciousDates.length / resultsPerPage)))}
                             disabled={currentPage === Math.ceil(auspiciousDates.length / resultsPerPage)}
-                            className="flex items-center px-4 py-2 bg-white text-slate-600 rounded-xl border border-slate-200 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+                            className="flex items-center px-4 py-2 bg-white text-slate-600 rounded-xl border border-slate-200 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 w-full sm:w-auto justify-center"
                           >
                             Next
                             <ChevronDown className="w-4 h-4 ml-2 -rotate-90" />

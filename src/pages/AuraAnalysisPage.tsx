@@ -219,23 +219,23 @@ export default function AuraAnalysisPage() {
   const progressPercentage = ((currentQuestionIndex + 1) / questions.length) * 100;
 
   return (
-    <div className="bg-gradient-to-br from-slate-50 via-purple-50 to-indigo-50 text-black min-h-screen">
+    <div className="bg-gradient-to-br from-slate-50 via-purple-50 to-indigo-50 text-black min-h-screen overflow-x-hidden">
       <Header />
-      <div className="container mx-auto px-4 py-12 mt-12">
+      <div className="container mx-auto px-4 py-6 sm:py-12 mt-12 max-w-6xl overflow-x-hidden">
         {/* Header Section */}
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
+          className="text-center mb-8 sm:mb-12 px-2"
         >
-          <div className="flex items-center justify-center mb-4">
-            <Sparkles className="w-8 h-8 text-purple-500 mr-2" />
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 bg-clip-text text-transparent">
+          <div className="flex items-center justify-center mb-4 flex-wrap">
+            <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-purple-500 mr-2" />
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 bg-clip-text text-transparent text-center">
               Discover Your Aura
             </h1>
-            <Sparkles className="w-8 h-8 text-purple-500 ml-2" />
+            <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-purple-500 ml-2" />
           </div>
-          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed px-4">
             Explore the energy that surrounds you through our comprehensive aura analysis. 
             Answer 10 thoughtful questions to reveal your dominant aura color and its spiritual significance.
           </p>
@@ -249,55 +249,55 @@ export default function AuraAnalysisPage() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
               transition={{ duration: 0.8, type: "spring" }}
-              className="max-w-4xl mx-auto"
+              className="max-w-4xl mx-auto px-2 sm:px-4"
             >
-              <Card className={`bg-gradient-to-br ${result.colorCode} text-white shadow-2xl overflow-hidden relative`}>
+              <Card className={`bg-gradient-to-br ${result.colorCode} text-white shadow-2xl overflow-hidden relative mx-2 sm:mx-0`}>
                 {/* Decorative background elements */}
                 <div className="absolute inset-0 opacity-20">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-white rounded-full blur-3xl"></div>
-                  <div className="absolute bottom-0 left-0 w-24 h-24 bg-white rounded-full blur-3xl"></div>
+                  <div className="absolute top-0 right-0 w-20 h-20 sm:w-32 sm:h-32 bg-white rounded-full blur-3xl"></div>
+                  <div className="absolute bottom-0 left-0 w-16 h-16 sm:w-24 sm:h-24 bg-white rounded-full blur-3xl"></div>
                 </div>
                 
-                <CardHeader className="relative z-10 text-center pb-4">
+                <CardHeader className="relative z-10 text-center pb-4 px-4 sm:px-6">
                   <motion.div
                     animate={{ rotate: [0, 360] }}
                     transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                    className="w-20 h-20 mx-auto mb-4 rounded-full bg-white/20 flex items-center justify-center"
+                    className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 rounded-full bg-white/20 flex items-center justify-center"
                   >
-                    <Sparkles className="w-10 h-10 text-white" />
+                    <Sparkles className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
                   </motion.div>
-                  <CardTitle className="text-3xl md:text-4xl font-bold mb-2">
+                  <CardTitle className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">
                     Your Aura is {result.color}
                   </CardTitle>
-                  <p className="text-lg opacity-90">{result.chakra}</p>
+                  <p className="text-base sm:text-lg opacity-90">{result.chakra}</p>
                 </CardHeader>
                 
-                <CardContent className="relative z-10 space-y-6">
+                <CardContent className="relative z-10 space-y-4 sm:space-y-6 px-4 sm:px-6">
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
-                    className="bg-white/10 backdrop-blur-sm rounded-xl p-6"
+                    className="bg-white/10 backdrop-blur-sm rounded-xl p-4 sm:p-6"
                   >
-                    <h3 className="text-xl font-semibold mb-3">Your Aura Meaning</h3>
-                    <p className="text-white/90 text-lg leading-relaxed">
+                    <h3 className="text-lg sm:text-xl font-semibold mb-3">Your Aura Meaning</h3>
+                    <p className="text-white/90 text-sm sm:text-base md:text-lg leading-relaxed">
                       {result.meaning}
                     </p>
                   </motion.div>
 
-                  <div className="grid md:grid-cols-2 gap-6">
+                  <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                     <motion.div
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.5 }}
-                      className="bg-white/10 backdrop-blur-sm rounded-xl p-6"
+                      className="bg-white/10 backdrop-blur-sm rounded-xl p-4 sm:p-6"
                     >
-                      <h3 className="text-xl font-semibold mb-3">Your Gifts & Traits</h3>
+                      <h3 className="text-lg sm:text-xl font-semibold mb-3">Your Gifts & Traits</h3>
                       <ul className="space-y-2">
                         {result.traits.map((trait, index) => (
                           <li key={index} className="flex items-start">
-                            <span className="text-yellow-300 mr-2">✦</span>
-                            <span className="text-white/90">{trait}</span>
+                            <span className="text-yellow-300 mr-2 flex-shrink-0 mt-1">✦</span>
+                            <span className="text-white/90 text-sm sm:text-base leading-relaxed">{trait}</span>
                           </li>
                         ))}
                       </ul>
@@ -307,14 +307,14 @@ export default function AuraAnalysisPage() {
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.7 }}
-                      className="bg-white/10 backdrop-blur-sm rounded-xl p-6"
+                      className="bg-white/10 backdrop-blur-sm rounded-xl p-4 sm:p-6"
                     >
-                      <h3 className="text-xl font-semibold mb-3">Growth Areas</h3>
+                      <h3 className="text-lg sm:text-xl font-semibold mb-3">Growth Areas</h3>
                       <ul className="space-y-2">
                         {result.challenges.map((challenge, index) => (
                           <li key={index} className="flex items-start">
-                            <span className="text-orange-300 mr-2">◦</span>
-                            <span className="text-white/90">{challenge}</span>
+                            <span className="text-orange-300 mr-2 flex-shrink-0 mt-1">◦</span>
+                            <span className="text-white/90 text-sm sm:text-base leading-relaxed">{challenge}</span>
                           </li>
                         ))}
                       </ul>
@@ -329,7 +329,7 @@ export default function AuraAnalysisPage() {
                   >
                     <Button 
                       onClick={resetQuiz} 
-                      className="bg-white/20 hover:bg-white/30 text-white border border-white/30 font-semibold px-8 py-3 rounded-full transition-all duration-300 hover:scale-105"
+                      className="bg-white/20 hover:bg-white/30 text-white border border-white/30 font-semibold px-6 sm:px-8 py-2 sm:py-3 rounded-full transition-all duration-300 hover:scale-105 text-sm sm:text-base"
                     >
                       <RotateCcw className="w-4 h-4 mr-2" />
                       Take Quiz Again
@@ -345,19 +345,19 @@ export default function AuraAnalysisPage() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.5 }}
-              className="max-w-3xl mx-auto"
+              className="max-w-3xl mx-auto px-2 sm:px-4"
             >
               {/* Progress Bar */}
-              <div className="mb-8">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-gray-600">
+              <div className="mb-6 sm:mb-8">
+                <div className="flex items-center justify-between mb-2 px-2">
+                  <span className="text-xs sm:text-sm font-medium text-gray-600">
                     Question {currentQuestionIndex + 1} of {questions.length}
                   </span>
-                  <span className="text-sm font-medium text-gray-600">
+                  <span className="text-xs sm:text-sm font-medium text-gray-600">
                     {Math.round(progressPercentage)}% Complete
                   </span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="w-full bg-gray-200 rounded-full h-2 mx-2">
                   <motion.div
                     className="bg-gradient-to-r from-purple-500 to-indigo-500 h-2 rounded-full"
                     initial={{ width: 0 }}
@@ -367,45 +367,48 @@ export default function AuraAnalysisPage() {
                 </div>
               </div>
 
-              <Card className="bg-white/80 backdrop-blur-sm shadow-2xl border-0">
-                <CardHeader className="text-center pb-4">
+              <Card className="bg-white/80 backdrop-blur-sm shadow-2xl border-0 mx-2 sm:mx-0">
+                <CardHeader className="text-center pb-4 px-4 sm:px-6">
                   <motion.div
                     animate={{ scale: [1, 1.05, 1] }}
                     transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                    className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-purple-400 to-indigo-500 flex items-center justify-center"
+                    className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-purple-400 to-indigo-500 flex items-center justify-center"
                   >
-                    <Sparkles className="w-8 h-8 text-white" />
+                    <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
                   </motion.div>
                 </CardHeader>
                 
-                <CardContent>
+                <CardContent className="px-4 sm:px-6">
                   <motion.h3 
                     key={currentQuestionIndex}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="text-xl md:text-2xl font-semibold mb-8 text-center text-gray-800 leading-relaxed"
+                    className="text-lg sm:text-xl md:text-2xl font-semibold mb-6 sm:mb-8 text-center text-gray-800 leading-relaxed px-2"
                   >
                     {questions[currentQuestionIndex].question}
                   </motion.h3>
                   
-                  <div className="grid gap-4">
+                  <div className="grid gap-3 sm:gap-4">
                     {questions[currentQuestionIndex].options.map((option, index) => (
                       <motion.div
                         key={index}
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.1 }}
+                        className="w-full"
                       >
                         <Button
                           onClick={() => handleAnswer(option.value)}
                           disabled={isTransitioning}
-                          className={`w-full p-6 text-left bg-white hover:bg-gradient-to-r hover:from-purple-50 hover:to-indigo-50 text-gray-700 hover:text-gray-900 border border-gray-200 hover:border-purple-300 transition-all duration-300 rounded-xl group text-base md:text-lg ${
+                          className={`w-full p-4 sm:p-6 text-left bg-white hover:bg-gradient-to-r hover:from-purple-50 hover:to-indigo-50 text-gray-700 hover:text-gray-900 border border-gray-200 hover:border-purple-300 transition-all duration-300 rounded-xl group text-sm sm:text-base md:text-lg min-h-0 h-auto whitespace-normal ${
                             selectedAnswer === option.value ? 'bg-gradient-to-r from-purple-100 to-indigo-100 border-purple-400' : ''
                           }`}
                         >
-                          <div className="flex items-center justify-between">
-                            <span className="leading-relaxed">{option.text}</span>
-                            <ChevronRight className="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                          <div className="flex items-start justify-between w-full">
+                            <span className="leading-relaxed text-left break-words pr-2 flex-1">
+                              {option.text}
+                            </span>
+                            <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex-shrink-0 mt-1" />
                           </div>
                         </Button>
                       </motion.div>
@@ -422,10 +425,10 @@ export default function AuraAnalysisPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1 }}
-          className="mt-12 text-center max-w-2xl mx-auto"
+          className="mt-8 sm:mt-12 text-center max-w-2xl mx-auto px-2 sm:px-4"
         >
-          <div className="bg-white/60 backdrop-blur-sm rounded-xl p-6 border border-gray-200">
-            <p className="text-sm text-gray-600 leading-relaxed">
+          <div className="bg-white/60 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-gray-200 mx-2 sm:mx-0">
+            <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
               <strong className="text-orange-600">Disclaimer:</strong> This aura analysis is based on spiritual and metaphysical traditions, not scientific evidence. The results are intended for entertainment and self-reflection purposes only. Individual experiences may vary, and this tool should not be used as a substitute for professional psychological or medical advice.
             </p>
           </div>

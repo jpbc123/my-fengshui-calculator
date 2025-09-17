@@ -28,14 +28,15 @@ const Footer = () => {
           <Link to="/games-fun" className="hover:text-gold transition-colors">
             Games & Fun
           </Link>
+		  <Link to="/sitemap" className="hover:text-gold transition-colors">
+			Sitemap
+		  </Link>
+		  <Link to="/credits" className="hover:text-gold transition-colors">
+			Credits
+		  </Link>
         </div>
 		<div className="w-full flex justify-center gap-6 md:gap-8 mt-2 text-sm">
-			<Link to="/sitemap" className="hover:text-gold transition-colors">
-				Sitemap
-			</Link>
-			<Link to="/credits" className="hover:text-gold transition-colors">
-				Credits
-			</Link>
+
 		</div>
       </div>
 	  

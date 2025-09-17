@@ -11,6 +11,7 @@ import { DatePickerInput } from "@/components/DatePickerInput";
 import logoImage from '../assets/logo.png';
 import birthChart from "../assets/birthchart.jpg";
 import birthChartTwo from "../assets/birthchart-two.jpg";
+import birthChartThree from "../assets/birthchart-three.jpg";
 import purpleStars from "../assets/purple-stars.jpg";
 
 const BirthChart = () => {
@@ -418,7 +419,7 @@ const generateReceipt = () => {
                 <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
                   <div className="mb-4">
                     <img 
-                      src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                      src={birthChartThree}
                       alt="Telescope pointing at starry sky"
                       className="w-full h-40 object-cover rounded-lg"
                     />

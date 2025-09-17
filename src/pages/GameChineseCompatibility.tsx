@@ -1159,7 +1159,7 @@ const handleCalculate = () => {
               {/* Person 1 Input */}
               <div className="flex flex-col items-start w-full space-y-2">
                 <Label htmlFor="zodiac1" className="text-sm font-semibold text-gold">
-                  Person 1 Zodiac Sign
+                  Your Chinese Zodiac Sign
                 </Label>
                 <Select value={zodiacName1} onValueChange={handleDropdownChange(setZodiacName1)}>
                   <SelectTrigger id="zodiac1" className="w-full h-14 p-3 rounded-lg border border-gray-300 bg-white text-black/80 text-lg text-center focus:outline-none focus:ring-2 focus:ring-gold transition">
@@ -1188,7 +1188,7 @@ const handleCalculate = () => {
               {/* Person 2 Input */}
               <div className="flex flex-col items-start w-full space-y-2">
                 <Label htmlFor="zodiac2" className="text-sm font-semibold text-gold">
-                  Person 2 Zodiac Sign
+                  His / Her Chinese Zodiac Sign
                 </Label>
                 <Select value={zodiacName2} onValueChange={handleDropdownChange(setZodiacName2)}>
                   <SelectTrigger id="zodiac2" className="w-full h-14 p-3 rounded-lg border border-gray-300 bg-white text-black/80 text-lg text-center focus:outline-none focus:ring-2 focus:ring-gold transition">

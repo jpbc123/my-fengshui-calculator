@@ -18,17 +18,17 @@ const megaMenuConfig = {
   articles: {
     title: "Articles",
     items: [
-      { name: "All Articles", href: "/article", description: "Browse all our published articles." },
-      { name: "Feng Shui", href: "/article?category=Feng Shui", description: "Harmonize your environment and energy." },
-      { name: "Astrology", href: "/article?category=Astrology", description: "Explore celestial influences on your life." },
-      { name: "Numerology", href: "/article?category=Numerology", description: "Discover the power of numbers in your destiny." },
+      { name: "All Articles", href: "/article", description: "Explore expert insights on Feng Shui, astrology, numerology, and more in our curated collection of articles." },
+      { name: "Feng Shui", href: "/article?category=Feng Shui", description: "Articles on home energy, harmony, and Feng Shui best practices." },
+      { name: "Astrology", href: "/article?category=Astrology", description: "Discover celestial insights and astrology-based life guidance." },
+      { name: "Numerology", href: "/article?category=Numerology", description: "Discover the power of numbers in shaping your destiny." },
       { name: "Celebrity", href: "/article?category=Celebrity", description: "Astrological insights into famous personalities." },
     ],
   },
   calculators: {
     title: "Calculators & Tools",
     items: [
-      { name: "Feng Shui", href: "/feng-shui", description: "Align your space for harmony and prosperity." },
+      { name: "Feng Shui", href: "/feng-shui", description: "Calculate your Kua number, personal element, and Feng Shui insights." },
       { name: "Astrology", href: "/astrology", description: "Gain insights from the stars and cosmic energies." },
       { name: "Numerology", href: "/numerology", description: "Uncover the hidden meanings of numbers in your life." },
     ],
@@ -37,35 +37,35 @@ const megaMenuConfig = {
     title: "Horoscope Readings",
     items: [
       { name: "Chinese Horoscope", href: "/chinese-zodiac-landing", description: "Navigate your future with ancient Chinese zodiac wisdom." },
-      { name: "Western Horoscope", href: "/western-horoscope", description: "Daily, weekly, and yearly Western astrology readings." },
+      { name: "Western Horoscope", href: "/western-horoscope", description: "Detailed daily, weekly, and yearly readings for love, career and life guidance based on Western astrology readings." },
     ],
   },
   meditation: {
     title: "Wellness & Mindfulness",
     items: [
-      { name: "Daily Affirmations", href: "/meditate-affirmation", description: "Positive daily mantras" },
-      { name: "Morning Mindfulness", href: "/meditate-morning", description: "Start your day with intention" },
-      { name: "Yoga Poses", href: "/meditate-yoga-pose", description: "Daily physical practice" },
-      { name: "Visualization Exercises", href: "/meditate-visualization", description: "Create peaceful mental imagery to reduce stress" },
-      { name: "Evening Relaxation", href: "/meditate-evening", description: "Unwind peacefully" },
+      { name: "Daily Affirmations", href: "/meditate-affirmation", description: "Positive mantras to boost confidence and mindfulness." },
+      { name: "Morning Mindfulness", href: "/meditate-morning", description: "Start your day with clarity and inner peace." },
+      { name: "Yoga Poses", href: "/meditate-yoga-pose", description: "Simple yoga practices to improve health and energy flow." },
+      { name: "Visualization Exercises", href: "/meditate-visualization", description: "Guided imagery to relax your mind and reduce stress." },
+      { name: "Evening Relaxation", href: "/meditate-evening", description: "Unwind peacefully, end your day with calmness and restorative energy." },
     ],
   },
   services: {
     title: "Professional Services",
     items: [
-      { name: "Birth Chart Analysis", href: "/birth-chart", description: "Professional natal chart reading and detailed analysis." },
-      { name: "Wedding Date Selector", href: "/auspicious-wedding-date", description: "Professional natal chart reading and detailed analysis." },
+      { name: "Birth Chart Analysis", href: "/birth-chart", description: "Professional natal chart reading and detailed interpretation for self-discovery." },
+      { name: "Wedding Date Planner", href: "/auspicious-wedding-date", description: "Choose auspicious wedding dates with Feng Shui precision." },
     ],
   },
   games: {
     title: "Games & Fun",
     items: [
-      { name: "Aura Analysis", href: "/aura-analysis", description: "Discover your spiritual energy" },
-      { name: "Name Compatibility", href: "/name-compatibility", description: "Cosmic bond between names" },      
-      { name: "Western Zodiac Compatibility", href: "/western-compatibility", description: "Western astrology matches" },
-      { name: "Chinese Zodiac Compatibility", href: "/chinese-compatibility", description: "Eastern zodiac insights" },
-      { name: "Fortune Cookie", href: "/fortune-cookie", description: "Daily wisdom and guidance" },
-      { name: "Lucky Numbers Generator", href: "/lucky-numbers", description: "Try your luck with our lucky number generator" },
+      { name: "Aura Analysis", href: "/aura-analysis", description: "Discover your spiritual energy." },
+      { name: "Name Compatibility", href: "/name-compatibility", description: "Explore compatibility through name numerology." },      
+      { name: "Western Zodiac Compatibility", href: "/western-compatibility", description: "Compare Western zodiac signs for love and relationships." },
+      { name: "Chinese Zodiac Compatibility", href: "/chinese-compatibility", description: "Match Chinese zodiac signs for harmony and love." },
+      { name: "Fortune Cookie", href: "/fortune-cookie", description: "Get daily wisdom and fun fortunes instantly." },
+      { name: "Lucky Numbers Generator", href: "/lucky-numbers", description: "Try your luck with our lucky number generator." },
     ],
   },
   about: {
