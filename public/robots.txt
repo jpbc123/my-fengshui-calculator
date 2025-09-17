@@ -53,7 +53,7 @@ User-agent: SemrushBot
 Disallow: /
 
 # Point to your sitemap
-Sitemap: https://fengshuiandbeyond.com/sitemap.xml
+Sitemap: https://fengshuiandbeyond.com/sitemap
 
 # Crawl delay for polite crawling (optional)
 Crawl-delay: 1
