@@ -103,10 +103,9 @@ const Affirmations = () => {
 
   // Pick an affirmation of the day based on date
   useEffect(() => {
-    const today = new Date();
-    const idx = today.getDate() % affirmations.length;
-    setIndex(idx);
-  }, []);
+  const randomIdx = Math.floor(Math.random() * affirmations.length);
+  setIndex(randomIdx);
+	}, []);
 
   const handleNext = () => {
     setIsAnimating(true);
@@ -249,35 +248,12 @@ const Affirmations = () => {
             </div>
           </div>
 
-          {/* Explore More Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-            className="bg-white/70 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-white/20"
-          >
-            <div className="text-center mb-6">
-              <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
-                Explore More Meditation Practices
-              </h2>
-              <p className="text-gray-600">
-                Discover other ways to cultivate mindfulness and inner peace
-              </p>
-            </div>
-            <div className="w-full max-w-2xl mx-auto">
-              <ImageSwiper 
-                meditationOptions={meditationOptions}
-                className="shadow-lg"
-              />
-            </div>
-          </motion.div>
-
           {/* Daily Tips */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.6 }}
-            className="mt-8 grid md:grid-cols-2 gap-6"
+            className="mt-8 grid md:grid-cols-2 gap-6 mb-6"
           >
             <div className="bg-white/50 backdrop-blur-sm rounded-xl p-6 border border-white/20">
               <h3 className="font-semibold text-gray-800 mb-3 flex items-center">
@@ -304,6 +280,31 @@ const Affirmations = () => {
               </ul>
             </div>
           </motion.div>
+
+          {/* Explore More Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+            className="bg-white/70 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-white/20"
+          >
+            <div className="text-center mb-6">
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
+                Explore More Meditation Practices
+              </h2>
+              <p className="text-gray-600">
+                Discover other ways to cultivate mindfulness and inner peace
+              </p>
+            </div>
+            <div className="w-full max-w-2xl mx-auto">
+              <ImageSwiper 
+                meditationOptions={meditationOptions}
+                className="shadow-lg"
+              />
+            </div>
+          </motion.div>
+
+
         </div>
       </main>
     </div>

@@ -48,6 +48,12 @@ import ComingSoonPage from "@/pages/ComingSoonPage";
 import ComingSoonStore from "@/pages/ComingSoonStore";
 import Store from "./pages/Store";
 
+
+import BirthChart from "./pages/BirthChart";
+import FengShuiWeddingDates from "./pages/FengShuiWeddingDates";
+
+
+
 import ScrollToTop from "@/components/ScrollToTop";
 import Footer from "@/components/Footer";
 import PageTitleManager from "@/components/PageTitleManager";
@@ -115,6 +121,11 @@ const App = () => (
                 <Route path="/meditate-morning" element={<MeditateMorningMindfulness />} />
                 <Route path="/meditate-evening" element={<MeditateEveningRelaxation />} />
                 
+				{/* Services */}
+				<Route path="/birth-chart" element={<BirthChart />} />
+				<Route path="/auspicious-wedding-date" element={<FengShuiWeddingDates />} />
+				
+				
                 {/* Articles Routing */}
                 <Route path="/article" element={<ArticleMainPage />} />
                 <Route path="/articles/:slug" element={<ArticlePage />} />

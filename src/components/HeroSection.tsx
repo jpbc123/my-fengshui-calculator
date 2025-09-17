@@ -1,6 +1,9 @@
 // src/components/HeroSection.tsx
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-// Import zodiac images
+import { useZodiacPreviews } from '../hooks/useZodiacPreviews'; // Add this import
+
+// Import zodiac images (keep your existing imports)
 import ratImage from '../assets/chinese-zodiac/year-of-the-rat.png';
 import oxImage from '../assets/chinese-zodiac/year-of-the-ox.png';
 import tigerImage from '../assets/chinese-zodiac/year-of-the-tiger.png';
@@ -14,7 +17,7 @@ import roosterImage from '../assets/chinese-zodiac/year-of-the-rooster.png';
 import dogImage from '../assets/chinese-zodiac/year-of-the-dog.png';
 import pigImage from '../assets/chinese-zodiac/year-of-the-pig.png';
 
-// Define type for zodiac object
+// Define type for zodiac object (keep your existing interface)
 interface Zodiac {
   id: number;
   name: string;
@@ -26,7 +29,10 @@ interface Zodiac {
 
 const HeroSection = () => {
   const navigate = useNavigate();
+  const { previews, loading: previewsLoading } = useZodiacPreviews(); // Add this hook
+  const [showPreviews, setShowPreviews] = useState(false); // Add state for toggling previews
 
+  // Your existing zodiac data
   const chineseZodiacs: Zodiac[] = [
     {
       id: 1,
@@ -130,9 +136,17 @@ const HeroSection = () => {
     navigate(`/zodiac/${zodiac.name.toLowerCase()}`);
   };
 
+  // Auto-show previews after they load
+  useEffect(() => {
+    if (!previewsLoading && Object.keys(previews).length > 0) {
+      const timer = setTimeout(() => setShowPreviews(true), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [previewsLoading, previews]);
+
   return (
-    <section className="relative bg-white text-black min-h-[90vh] py-32 overflow-hidden">
-      {/* Floating Elements */}
+    <section className="relative bg-white text-black min-h-[90vh] py-28 overflow-hidden">
+      {/* Your existing floating elements */}
       <div className="absolute top-10 left-10 w-6 h-6 bg-gold/30 rounded-full blur-lg animate-pulse" />
       <div className="absolute top-16 right-80 w-10 h-10 bg-gold/30 rounded-full blur-md animate-pulse delay-1500" />
       <div className="absolute top-45 left-16 w-20 h-20 bg-gold/30 rounded-full blur-md animate-pulse delay-1500" />
@@ -142,60 +156,118 @@ const HeroSection = () => {
       <div className="relative z-10 container mx-auto px-4 text-center max-w-6xl pt-1">
         {/* Chinese Zodiac Selection */}
         <div className="mt-10 mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-gold mb-10">
-            Find Your Chinese Zodiac Horoscope
+          <h1 className="text-3xl md:text-4xl font-bold text-gold mb-4">
+            Today's Chinese Zodiac Horoscope
           </h1>
-          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 max-w-5xl mx-auto items-stretch">
-            {chineseZodiacs.map((zodiac) => (
-              <div
-                key={zodiac.id}
-                onClick={() => handleZodiacClick(zodiac)}
-                className="group relative cursor-pointer transform transition-all duration-300 hover:scale-105 h-full flex flex-col"
-                role="button"
-                tabIndex={0}
-                onKeyPress={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    handleZodiacClick(zodiac);
-                  }
-                }}
-                aria-label={`View ${zodiac.name} horoscope`}
-              >
-                {/* The Base Button: Always visible */}
-                <div className="relative bg-gray-100 rounded-xl p-4 text-center text-black shadow-md border-2 border-gray-200 transition-all duration-300 h-full flex flex-col">
-                  <div className="absolute inset-0 opacity-10 bg-gradient-to-br from-white to-transparent rounded-xl"></div>
-                  
-                  <div className="relative mb-2 group-hover:scale-110 transition-transform duration-300">
-                    <img
-                      src={zodiac.image}
-                      alt={`Year of the ${zodiac.name} Chinese Zodiac`}
-                      className="w-10 h-10 md:w-16 md:h-16 mx-auto object-contain"
-                    />
-                  </div>
-                  
-                  <h3 className="relative text-sm md:text-base font-bold flex-1 flex items-end justify-center">
-                    Year of the<br />{zodiac.name}
-                  </h3>
-                </div>
+          
+          {/* Add current date */}
+          <p className="text-gray-600 mb-4 text-lg">
+            {new Date().toLocaleDateString('en-US', { 
+              weekday: 'long', 
+              year: 'numeric', 
+              month: 'long', 
+              day: 'numeric' 
+            })}
+          </p>
 
-                {/* The Hover Overlay: Becomes visible on hover */}
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-900 via-black to-indigo-900 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center p-3 text-white shadow-xl hover:shadow-2xl h-full">
-                  <div className="mb-1">
-                    <img
-                      src={zodiac.image}
-                      alt={zodiac.name}
-                      className="w-10 h-10 mx-auto object-contain"
-                    />
+          {/* Add preview toggle */}
+          <div className="mb-6">
+            <button 
+              onClick={() => setShowPreviews(!showPreviews)}
+              className="text-sm text-indigo-600 hover:text-indigo-800 transition-colors px-4 py-2 border border-indigo-300 rounded-full hover:bg-indigo-50"
+              disabled={previewsLoading}
+            >
+              {previewsLoading ? "Loading previews..." : 
+               showPreviews ? "Hide Today's Previews" : "Show Today's Previews"}
+            </button>
+          </div>
+          
+          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 max-w-5xl mx-auto items-stretch">
+            {chineseZodiacs.map((zodiac) => {
+              const preview = previews[zodiac.name.toLowerCase()];
+              
+              return (
+                <div
+                  key={zodiac.id}
+                  onClick={() => handleZodiacClick(zodiac)}
+                  className="group relative cursor-pointer transform transition-all duration-300 hover:scale-105 h-full flex flex-col"
+                  role="button"
+                  tabIndex={0}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      handleZodiacClick(zodiac);
+                    }
+                  }}
+                  aria-label={`View ${zodiac.name} horoscope for today`}
+                >
+                  {/* The Base Button: Always visible */}
+                  <div className={`relative bg-gray-100 rounded-xl p-4 text-center text-black shadow-md border-2 border-gray-200 transition-all duration-300 h-full flex flex-col ${
+                    showPreviews && preview ? 'min-h-[200px]' : 'min-h-[120px]'
+                  }`}>
+                    <div className="absolute inset-0 opacity-10 bg-gradient-to-br from-white to-transparent rounded-xl"></div>
+                    
+                    <div className="relative mb-2 group-hover:scale-110 transition-transform duration-300">
+                      <img
+                        src={zodiac.image}
+                        alt={`Year of the ${zodiac.name} Chinese Zodiac`}
+                        className="w-10 h-10 md:w-16 md:h-16 mx-auto object-contain"
+                      />
+                    </div>
+                    
+                    <h3 className="relative text-sm md:text-base font-bold mb-2">
+                      {zodiac.name}
+                    </h3>
+
+                    {/* Today's Preview - Show only when previews are enabled */}
+                    {showPreviews && (
+                      <div className="mt-auto">
+                        {previewsLoading ? (
+                          <div className="text-xs text-gray-500 italic">
+                            Loading...
+                          </div>
+                        ) : preview ? (
+                          <div className="text-xs text-gray-600 leading-tight italic border-t border-gray-300 pt-2 mt-2">
+                            <span className="font-medium text-indigo-600">Today:</span> "{preview.preview}"
+                          </div>
+                        ) : (
+                          <div className="text-xs text-gray-500 italic border-t border-gray-300 pt-2 mt-2">
+                            Click for today's guidance
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
-                  <h4 className="font-bold text-sm mb-1">{zodiac.name}</h4>
-                  <p className="text-xs text-center leading-relaxed">
-                    Traits: {zodiac.traits}
-                  </p>
-                  <div className="mt-1 text-xs opacity-75">
-                    Click to view your horoscope
-                  </div>
+
+                  {/* The Hover Overlay: Becomes visible on hover */}
+					<div className="absolute inset-0 bg-gradient-to-r from-purple-900 via-black to-indigo-900 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center p-3 text-white shadow-xl hover:shadow-2xl h-full">
+					<div className="mb-1">
+						<img
+						src={zodiac.image}
+						alt={zodiac.name}
+						className="w-8 h-8 mx-auto object-contain" // Made smaller for better fit
+						/>
+					</div>
+					<h4 className="font-bold text-sm mb-1">{zodiac.name}</h4>
+					
+					{preview && showPreviews ? (
+						// When previews are shown, display the preview text
+						<p className="text-xs text-center leading-tight mb-2 px-1">
+						<span className="text-yellow-300 font-semibold">Today:</span> {preview.preview}
+						</p>
+					) : (
+						// When previews are hidden, show traits (shorter text)
+						<p className="text-xs text-center leading-tight mb-2 px-1">
+						<span className="text-yellow-300 font-semibold">Traits:</span> {zodiac.traits}
+						</p>
+					)}
+					
+					<div className="text-xs opacity-75 text-center px-1">
+						Click to view {showPreviews ? 'full horoscope' : 'today\'s horoscope'}
+					</div>
+					</div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
           
           <p className="text-black/80 text-sm mt-10">
@@ -211,7 +283,7 @@ const HeroSection = () => {
           </p>
         </div>
         
-        <p className="text-lg md:text-xl text-grea=y/80 max-w-2xl mx-auto">
+        <p className="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto">
           Explore your unique traits and a path to balance, prosperity, and clarity through ancient Chinese astrology.
         </p>
       </div>
