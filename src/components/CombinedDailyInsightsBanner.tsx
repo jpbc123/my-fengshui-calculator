@@ -468,7 +468,7 @@ const CombinedDailyInsightsBanner = () => {
                   
                   <div className="flex flex-col sm:flex-row gap-3 items-center justify-center">
                     <Link
-                      to="/daily-wisdom-article"
+                      to={`/articles/planetary-${today}`}
                       onClick={storePlanetaryOverview}
                       className="group/btn relative px-8 py-3 bg-gradient-to-r from-yellow-400 to-yellow-500 text-black font-semibold rounded-full shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-105 overflow-hidden"
                     >

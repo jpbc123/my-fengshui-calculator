@@ -28,32 +28,32 @@ const meditationOptions = [
     title: "Morning Mindfulness",
     description: "Start your day calm, centered, and ready for opportunities",
     image: morningImage,
-    link: "/meditate-morning",
+    link: "/meditation/morning-mindfulness",
   },
   {
     title: "Daily Affirmations",
     description: "Repeat a daily phrase to boost confidence, luck, and clarity",
     image: affirmationImage,
-    link: "/meditate-affirmation",
+    link: "/meditation/daily-affirmation",
   },
   {
     title: "Visualization Exercises",
     description: "Focus your mind and imagine positive energy flowing into your day",
     image: visualizationImage,
-    link: "/meditate-visualization",
+    link: "/meditation/visualization-exercises",
   },
   {
     title: "Yoga Pose for the Day",
     description: "Stretch and energize your body with a simple daily pose",
     image: yogaImage,
-    link: "/meditate-yoga-pose",
+    link: "/meditation/yoga",
   },
 
   {
     title: "Evening Relaxation",
     description: "Unwind and release tension before sleep for a peaceful night",
     image: eveningImage,
-    link: "/meditate-evening",
+    link: "/meditation/evening-relaxation",
   },
 ];
 

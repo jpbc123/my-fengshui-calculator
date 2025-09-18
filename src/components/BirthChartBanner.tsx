@@ -3,6 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Star, Sparkles, ArrowRight, Clock } from 'lucide-react';
+import cosmicImage from '../assets/cosmic-2.jpg';
 
 const BirthChartBanner = () => {
   return (
@@ -10,8 +11,17 @@ const BirthChartBanner = () => {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, delay: 0.2 }}
-      className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 via-purple-600 to-blue-800 shadow-2xl mb-8 group hover:scale-[1.02] transition-all duration-500"
+      className="relative overflow-hidden rounded-3xl shadow-2xl mb-8 group hover:scale-[1.02] transition-all duration-500"
+      style={{
+        backgroundImage: `url(${cosmicImage})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}
     >
+      {/* Blurred overlay to maintain readability */}
+      <div className="absolute inset-0 " />
+
       {/* Animated Stars Background */}
       <div className="absolute inset-0 opacity-30">
         {Array.from({ length: 20 }).map((_, i) => (
@@ -41,9 +51,6 @@ const BirthChartBanner = () => {
       <div className="relative z-10 p-6 md:p-8">
         <div className="text-center text-white">
           <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="p-2 bg-white/20 rounded-full backdrop-blur-sm">
-              <Star className="w-5 h-5 text-yellow-300" />
-            </div>
             <h2 className="text-2xl md:text-3xl font-bold">
               Birth Chart Analysis
             </h2>
@@ -90,7 +97,7 @@ const BirthChartBanner = () => {
               <div className="w-4 h-4 bg-yellow-300/80 rounded-full flex items-center justify-center text-xs font-bold text-purple-900">♌</div>
             </div>
             <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2">
-              <div className="w-4 h-4 bg-yellow-300/80 rounded-full flex items-center justify-center text-xs font-bold text-purple-900">♐</div>
+              <div className="w-4 h-4 bg-yellow-300/80 rounded-full flex items-center justify-center text-xs font-bold text-purple-900">♑</div>
             </div>
             <div className="absolute left-1 top-1/2 transform -translate-y-1/2">
               <div className="w-4 h-4 bg-yellow-300/80 rounded-full flex items-center justify-center text-xs font-bold text-purple-900">♊</div>
@@ -105,8 +112,6 @@ const BirthChartBanner = () => {
               <span>Get My Chart</span>
               <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
             </Link>
-            
-
           </div>
         </div>
       </div>

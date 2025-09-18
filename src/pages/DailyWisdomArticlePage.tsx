@@ -127,28 +127,28 @@ const DailyWisdomArticlePage = () => {
     {
       title: "Chinese Zodiac Reading",
       description: "Discover your Chinese zodiac traits and compatibility",
-      link: "/chinese-zodiac-calculator",
+      link: "/astrology/chinese-zodiac-calculator",
       icon: <Compass className="w-5 h-5" />,
       color: "from-red-500 to-orange-500"
     },
     {
       title: "Western Horoscope",
       description: "Get your personalized astrological insights",
-      link: "/western-horoscope",
+      link: "/astrology/western-zodiac-calculator",
       icon: <Star className="w-5 h-5" />,
       color: "from-purple-500 to-pink-500"
     },
     {
       title: "Feng Shui Calculator",
       description: "Find your Kua number and personal element",
-      link: "/kua-number-calculator",
+      link: "/feng-shui/kua-number",
       icon: <Globe className="w-5 h-5" />,
       color: "from-green-500 to-teal-500"
     },
     {
       title: "Numerology Reading",
       description: "Explore the power of numbers in your life",
-      link: "/visiber-calculator",
+      link: "/numerology/visiber-calculator",
       icon: <TrendingUp className="w-5 h-5" />,
       color: "from-blue-500 to-cyan-500"
     },
@@ -162,7 +162,7 @@ const DailyWisdomArticlePage = () => {
     {
       title: "Aura Analysis",
       description: "Discover your spiritual energy and aura colors",
-      link: "/aura-analysis",
+      link: "/games-fun/aura-analysis",
       icon: <Zap className="w-5 h-5" />,
       color: "from-yellow-500 to-amber-500"
     }
@@ -172,19 +172,19 @@ const DailyWisdomArticlePage = () => {
     {
       title: "Lucky Numbers",
       description: "Generate your personal lucky numbers",
-      link: "/lucky-numbers",
+      link: "/games-fun/lucky-numbers-generator",
       icon: <TrendingUp className="w-5 h-5" />
     },
     {
       title: "Name Compatibility",
       description: "Check compatibility with someone special",
-      link: "/name-compatibility",
+      link: "/games-fun/name-compatibility",
       icon: <Heart className="w-5 h-5" />
     },
     {
       title: "Fortune Cookie",
       description: "Get a personalized fortune message",
-      link: "/fortune-cookie",
+      link: "/games-fun/fortune-cookie",
       icon: <Star className="w-5 h-5" />
     }
   ];

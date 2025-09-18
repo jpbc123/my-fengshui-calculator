@@ -24,13 +24,13 @@ const toolCategories = [
     tools: [
       {
         name: "Personal Element",
-        path: "/personal-element",
+        path: "/feng-shui/personal-element",
         description: "Discover your elemental nature",
         icon: Sparkles
       },
       {
         name: "Kua Number",
-        path: "/kua-number-calculator",
+        path: "/feng-shui/kua-number",
         description: "Find your feng shui directions",
         icon: Target
       }
@@ -44,7 +44,7 @@ const toolCategories = [
     tools: [
       {
         name: "Visiber Calculator",
-        path: "/visiber-calculator",
+        path: "/numerology/visiber-calculator",
         description: "Decode your life path numbers",
         icon: Calculator
       }
@@ -58,13 +58,13 @@ const toolCategories = [
     tools: [
       {
         name: "Chinese Zodiac",
-        path: "/chinese-zodiac-calculator",
+        path: "/astrology/chinese-zodiac-calculator",
         description: "Find your Chinese animal sign",
         icon: Users
       },
       {
         name: "Western Zodiac",
-        path: "/western-zodiac-calculator",
+        path: "/astrology/western-zodiac-calculator",
         description: "Discover your zodiac sign",
         icon: Star
       }

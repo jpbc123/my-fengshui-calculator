@@ -440,7 +440,7 @@ const WesternZodiacCalculator = () => {
                       {/* Horoscope Link */}
                       <div className="bg-white p-4 rounded-lg border border-gray-200 text-center">
                         <Link 
-                          to="/western-horoscope" 
+                          to="/horoscope/western-zodiac" 
                           className="inline-flex items-center gap-2 text-gold hover:text-gold/80 font-semibold transition-colors"
                         >
                           Get Your Daily Western Horoscope

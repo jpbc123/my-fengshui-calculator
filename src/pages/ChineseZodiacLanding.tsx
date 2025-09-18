@@ -130,7 +130,7 @@ const ChineseZodiacLanding = () => {
                             Unsure of your sign? Use our calculator to find out!
                         </p>
                         <button
-                            onClick={() => navigate('/chinese-zodiac-calculator')}
+                            onClick={() => navigate('/astrology/chinese-zodiac-calculator')}
                             className="bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors mt-4 inline-block"
                         >
                             Calculate My Sign

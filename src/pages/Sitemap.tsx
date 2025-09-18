@@ -33,9 +33,9 @@ const Sitemap = () => {
       icon: <BookOpen size={20} />,
       links: [
         { name: "All Articles", path: "/article", description: "Browse all our published articles" },
-        { name: "Daily Wisdom", path: "/daily-wisdom-article", description: "Daily inspirational wisdom and quotes" },
-        { name: "Planetary Overview", path: "/planetary-overview", description: "Daily cosmic energy readings" },
-        { name: "Aura Analysis", path: "/aura-analysis", description: "Discover your spiritual energy" }
+        { name: "Daily Wisdom", path: "/", description: "Daily inspirational wisdom (available on homepage banner)" },
+        { name: "Planetary Overview", path: "/", description: "Daily cosmic energy readings (available on homepage)" },
+        { name: "Aura Analysis", path: "/games-fun/aura-analysis", description: "Discover your spiritual energy" }
       ]
     },
     {
@@ -43,15 +43,15 @@ const Sitemap = () => {
       icon: <Calculator size={20} />,
       links: [
         { name: "Feng Shui", path: "/feng-shui", description: "Feng Shui calculators and tools", subLinks: [
-          { name: "Personal Element Calculator", path: "/personal-element" },
-          { name: "Kua Number Calculator", path: "/kua-number-calculator" }
+          { name: "Personal Element Calculator", path: "/feng-shui/personal-element" },
+          { name: "Kua Number Calculator", path: "/feng-shui/kua-number" }
         ]},
         { name: "Numerology", path: "/numerology", description: "Number-based life insights", subLinks: [
-          { name: "Visiber Calculator", path: "/visiber-calculator" }
+          { name: "Visiber Calculator", path: "/numerology/visiber-calculator" }
         ]},
         { name: "Astrology", path: "/astrology", description: "Astrological calculations and charts", subLinks: [
-          { name: "Chinese Zodiac Calculator", path: "/chinese-zodiac-calculator" },
-          { name: "Western Zodiac Calculator", path: "/western-zodiac-calculator" }
+          { name: "Chinese Zodiac Calculator", path: "/astrology/chinese-zodiac-calculator" },
+          { name: "Western Zodiac Calculator", path: "/astrology/western-zodiac-calculator" }
         ]}
       ]
     },
@@ -60,8 +60,8 @@ const Sitemap = () => {
       icon: <Star size={20} />,
       links: [
         { name: "Horoscope Hub", path: "/horoscope", description: "Access to all horoscope types" },
-        { name: "Chinese Zodiac Landing", path: "/chinese-zodiac-landing", description: "Chinese zodiac information and readings" },
-        { name: "Western Daily Horoscope", path: "/western-horoscope", description: "Daily Western astrology readings" }
+        { name: "Chinese Zodiac Landing", path: "/horoscope/chinese-zodiac", description: "Chinese zodiac information and readings" },
+        { name: "Western Daily Horoscope", path: "/horoscope/western-zodiac", description: "Daily Western astrology readings" }
       ]
     },
     {
@@ -69,7 +69,7 @@ const Sitemap = () => {
       icon: <Award size={20} />,
       links: [
         { name: "Birth Chart Analysis", path: "/birth-chart", description: "Professional natal chart reading and analysis" },
-        { name: "Auspicious Wedding Dates", path: "/auspicious-wedding-date", description: "Traditional feng shui wedding date selection" }
+        { name: "Auspicious Wedding Dates", path: "/auspicious-wedding-date-planner", description: "Traditional feng shui wedding date selection" }
       ]
     },
     {
@@ -77,11 +77,11 @@ const Sitemap = () => {
       icon: <Gamepad2 size={20} />,
       links: [
         { name: "Games Hub", path: "/games-fun", description: "Fun tools and compatibility games" },
-        { name: "Lucky Numbers", path: "/lucky-numbers", description: "Generate your lucky numbers" },
-        { name: "Name Compatibility", path: "/name-compatibility", description: "Check name-based compatibility" },
-        { name: "Chinese Compatibility", path: "/chinese-compatibility", description: "Chinese zodiac relationship matching" },
-        { name: "Western Compatibility", path: "/western-compatibility", description: "Western zodiac compatibility analysis" },
-        { name: "Fortune Cookie", path: "/fortune-cookie", description: "Daily wisdom and guidance" }
+        { name: "Lucky Numbers", path: "/games-fun/lucky-numbers-generator", description: "Generate your lucky numbers" },
+        { name: "Name Compatibility", path: "/games-fun/name-compatibility", description: "Check name-based compatibility" },
+        { name: "Chinese Compatibility", path: "/games-fun/chinese-zodiac-compatibility", description: "Chinese zodiac relationship matching" },
+        { name: "Western Compatibility", path: "/games-fun/western-zodiac-compatibility", description: "Western zodiac compatibility analysis" },
+        { name: "Fortune Cookie", path: "/games-fun/fortune-cookie", description: "Daily wisdom and guidance" }
       ]
     },
     {
@@ -89,11 +89,11 @@ const Sitemap = () => {
       icon: <Flower size={20} />,
       links: [
         { name: "Meditation Hub", path: "/meditation", description: "Mindfulness and wellness resources" },
-        { name: "Visualization Exercises", path: "/meditate-visualization", description: "Guided visualization for relaxation" },
-        { name: "Yoga Poses", path: "/meditate-yoga-pose", description: "Daily yoga pose guidance" },
-        { name: "Daily Affirmations", path: "/meditate-affirmation", description: "Positive daily mantras" },
-        { name: "Morning Mindfulness", path: "/meditate-morning", description: "Start your day with intention" },
-        { name: "Evening Relaxation", path: "/meditate-evening", description: "Unwind peacefully" }
+        { name: "Visualization Exercises", path: "/meditation/visualization-exercises", description: "Guided visualization for relaxation" },
+        { name: "Yoga Poses", path: "/meditation/yoga", description: "Daily yoga pose guidance" },
+        { name: "Daily Affirmations", path: "/meditation/daily-affirmation", description: "Positive daily mantras" },
+        { name: "Morning Mindfulness", path: "/meditation/morning-mindfulness", description: "Start your day with intention" },
+        { name: "Evening Relaxation", path: "/meditation/evening-relaxation", description: "Unwind peacefully" }
       ]
     },
     {

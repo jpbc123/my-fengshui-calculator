@@ -278,7 +278,7 @@ const HeroSection = () => {
 		Prefer Western astrology instead? 
 		<span className="text-gold font-semibold cursor-pointer hover:underline ml-1">
 			<Link 
-			to="/western-horoscope" 
+			to="/horoscope/western-zodiac" 
 			className="text-gold font-semibold cursor-pointer hover:underline hover:text-yellow-500 transition-colors"
 			>
 			Check your Western Zodiac daily horoscope here →

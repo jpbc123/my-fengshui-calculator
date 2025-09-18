@@ -36,36 +36,36 @@ const megaMenuConfig = {
   horoscope: {
     title: "Horoscope Readings",
     items: [
-      { name: "Chinese Horoscope", href: "/chinese-zodiac-landing", description: "Navigate your future with ancient Chinese zodiac wisdom." },
-      { name: "Western Horoscope", href: "/western-horoscope", description: "Detailed daily, weekly, and yearly readings for love, career and life guidance based on Western astrology readings." },
+      { name: "Chinese Horoscope", href: "/horoscope/chinese-zodiac", description: "Navigate your future with ancient Chinese zodiac wisdom." },
+      { name: "Western Horoscope", href: "/horoscope/western-zodiac", description: "Detailed daily, weekly, and yearly readings for love, career and life guidance based on Western astrology readings." },
     ],
   },
   meditation: {
     title: "Wellness & Mindfulness",
     items: [
-      { name: "Daily Affirmations", href: "/meditate-affirmation", description: "Positive mantras to boost confidence and mindfulness." },
-      { name: "Morning Mindfulness", href: "/meditate-morning", description: "Start your day with clarity and inner peace." },
-      { name: "Yoga Poses", href: "/meditate-yoga-pose", description: "Simple yoga practices to improve health and energy flow." },
-      { name: "Visualization Exercises", href: "/meditate-visualization", description: "Guided imagery to relax your mind and reduce stress." },
-      { name: "Evening Relaxation", href: "/meditate-evening", description: "Unwind peacefully, end your day with calmness and restorative energy." },
+      { name: "Daily Affirmations", href: "/meditation/daily-affirmation", description: "Positive mantras to boost confidence and mindfulness." },
+      { name: "Morning Mindfulness", href: "/meditation/morning-mindfulness", description: "Start your day with clarity and inner peace." },
+      { name: "Yoga Poses", href: "/meditation/yoga", description: "Simple yoga practices to improve health and energy flow." },
+      { name: "Visualization Exercises", href: "/meditation/visualization-exercises", description: "Guided imagery to relax your mind and reduce stress." },
+      { name: "Evening Relaxation", href: "/meditation/evening-relaxation", description: "Unwind peacefully, end your day with calmness and restorative energy." },
     ],
   },
   services: {
     title: "Professional Services",
     items: [
       { name: "Birth Chart Analysis", href: "/birth-chart", description: "Professional natal chart reading and detailed interpretation for self-discovery." },
-      { name: "Wedding Date Planner", href: "/auspicious-wedding-date", description: "Choose auspicious wedding dates with Feng Shui precision." },
+      { name: "Wedding Date Planner", href: "/auspicious-wedding-date-planner", description: "Choose auspicious wedding dates with Feng Shui precision." },
     ],
   },
   games: {
     title: "Games & Fun",
     items: [
-      { name: "Aura Analysis", href: "/aura-analysis", description: "Discover your spiritual energy." },
-      { name: "Name Compatibility", href: "/name-compatibility", description: "Explore compatibility through name numerology." },      
-      { name: "Western Zodiac Compatibility", href: "/western-compatibility", description: "Compare Western zodiac signs for love and relationships." },
-      { name: "Chinese Zodiac Compatibility", href: "/chinese-compatibility", description: "Match Chinese zodiac signs for harmony and love." },
-      { name: "Fortune Cookie", href: "/fortune-cookie", description: "Get daily wisdom and fun fortunes instantly." },
-      { name: "Lucky Numbers Generator", href: "/lucky-numbers", description: "Try your luck with our lucky number generator." },
+      { name: "Aura Analysis", href: "/games-fun/aura-analysis", description: "Discover your spiritual energy." },
+      { name: "Name Compatibility", href: "/games-fun/name-compatibility", description: "Explore compatibility through name numerology." },      
+      { name: "Western Zodiac Compatibility", href: "/games-fun/western-zodiac-compatibility", description: "Compare Western zodiac signs for love and relationships." },
+      { name: "Chinese Zodiac Compatibility", href: "/games-fun/chinese-zodiac-compatibility", description: "Match Chinese zodiac signs for harmony and love." },
+      { name: "Fortune Cookie", href: "/games-fun/fortune-cookie", description: "Get daily wisdom and fun fortunes instantly." },
+      { name: "Lucky Numbers Generator", href: "/games-fun/lucky-numbers-generator", description: "Try your luck with our lucky number generator." },
     ],
   },
   about: {
