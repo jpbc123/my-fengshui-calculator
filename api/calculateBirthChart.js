@@ -2,6 +2,7 @@
 import { createClient } from '@supabase/supabase-js';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import puppeteer from 'puppeteer';
+import chromium from '@sparticuz/chromium';
 import fs from 'fs';
 import path from 'path';
 
@@ -623,10 +624,12 @@ function generateHowToReadSection() {
 // Enhanced PDF generation with dynamic TOC and natal chart
 async function generatePDF(chartData, interpretations) {
   try {
-    const browser = await puppeteer.launch({
-      headless: 'new',
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
-    });
+	const browser = await puppeteer.launch({
+	args: chromium.args,
+	defaultViewport: chromium.defaultViewport,
+	executablePath: await chromium.executablePath(),
+	headless: chromium.headless,
+	});
 
     const page = await browser.newPage();
     
