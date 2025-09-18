@@ -1,8 +1,7 @@
 // api/calculateBirthChart.js
 import { createClient } from '@supabase/supabase-js';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import puppeteer from 'puppeteer';
-import chromium from '@sparticuz/chromium';
+import playwright from 'playwright-aws-lambda';
 import fs from 'fs';
 import path from 'path';
 
@@ -621,22 +620,27 @@ function generateHowToReadSection() {
     </div>`;
 }
 
-// Enhanced PDF generation with dynamic TOC and natal chart
+// Enhanced PDF generation with dynamic TOC and natal chart w/ AWS Lambda
 async function generatePDF(chartData, interpretations) {
   try {
-	const browser = await puppeteer.launch({
-	args: chromium.args,
-	defaultViewport: chromium.defaultViewport,
-	executablePath: await chromium.executablePath(),
-	headless: chromium.headless,
-	});
+    // Check if we're in production (Vercel) or local development
+    const isProduction = process.env.VERCEL || process.env.NODE_ENV === 'production';
+    
+    let browser;
+    if (isProduction) {
+      browser = await playwright.launchChromium();
+    } else {
+      // For local development
+      const { chromium } = await import('playwright');
+      browser = await chromium.launch();
+    }
 
     const page = await browser.newPage();
     
     // Read logo file from assets
     let logoBase64 = '';
     try {
-      const logoPath = path.join(process.cwd(), 'src', 'assets', 'logo.png');
+      const logoPath = path.join(process.cwd(), 'public', 'logo.png');
       if (fs.existsSync(logoPath)) {
         const logoBuffer = fs.readFileSync(logoPath);
         logoBase64 = logoBuffer.toString('base64');
