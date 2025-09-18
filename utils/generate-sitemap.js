@@ -9,59 +9,55 @@ const routes = [
   // Main pages
   '/',
   '/feng-shui',
-  '/numerology',
+  '/numerology', 
   '/astrology',
   '/horoscope',
   '/store',
   '/about-us',
   '/contact-us',
   '/privacy-policy',
+  '/terms-of-service',
+  '/credits',
+  '/sitemap',
   
   // Feng Shui subpages
-  '/personal-element',
-  '/kua-number-calculator',
+  '/feng-shui/personal-element',
+  '/feng-shui/kua-number',
   
   // Numerology subpages
-  '/visiber-calculator',
+  '/numerology/visiber-calculator',
   
   // Astrology subpages
-  '/chinese-zodiac-calculator',
-  '/chinese-zodiac-landing',
-  '/western-zodiac-calculator',
+  '/astrology/chinese-zodiac-calculator',
+  '/astrology/western-zodiac-calculator',
   
   // Horoscope pages
-  '/western-horoscope',
-  
-  // Tools
-  '/daily-wisdom-article',
-  '/aura-analysis',
-  '/planetary-overview',
+  '/horoscope/chinese-zodiac',
+  '/horoscope/western-zodiac',
   
   // Games
   '/games-fun',
-  '/lucky-numbers',
-  '/name-compatibility',
-  '/chinese-compatibility',
-  '/western-compatibility',
-  '/fortune-cookie',
+  '/games-fun/aura-analysis',
+  '/games-fun/lucky-numbers-generator',
+  '/games-fun/name-compatibility',
+  '/games-fun/chinese-zodiac-compatibility',
+  '/games-fun/western-zodiac-compatibility',
+  '/games-fun/fortune-cookie',
   
   // Meditation
   '/meditation',
-  '/meditate-visualization',
-  '/meditate-yoga-pose',
-  '/meditate-affirmation',
-  '/meditate-morning',
-  '/meditate-evening',
+  '/meditation/visualization-exercises',
+  '/meditation/yoga',
+  '/meditation/daily-affirmation',
+  '/meditation/morning-mindfulness',
+  '/meditation/evening-relaxation',
   
   // Services
   '/birth-chart',
+  '/auspicious-wedding-date-planner',
   
   // Articles
-  '/article',
-  
-  // Coming Soon (optional - you might want to exclude these)
-  // '/community-chat',
-  // '/coming-store',
+  '/article'
 ];
 
 // Chinese zodiac signs for dynamic routes

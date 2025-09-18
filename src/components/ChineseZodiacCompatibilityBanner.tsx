@@ -16,7 +16,7 @@ const ZodiacCompatibilityBanner = () => {
   const handleCompatibilityCheck = () => {
     if (sign1 && sign2) {
       // Navigate to compatibility page with URL parameters
-      navigate(`/chinese-compatibility?sign1=${encodeURIComponent(sign1)}&sign2=${encodeURIComponent(sign2)}`);
+      navigate(`/games-fun/chinese-zodiac-compatibility?sign1=${encodeURIComponent(sign1)}&sign2=${encodeURIComponent(sign2)}`);
     }
   };
 
@@ -142,7 +142,7 @@ const ZodiacCompatibilityBanner = () => {
                     <p className="text-xs text-gray-600">
                       Need your sign?{" "}
                       <button
-                        onClick={() => navigate('/chinese-zodiac-calculator')}
+                        onClick={() => navigate('/astrology/chinese-zodiac-calculator')}
                         className="text-rose-600 hover:text-rose-700 font-semibold underline transition-colors duration-200"
                       >
                         Calculate here →

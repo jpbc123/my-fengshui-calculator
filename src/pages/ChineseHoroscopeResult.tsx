@@ -185,31 +185,31 @@ const featureCards = useMemo(() => [
         title: "Lucky Number Generator",
         description: "Discover your fortune through numbers",
         images: lotteryImage,
-        link: '/lucky-numbers'
+        link: '/games-fun/lucky-numbers-generator'
     },
     {
         title: "Name Compatibility",
         description: "Find out if he/she is the one",
         images: ncompatibilityImage,
-        link: '/name-compatibility'
+        link: '/games-fun/name-compatibility'
     },
     {
         title: "Chinese Zodiac Compatibility",
         description: "Explore how your Chinese zodiac sign aligns with others",
         images: ccompatibilityImage,
-        link: '/chinese-compatibility'
+        link: '/games-fun/chinese-zodiac-compatibility'
     },
     {
         title: "Western Zodiac Compatibility",
         description: "See how your Western star sign matches with different signs",
         images: wcompatibilityImage,
-        link: '/western-compatibility'
+        link: '/games-fun/western-zodiac-compatibility'
     },
     {
         title: "Daily Fortune Cookie",
         description: "Crack open a virtual cookie for a daily dose of wisdom and fortune",
         images: fcookieImage,
-        link: '/fortune-cookie'
+        link: '/games-fun/fortune-cookie'
     }
 ], [navigate]);
 

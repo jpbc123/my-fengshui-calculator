@@ -29,7 +29,7 @@ export default function Astrology() {
           <div className="grid gap-6 md:grid-cols-2 mb-12">
             {/* Chinese Zodiac Calculator Card */}
             <Link
-              to="/chinese-zodiac-calculator"
+              to="/astrology/chinese-zodiac-calculator"
               className="group bg-gray-50 border border-gray-200 hover:border-gold/50 rounded-xl p-6 transition-all duration-300 hover:shadow-lg hover:bg-gray-100"
             >
               <div className="flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-4 mx-auto group-hover:bg-red-200 transition-colors">
@@ -47,7 +47,7 @@ export default function Astrology() {
 
             {/* Western Zodiac Calculator Card */}
             <Link
-              to="/western-zodiac-calculator"
+              to="/astrology/western-zodiac-calculator"
               className="group bg-gray-50 border border-gray-200 hover:border-gold/50 rounded-xl p-6 transition-all duration-300 hover:shadow-lg hover:bg-gray-100"
             >
               <div className="flex items-center justify-center w-16 h-16 bg-purple-100 rounded-full mb-4 mx-auto group-hover:bg-purple-200 transition-colors">

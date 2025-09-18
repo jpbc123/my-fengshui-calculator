@@ -32,7 +32,7 @@ export default function FengShui() {
           <div className="grid gap-6 md:grid-cols-2 mb-12">
             {/* Kua Number Calculator Card */}
             <Link
-              to="/kua-number-calculator"
+              to="/feng-shui/kua-number"
               className="group bg-gray-50 border border-gray-200 hover:border-gold/50 rounded-xl p-6 transition-all duration-300 hover:shadow-lg hover:bg-gray-100"
             >
               <div className="flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-4 mx-auto group-hover:bg-blue-200 transition-colors">
@@ -50,7 +50,7 @@ export default function FengShui() {
 
             {/* Personal Element Calculator Card */}
             <Link
-              to="/personal-element"
+              to="/feng-shui/personal-element"
               className="group bg-gray-50 border border-gray-200 hover:border-gold/50 rounded-xl p-6 transition-all duration-300 hover:shadow-lg hover:bg-gray-100"
             >
               <div className="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4 mx-auto group-hover:bg-green-200 transition-colors">
