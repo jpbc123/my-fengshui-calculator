@@ -1,7 +1,7 @@
 // api/calculateBirthChart.js
 import { createClient } from '@supabase/supabase-js';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import playwright from 'playwright-aws-lambda';
+import htmlPdf from 'html-pdf-node';
 import fs from 'fs';
 import path from 'path';
 
@@ -620,54 +620,52 @@ function generateHowToReadSection() {
     </div>`;
 }
 
-// Enhanced PDF generation with dynamic TOC and natal chart w/ AWS Lambda
+// Enhanced PDF generation with dynamic TOC and natal chart using html-pdf-node
 async function generatePDF(chartData, interpretations) {
   try {
-    // Check if we're in production (Vercel) or local development
-    const isProduction = process.env.VERCEL || process.env.NODE_ENV === 'production';
-    
-    let browser;
-    if (isProduction) {
-      browser = await playwright.launchChromium();
-    } else {
-      // For local development
-      const { chromium } = await import('playwright');
-      browser = await chromium.launch();
-    }
-
-    const page = await browser.newPage();
-    
-    // Read logo file from assets
+    // Read logo file from public folder
     let logoBase64 = '';
     try {
       const logoPath = path.join(process.cwd(), 'public', 'logo.png');
       if (fs.existsSync(logoPath)) {
         const logoBuffer = fs.readFileSync(logoPath);
         logoBase64 = logoBuffer.toString('base64');
-        console.log('Logo loaded successfully');
+        console.log('Logo loaded successfully from:', logoPath);
       } else {
         console.log('Logo not found at:', logoPath);
+        // Try alternative paths for debugging
+        console.log('Current working directory:', process.cwd());
+        try {
+          console.log('Directory contents:', fs.readdirSync(process.cwd()));
+        } catch (e) {
+          console.log('Cannot list directory contents');
+        }
       }
     } catch (error) {
       console.error('Error loading logo:', error);
     }
     
-    // Generate HTML content with improved formatting and dynamic TOC
     const htmlContent = generateImprovedHTML(chartData, interpretations, logoBase64);
-    await page.setContent(htmlContent);
     
-    const pdfBuffer = await page.pdf({
+    const options = { 
       format: 'A4',
       printBackground: true,
-      margin: { top: '0.75in', bottom: '0.75in', left: '0.75in', right: '0.75in' }
-    });
+      margin: { 
+        top: '0.75in', 
+        bottom: '0.75in', 
+        left: '0.75in', 
+        right: '0.75in' 
+      }
+    };
 
-    await browser.close();
+    const file = { content: htmlContent };
+    console.log('Starting PDF generation with html-pdf-node...');
+    const pdfBuffer = await htmlPdf.generatePdf(file, options);
+    console.log('PDF generated successfully, size:', pdfBuffer.length, 'bytes');
+    
     return pdfBuffer;
-
   } catch (error) {
     console.error('PDF generation failed:', error);
-    // Return a simple text-based "PDF" as fallback
     const textContent = generateTextReport(chartData, interpretations);
     return Buffer.from(textContent, 'utf8');
   }
