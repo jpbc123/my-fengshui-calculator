@@ -623,171 +623,47 @@ function generateHowToReadSection() {
 // Enhanced PDF generation with dynamic TOC and natal chart using html-pdf-node
 async function generatePDF(chartData, interpretations) {
   try {
-    console.log('Creating PDF with jsPDF...');
-    const doc = new jsPDF();
-    
-    // Add logo if available
+    // Read logo file from public folder
     let logoBase64 = '';
     try {
       const logoPath = path.join(process.cwd(), 'public', 'logo.png');
       if (fs.existsSync(logoPath)) {
         const logoBuffer = fs.readFileSync(logoPath);
         logoBase64 = logoBuffer.toString('base64');
-        doc.addImage(logoBase64, 'PNG', 20, 20, 50, 15);
-        console.log('Logo added to PDF');
+        console.log('Logo loaded successfully from:', logoPath);
+      } else {
+        console.log('Logo not found at:', logoPath);
+        // Try alternative paths for debugging
+        console.log('Current working directory:', process.cwd());
+        try {
+          console.log('Directory contents:', fs.readdirSync(process.cwd()));
+        } catch (e) {
+          console.log('Cannot list directory contents');
+        }
       }
     } catch (error) {
-      console.error('Logo error:', error);
+      console.error('Error loading logo:', error);
     }
     
-    let yPosition = logoBase64 ? 50 : 20;
+    const htmlContent = generateImprovedHTML(chartData, interpretations, logoBase64);
     
-    // Title
-    doc.setFontSize(24);
-    doc.setFont('helvetica', 'bold');
-    doc.text('Birth Chart Analysis', 105, yPosition, { align: 'center' });
-    yPosition += 15;
-    
-    doc.setFontSize(14);
-    doc.setFont('helvetica', 'normal');
-    doc.text('A Complete Astrological Profile', 105, yPosition, { align: 'center' });
-    yPosition += 20;
-    
-    // Personal info
-    doc.setFontSize(18);
-    doc.setFont('helvetica', 'bold');
-    doc.text(`${chartData.fullName}`, 105, yPosition, { align: 'center' });
-    yPosition += 12;
-    
-    doc.setFontSize(12);
-    doc.setFont('helvetica', 'normal');
-    doc.text(`Born: ${formatDate(chartData.birthDate)} at ${chartData.birthTime}`, 105, yPosition, { align: 'center' });
-    yPosition += 8;
-    doc.text(`Location: ${chartData.birthLocationDisplay || chartData.birthLocation}`, 105, yPosition, { align: 'center' });
-    yPosition += 20;
-    
-    // Big Three in a box
-    doc.setDrawColor(59, 130, 246); // Blue border
-    doc.setFillColor(239, 246, 255); // Light blue background
-    doc.roundedRect(20, yPosition - 5, 170, 25, 3, 3, 'FD');
-    
-    doc.setFontSize(14);
-    doc.setFont('helvetica', 'bold');
-    doc.text('Your Big Three:', 25, yPosition + 5);
-    
-    doc.setFont('helvetica', 'normal');
-    doc.text(`Sun: ${chartData.planets.sun?.sign || 'N/A'}`, 25, yPosition + 15);
-    doc.text(`Moon: ${chartData.planets.moon?.sign || 'N/A'}`, 75, yPosition + 15);
-    doc.text(`Rising: ${chartData.planets.ascendant?.sign || 'N/A'}`, 125, yPosition + 15);
-    yPosition += 35;
-    
-    // Planetary Positions Table
-    if (yPosition > 200) {
-      doc.addPage();
-      yPosition = 20;
-    }
-    
-    doc.setFontSize(16);
-    doc.setFont('helvetica', 'bold');
-    doc.text('Planetary Positions', 20, yPosition);
-    yPosition += 10;
-    
-    // Table headers
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'bold');
-    doc.text('Planet', 20, yPosition);
-    doc.text('Sign', 60, yPosition);
-    doc.text('Degree', 100, yPosition);
-    doc.text('House', 140, yPosition);
-    yPosition += 5;
-    
-    // Table content
-    doc.setFont('helvetica', 'normal');
-    Object.entries(chartData.planets).forEach(([planet, data]) => {
-      if (yPosition > 270) {
-        doc.addPage();
-        yPosition = 20;
+    const options = { 
+      format: 'A4',
+      printBackground: true,
+      margin: { 
+        top: '0.75in', 
+        bottom: '0.75in', 
+        left: '0.75in', 
+        right: '0.75in' 
       }
-      
-      const planetName = planet.charAt(0).toUpperCase() + planet.slice(1);
-      const house = (planet === 'ascendant' || planet === 'midheaven') ? 'Chart Point' : `House ${data.house}`;
-      
-      doc.text(planetName, 20, yPosition);
-      doc.text(data.sign, 60, yPosition);
-      doc.text(`${data.degree.toFixed(1)}°`, 100, yPosition);
-      doc.text(house, 140, yPosition);
-      yPosition += 6;
-    });
-    
-    yPosition += 10;
-    
-    // Helper function to add sections
-    const addSection = (title, content) => {
-      if (yPosition > 240) {
-        doc.addPage();
-        yPosition = 20;
-      }
-      
-      doc.setFontSize(14);
-      doc.setFont('helvetica', 'bold');
-      doc.text(title, 20, yPosition);
-      yPosition += 10;
-      
-      doc.setFontSize(11);
-      doc.setFont('helvetica', 'normal');
-      
-      // Clean content and wrap text
-      const cleanContent = content.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
-      const lines = doc.splitTextToSize(cleanContent, 170);
-      
-      lines.forEach(line => {
-        if (yPosition > 280) {
-          doc.addPage();
-          yPosition = 20;
-        }
-        doc.text(line, 20, yPosition);
-        yPosition += 5;
-      });
-      
-      yPosition += 10;
     };
-    
-    // Add all interpretation sections
-    addSection('Chart Overview', interpretations.overview);
-    addSection('Planetary Meanings', interpretations.planetary_positions);
-    addSection('House Interpretations', interpretations.houses);
-    addSection('Planetary Aspects', interpretations.aspects);
-    addSection('Life Path & Spiritual Journey', interpretations.life_path);
-    addSection('Career & Goals', interpretations.career);
-    addSection('Love & Relationships', interpretations.relationships);
-    addSection('Personality Profile', interpretations.personality);
-    addSection('Life Purpose & Gifts', interpretations.life_purpose);
-    addSection('Growth Areas & Challenges', interpretations.challenges);
-    
-    // Add footer/disclaimer
-    doc.addPage();
-    doc.setFontSize(12);
-    doc.setFont('helvetica', 'bold');
-    doc.text('Disclaimer', 105, 30, { align: 'center' });
-    
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
-    const disclaimer = "Feng Shui & Beyond provides astrological interpretations for entertainment and self-reflection purposes only. This analysis should not replace professional advice. Results may vary among individuals.";
-    const disclaimerLines = doc.splitTextToSize(disclaimer, 170);
-    let disclaimerY = 50;
-    disclaimerLines.forEach(line => {
-      doc.text(line, 20, disclaimerY);
-      disclaimerY += 5;
-    });
-    
-    // Copyright
-    doc.text(`Copyright ${new Date().getFullYear()} Feng Shui & Beyond. All rights reserved.`, 105, disclaimerY + 20, { align: 'center' });
-    
-    const pdfBuffer = Buffer.from(doc.output('arraybuffer'));
+
+    const file = { content: htmlContent };
+    console.log('Starting PDF generation with html-pdf-node...');
+    const pdfBuffer = await htmlPdf.generatePdf(file, options);
     console.log('PDF generated successfully, size:', pdfBuffer.length, 'bytes');
     
     return pdfBuffer;
-
   } catch (error) {
     console.error('PDF generation failed:', error);
     const textContent = generateTextReport(chartData, interpretations);
