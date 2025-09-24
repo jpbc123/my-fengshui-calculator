@@ -108,10 +108,10 @@ const BirthChart = () => {
     return 'Please check your birth location and try again';
   };
 
-  // Input sanitization
-  const sanitizeInput = (input: string): string => {
-    return input.replace(/[<>]/g, '').trim().slice(0, 255);
-  };
+	// Input sanitization - only remove dangerous characters, preserve spaces
+	const sanitizeInput = (input: string): string => {
+		return input.replace(/[<>]/g, '').slice(0, 255);
+	};
 
   // Improved debounced location search
   const debouncedLocationSearch = useCallback(
@@ -120,14 +120,14 @@ const BirthChart = () => {
         clearTimeout(searchTimeout);
       }
       
-      const timeout = setTimeout(() => {
-        if (query.length >= 3) {
-          searchLocations(query);
-        } else {
-          setLocationSuggestions([]);
-          setShowLocationSuggestions(false);
-        }
-      }, 500); // Increased delay to allow multi-word typing
+		const timeout = setTimeout(() => {
+			if (query.length >= 3) {
+				searchLocations(query);
+			} else {
+				setLocationSuggestions([]);
+				setShowLocationSuggestions(false);
+			}
+		}, 300); // Changed from 500 to 300
       
       setSearchTimeout(timeout);
     },
@@ -220,14 +220,17 @@ const BirthChart = () => {
     }
     
     // Handle location search with debouncing
-    if (name === 'birthLocation') {
-      debouncedLocationSearch(sanitizedValue);
-      
-      // Clear selected location display if user is typing new location
-      if (selectedLocationDisplay) {
-        setSelectedLocationDisplay('');
-      }
-    }
+	if (name === 'birthLocation') {
+	// Only search if it's not coordinates (user is typing, not selected)
+	if (!sanitizedValue.includes(',') || !selectedLocationDisplay) {
+		debouncedLocationSearch(sanitizedValue);
+	}
+	
+	// Clear selected location display if user is typing new location
+	if (selectedLocationDisplay && sanitizedValue !== selectedLocationDisplay) {
+		setSelectedLocationDisplay('');
+		}
+	}
   };
 
   const selectLocation = (locationObj: LocationSuggestion) => {
@@ -718,10 +721,10 @@ const BirthChart = () => {
                           Birth Location *
                         </label>
                         <input
-                          type="text"
-                          name="birthLocation"
-                          value={selectedLocationDisplay || formData.birthLocation}
-                          onChange={handleInputChange}
+                           type="text"
+						   name="birthLocation"
+						   value={selectedLocationDisplay || (formData.birthLocation.includes(',') ? '' : formData.birthLocation)}
+						   onChange={handleInputChange}
                           onFocus={() => {
                             if (locationSuggestions.length > 0) {
                               setShowLocationSuggestions(true);
