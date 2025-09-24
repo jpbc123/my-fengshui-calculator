@@ -20,17 +20,17 @@ const FengShuiWeddingDatesBanner = () => {
       }}
     >
       {/* Blurred overlay to maintain readability */}
-      <div className="absolute inset-0 bg-black/30 backdrop-blur-[1px]" />
+      <div className="absolute inset-0" />
 
       {/* Decorative Background Elements */}
-      <div className="absolute inset-0 opacity-20">
+      <div className="absolute inset-0">
         <div className="absolute top-10 left-10 w-32 h-32 bg-white/30 rounded-full blur-3xl animate-pulse" />
         <div className="absolute bottom-10 right-10 w-24 h-24 bg-yellow-300/40 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '2s' }} />
         <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-red-300/30 rounded-full blur-xl animate-pulse" style={{ animationDelay: '1s' }} />
       </div>
 
       {/* Glass overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-white/10 via-transparent to-white/5 group-hover:opacity-75 transition-opacity duration-500" />
+      <div className="absolute inset-0" />
 
       <div className="relative z-10 p-6 md:p-8">
         <div className="text-center text-white">

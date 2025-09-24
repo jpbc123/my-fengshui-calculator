@@ -1,32 +1,18 @@
 // src/pages/BirthChart.tsx
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, Clock, MapPin, Star, Download, ArrowRight, Check } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { jsPDF } from 'jspdf';
 import Header from '@/components/Header';
 import Breadcrumb from '@/components/Breadcrumb';
+import { DatePickerInput } from "@/components/DatePickerInput";
 
 import logoImage from '../assets/logo.png';
 import birthChart from "../assets/birthchart.jpg";
 import birthChartTwo from "../assets/birthchart-two.jpg";
 import birthChartThree from "../assets/birthchart-three.jpg";
 import purpleStars from "../assets/purple-stars.jpg";
-
-interface FormErrors {
-  fullName?: string;
-  email?: string;
-  birthDate?: string;
-  birthTime?: string;
-  birthLocation?: string;
-}
-
-interface LocationSuggestion {
-  displayName: string;
-  coordinates: string;
-  lat: number;
-  lon: number;
-}
 
 const BirthChart = () => {
   const [formData, setFormData] = useState({
@@ -40,26 +26,27 @@ const BirthChart = () => {
   
   const [currentStep, setCurrentStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [processingStage, setProcessingStage] = useState('');
   const [showTimeTooltip, setShowTimeTooltip] = useState(false);
-  const [locationSuggestions, setLocationSuggestions] = useState<LocationSuggestion[]>([]);
+  const [locationSuggestions, setLocationSuggestions] = useState([]);
   const [showLocationSuggestions, setShowLocationSuggestions] = useState(false);
   const [isLoadingLocations, setIsLoadingLocations] = useState(false);
-  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [searchTimeout, setSearchTimeout] = useState(null);
   const [selectedLocationDisplay, setSelectedLocationDisplay] = useState('');
-  const [orderData, setOrderData] = useState<{orderId: string; timestamp: string} | null>(null);
+  const [orderData, setOrderData] = useState(null);
   
-  // Enhanced error handling
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [submitError, setSubmitError] = useState('');
-  
-  const locationInputRef = useRef<HTMLDivElement>(null);
+  const locationInputRef = useRef(null);
 
-  const breadcrumbs: Array<{label: string; href?: string}> = [];
+  // Development mode check
+  const isDev = import.meta.env.DEV;
+  const skipPayment = import.meta.env.VITE_SKIP_PAYMENT === 'true';
+
+  const breadcrumbs = [
+    
+  ];
 
   const features = [
     "Complete natal chart calculation",
-    "Detailed planetary positions", 
+    "Detailed planetary positions",
     "House interpretations",
     "Aspect analysis",
     "Life path insights",
@@ -68,74 +55,135 @@ const BirthChart = () => {
     "PDF report (multiple pages)"
   ];
 
-  // Enhanced form validation
-  const validateForm = useCallback((): FormErrors => {
-    const newErrors: FormErrors = {};
+// Receipt generation function
+const generateReceipt = () => {
+  console.log('Receipt generation started');
+  
+  if (!formData.fullName) {
+    alert('Missing form data. Please go through the form process first.');
+    return;
+  }
+  
+  try {
+    console.log('Creating PDF...');
+    const pdf = new jsPDF();
     
-    if (!formData.fullName.trim()) {
-      newErrors.fullName = 'Name is required';
+    // Add logo
+    try {
+      pdf.addImage(logoImage, 'PNG', 20, 15, 80, 20); // x, y, width, height
+    } catch (logoError) {
+      console.log('Logo not added:', logoError);
     }
     
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+    // Company info (positioned next to logo)
+    pdf.setFontSize(20);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Feng Shui & Beyond', 65, 45);
+    
+    pdf.setFontSize(12);
+    pdf.setFont('helvetica', 'normal');
+    pdf.text('Birth Chart Analysis Receipt', 72, 51);
+    
+    // Receipt details
+    const currentDate = new Date().toLocaleDateString();
+    const receiptNumber = `FSB-${Date.now().toString().slice(-8)}`;
+    
+    pdf.setFontSize(10);
+    pdf.text(`Receipt #: ${receiptNumber}`, 20, 65);
+    pdf.text(`Date: ${currentDate}`, 20, 69);
+    
+    if (orderData?.orderId) {
+      pdf.text(`Order ID: ${orderData.orderId}`, 20, 73);
     }
     
-    if (!formData.birthDate) {
-      newErrors.birthDate = 'Birth date is required';
+    // Customer section header
+    pdf.setFontSize(14);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Customer Information:', 20, 85);
+    
+    // Customer details
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(10);
+    let yPos = 95;
+    pdf.text(`Name: ${formData.fullName}`, 20, yPos);
+    yPos += 7;
+    pdf.text(`Email: ${formData.email}`, 20, yPos);
+    yPos += 7;
+    pdf.text(`Birth Date: ${formData.birthDate}`, 20, yPos);
+    yPos += 7;
+    pdf.text(`Birth Time: ${formData.birthTime}`, 20, yPos);
+    yPos += 7;
+    
+    // Handle location text
+    const locationText = selectedLocationDisplay || formData.birthLocation;
+    if (locationText.length > 60) {
+      pdf.text('Birth Location:', 20, yPos);
+      yPos += 7;
+      // Split long text into multiple lines
+      const splitLocation = pdf.splitTextToSize(locationText, 150);
+      pdf.text(splitLocation, 20, yPos);
+      yPos += splitLocation.length * 7;
+    } else {
+      pdf.text(`Birth Location: ${locationText}`, 20, yPos);
+      yPos += 7;
     }
     
-    if (!formData.birthTime) {
-      newErrors.birthTime = 'Birth time is required';
-    }
+    // Service section header
+    yPos += 10;
+    pdf.setFontSize(14);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Service Details:', 20, yPos);
     
-    if (!formData.birthLocation) {
-      newErrors.birthLocation = 'Birth location is required';
-    }
+    // Service details
+    yPos += 10;
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(10);
+    pdf.text('Professional Birth Chart Analysis', 20, yPos);
+    yPos += 7;
+    pdf.text('Includes: Natal chart wheel, planetary positions, house interpretations,', 20, yPos);
+    yPos += 7;
+    pdf.text('life guidance, and comprehensive PDF report', 20, yPos);
     
-    return newErrors;
-  }, [formData]);
+    // Payment section with lines
+    yPos += 20;
+    pdf.line(20, yPos, 190, yPos); // horizontal line
+    yPos += 10;
+    
+    pdf.setFontSize(12);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Amount Paid: FREE', 20, yPos);
+    yPos += 8;
+    pdf.setFont('helvetica', 'normal');
+    pdf.text('Payment Method: No Payment Required', 20, yPos);
+    yPos += 7;
+    pdf.text('Status: Completed', 20, yPos);
+    
+    yPos += 10;
+    pdf.line(20, yPos, 190, yPos); // horizontal line
+    
+    // Footer
+    yPos += 15;
+    pdf.setFontSize(9);
+    pdf.setFont('helvetica', 'italic');
+    pdf.text('Thank you for choosing Feng Shui & Beyond!', 20, yPos);
+    yPos += 7;
+    pdf.text('Questions? Contact us at hello@fengshuiandbeyond.com', 20, yPos);
+    
+    // Download the PDF
+    const fileName = `Receipt_${formData.fullName.replace(/\s+/g, '_')}_${receiptNumber}.pdf`;
+    console.log('Saving PDF as:', fileName);
+    pdf.save(fileName);
+    
+    console.log('Receipt generated successfully');
+    
+  } catch (error) {
+    console.error('Error generating receipt:', error);
+    alert('Failed to generate receipt: ' + error.message);
+  }
+};
 
-  // Enhanced location error handling
-  const getLocationErrorMessage = (error: string): string => {
-    if (error.includes('coordinates')) {
-      return 'Please select a location from the dropdown suggestions';
-    }
-    if (error.includes('Invalid location format')) {
-      return 'Location format not recognized. Try typing your city name.';
-    }
-    return 'Please check your birth location and try again';
-  };
-
-  // Input sanitization
-  const sanitizeInput = (input: string): string => {
-    return input.replace(/[<>]/g, '').trim().slice(0, 255);
-  };
-
-  // Improved debounced location search
-  const debouncedLocationSearch = useCallback(
-    (query: string) => {
-      if (searchTimeout) {
-        clearTimeout(searchTimeout);
-      }
-      
-      const timeout = setTimeout(() => {
-        if (query.length >= 3) {
-          searchLocations(query);
-        } else {
-          setLocationSuggestions([]);
-          setShowLocationSuggestions(false);
-        }
-      }, 500); // Increased delay to allow multi-word typing
-      
-      setSearchTimeout(timeout);
-    },
-    [] // Removed searchTimeout from dependencies to prevent recreation
-  );
-
-  // Enhanced location search with better error handling
-  const searchLocations = async (query: string) => {
+  // Real location search using OpenStreetMap Nominatim API
+  const searchLocations = async (query) => {
     if (query.length < 3) {
       setLocationSuggestions([]);
       setShowLocationSuggestions(false);
@@ -148,14 +196,9 @@ const BirthChart = () => {
       const response = await fetch(
         `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=10&addressdetails=1`
       );
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
       const data = await response.json();
       
-      const locations: LocationSuggestion[] = data.map((item: any) => {
+      const locations = data.map(item => {
         const parts = [];
         if (item.address?.city || item.address?.town || item.address?.village) {
           parts.push(item.address.city || item.address.town || item.address.village);
@@ -173,86 +216,71 @@ const BirthChart = () => {
         };
       });
       
-      const uniqueLocations = locations.filter(location => 
-        location.displayName.trim().length > 0 &&
-        !isNaN(location.lat) && !isNaN(location.lon)
-      );
+      const uniqueLocations = locations.filter(location => location.displayName.trim().length > 0);
       
       setLocationSuggestions(uniqueLocations);
       setShowLocationSuggestions(uniqueLocations.length > 0);
-      
     } catch (error) {
-      console.error('Location search error:', error);
-      
-      // Fallback locations for common searches
-      const fallbackLocations: LocationSuggestion[] = [
-        { displayName: 'Kuala Lumpur, Malaysia', coordinates: '3.1390,101.6869', lat: 3.1390, lon: 101.6869 },
-        { displayName: 'Manila, Philippines', coordinates: '14.6042,120.9822', lat: 14.6042, lon: 120.9822 },
-        { displayName: 'Singapore', coordinates: '1.3521,103.8198', lat: 1.3521, lon: 103.8198 },
-        { displayName: 'Jakarta, Indonesia', coordinates: '-6.2088,106.8456', lat: -6.2088, lon: 106.8456 }
-      ].filter(location => 
-        location.displayName.toLowerCase().includes(query.toLowerCase())
-      );
+      console.error('Error fetching locations:', error);
+      const fallbackLocations = [
+        {
+          displayName: 'Kuala Lumpur, Malaysia',
+          coordinates: '3.1390,101.6869',
+          lat: 3.1390,
+          lon: 101.6869
+        },
+        {
+          displayName: 'Manila, Philippines', 
+          coordinates: '14.6042,120.9822',
+          lat: 14.6042,
+          lon: 120.9822
+        }
+      ].filter(location => location.displayName.toLowerCase().includes(query.toLowerCase()));
       
       setLocationSuggestions(fallbackLocations);
       setShowLocationSuggestions(fallbackLocations.length > 0);
-    } finally {
-      setIsLoadingLocations(false);
     }
+    
+    setIsLoadingLocations(false);
   };
 
-  // Enhanced input change handler with sanitization
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
-    const sanitizedValue = sanitizeInput(value);
+    setFormData({
+      ...formData,
+      [name]: value
+    });
     
-    setFormData(prev => ({
-      ...prev,
-      [name]: sanitizedValue
-    }));
-    
-    // Clear field-specific errors when user starts typing
-    if (errors[name as keyof FormErrors]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: undefined
-      }));
-    }
-    
-    // Handle location search with debouncing
     if (name === 'birthLocation') {
-      debouncedLocationSearch(sanitizedValue);
-      
-      // Clear selected location display if user is typing new location
-      if (selectedLocationDisplay) {
-        setSelectedLocationDisplay('');
+      // Clear previous timeout to avoid multiple API calls
+      if (searchTimeout) {
+        clearTimeout(searchTimeout);
       }
+      
+      // Set new timeout for 500ms delay (debouncing)
+      const timeout = setTimeout(() => {
+        searchLocations(value);
+      }, 500);
+      
+      setSearchTimeout(timeout);
     }
   };
 
-  const selectLocation = (locationObj: LocationSuggestion) => {
-    setFormData(prev => ({
-      ...prev,
-      birthLocation: locationObj.coordinates
-    }));
+  const selectLocation = (locationObj) => {
+    setFormData({
+      ...formData,
+      birthLocation: locationObj.coordinates // Send coordinates to backend
+    });
     
-    setSelectedLocationDisplay(locationObj.displayName);
+    setSelectedLocationDisplay(locationObj.displayName); // Store display name for UI
     setShowLocationSuggestions(false);
     setLocationSuggestions([]);
-    
-    // Clear location error if it exists
-    if (errors.birthLocation) {
-      setErrors(prev => ({
-        ...prev,
-        birthLocation: undefined
-      }));
-    }
   };
 
   // Handle clicks outside location suggestions
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (locationInputRef.current && !locationInputRef.current.contains(event.target as Node)) {
+    const handleClickOutside = (event) => {
+      if (locationInputRef.current && !locationInputRef.current.contains(event.target)) {
         setShowLocationSuggestions(false);
       }
     };
@@ -274,210 +302,47 @@ const BirthChart = () => {
     };
   }, [searchTimeout]);
 
-  // Enhanced submit handler with better error handling and progress indication
   const handleSubmit = async () => {
-    // Reset previous errors
-    setErrors({});
-    setSubmitError('');
-    
-    // Validate form
-    const validationErrors = validateForm();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
-
     setIsProcessing(true);
     
     try {
-      setProcessingStage('Validating your information...');
-      
       // Include both coordinates and display name
       const submitData = {
         ...formData,
-        birthLocationDisplay: selectedLocationDisplay
+        birthLocationDisplay: selectedLocationDisplay // Add this line
       };
 
-      setProcessingStage('Submitting your birth chart request...');
-      
       const response = await fetch('/api/submitBirthChart', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(submitData)
+        body: JSON.stringify(submitData) // Use submitData instead of formData
       });
-      
-      if (!response.ok) {
-        throw new Error(`Server responded with status: ${response.status}`);
-      }
       
       const result = await response.json();
       
       if (result.success) {
-        setProcessingStage('Calculating planetary positions...');
-        
         // Store order data for receipt
         setOrderData({
           orderId: result.orderId,
           timestamp: new Date().toISOString()
         });
         
-        // Trigger chart calculation
-        setProcessingStage('Generating interpretations...');
-        
-        const calcResponse = await fetch('/api/calculateBirthChart', {
+        // Trigger processing
+        fetch('/api/calculateBirthChart', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ orderId: result.orderId })
         });
         
-        if (!calcResponse.ok) {
-          console.warn('Chart calculation request failed, but order was submitted successfully');
-        }
-        
-        setProcessingStage('Creating PDF report...');
-        
-        setTimeout(() => {
-          setCurrentStep(2);
-          setProcessingStage('');
-        }, 1500);
-        
+        setCurrentStep(2);
       } else {
         throw new Error(result.error || 'Something went wrong');
       }
     } catch (error) {
-      console.error('Submit error:', error);
-      setSubmitError(
-        error instanceof Error 
-          ? `Failed to submit: ${error.message}. Please check your information and try again.`
-          : 'Failed to generate chart. Please check your information and try again.'
-      );
+      console.error('Error:', error);
+      alert('Failed to submit. Please try again.');
     } finally {
       setIsProcessing(false);
-      setProcessingStage('');
-    }
-  };
-
-  // Enhanced receipt generation function
-  const generateReceipt = () => {
-    console.log('Receipt generation started');
-    
-    if (!formData.fullName) {
-      alert('Missing form data. Please go through the form process first.');
-      return;
-    }
-    
-    try {
-      console.log('Creating PDF...');
-      const pdf = new jsPDF();
-      
-      // Add logo
-      try {
-        pdf.addImage(logoImage, 'PNG', 20, 15, 80, 20);
-      } catch (logoError) {
-        console.log('Logo not added:', logoError);
-      }
-      
-      // Company info
-      pdf.setFontSize(20);
-      pdf.setFont('helvetica', 'bold');
-      pdf.text('Feng Shui & Beyond', 65, 45);
-      
-      pdf.setFontSize(12);
-      pdf.setFont('helvetica', 'normal');
-      pdf.text('Birth Chart Analysis Receipt', 72, 51);
-      
-      // Receipt details
-      const currentDate = new Date().toLocaleDateString();
-      const receiptNumber = `FSB-${Date.now().toString().slice(-8)}`;
-      
-      pdf.setFontSize(10);
-      pdf.text(`Receipt #: ${receiptNumber}`, 20, 65);
-      pdf.text(`Date: ${currentDate}`, 20, 69);
-      
-      if (orderData?.orderId) {
-        pdf.text(`Order ID: ${orderData.orderId}`, 20, 73);
-      }
-      
-      // Customer section
-      pdf.setFontSize(14);
-      pdf.setFont('helvetica', 'bold');
-      pdf.text('Customer Information:', 20, 85);
-      
-      pdf.setFont('helvetica', 'normal');
-      pdf.setFontSize(10);
-      let yPos = 95;
-      pdf.text(`Name: ${formData.fullName}`, 20, yPos);
-      yPos += 7;
-      pdf.text(`Email: ${formData.email}`, 20, yPos);
-      yPos += 7;
-      pdf.text(`Birth Date: ${formData.birthDate}`, 20, yPos);
-      yPos += 7;
-      pdf.text(`Birth Time: ${formData.birthTime}`, 20, yPos);
-      yPos += 7;
-      
-      // Handle long location text
-      const locationText = selectedLocationDisplay || formData.birthLocation;
-      if (locationText.length > 60) {
-        pdf.text('Birth Location:', 20, yPos);
-        yPos += 7;
-        const splitLocation = pdf.splitTextToSize(locationText, 150);
-        pdf.text(splitLocation, 20, yPos);
-        yPos += splitLocation.length * 7;
-      } else {
-        pdf.text(`Birth Location: ${locationText}`, 20, yPos);
-        yPos += 7;
-      }
-      
-      // Service details
-      yPos += 10;
-      pdf.setFontSize(14);
-      pdf.setFont('helvetica', 'bold');
-      pdf.text('Service Details:', 20, yPos);
-      
-      yPos += 10;
-      pdf.setFont('helvetica', 'normal');
-      pdf.setFontSize(10);
-      pdf.text('Professional Birth Chart Analysis', 20, yPos);
-      yPos += 7;
-      pdf.text('Includes: Natal chart wheel, planetary positions, house interpretations,', 20, yPos);
-      yPos += 7;
-      pdf.text('life guidance, and comprehensive PDF report', 20, yPos);
-      
-      // Payment section
-      yPos += 20;
-      pdf.line(20, yPos, 190, yPos);
-      yPos += 10;
-      
-      pdf.setFontSize(12);
-      pdf.setFont('helvetica', 'bold');
-      pdf.text('Amount Paid: FREE', 20, yPos);
-      yPos += 8;
-      pdf.setFont('helvetica', 'normal');
-      pdf.text('Payment Method: No Payment Required', 20, yPos);
-      yPos += 7;
-      pdf.text('Status: Completed', 20, yPos);
-      
-      yPos += 10;
-      pdf.line(20, yPos, 190, yPos);
-      
-      // Footer
-      yPos += 15;
-      pdf.setFontSize(9);
-      pdf.setFont('helvetica', 'italic');
-      pdf.text('Thank you for choosing Feng Shui & Beyond!', 20, yPos);
-      yPos += 7;
-      pdf.text('Questions? Contact us at hello@fengshuiandbeyond.com', 20, yPos);
-      
-      // Download
-      const fileName = `Receipt_${formData.fullName.replace(/\s+/g, '_')}_${receiptNumber}.pdf`;
-      console.log('Saving PDF as:', fileName);
-      pdf.save(fileName);
-      
-      console.log('Receipt generated successfully');
-      
-    } catch (error) {
-      console.error('Error generating receipt:', error);
-      alert('Failed to generate receipt: ' + (error instanceof Error ? error.message : 'Unknown error'));
     }
   };
 
@@ -496,13 +361,13 @@ const BirthChart = () => {
     });
     setSelectedLocationDisplay('');
     setOrderData(null);
-    setErrors({});
-    setSubmitError('');
   };
 
   return (
     <div className="min-h-screen bg-white text-black flex flex-col">
       <Header />
+      
+      
       
       <main className="flex-grow container mx-auto px-4 py-8 max-w-6xl mt-20">
         <Breadcrumb items={breadcrumbs} />
@@ -599,13 +464,6 @@ const BirthChart = () => {
                   {/* Form content */}
                   {currentStep === 1 && (
                     <div className="space-y-6">
-                      {/* Show general submit error */}
-                      {submitError && (
-                        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                          <p className="text-red-700 text-sm">{submitError}</p>
-                        </div>
-                      )}
-
                       <div className="grid md:grid-cols-2 gap-6">
                         <div>
                           <label className="block text-sm font-medium text-yellow mb-2">
@@ -616,14 +474,9 @@ const BirthChart = () => {
                             name="fullName"
                             value={formData.fullName}
                             onChange={handleInputChange}
-                            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-black placeholder:text-black ${
-                              errors.fullName ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                            }`}
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-black placeholder:text-black"
                             placeholder="Enter your full name"
                           />
-                          {errors.fullName && (
-                            <p className="text-red-600 text-xs mt-1">{errors.fullName}</p>
-                          )}
                         </div>
                         
                         <div>
@@ -635,14 +488,9 @@ const BirthChart = () => {
                             name="email"
                             value={formData.email}
                             onChange={handleInputChange}
-                            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-black placeholder:text-black ${
-                              errors.email ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                            }`}
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-black placeholder:text-black"
                             placeholder="your@email.com"
                           />
-                          {errors.email && (
-                            <p className="text-red-600 text-xs mt-1">{errors.email}</p>
-                          )}
                         </div>
                       </div>
 
@@ -657,52 +505,40 @@ const BirthChart = () => {
                             name="birthDate"
                             value={formData.birthDate}
                             onChange={handleInputChange}
-                            min="1900-01-01"
-                            max={new Date().toISOString().split('T')[0]}
-                            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-black ${
-                              errors.birthDate ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                            }`}
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-black"
                           />
-                          {errors.birthDate && (
-                            <p className="text-red-600 text-xs mt-1">{errors.birthDate}</p>
-                          )}
                         </div>
                         
                         <div>
                           <label className="block text-sm font-medium text-yellow mb-2">
                             <Clock className="inline w-4 h-4 mr-1" />
                             Time of Birth *
-                            <div className="inline-block relative ml-2 group">
-                              <div className="w-4 h-4 bg-purple-500 text-white rounded-full text-xs inline-flex items-center justify-center cursor-help">
-                                ?
-                              </div>
-                              <div className="absolute left-0 top-6 w-64 bg-gray-800 text-white text-xs rounded-lg p-3 shadow-lg z-10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                                If you don't know your exact birth time, 12:00 PM (noon) is commonly used as a default by astrologers. This may make some interpretations less precise.
-                                <div className="absolute -top-1 left-3 w-2 h-2 bg-gray-800 rotate-45"></div>
-                              </div>
-                            </div>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setFormData({...formData, birthTime: '12:00'});
+                                setShowTimeTooltip(!showTimeTooltip);
+                              }}
+                              className="ml-2 w-4 h-4 bg-purple-500 text-white rounded-full text-xs inline-flex items-center justify-center hover:bg-purple-600 relative"
+                            >
+                              ?
+                              {showTimeTooltip && (
+                                <div className="absolute left-0 top-6 w-64 bg-gray-800 text-white text-xs rounded-lg p-3 shadow-lg z-10">
+                                  If you don't know your exact birth time, 12:00 PM (noon) is commonly used as a default by astrologers. Click this button to set it automatically.
+                                  <div className="absolute -top-1 left-3 w-2 h-2 bg-gray-800 rotate-45"></div>
+                                </div>
+                              )}
+                            </button>
                           </label>
                           <input
                             type="time"
                             name="birthTime"
                             value={formData.birthTime}
                             onChange={handleInputChange}
-                            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-black ${
-                              errors.birthTime ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                            }`}
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-black"
                           />
-                          {errors.birthTime && (
-                            <p className="text-red-600 text-xs mt-1">{errors.birthTime}</p>
-                          )}
-                          {!formData.birthTime && (
-                            <button
-                              type="button"
-                              onClick={() => setFormData({...formData, birthTime: '12:00'})}
-                              className="mt-2 text-xs text-purple-600 hover:text-purple-800 underline"
-                            >
-                              Click here to use 12:00 PM (noon) as default
-                            </button>
-                          )}
                           <p className="text-xs text-gray-500 mt-1">
                             {formData.birthTime === '12:00' ? 
                               'Using 12:00 PM default time - some interpretations may be less precise' :
@@ -727,15 +563,10 @@ const BirthChart = () => {
                               setShowLocationSuggestions(true);
                             }
                           }}
-                          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-black placeholder:text-black ${
-                            errors.birthLocation ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                          }`}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-black placeholder:text-black"
                           placeholder="Start typing your city... (e.g., Kuala Lumpur)"
                           autoComplete="off"
                         />
-                        {errors.birthLocation && (
-                          <p className="text-red-600 text-xs mt-1">{getLocationErrorMessage(errors.birthLocation)}</p>
-                        )}
                         
                         {isLoadingLocations && (
                           <div className="absolute right-3 top-11 transform -translate-y-1/2">
@@ -792,7 +623,7 @@ const BirthChart = () => {
                         {isProcessing ? (
                           <div className="flex items-center justify-center">
                             <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                            {processingStage || 'Generating Your Chart...'}
+                            Generating Your Chart...
                           </div>
                         ) : (
                           <>
@@ -829,13 +660,15 @@ const BirthChart = () => {
                         </ul>
                       </div>
                       <div className="flex gap-4 justify-center">
-                        <button 
+                        {/*
+						<button 
                           onClick={generateReceipt}
                           className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition-all"
                         >
                           <Download className="inline mr-2 w-5 h-5" />
                           Download Receipt
                         </button>
+						*/}
 
                         <button 
                           onClick={resetForm}
