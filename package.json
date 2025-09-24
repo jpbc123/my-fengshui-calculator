@@ -67,6 +67,7 @@
     "dayjs": "^1.11.18",
     "dotenv": "^17.2.1",
     "embla-carousel-react": "^8.3.0",
+    "ephemeris": "^2.2.0",
     "express": "^5.1.0",
     "framer-motion": "^12.23.12",
     "html-pdf-node": "^1.0.8",
