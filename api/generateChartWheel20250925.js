@@ -1,7 +1,6 @@
 // api/generateChartWheel.js
 // Dedicated service for birth chart wheel generation with Swiss Ephemeris integration
-import puppeteer from 'puppeteer-core';
-import chromium from '@sparticuz/chromium';
+import puppeteer from 'puppeteer';
 
 export default async function handler(req, res) {
   // CORS headers
@@ -60,83 +59,23 @@ export default async function handler(req, res) {
   }
 }
 
-// FIXED: Enhanced function to convert SVG to base64 image with environment detection
+// New function to convert SVG to base64 image using Puppeteer
 async function convertSvgToImage(svgString) {
   let browser;
   try {
-    // Detect environment and configure Puppeteer accordingly
-    const isDev = process.env.NODE_ENV === 'development' || !process.env.VERCEL;
-    
-    if (isDev) {
-      // Local development configuration
-      console.log('Running in development mode - using local Puppeteer');
-      
-      // Try to use regular puppeteer for local development
-      try {
-        const puppeteerRegular = await import('puppeteer');
-        browser = await puppeteerRegular.default.launch({
-          headless: true,
-          args: [
-            '--no-sandbox',
-            '--disable-setuid-sandbox',
-            '--disable-dev-shm-usage',
-            '--disable-gpu',
-            '--disable-web-security',
-            '--disable-features=VizDisplayCompositor'
-          ]
-        });
-      } catch (regularPuppeteerError) {
-        console.log('Regular puppeteer not available, trying puppeteer-core with system Chrome');
-        
-        // Fallback: try to find system Chrome/Chromium
-        const possiblePaths = [
-          'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-          'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
-          '/usr/bin/google-chrome-stable',
-          '/usr/bin/google-chrome',
-          '/usr/bin/chromium-browser',
-          '/usr/bin/chromium',
-          '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-        ];
-        
-        let executablePath = null;
-        for (const path of possiblePaths) {
-          try {
-            const fs = await import('fs');
-            if (fs.existsSync(path)) {
-              executablePath = path;
-              break;
-            }
-          } catch (e) {
-            continue;
-          }
-        }
-        
-        if (executablePath) {
-          browser = await puppeteer.launch({
-            executablePath,
-            headless: true,
-            args: [
-              '--no-sandbox',
-              '--disable-setuid-sandbox',
-              '--disable-dev-shm-usage',
-              '--disable-gpu'
-            ]
-          });
-        } else {
-          throw new Error('No Chrome/Chromium installation found. Please install Google Chrome or use regular puppeteer package.');
-        }
-      }
-    } else {
-      // Production/Vercel configuration
-      console.log('Running in production mode - using Vercel-compatible Chromium');
-      browser = await puppeteer.launch({
-        args: chromium.args,
-        defaultViewport: chromium.defaultViewport,
-        executablePath: await chromium.executablePath(),
-        headless: chromium.headless,
-      });
-    }
+    // Launch browser with Vercel-compatible settings
+    browser = await puppeteer.launch({
+      headless: true,
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-gpu',
+        '--no-first-run',
+        '--no-zygote',
+        '--single-process'
+      ]
+    });
     
     const page = await browser.newPage();
     
