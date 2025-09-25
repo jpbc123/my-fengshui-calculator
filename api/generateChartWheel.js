@@ -225,34 +225,34 @@ function generateEnhancedNatalChartWheel(planetaryData, options = {}) {
   
   // ULTIMATE FIX: HTML entity codes for guaranteed compatibility
   const planetInfo = {
-    sun: { symbol: '&#9737;', fallback: 'SU', color: '#FF6B35', name: 'Sun' },        // ☉
-    moon: { symbol: '&#9789;', fallback: 'MO', color: '#4ECDC4', name: 'Moon' },       // ☽
-    mercury: { symbol: '&#9791;', fallback: 'ME', color: '#45B7D1', name: 'Mercury' }, // ☿
-    venus: { symbol: '&#9792;', fallback: 'VE', color: '#96CEB4', name: 'Venus' },     // ♀
-    mars: { symbol: '&#9794;', fallback: 'MA', color: '#FFEAA7', name: 'Mars' },       // ♂
-    jupiter: { symbol: '&#9795;', fallback: 'JU', color: '#DDA0DD', name: 'Jupiter' }, // ♃
-    saturn: { symbol: '&#9796;', fallback: 'SA', color: '#F39C12', name: 'Saturn' },   // ♄
-    uranus: { symbol: '&#9797;', fallback: 'UR', color: '#00B894', name: 'Uranus' },   // ♅
-    neptune: { symbol: '&#9798;', fallback: 'NE', color: '#6C5CE7', name: 'Neptune' }, // ♆
-    pluto: { symbol: '&#9799;', fallback: 'PL', color: '#A29BFE', name: 'Pluto' },     // ♇
-    ascendant: { symbol: 'AC', fallback: 'AC', color: '#2D3436', name: 'Ascendant' },
-    midheaven: { symbol: 'MC', fallback: 'MC', color: '#2D3436', name: 'Midheaven' }
+	sun: { symbol: '\u2609', fallback: 'SU', color: '#FF6B35', name: 'Sun' },        // ☉
+	moon: { symbol: '\u263D', fallback: 'MO', color: '#4ECDC4', name: 'Moon' },       // ☽
+	mercury: { symbol: '\u263F', fallback: 'ME', color: '#45B7D1', name: 'Mercury' }, // ☿
+	venus: { symbol: '\u2640', fallback: 'VE', color: '#96CEB4', name: 'Venus' },     // ♀
+	mars: { symbol: '\u2642', fallback: 'MA', color: '#FFEAA7', name: 'Mars' },       // ♂
+	jupiter: { symbol: '\u2643', fallback: 'JU', color: '#DDA0DD', name: 'Jupiter' }, // ♃
+	saturn: { symbol: '\u2644', fallback: 'SA', color: '#F39C12', name: 'Saturn' },   // ♄
+	uranus: { symbol: '\u2645', fallback: 'UR', color: '#00B894', name: 'Uranus' },   // ♅
+	neptune: { symbol: '\u2646', fallback: 'NE', color: '#6C5CE7', name: 'Neptune' }, // ♆
+	pluto: { symbol: '\u2647', fallback: 'PL', color: '#A29BFE', name: 'Pluto' },     // ♇
+	ascendant: { symbol: 'AC', fallback: 'AC', color: '#2D3436', name: 'Ascendant' },
+	midheaven: { symbol: 'MC', fallback: 'MC', color: '#2D3436', name: 'Midheaven' }
   };
 
   // ULTIMATE FIX: HTML entity codes for zodiac signs
   const signInfo = {
-    'Aries': { symbol: '&#9800;', fallback: 'AR', color: '#E74C3C', element: 'fire' },        // ♈
-    'Taurus': { symbol: '&#9801;', fallback: 'TA', color: '#27AE60', element: 'earth' },      // ♉
-    'Gemini': { symbol: '&#9802;', fallback: 'GE', color: '#F39C12', element: 'air' },        // ♊
-    'Cancer': { symbol: '&#9803;', fallback: 'CA', color: '#3498DB', element: 'water' },      // ♋
-    'Leo': { symbol: '&#9804;', fallback: 'LE', color: '#E74C3C', element: 'fire' },          // ♌
-    'Virgo': { symbol: '&#9805;', fallback: 'VI', color: '#27AE60', element: 'earth' },       // ♍
-    'Libra': { symbol: '&#9806;', fallback: 'LI', color: '#F39C12', element: 'air' },         // ♎
-    'Scorpio': { symbol: '&#9807;', fallback: 'SC', color: '#3498DB', element: 'water' },     // ♏
-    'Sagittarius': { symbol: '&#9808;', fallback: 'SG', color: '#E74C3C', element: 'fire' },  // ♐
-    'Capricorn': { symbol: '&#9809;', fallback: 'CP', color: '#27AE60', element: 'earth' },   // ♑
-    'Aquarius': { symbol: '&#9810;', fallback: 'AQ', color: '#F39C12', element: 'air' },      // ♒
-    'Pisces': { symbol: '&#9811;', fallback: 'PI', color: '#3498DB', element: 'water' }       // ♓
+	'Aries': { symbol: '\u2648', fallback: 'AR', color: '#E74C3C', element: 'fire' },        // ♈
+	'Taurus': { symbol: '\u2649', fallback: 'TA', color: '#27AE60', element: 'earth' },      // ♉
+	'Gemini': { symbol: '\u264A', fallback: 'GE', color: '#F39C12', element: 'air' },        // ♊
+	'Cancer': { symbol: '\u264B', fallback: 'CA', color: '#3498DB', element: 'water' },      // ♋
+	'Leo': { symbol: '\u264C', fallback: 'LE', color: '#E74C3C', element: 'fire' },          // ♌
+	'Virgo': { symbol: '\u264D', fallback: 'VI', color: '#27AE60', element: 'earth' },       // ♍
+	'Libra': { symbol: '\u264E', fallback: 'LI', color: '#F39C12', element: 'air' },         // ♎
+	'Scorpio': { symbol: '\u264F', fallback: 'SC', color: '#3498DB', element: 'water' },     // ♏
+	'Sagittarius': { symbol: '\u2650', fallback: 'SG', color: '#E74C3C', element: 'fire' },  // ♐
+	'Capricorn': { symbol: '\u2651', fallback: 'CP', color: '#27AE60', element: 'earth' },   // ♑
+	'Aquarius': { symbol: '\u2652', fallback: 'AQ', color: '#F39C12', element: 'air' },      // ♒
+	'Pisces': { symbol: '\u2653', fallback: 'PI', color: '#3498DB', element: 'water' }       // ♓
   };
 
   // Calculate aspects between planets with Swiss Ephemeris precision
