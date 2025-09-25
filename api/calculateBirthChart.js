@@ -619,7 +619,7 @@ async function generatePDF(chartData, interpretations) {
     // COVER PAGE
     if (logoBase64) {
       try {
-        const logoWidth = 60, logoHeight = 18;
+        const logoWidth = 50, logoHeight = 15;
         const logoX = (doc.internal.pageSize.width - logoWidth) / 2;
         doc.addImage(logoBase64, 'PNG', logoX, yPosition, logoWidth, logoHeight);
         yPosition = 55;
@@ -653,22 +653,6 @@ async function generatePDF(chartData, interpretations) {
     doc.setFont('helvetica', 'normal');
     doc.text(`Born: ${formatDate(chartData.birthDate)} at ${chartData.birthTime}`, 105, yPosition + 18, { align: 'center' });
     doc.text(`Location: ${chartData.birthLocationDisplay || chartData.birthLocation}`, 105, yPosition + 28, { align: 'center' });
-    
-    yPosition += 50;
-
-    // Big Three
-    doc.setDrawColor(59, 130, 246);
-    doc.setFillColor(254, 243, 199);
-    doc.roundedRect(20, yPosition - 5, 170, 25, 3, 3, 'FD');
-    
-    doc.setFontSize(14);
-    doc.setFont('helvetica', 'bold');
-    doc.text('Your Big Three:', 25, yPosition + 5);
-    
-    doc.setFont('helvetica', 'normal');
-    doc.text(`Sun: ${chartData.planets.sun?.sign || 'N/A'}`, 25, yPosition + 15);
-    doc.text(`Moon: ${chartData.planets.moon?.sign || 'N/A'}`, 75, yPosition + 15);
-    doc.text(`Rising: ${chartData.planets.ascendant?.sign || 'N/A'}`, 125, yPosition + 15);
 
     // PERSONAL MESSAGE PAGE
     doc.addPage();
@@ -679,14 +663,14 @@ async function generatePDF(chartData, interpretations) {
     doc.roundedRect(20, yPosition - 5, 170, 120, 5, 5, 'FD');
     
     doc.setFontSize(22);
-    doc.setFont('helvetica', 'bold');
+    doc.setFont('helvetica', 'italic');
     doc.text('A Personal Message', 105, yPosition + 15, { align: 'center' });
     
     doc.setFontSize(14);
-    doc.setFont('helvetica', 'bold');
+    doc.setFont('helvetica', 'italic');
     doc.text(`Dear ${chartData.fullName},`, 25, yPosition + 35);
     
-    doc.setFont('helvetica', 'normal');
+    doc.setFont('helvetica', 'italic');
     const personalMessage = `Unlock the secrets of who you are with your personal Birth Chart. This unique guide from Feng Shui & Beyond reveals your core personality traits and helps you navigate your life's journey with a clear understanding of your opportunities and potential challenges.
 
 This comprehensive analysis has been carefully calculated using your exact birth information and interpreted according to traditional astrological principles.`;

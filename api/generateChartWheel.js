@@ -225,34 +225,34 @@ function generateEnhancedNatalChartWheel(planetaryData, options = {}) {
   
   // FIXED: Clean Unicode symbols that work properly in PDF generation
   const planetInfo = {
-    sun: { symbol: '☉', color: '#FF6B35', name: 'Sun' },
-    moon: { symbol: '☽', color: '#4ECDC4', name: 'Moon' },
-    mercury: { symbol: '☿', color: '#45B7D1', name: 'Mercury' },
-    venus: { symbol: '♀', color: '#96CEB4', name: 'Venus' },
-    mars: { symbol: '♂', color: '#FFEAA7', name: 'Mars' },
-    jupiter: { symbol: '♃', color: '#DDA0DD', name: 'Jupiter' },
-    saturn: { symbol: '♄', color: '#F39C12', name: 'Saturn' },
-    uranus: { symbol: '♅', color: '#00B894', name: 'Uranus' },
-    neptune: { symbol: '♆', color: '#6C5CE7', name: 'Neptune' },
-    pluto: { symbol: '♇', color: '#A29BFE', name: 'Pluto' },
-    ascendant: { symbol: 'AC', color: '#2D3436', name: 'Ascendant' },
-    midheaven: { symbol: 'MC', color: '#2D3436', name: 'Midheaven' }
+    sun: { symbol: '☉', fallback: 'SU', color: '#FF6B35', name: 'Sun' },
+    moon: { symbol: '☽', fallback: 'MO', color: '#4ECDC4', name: 'Moon' },
+    mercury: { symbol: '☿', fallback: 'ME', color: '#45B7D1', name: 'Mercury' },
+    venus: { symbol: '♀', fallback: 'VE', color: '#96CEB4', name: 'Venus' },
+    mars: { symbol: '♂', fallback: 'MA', color: '#FFEAA7', name: 'Mars' },
+    jupiter: { symbol: '♃', fallback: 'JU', color: '#DDA0DD', name: 'Jupiter' },
+    saturn: { symbol: '♄', fallback: 'SA', color: '#F39C12', name: 'Saturn' },
+    uranus: { symbol: '♅', fallback: 'UR', color: '#00B894', name: 'Uranus' },
+    neptune: { symbol: '♆', fallback: 'NE', color: '#6C5CE7', name: 'Neptune' },
+    pluto: { symbol: '♇', fallback: 'PL', color: '#A29BFE', name: 'Pluto' },
+    ascendant: { symbol: 'AC', fallback: 'AC', color: '#2D3436', name: 'Ascendant' },
+    midheaven: { symbol: 'MC', fallback: 'MC', color: '#2D3436', name: 'Midheaven' }
   };
 
   // FIXED: Clean Unicode symbols for zodiac signs
   const signInfo = {
-    'Aries': { symbol: '♈', color: '#E74C3C', element: 'fire' },
-    'Taurus': { symbol: '♉', color: '#27AE60', element: 'earth' },
-    'Gemini': { symbol: '♊', color: '#F39C12', element: 'air' },
-    'Cancer': { symbol: '♋', color: '#3498DB', element: 'water' },
-    'Leo': { symbol: '♌', color: '#E74C3C', element: 'fire' },
-    'Virgo': { symbol: '♍', color: '#27AE60', element: 'earth' },
-    'Libra': { symbol: '♎', color: '#F39C12', element: 'air' },
-    'Scorpio': { symbol: '♏', color: '#3498DB', element: 'water' },
-    'Sagittarius': { symbol: '♐', color: '#E74C3C', element: 'fire' },
-    'Capricorn': { symbol: '♑', color: '#27AE60', element: 'earth' },
-    'Aquarius': { symbol: '♒', color: '#F39C12', element: 'air' },
-    'Pisces': { symbol: '♓', color: '#3498DB', element: 'water' }
+    'Aries': { symbol: '♈', fallback: 'AR', color: '#E74C3C', element: 'fire' },
+    'Taurus': { symbol: '♉', fallback: 'TA', color: '#27AE60', element: 'earth' },
+    'Gemini': { symbol: '♊', fallback: 'GE', color: '#F39C12', element: 'air' },
+    'Cancer': { symbol: '♋', fallback: 'CA', color: '#3498DB', element: 'water' },
+    'Leo': { symbol: '♌', fallback: 'LE', color: '#E74C3C', element: 'fire' },
+    'Virgo': { symbol: '♍', fallback: 'VI', color: '#27AE60', element: 'earth' },
+    'Libra': { symbol: '♎', fallback: 'LI', color: '#F39C12', element: 'air' },
+    'Scorpio': { symbol: '♏', fallback: 'SC', color: '#3498DB', element: 'water' },
+    'Sagittarius': { symbol: '♐', fallback: 'SG', color: '#E74C3C', element: 'fire' },
+    'Capricorn': { symbol: '♑', fallback: 'CP', color: '#27AE60', element: 'earth' },
+    'Aquarius': { symbol: '♒', fallback: 'AQ', color: '#F39C12', element: 'air' },
+    'Pisces': { symbol: '♓', fallback: 'PI', color: '#3498DB', element: 'water' }
   };
 
   // Calculate aspects between planets with Swiss Ephemeris precision
@@ -524,7 +524,7 @@ function generateEnhancedNatalChartWheel(planetaryData, options = {}) {
     svg += `<circle cx="${planetX}" cy="${planetY}" r="18" fill="white" stroke="${planetData?.color || '#2c3e50'}" stroke-width="2.5"/>`;
     
     // FIXED: Planet symbol with better encoding for PDF compatibility
-    const symbol = planetData?.symbol || planetName.charAt(0).toUpperCase();
+    const symbol = planetData?.symbol || planetData?.fallback || planetName.charAt(0).toUpperCase();
     svg += `<text x="${planetX}" y="${planetY + 1}" class="chart-text planet-symbol" fill="${planetData?.color || '#2c3e50'}" style="font-size: 14px; font-weight: bold;">${symbol}</text>`;
     
     // Retrograde indicator - positioned more carefully
