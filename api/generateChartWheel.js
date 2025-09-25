@@ -524,7 +524,7 @@ function generateEnhancedNatalChartWheel(planetaryData, options = {}) {
     svg += `<circle cx="${planetX}" cy="${planetY}" r="18" fill="white" stroke="${planetData?.color || '#2c3e50'}" stroke-width="2.5"/>`;
     
     // ULTIMATE FIX: Planet symbol with fallback priority for guaranteed display
-    const symbol = planetData?.fallback || planetData?.symbol || planetName.charAt(0).toUpperCase();
+    const symbol = planetData?.symbol || planetData?.fallback ||  planetName.charAt(0).toUpperCase();
     svg += `<text x="${planetX}" y="${planetY + 1}" class="chart-text planet-symbol" fill="${planetData?.color || '#2c3e50'}" style="font-size: 14px; font-weight: bold;">${symbol}</text>`;
     
     // Retrograde indicator - positioned more carefully
