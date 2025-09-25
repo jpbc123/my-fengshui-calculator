@@ -540,39 +540,25 @@ function calculatePlanetaryPositions(birthDate, birthTime, birthLocation) {
 }
 
 // Chart wheel generation function - calls separate service
-// Chart wheel generation function - direct import instead of HTTP call
 async function generateBirthChartWheel(planetaryData) {
   try {
-    console.log('Generating birth chart wheel with direct function call...');
+    const baseURL = process.env.NODE_ENV === 'production' 
+      ? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://fengshuiandbeyond.com')
+      : 'http://localhost:3000';
     
-    // Create mock request and response objects for the handler
-    const mockReq = {
+    const response = await fetch(`${baseURL}/api/generateChartWheel`, {
       method: 'POST',
-      body: { 
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
         planetaryData,
         chartOptions: { showAspects: true, showDegreeMarks: true, colorScheme: 'professional' }
-      }
-    };
+      })
+    });
+
+    if (!response.ok) throw new Error(`Chart service responded with status: ${response.status}`);
+    const result = await response.json();
     
-    let result = null;
-    const mockRes = {
-      status: (code) => ({
-        json: (data) => {
-          result = { ...data, statusCode: code };
-          return { end: () => {} };
-        },
-        end: () => {}
-      }),
-      json: (data) => {
-        result = data;
-      },
-      setHeader: () => {} // Mock the setHeader calls
-    };
-    
-    // Call the handler directly
-    await generateChartWheelHandler(mockReq, mockRes);
-    
-    if (result && result.success) {
+    if (result.success) {
       return {
         chartSVG: result.chartSVG,
         chartImageBase64: result.chartImageBase64,
@@ -580,11 +566,10 @@ async function generateBirthChartWheel(planetaryData) {
         howToReadSection: result.howToReadSection
       };
     } else {
-      throw new Error('Chart generation handler did not return valid data');
+      throw new Error('Chart service did not return valid data');
     }
-    
   } catch (error) {
-    console.error('Direct chart generation failed:', error.message);
+    console.error('Chart generation service failed:', error.message);
     return {
       chartSVG: generateFallbackChart(planetaryData),
       chartImageBase64: null,
