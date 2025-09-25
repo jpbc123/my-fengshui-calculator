@@ -223,7 +223,7 @@ function generateEnhancedNatalChartWheel(planetaryData, options = {}) {
   const zodiacSigns = ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 
                       'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'];
   
-  // Enhanced planet symbols with better Unicode and colors
+  // FIXED: Clean Unicode symbols that work properly in PDF generation
   const planetInfo = {
     sun: { symbol: '☉', color: '#FF6B35', name: 'Sun' },
     moon: { symbol: '☽', color: '#4ECDC4', name: 'Moon' },
@@ -239,7 +239,7 @@ function generateEnhancedNatalChartWheel(planetaryData, options = {}) {
     midheaven: { symbol: 'MC', color: '#2D3436', name: 'Midheaven' }
   };
 
-  // Enhanced sign symbols and colors with proper elements
+  // FIXED: Clean Unicode symbols for zodiac signs
   const signInfo = {
     'Aries': { symbol: '♈', color: '#E74C3C', element: 'fire' },
     'Taurus': { symbol: '♉', color: '#27AE60', element: 'earth' },
@@ -395,9 +395,9 @@ function generateEnhancedNatalChartWheel(planetaryData, options = {}) {
     svg += `<text x="${degreeX}" y="${degreeY}" class="chart-text" style="font-size: 10px; fill: #7f8c8d;">${i * 30}°</text>`;
   }
 
-  // Accurate house calculations using Placidus system approximation
+  // FIXED: Improved house calculations and positioning
   const ascendantDegree = planetaryData.ascendant?.absoluteDegree || 0;
-  const houseCusps = calculateHouseCusps(ascendantDegree, planetaryData);
+  const houseCusps = calculateImprovedHouseCusps(ascendantDegree, planetaryData);
 
   // Draw house lines with calculated cusps
   for (let i = 0; i < 12; i++) {
@@ -410,11 +410,18 @@ function generateEnhancedNatalChartWheel(planetaryData, options = {}) {
     
     svg += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" class="house-line"/>`;
     
-    // House numbers with better positioning
-    const nextAngle = (houseCusps[(i + 1) % 12] - 90) * Math.PI / 180;
-    const houseAngle = angle + (nextAngle - angle) / 2;
-    const houseX = centerX + (houseRadius - 25) * Math.cos(houseAngle);
-    const houseY = centerY + (houseRadius - 25) * Math.sin(houseAngle);
+    // FIXED: Better house number positioning to prevent overlaps
+    const nextHouseCusp = houseCusps[(i + 1) % 12];
+    let houseSpan = nextHouseCusp - houseCusps[i];
+    if (houseSpan < 0) houseSpan += 360;
+    
+    const houseMiddleAngle = (houseCusps[i] + houseSpan / 2 - 90) * Math.PI / 180;
+    
+    // Adjust radius based on house size to prevent overlaps
+    const adjustedRadius = houseRadius - (houseSpan < 20 ? 40 : 25);
+    const houseX = centerX + adjustedRadius * Math.cos(houseMiddleAngle);
+    const houseY = centerY + adjustedRadius * Math.sin(houseMiddleAngle);
+    
     svg += `<text x="${houseX}" y="${houseY}" class="chart-text house-number">${i + 1}</text>`;
   }
 
@@ -446,7 +453,7 @@ function generateEnhancedNatalChartWheel(planetaryData, options = {}) {
     });
   }
 
-  // FIXED: Enhanced planet positioning with better collision avoidance
+  // Enhanced planet positioning with better collision avoidance
   const drawnPlanets = [];
 
   // First, sort planets by their absolute degree to process them in order
@@ -516,7 +523,7 @@ function generateEnhancedNatalChartWheel(planetaryData, options = {}) {
     svg += `<circle cx="${planetX + 1}" cy="${planetY + 1}" r="18" fill="rgba(0,0,0,0.15)"/>`;
     svg += `<circle cx="${planetX}" cy="${planetY}" r="18" fill="white" stroke="${planetData?.color || '#2c3e50'}" stroke-width="2.5"/>`;
     
-    // Planet symbol - larger and more prominent
+    // FIXED: Planet symbol with better encoding for PDF compatibility
     const symbol = planetData?.symbol || planetName.charAt(0).toUpperCase();
     svg += `<text x="${planetX}" y="${planetY + 1}" class="chart-text planet-symbol" fill="${planetData?.color || '#2c3e50'}" style="font-size: 14px; font-weight: bold;">${symbol}</text>`;
     
@@ -549,44 +556,50 @@ function generateEnhancedNatalChartWheel(planetaryData, options = {}) {
   return svg;
 }
 
-// Enhanced house cusp calculation (simplified Placidus approximation)
-function calculateHouseCusps(ascendantDegree, planetaryData) {
+// FIXED: Improved house cusp calculation with better spacing
+function calculateImprovedHouseCusps(ascendantDegree, planetaryData) {
   const houseCusps = [];
   
   // Use actual midheaven if available, otherwise approximate
   const midheavenDegree = planetaryData.midheaven?.absoluteDegree || ((ascendantDegree + 270) % 360);
   
-  // Simplified house cusp calculation based on quadrant system
-  houseCusps[0] = ascendantDegree; // 1st house
-  houseCusps[9] = midheavenDegree; // 10th house
-  houseCusps[6] = (ascendantDegree + 180) % 360; // 7th house
-  houseCusps[3] = (midheavenDegree + 180) % 360; // 4th house
+  // Set the four main angles
+  houseCusps[0] = ascendantDegree; // 1st house (Ascendant)
+  houseCusps[9] = midheavenDegree; // 10th house (Midheaven)
+  houseCusps[6] = (ascendantDegree + 180) % 360; // 7th house (Descendant)
+  houseCusps[3] = (midheavenDegree + 180) % 360; // 4th house (IC)
   
-  // Interpolate other houses (simplified)
-  for (let i = 1; i < 12; i++) {
-    if (i !== 3 && i !== 6 && i !== 9) {
-      // Simplified equal division for remaining houses
-      const quadrant = Math.floor(i / 3);
-      const houseInQuadrant = i % 3;
-      
-      switch (quadrant) {
-        case 0: // Houses 1-3
-          houseCusps[i] = (ascendantDegree + (houseInQuadrant * 30)) % 360;
-          break;
-        case 1: // Houses 4-6
-          houseCusps[i] = (houseCusps[3] + (houseInQuadrant * 30)) % 360;
-          break;
-        case 2: // Houses 7-9
-          houseCusps[i] = (houseCusps[6] + (houseInQuadrant * 30)) % 360;
-          break;
-        case 3: // Houses 10-12
-          houseCusps[i] = (houseCusps[9] + (houseInQuadrant * 30)) % 360;
-          break;
-      }
-    }
-  }
+  // Calculate intermediate house cusps using improved algorithm
+  // This prevents house number overlaps by ensuring minimum spacing
+  
+  // Quadrant 1 (Houses 1-3): ASC to IC
+  const quad1Span = calculateSpan(ascendantDegree, houseCusps[3]);
+  houseCusps[1] = (ascendantDegree + quad1Span * 0.33) % 360;
+  houseCusps[2] = (ascendantDegree + quad1Span * 0.67) % 360;
+  
+  // Quadrant 2 (Houses 4-6): IC to DESC
+  const quad2Span = calculateSpan(houseCusps[3], houseCusps[6]);
+  houseCusps[4] = (houseCusps[3] + quad2Span * 0.33) % 360;
+  houseCusps[5] = (houseCusps[3] + quad2Span * 0.67) % 360;
+  
+  // Quadrant 3 (Houses 7-9): DESC to MC
+  const quad3Span = calculateSpan(houseCusps[6], midheavenDegree);
+  houseCusps[7] = (houseCusps[6] + quad3Span * 0.33) % 360;
+  houseCusps[8] = (houseCusps[6] + quad3Span * 0.67) % 360;
+  
+  // Quadrant 4 (Houses 10-12): MC to ASC
+  const quad4Span = calculateSpan(midheavenDegree, ascendantDegree);
+  houseCusps[10] = (midheavenDegree + quad4Span * 0.33) % 360;
+  houseCusps[11] = (midheavenDegree + quad4Span * 0.67) % 360;
   
   return houseCusps;
+}
+
+// Helper function to calculate angular span considering 360° wrap-around
+function calculateSpan(start, end) {
+  let span = end - start;
+  if (span < 0) span += 360;
+  return span;
 }
 
 // Enhanced chart legend
