@@ -223,36 +223,36 @@ function generateEnhancedNatalChartWheel(planetaryData, options = {}) {
   const zodiacSigns = ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 
                       'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'];
   
-  // FIXED: Clean Unicode symbols that work properly in PDF generation
+  // ULTIMATE FIX: HTML entity codes for guaranteed compatibility
   const planetInfo = {
-    sun: { symbol: '☉', fallback: 'SU', color: '#FF6B35', name: 'Sun' },
-    moon: { symbol: '☽', fallback: 'MO', color: '#4ECDC4', name: 'Moon' },
-    mercury: { symbol: '☿', fallback: 'ME', color: '#45B7D1', name: 'Mercury' },
-    venus: { symbol: '♀', fallback: 'VE', color: '#96CEB4', name: 'Venus' },
-    mars: { symbol: '♂', fallback: 'MA', color: '#FFEAA7', name: 'Mars' },
-    jupiter: { symbol: '♃', fallback: 'JU', color: '#DDA0DD', name: 'Jupiter' },
-    saturn: { symbol: '♄', fallback: 'SA', color: '#F39C12', name: 'Saturn' },
-    uranus: { symbol: '♅', fallback: 'UR', color: '#00B894', name: 'Uranus' },
-    neptune: { symbol: '♆', fallback: 'NE', color: '#6C5CE7', name: 'Neptune' },
-    pluto: { symbol: '♇', fallback: 'PL', color: '#A29BFE', name: 'Pluto' },
+    sun: { symbol: '&#9737;', fallback: 'SU', color: '#FF6B35', name: 'Sun' },        // ☉
+    moon: { symbol: '&#9789;', fallback: 'MO', color: '#4ECDC4', name: 'Moon' },       // ☽
+    mercury: { symbol: '&#9791;', fallback: 'ME', color: '#45B7D1', name: 'Mercury' }, // ☿
+    venus: { symbol: '&#9792;', fallback: 'VE', color: '#96CEB4', name: 'Venus' },     // ♀
+    mars: { symbol: '&#9794;', fallback: 'MA', color: '#FFEAA7', name: 'Mars' },       // ♂
+    jupiter: { symbol: '&#9795;', fallback: 'JU', color: '#DDA0DD', name: 'Jupiter' }, // ♃
+    saturn: { symbol: '&#9796;', fallback: 'SA', color: '#F39C12', name: 'Saturn' },   // ♄
+    uranus: { symbol: '&#9797;', fallback: 'UR', color: '#00B894', name: 'Uranus' },   // ♅
+    neptune: { symbol: '&#9798;', fallback: 'NE', color: '#6C5CE7', name: 'Neptune' }, // ♆
+    pluto: { symbol: '&#9799;', fallback: 'PL', color: '#A29BFE', name: 'Pluto' },     // ♇
     ascendant: { symbol: 'AC', fallback: 'AC', color: '#2D3436', name: 'Ascendant' },
     midheaven: { symbol: 'MC', fallback: 'MC', color: '#2D3436', name: 'Midheaven' }
   };
 
-  // FIXED: Clean Unicode symbols for zodiac signs
+  // ULTIMATE FIX: HTML entity codes for zodiac signs
   const signInfo = {
-    'Aries': { symbol: '♈', fallback: 'AR', color: '#E74C3C', element: 'fire' },
-    'Taurus': { symbol: '♉', fallback: 'TA', color: '#27AE60', element: 'earth' },
-    'Gemini': { symbol: '♊', fallback: 'GE', color: '#F39C12', element: 'air' },
-    'Cancer': { symbol: '♋', fallback: 'CA', color: '#3498DB', element: 'water' },
-    'Leo': { symbol: '♌', fallback: 'LE', color: '#E74C3C', element: 'fire' },
-    'Virgo': { symbol: '♍', fallback: 'VI', color: '#27AE60', element: 'earth' },
-    'Libra': { symbol: '♎', fallback: 'LI', color: '#F39C12', element: 'air' },
-    'Scorpio': { symbol: '♏', fallback: 'SC', color: '#3498DB', element: 'water' },
-    'Sagittarius': { symbol: '♐', fallback: 'SG', color: '#E74C3C', element: 'fire' },
-    'Capricorn': { symbol: '♑', fallback: 'CP', color: '#27AE60', element: 'earth' },
-    'Aquarius': { symbol: '♒', fallback: 'AQ', color: '#F39C12', element: 'air' },
-    'Pisces': { symbol: '♓', fallback: 'PI', color: '#3498DB', element: 'water' }
+    'Aries': { symbol: '&#9800;', fallback: 'AR', color: '#E74C3C', element: 'fire' },        // ♈
+    'Taurus': { symbol: '&#9801;', fallback: 'TA', color: '#27AE60', element: 'earth' },      // ♉
+    'Gemini': { symbol: '&#9802;', fallback: 'GE', color: '#F39C12', element: 'air' },        // ♊
+    'Cancer': { symbol: '&#9803;', fallback: 'CA', color: '#3498DB', element: 'water' },      // ♋
+    'Leo': { symbol: '&#9804;', fallback: 'LE', color: '#E74C3C', element: 'fire' },          // ♌
+    'Virgo': { symbol: '&#9805;', fallback: 'VI', color: '#27AE60', element: 'earth' },       // ♍
+    'Libra': { symbol: '&#9806;', fallback: 'LI', color: '#F39C12', element: 'air' },         // ♎
+    'Scorpio': { symbol: '&#9807;', fallback: 'SC', color: '#3498DB', element: 'water' },     // ♏
+    'Sagittarius': { symbol: '&#9808;', fallback: 'SG', color: '#E74C3C', element: 'fire' },  // ♐
+    'Capricorn': { symbol: '&#9809;', fallback: 'CP', color: '#27AE60', element: 'earth' },   // ♑
+    'Aquarius': { symbol: '&#9810;', fallback: 'AQ', color: '#F39C12', element: 'air' },      // ♒
+    'Pisces': { symbol: '&#9811;', fallback: 'PI', color: '#3498DB', element: 'water' }       // ♓
   };
 
   // Calculate aspects between planets with Swiss Ephemeris precision
@@ -384,10 +384,10 @@ function generateEnhancedNatalChartWheel(planetaryData, options = {}) {
     svg += `<path d="M ${x1} ${y1} L ${x2} ${y2} A ${outerRadius} ${outerRadius} 0 0 1 ${x3} ${y3} L ${x4} ${y4} A ${signRadius} ${signRadius} 0 0 0 ${x1} ${y1}" 
             fill="${signData.color}" opacity="0.15" stroke="${signData.color}" stroke-width="1"/>`;
     
-    // Sign symbols with better positioning
+    // FIXED: Sign symbols using fallback with HTML entities
     const symbolX = centerX + (signRadius + 20) * Math.cos(midAngle);
     const symbolY = centerY + (signRadius + 20) * Math.sin(midAngle);
-    svg += `<text x="${symbolX}" y="${symbolY}" class="chart-text sign-symbol" fill="${signData.color}">${signData.symbol}</text>`;
+    svg += `<text x="${symbolX}" y="${symbolY}" class="chart-text sign-symbol" fill="${signData.color}">${signData.fallback || signData.symbol}</text>`;
     
     // Degree markings
     const degreeX = centerX + (outerRadius - 5) * Math.cos(startAngle);
@@ -523,8 +523,8 @@ function generateEnhancedNatalChartWheel(planetaryData, options = {}) {
     svg += `<circle cx="${planetX + 1}" cy="${planetY + 1}" r="18" fill="rgba(0,0,0,0.15)"/>`;
     svg += `<circle cx="${planetX}" cy="${planetY}" r="18" fill="white" stroke="${planetData?.color || '#2c3e50'}" stroke-width="2.5"/>`;
     
-    // FIXED: Planet symbol with better encoding for PDF compatibility
-    const symbol = planetData?.symbol || planetData?.fallback || planetName.charAt(0).toUpperCase();
+    // ULTIMATE FIX: Planet symbol with fallback priority for guaranteed display
+    const symbol = planetData?.fallback || planetData?.symbol || planetName.charAt(0).toUpperCase();
     svg += `<text x="${planetX}" y="${planetY + 1}" class="chart-text planet-symbol" fill="${planetData?.color || '#2c3e50'}" style="font-size: 14px; font-weight: bold;">${symbol}</text>`;
     
     // Retrograde indicator - positioned more carefully
@@ -602,36 +602,36 @@ function calculateSpan(start, end) {
   return span;
 }
 
-// Enhanced chart legend
+// ULTIMATE FIX: Enhanced chart legend with HTML entities
 function generateChartLegend() {
   const planetSymbols = {
-    '☉ Sun': 'Core identity, ego, life purpose',
-    '☽ Moon': 'Emotions, instincts, subconscious',
-    '☿ Mercury': 'Communication, thinking, learning',
-    '♀ Venus': 'Love, beauty, relationships, values',
-    '♂ Mars': 'Energy, action, desire, courage',
-    '♃ Jupiter': 'Growth, wisdom, expansion, luck',
-    '♄ Saturn': 'Discipline, responsibility, limitations',
-    '♅ Uranus': 'Innovation, rebellion, sudden change',
-    '♆ Neptune': 'Dreams, spirituality, illusion',
-    '♇ Pluto': 'Transformation, power, regeneration',
+    '&#9737; Sun': 'Core identity, ego, life purpose',
+    '&#9789; Moon': 'Emotions, instincts, subconscious',
+    '&#9791; Mercury': 'Communication, thinking, learning',
+    '&#9792; Venus': 'Love, beauty, relationships, values',
+    '&#9794; Mars': 'Energy, action, desire, courage',
+    '&#9795; Jupiter': 'Growth, wisdom, expansion, luck',
+    '&#9796; Saturn': 'Discipline, responsibility, limitations',
+    '&#9797; Uranus': 'Innovation, rebellion, sudden change',
+    '&#9798; Neptune': 'Dreams, spirituality, illusion',
+    '&#9799; Pluto': 'Transformation, power, regeneration',
     'AC Ascendant': 'Your outer personality, first impression',
     'MC Midheaven': 'Career, reputation, public image'
   };
 
   const signSymbols = {
-    '♈ Aries': 'Fire - Bold, pioneering, energetic',
-    '♉ Taurus': 'Earth - Stable, practical, sensual',
-    '♊ Gemini': 'Air - Curious, communicative, adaptable',
-    '♋ Cancer': 'Water - Nurturing, emotional, protective',
-    '♌ Leo': 'Fire - Dramatic, creative, confident',
-    '♍ Virgo': 'Earth - Analytical, helpful, perfectionist',
-    '♎ Libra': 'Air - Harmonious, diplomatic, aesthetic',
-    '♏ Scorpio': 'Water - Intense, mysterious, transformative',
-    '♐ Sagittarius': 'Fire - Adventurous, philosophical, optimistic',
-    '♑ Capricorn': 'Earth - Ambitious, disciplined, traditional',
-    '♒ Aquarius': 'Air - Independent, innovative, humanitarian',
-    '♓ Pisces': 'Water - Imaginative, compassionate, intuitive'
+    '&#9800; Aries': 'Fire - Bold, pioneering, energetic',
+    '&#9801; Taurus': 'Earth - Stable, practical, sensual',
+    '&#9802; Gemini': 'Air - Curious, communicative, adaptable',
+    '&#9803; Cancer': 'Water - Nurturing, emotional, protective',
+    '&#9804; Leo': 'Fire - Dramatic, creative, confident',
+    '&#9805; Virgo': 'Earth - Analytical, helpful, perfectionist',
+    '&#9806; Libra': 'Air - Harmonious, diplomatic, aesthetic',
+    '&#9807; Scorpio': 'Water - Intense, mysterious, transformative',
+    '&#9808; Sagittarius': 'Fire - Adventurous, philosophical, optimistic',
+    '&#9809; Capricorn': 'Earth - Ambitious, disciplined, traditional',
+    '&#9810; Aquarius': 'Air - Independent, innovative, humanitarian',
+    '&#9811; Pisces': 'Water - Imaginative, compassionate, intuitive'
   };
 
   let legend = `
@@ -659,7 +659,7 @@ function generateChartLegend() {
   return legend;
 }
 
-// Enhanced "How to Read" section
+// Enhanced "How to Read" section with HTML entities
 function generateHowToReadSection() {
   return `
     <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #3b82f6;">
@@ -668,7 +668,7 @@ function generateHowToReadSection() {
         <p><strong>1. The Outer Ring:</strong> Shows the 12 zodiac signs in their natural order, starting with Aries at the 9 o'clock position.</p>
         <p><strong>2. The Houses:</strong> The 12 numbered sections represent different life areas. House 1 starts at your Ascendant (AC).</p>
         <p><strong>3. Planet Positions:</strong> Colored symbols show exact planetary positions calculated with Swiss Ephemeris precision.</p>
-        <p><strong>4. Your Big Three:</strong> Look for your Sun ☉ (core self), Moon ☽ (emotions), and Ascendant AC (outer personality).</p>
+        <p><strong>4. Your Big Three:</strong> Look for your Sun &#9737; (core self), Moon &#9789; (emotions), and Ascendant AC (outer personality).</p>
         <p><strong>5. Aspects:</strong> Lines connecting planets show their relationships - harmonious (green/blue) or challenging (red/orange).</p>
         <p><strong>6. Retrograde Planets:</strong> Marked with 'R' - indicating inward-focused energy for that planet.</p>
         <p><strong>Precision:</strong> This chart uses Swiss Ephemeris calculations for professional-grade accuracy.</p>
