@@ -65,7 +65,7 @@ const BirthChart = () => {
     "Life path insights",
     "Career guidance",
     "Relationship compatibility overview",
-    "PDF report (multiple pages)"
+    "PDF report"
   ];
 
   // Enhanced form validation
@@ -568,6 +568,33 @@ const BirthChart = () => {
                   </p>
                 </div>
               </div>
+			  
+{/* NEW SECTION: Relationship-Focused CTA */}
+<div className="bg-gradient-to-r from-rose-50 to-purple-50 rounded-xl p-8 mb-12 border border-rose-200">
+  <div className="text-center max-w-4xl mx-auto">
+    <h2 className="text-xl font-semibold text-purple-800 mb-4">
+      Finally Understand Why Your Partner Does What They Do
+    </h2>
+    <p className="text-gray-700 text-sm leading-relaxed mb-6">
+      Stop guessing what makes your loved ones tick. Whether it's understanding why your partner needs space after social events, why your friend always seems to worry about everything, or why certain family dynamics feel so challenging - their birth chart holds the answers. Get your chart first, then create one for everyone important in your life.
+    </p>
+    <div className="grid md:grid-cols-3 gap-4 mt-6">
+      <div className="bg-white rounded-lg p-4 shadow-sm">
+        <h4 className="font-semibold text-purple-700 mb-2">Your Romantic Partner</h4>
+        <p className="text-sm text-gray-600">Discover their love language, communication style, and what they truly need from you</p>
+      </div>
+      <div className="bg-white rounded-lg p-4 shadow-sm">
+        <h4 className="font-semibold text-purple-700 mb-2">Family Members</h4>
+        <p className="text-sm text-gray-600">Understand parent-child dynamics, sibling relationships, and family patterns</p>
+      </div>
+      <div className="bg-white rounded-lg p-4 shadow-sm">
+        <h4 className="font-semibold text-purple-700 mb-2">Close Friends</h4>
+        <p className="text-sm text-gray-600">Learn why you connect so naturally and how to support each other better</p>
+      </div>
+    </div>
+    <p className="text-purple-600 font-medium mt-6">Start with your own chart below, then generate charts for your loved ones</p>
+  </div>
+</div>
 
               {/* Steps and Form */}
               <div className="flex justify-center mb-8">
@@ -851,48 +878,6 @@ const BirthChart = () => {
                   )}
                 </CardContent>
               </Card>
-
-              {/* WHY WE'RE ACCURATE SECTION WITH IMAGES */}
-              {currentStep === 1 && (
-                <div className="mt-12">
-                  <Card className="border border-gray-200 shadow-lg overflow-hidden">
-                    <CardHeader className="relative bg-gradient-to-r from-purple-600 to-indigo-600 text-yellow">
-                      <div className="absolute inset-0 opacity-20">
-                        <img src={purpleStars}
-                          alt="Galaxy background"
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <CardTitle className="text-2xl text-center relative z-10">Why We're the Most Accurate</CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-6">
-                      <div className="grid md:grid-cols-3 gap-6">
-                        <div className="text-center">
-                          <h4 className="font-semibold mb-2 text-purple-600">AI-Powered Precision</h4>
-                          <p className="text-white text-sm">
-                            Our advanced AI system combines authentic astrological techniques with precise astronomical calculations 
-                            for personalized, accurate analysis.
-                          </p>
-                        </div>
-                        
-                        <div className="text-center">
-                          <h4 className="font-semibold mb-2 text-purple-600">Real-Time Accuracy</h4>
-                          <p className="text-white text-sm">
-                            Unlike generic templates, each report uses real astronomical data for your exact birth moment and location.
-                          </p>
-                        </div>
-                        
-                        <div className="text-center">
-                          <h4 className="font-semibold mb-2 text-purple-600">Clear & Insightful</h4>
-                          <p className="text-white text-sm">
-                            Our reports balance astrological depth with approachable guidance that resonates and empowers you.
-                          </p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              )}
             </motion.div>
           </div>
 
@@ -931,41 +916,53 @@ const BirthChart = () => {
               </CardContent>
             </Card>
 
-            {/* Enhanced Trust Badges */}
-            <Card className="border border-gray-200 shadow-lg">
+            {/* REPLACED: Why We're the Most Accurate Section */}
+            <Card className="border border-gray-200 shadow-lg overflow-hidden">
+              <CardHeader className="relative bg-gradient-to-r from-purple-600 to-indigo-600 text-white">
+                <div className="absolute inset-0 opacity-20">
+                  <img src={purpleStars}
+                    alt="Galaxy background"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <CardTitle className="text-xl text-yellow relative z-10">Why We're the Most Accurate</CardTitle>
+              </CardHeader>
               <CardContent className="p-6">
-                <div className="text-center space-y-4">
-                  <div className="grid grid-cols-1 gap-3">
-                    <div className="flex items-center justify-center space-x-3">
-                      <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                        <Check className="w-5 h-5 text-white" />
-                      </div>
-                      <span className="text-sm font-medium">No Payment Required</span>
-                    </div>
-                    
-                    <div className="flex items-center justify-center space-x-3">
-                      <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                        <Star className="w-5 h-5 text-white" />
-                      </div>
-                      <span className="text-sm font-medium">AI-Powered Accuracy</span>
-                    </div>
-                    
-                    <div className="flex items-center justify-center space-x-3">
-                      <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
-                        <Download className="w-5 h-5 text-white" />
-                      </div>
-                      <span className="text-sm font-medium">Instant Delivery</span>
-                    </div>
-                  </div>
-                  
-                  <div className="pt-4 border-t">
-                    <div className="flex items-center justify-center space-x-2 mb-2">
-                      
-                    </div>
-                    <p className="text-xs text-gray-500">
-                      Experience professional birth chart analysis at no cost
+                <div className="space-y-6">
+                  <div className="text-center">
+                    <h4 className="font-semibold mb-2 text-purple-600">AI-Powered Precision</h4>
+                    <p className="text-gray-300 text-sm">
+                      Our advanced AI system combines authentic astrological techniques with precise astronomical calculations 
+                      for personalized, accurate analysis.
                     </p>
                   </div>
+                  
+                  <div className="text-center">
+                    <h4 className="font-semibold mb-2 text-purple-600">Real-Time Accuracy</h4>
+                    <p className="text-gray-300 text-sm">
+                      Unlike generic templates, each report uses real astronomical data for your exact birth moment and location.
+                    </p>
+                  </div>
+                  
+                  <div className="text-center">
+                    <h4 className="font-semibold mb-2 text-purple-600">Clear & Insightful</h4>
+                    <p className="text-gray-300 text-sm">
+                      Our reports balance astrological depth with approachable guidance that resonates and empowers you.
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="mt-6 pt-4 border-t">
+                  <div className="flex items-center justify-center space-x-2 mb-2">
+                    <div className="flex space-x-1">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                      ))}
+                    </div>
+                  </div>
+                  <p className="text-xs text-gray-300 text-center">
+                    Experience professional birth chart analysis at no cost
+                  </p>
                 </div>
               </CardContent>
             </Card>
