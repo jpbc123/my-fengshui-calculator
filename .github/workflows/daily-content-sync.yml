@@ -69,6 +69,19 @@ jobs:
         else
           echo "Not December 31st, skipping yearly content"
         fi
+    
+    # NEW: Astronomical data generation (once per year on December 31st)
+    - name: Generate Astronomical Data for Next Year (December 31st only)
+      run: |
+        CURRENT_YEAR=$(date -u +%Y)
+        NEXT_YEAR=$((CURRENT_YEAR + 1))
+        if [ $(date -u +%m-%d) = "12-31" ]; then
+          echo "It's December 31st, generating astronomical data for $NEXT_YEAR..."
+          node sync-mercury-retrograde.js --year=$NEXT_YEAR
+          node sync-full-moon.js --year=$NEXT_YEAR
+        else
+          echo "Not December 31st, skipping astronomical data generation"
+        fi
 
   # Separate job for error handling and notifications
   notify-on-failure:

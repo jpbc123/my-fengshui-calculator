@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Analytics } from '@vercel/analytics/react';
 
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -42,10 +43,18 @@ import MeditateEveningRelaxation from "./pages/MeditateEveningRelaxation";
 import AboutUs from "./pages/AboutUs";
 import ContactUs from "./pages/ContactUs";  
 import PrivacyPolicy from "./pages/PrivacyPolicy"; 
+import TermsOfService from "./pages/TermsOfService";
+import Sitemap from "./pages/Sitemap";
+import Credits from "./pages/Credits";
 
 import ComingSoonPage from "@/pages/ComingSoonPage";
 import ComingSoonStore from "@/pages/ComingSoonStore";
 import Store from "./pages/Store";
+
+
+import BirthChart from "./pages/BirthChart";
+import FengShuiWeddingDates from "./pages/FengShuiWeddingDates";
+
 
 import ScrollToTop from "@/components/ScrollToTop";
 import Footer from "@/components/Footer";
@@ -76,44 +85,52 @@ const App = () => (
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/about-us" element={<AboutUs />} />
                 <Route path="/contact-us" element={<ContactUs />} />
+				<Route path="/terms-of-service" element={<TermsOfService />} />
+				<Route path="/credits" element={<Credits />} />
+				<Route path="/sitemap" element={<Sitemap />} />
                 
                 {/* Submenu-Feng Shui */}
-                <Route path="/personal-element" element={<PersonalElement />} />
-                <Route path="/kua-number-calculator" element={<KuaNumberCalculator />} />
+                <Route path="/feng-shui/personal-element" element={<PersonalElement />} />
+                <Route path="/feng-shui/kua-number" element={<KuaNumberCalculator />} />
                 
                 {/* Submenu-Numerology */}
-                <Route path="/visiber-calculator" element={<VisiberCalculator />} />
+                <Route path="/numerology/visiber-calculator" element={<VisiberCalculator />} />
                 
                 {/* Submenu-Astrology */}
-                <Route path="/chinese-zodiac-calculator" element={<ChineseZodiacCalculator />} />
-                <Route path="/chinese-zodiac-landing" element={<ChineseZodiacLanding />} />
-                <Route path="/western-zodiac-calculator" element={<WesternZodiacCalculator />} />
+                <Route path="/astrology/chinese-zodiac-calculator" element={<ChineseZodiacCalculator />} />
+                <Route path="/astrology/western-zodiac-calculator" element={<WesternZodiacCalculator />} />
                 
                 {/* Features-Horoscopes */}
+				<Route path="/horoscope/chinese-zodiac" element={<ChineseZodiacLanding />} />
                 <Route path="/zodiac/:zodiac" element={<ChineseHoroscopeResult />} />
-                <Route path="/western-horoscope" element={<WesternDailyHoroscope />} />
+                <Route path="/horoscope/western-zodiac" element={<WesternDailyHoroscope />} />
                 
                 {/* Tools Section */}
                 <Route path="/daily-wisdom-article" element={<DailyWisdomArticlePage />} />
-                <Route path="/aura-analysis" element={<AuraAnalysisPage />} />
                 <Route path="/planetary-overview" element={<PlanetaryOverviewPage />} />
                 
                 {/* Games Section */}
                 <Route path="/games-fun" element={<GamesFunLanding />} />
-                <Route path="/lucky-numbers" element={<GameLuckyNumber />} />
-                <Route path="/name-compatibility" element={<GameNameCompatibility />} />
-                <Route path="/chinese-compatibility" element={<GameChineseCompatibility />} />
-                <Route path="/western-compatibility" element={<GameWesternCompatibility />} />
-                <Route path="/fortune-cookie" element={<GameFortuneCookie />} />
+				<Route path="/games-fun/aura-analysis" element={<AuraAnalysisPage />} />
+                <Route path="/games-fun/lucky-numbers-generator" element={<GameLuckyNumber />} />
+                <Route path="/games-fun/name-compatibility" element={<GameNameCompatibility />} />
+                <Route path="/games-fun/chinese-zodiac-compatibility" element={<GameChineseCompatibility />} />
+                <Route path="/games-fun/western-zodiac-compatibility" element={<GameWesternCompatibility />} />
+                <Route path="/games-fun/fortune-cookie" element={<GameFortuneCookie />} />
                 
                 {/* Meditation */}
                 <Route path="/meditation" element={<MeditationLanding />} />
-                <Route path="/meditate-visualization" element={<MeditateVisualizationExercise />} />
-                <Route path="/meditate-yoga-pose" element={<MeditateYogaPose />} />
-                <Route path="/meditate-affirmation" element={<MeditateAffirmation />} />
-                <Route path="/meditate-morning" element={<MeditateMorningMindfulness />} />
-                <Route path="/meditate-evening" element={<MeditateEveningRelaxation />} />
+                <Route path="/meditation/visualization-exercises" element={<MeditateVisualizationExercise />} />
+                <Route path="/meditation/yoga" element={<MeditateYogaPose />} />
+                <Route path="/meditation/daily-affirmation" element={<MeditateAffirmation />} />
+                <Route path="/meditation/morning-mindfulness" element={<MeditateMorningMindfulness />} />
+                <Route path="/meditation/evening-relaxation" element={<MeditateEveningRelaxation />} />
                 
+				{/* Services */}
+				<Route path="/birth-chart" element={<BirthChart />} />
+				<Route path="/auspicious-wedding-date-planner" element={<FengShuiWeddingDates />} />
+				
+				
                 {/* Articles Routing */}
                 <Route path="/article" element={<ArticleMainPage />} />
                 <Route path="/articles/:slug" element={<ArticlePage />} />
@@ -131,6 +148,7 @@ const App = () => (
           </div>
         </PageTitleManager>
       </BrowserRouter>
+      <Analytics />
     </TooltipProvider>
   </QueryClientProvider>
 );

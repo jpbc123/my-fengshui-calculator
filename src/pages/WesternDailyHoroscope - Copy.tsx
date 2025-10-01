@@ -1,6 +1,6 @@
 // src/pages/WesternDailyHoroscope.tsx
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -117,7 +117,6 @@ const HoroscopeTabs = ({ tabs, activeTab, onTabClick }: HoroscopeTabsProps) => {
 
 export default function WesternDailyHoroscope() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
   const [selectedSign, setSelectedSign] = useState<string | null>(null);
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodTabType>('today');
   const [selectedCategory, setSelectedCategory] = useState<CategoryTabType>('overview');
@@ -192,40 +191,11 @@ export default function WesternDailyHoroscope() {
     { id: 'lucky_number' as CategoryTabType, label: 'Lucky Number', icon: '' },
   ], []);
 
-  // Handle URL parameter for pre-selecting zodiac sign
-  useEffect(() => {
-    const signFromUrl = searchParams.get('sign');
-    if (signFromUrl) {
-      const normalizedSign = signFromUrl.toLowerCase();
-      const validSigns = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 
-                          'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'];
-      
-      if (validSigns.includes(normalizedSign)) {
-        setSelectedSign(normalizedSign);
-        
-        // Rotate wheel to match the selected sign
-        const signIndex = imageZodiacOrder.indexOf(normalizedSign);
-        if (signIndex !== -1 && wheelRef.current) {
-          const targetRotation = -(signIndex * 30);
-          currentRotationRef.current = targetRotation;
-          wheelRef.current.style.transform = `rotate(${targetRotation}deg)`;
-          wheelRef.current.style.transition = 'transform 0.5s ease-out';
-          
-          // Remove transition after animation
-          setTimeout(() => {
-            if (wheelRef.current) {
-              wheelRef.current.style.transition = '';
-            }
-          }, 500);
-        }
-      }
-    }
-  }, [searchParams]);
-
   const renderPeriodDateInfo = () => {
     if (!horoscopeContent) return null;
 
     if (selectedPeriod === 'today' || selectedPeriod === 'yesterday') {
+      // For daily periods, try to get the date from the horoscope data
       const dateString = horoscopeContent.forDate || horoscopeContent.for_date;
       if (dateString) {
         const date = new Date(dateString);
@@ -239,6 +209,7 @@ export default function WesternDailyHoroscope() {
         }
       }
       
+      // Fallback to calculate based on selectedPeriod
       const today = new Date();
       if (selectedPeriod === 'yesterday') {
         today.setDate(today.getDate() - 1);
@@ -265,6 +236,7 @@ export default function WesternDailyHoroscope() {
         }
       }
       
+      // Fallback to current week
       const today = new Date();
       const day = today.getDay();
       const diff = today.getDate() - day;
@@ -282,57 +254,59 @@ export default function WesternDailyHoroscope() {
     return null;
   };
 
-  const fetchHoroscope = useCallback(async (sign: string, period: PeriodTabType) => {
-    if (!periodLoading) {
-      setLoading(true);
+const fetchHoroscope = useCallback(async (sign: string, period: PeriodTabType) => {
+  if (!periodLoading) {
+    setLoading(true);
+  }
+  setError(null);
+
+  try {
+    let apiUrl = `/api/western-horoscope?sign=${sign.toLowerCase()}`;
+
+    // Change activePeriodTab to period (the parameter)
+    if (period === 'today' || period === 'yesterday') {
+        const dayOffset = period === 'today' ? 0 : -1;
+        apiUrl = `/api/western-horoscope?sign=${sign.toLowerCase()}&period=daily&dayOffset=${dayOffset}`;
+    } else if (period === 'weekly') {
+        apiUrl = `/api/western-horoscope?sign=${sign.toLowerCase()}&period=weekly`;
+    } else if (period === 'yearly') {
+        apiUrl = `/api/western-horoscope?sign=${sign.toLowerCase()}&period=yearly`;
     }
-    setError(null);
 
-    try {
-      let apiUrl = `/api/western-horoscope?sign=${sign.toLowerCase()}`;
+    console.log('Fetching from:', apiUrl);
 
-      if (period === 'today' || period === 'yesterday') {
-          const dayOffset = period === 'today' ? 0 : -1;
-          apiUrl = `/api/western-horoscope?sign=${sign.toLowerCase()}&period=daily&dayOffset=${dayOffset}`;
-      } else if (period === 'weekly') {
-          apiUrl = `/api/western-horoscope?sign=${sign.toLowerCase()}&period=weekly`;
-      } else if (period === 'yearly') {
-          apiUrl = `/api/western-horoscope?sign=${sign.toLowerCase()}&period=yearly`;
+    const response = await fetch(apiUrl);
+    
+    if (!response.ok) {
+      if (response.status === 202) {
+        setTimeout(() => fetchHoroscope(sign, period), 3000);
+        return;
       }
-
-      console.log('Fetching from:', apiUrl);
-
-      const response = await fetch(apiUrl);
-      
-      if (!response.ok) {
-        if (response.status === 202) {
-          setTimeout(() => fetchHoroscope(sign, period), 3000);
-          return;
-        }
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      console.log('Received data:', data);
-      setHoroscopeContent(data);
-    } catch (err: any) {
-      console.error('Error fetching horoscope:', err);
-      setError(err.message || "Could not load horoscope. Please try again later.");
-      
-      setHoroscopeContent({
-        horoscope: "The stars suggest focusing on balance and mindful decision-making today. Trust your intuition and embrace new opportunities.",
-        love: "Romantic energies are favorable. Open communication will strengthen your relationships.",
-        career: "Professional matters require attention to detail. Your hard work will be recognized.",
-        money: "Financial stability is within reach. Avoid impulsive spending decisions.",
-        social: "Social connections bring positive energy. Collaborate with others for mutual benefit.",
-        luckyColor: "Blue",
-        luckyNumber: 7
-      });
-    } finally {
-      setLoading(false);
-      setPeriodLoading(false);
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
-  }, [periodLoading]);
+
+    const data = await response.json();
+    console.log('Received data:', data);
+    setHoroscopeContent(data);
+  } catch (err: any) {
+    console.error('Error fetching horoscope:', err);
+    setError(err.message || "Could not load horoscope. Please try again later.");
+    
+    // Set fallback data
+    setHoroscopeContent({
+      horoscope: "The stars suggest focusing on balance and mindful decision-making today. Trust your intuition and embrace new opportunities.",
+      love: "Romantic energies are favorable. Open communication will strengthen your relationships.",
+      career: "Professional matters require attention to detail. Your hard work will be recognized.",
+      money: "Financial stability is within reach. Avoid impulsive spending decisions.",
+      social: "Social connections bring positive energy. Collaborate with others for mutual benefit.",
+      luckyColor: "Blue",
+      luckyNumber: 7
+    });
+  } finally {
+    setLoading(false);
+    setPeriodLoading(false);
+  }
+}, [periodLoading]);
 
   const handlePeriodTabChange = (newPeriod: PeriodTabType) => {
     if (newPeriod === selectedPeriod) return;
@@ -491,6 +465,7 @@ export default function WesternDailyHoroscope() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.3, ease: "easeOut" }}
                       >
+                        {/* Add the date info display here */}
                         <div className="text-gray-500 mb-4 text-center text-sm">
                           {renderPeriodDateInfo()}
                         </div>
@@ -529,7 +504,6 @@ export default function WesternDailyHoroscope() {
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 }

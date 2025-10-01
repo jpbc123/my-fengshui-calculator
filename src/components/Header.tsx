@@ -16,14 +16,16 @@ const megaMenuConfig = {
     { label: "About", id: "about" },
   ],
   articles: {
-    title: "Articles",
-    items: [
-      { name: "All Articles", href: "/article", description: "Explore expert insights on Feng Shui, astrology, numerology, and more in our curated collection of articles." },
-      { name: "Feng Shui", href: "/article?category=Feng Shui", description: "Articles on home energy, harmony, and Feng Shui best practices." },
-      { name: "Astrology", href: "/article?category=Astrology", description: "Discover celestial insights and astrology-based life guidance." },
-      { name: "Numerology", href: "/article?category=Numerology", description: "Discover the power of numbers in shaping your destiny." },
-      { name: "Celebrity", href: "/article?category=Celebrity", description: "Astrological insights into famous personalities." },
-    ],
+  title: "Articles",
+  items: [
+  	{ name: "All Articles", href: "/article", description: "Explore expert insights on Feng Shui, astrology, numerology, and more in our curated collection of articles." },
+  	{ name: "Mercury Retrograde", href: "/mercury-retrograde", description: "Real-time tracking and guidance for Mercury retrograde cycles." },
+  	{ name: "Full Moon Forecast", href: "/full-moon-forecast", description: "Harness lunar energy with our full moon calendar and rituals." },
+  	{ name: "Feng Shui", href: "/article?category=Feng Shui", description: "Articles on home energy, harmony, and Feng Shui best practices." },
+  	{ name: "Astrology", href: "/article?category=Astrology", description: "Discover celestial insights and astrology-based life guidance." },
+  	{ name: "Numerology", href: "/article?category=Numerology", description: "Discover the power of numbers in shaping your destiny." },
+  	{ name: "Celebrity", href: "/article?category=Celebrity", description: "Astrological insights into famous personalities." },
+  ],
   },
   calculators: {
     title: "Calculators & Tools",
@@ -86,21 +88,29 @@ const Header = () => {
 
   // Handle article category navigation
   const handleArticleCategoryClick = (href: string) => {
-    // Extract category from URL params
-    const url = new URL(href, window.location.origin);
-    const category = url.searchParams.get('category');
-    
-    if (category) {
-      // Navigate to articles page and set the category
-      navigate(`/article?category=${encodeURIComponent(category)}`);
-    } else {
-      // Navigate to all articles
-      navigate('/article');
-    }
-    
-    // Close mobile menu if open
-    setMobileMenuOpen(false);
-  };
+    // Check if this is a direct page link (not an article category filter)
+	if (!href.includes('?category=') && href !== '/article') {
+		// Direct navigation to the page
+		navigate(href);
+		setMobileMenuOpen(false);
+		return;
+	}
+
+	// Extract category from URL params for article filtering
+	const url = new URL(href, window.location.origin);
+	const category = url.searchParams.get('category');
+	
+	if (category) {
+		// Navigate to articles page and set the category
+		navigate(`/article?category=${encodeURIComponent(category)}`);
+	} else {
+		// Navigate to all articles
+		navigate('/article');
+	}
+	
+	// Close mobile menu if open
+	setMobileMenuOpen(false);
+	};
 
   const toggleAccordion = (menuKey: string) => {
     setOpenAccordion(openAccordion === menuKey ? null : menuKey);

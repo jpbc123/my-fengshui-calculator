@@ -26,6 +26,10 @@ import PlanetaryOverviewPage from "@/pages/PlanetaryOverviewPage";
 import ArticlePage from './pages/ArticlePage';
 import ArticleMainPage from './pages/ArticleMainPage';
 
+// NEW: Mercury Retrograde and Full Moon pages
+import MercuryRetrogradePage from './pages/MercuryRetrogradePage';
+import FullMoonForecastPage from './pages/FullMoonForecastPage';
+
 import GamesFunLanding from "./pages/GamesFunLanding";
 import GameLuckyNumber from "./pages/GameLuckyNumber";
 import GameNameCompatibility from "./pages/GameNameCompatibility";
@@ -51,10 +55,8 @@ import ComingSoonPage from "@/pages/ComingSoonPage";
 import ComingSoonStore from "@/pages/ComingSoonStore";
 import Store from "./pages/Store";
 
-
 import BirthChart from "./pages/BirthChart";
 import FengShuiWeddingDates from "./pages/FengShuiWeddingDates";
-
 
 import ScrollToTop from "@/components/ScrollToTop";
 import Footer from "@/components/Footer";
@@ -134,6 +136,10 @@ const App = () => (
                 {/* Articles Routing */}
                 <Route path="/article" element={<ArticleMainPage />} />
                 <Route path="/articles/:slug" element={<ArticlePage />} />
+                
+                {/* Dedicated Astrology Pages */}
+                <Route path="/mercury-retrograde" element={<MercuryRetrogradePage />} />
+                <Route path="/full-moon-forecast" element={<FullMoonForecastPage />} />
 
                 {/* Coming Soon */}
                 <Route path="/community-chat" element={<ComingSoonPage />} />

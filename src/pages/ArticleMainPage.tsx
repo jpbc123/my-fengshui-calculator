@@ -1,3 +1,4 @@
+// src/pages/ArticleMainPage.tsx
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import Header from "../components/Header";
