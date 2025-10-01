@@ -529,7 +529,6 @@ export default function WesternDailyHoroscope() {
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 }

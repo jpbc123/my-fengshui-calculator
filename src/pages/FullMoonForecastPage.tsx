@@ -494,37 +494,50 @@ export default function FullMoonForecastPage() {
           </motion.div>
 
           {/* Full Moon by Zodiac Sign */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8 }}
-            className="mb-12"
-          >
-            <h2 className="text-3xl font-bold text-black mb-8 text-center">
-              Full Moon Energy by Zodiac Sign
-            </h2>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {[
-                { sign: "Aries", energy: "Bold action and new beginnings", color: "border-red-200 bg-red-50" },
-                { sign: "Taurus", energy: "Grounding and material security", color: "border-green-200 bg-green-50" },
-                { sign: "Gemini", energy: "Communication and learning", color: "border-yellow-200 bg-yellow-50" },
-                { sign: "Cancer", energy: "Family and emotional healing", color: "border-blue-200 bg-blue-50" },
-                { sign: "Leo", energy: "Creative expression and joy", color: "border-orange-200 bg-orange-50" },
-                { sign: "Virgo", energy: "Organization and health focus", color: "border-gray-200 bg-gray-50" },
-                { sign: "Libra", energy: "Balance and relationships", color: "border-pink-200 bg-pink-50" },
-                { sign: "Scorpio", energy: "Transformation and depth", color: "border-purple-200 bg-purple-50" },
-                { sign: "Sagittarius", energy: "Adventure and wisdom", color: "border-indigo-200 bg-indigo-50" },
-                { sign: "Capricorn", energy: "Achievement and structure", color: "border-gray-300 bg-gray-100" },
-                { sign: "Aquarius", energy: "Innovation and freedom", color: "border-cyan-200 bg-cyan-50" },
-                { sign: "Pisces", energy: "Intuition and spirituality", color: "border-teal-200 bg-teal-50" }
-              ].map((zodiac, index) => (
-                <div key={index} className={`rounded-lg border-2 p-4 ${zodiac.color} hover:shadow-md transition-shadow`}>
-                  <h4 className="font-bold text-black mb-2">{zodiac.sign}</h4>
-                  <p className="text-sm text-gray-700">{zodiac.energy}</p>
-                </div>
-              ))}
-            </div>
-          </motion.div>
+<motion.div
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ delay: 0.8 }}
+  className="mb-12"
+>
+  <h2 className="text-3xl font-bold text-black mb-8 text-center">
+    Full Moon Energy by Zodiac Sign
+  </h2>
+  <p className="text-center text-gray-600 mb-8 max-w-2xl mx-auto">
+    Discover how the full moon impacts your zodiac sign. Click your sign to see your daily horoscope.
+  </p>
+  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    {[
+      { sign: "Aries", energy: "Bold action and new beginnings", color: "border-red-200 bg-red-50 hover:bg-red-100" },
+      { sign: "Taurus", energy: "Grounding and material security", color: "border-green-200 bg-green-50 hover:bg-green-100" },
+      { sign: "Gemini", energy: "Communication and learning", color: "border-yellow-200 bg-yellow-50 hover:bg-yellow-100" },
+      { sign: "Cancer", energy: "Family and emotional healing", color: "border-blue-200 bg-blue-50 hover:bg-blue-100" },
+      { sign: "Leo", energy: "Creative expression and joy", color: "border-orange-200 bg-orange-50 hover:bg-orange-100" },
+      { sign: "Virgo", energy: "Organization and health focus", color: "border-gray-200 bg-gray-50 hover:bg-gray-100" },
+      { sign: "Libra", energy: "Balance and relationships", color: "border-pink-200 bg-pink-50 hover:bg-pink-100" },
+      { sign: "Scorpio", energy: "Transformation and depth", color: "border-purple-200 bg-purple-50 hover:bg-purple-100" },
+      { sign: "Sagittarius", energy: "Adventure and wisdom", color: "border-indigo-200 bg-indigo-50 hover:bg-indigo-100" },
+      { sign: "Capricorn", energy: "Achievement and structure", color: "border-gray-300 bg-gray-100 hover:bg-gray-200" },
+      { sign: "Aquarius", energy: "Innovation and freedom", color: "border-cyan-200 bg-cyan-50 hover:bg-cyan-100" },
+      { sign: "Pisces", energy: "Intuition and spirituality", color: "border-teal-200 bg-teal-50 hover:bg-teal-100" }
+    ].map((zodiac, index) => (
+      <Link
+        key={index}
+        to={`/horoscope/western-zodiac?sign=${zodiac.sign.toLowerCase()}`}
+        className={`rounded-lg border-2 p-4 ${zodiac.color} hover:shadow-lg transition-all cursor-pointer group`}
+      >
+        <h4 className="font-bold text-black mb-2 group-hover:text-purple-600 transition-colors">
+          {zodiac.sign}
+        </h4>
+        <p className="text-sm text-gray-700 mb-2">{zodiac.energy}</p>
+        <div className="flex items-center text-purple-600 text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+          <span>View Horoscope</span>
+          <ArrowRight size={14} className="ml-1" />
+        </div>
+      </Link>
+    ))}
+  </div>
+</motion.div>
 
           {/* Related Articles CTA */}
 		  {/* 
