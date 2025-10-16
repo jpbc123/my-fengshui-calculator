@@ -15,12 +15,13 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),
-        "@root": path.resolve(__dirname, "./"),  // Add this line
+        "@root": path.resolve(__dirname, "./"),
       },
     },
     build: {
       sourcemap: false,
-      minify: "esbuild",
+      target: 'es2015', // CHANGED: Transpile to ES2015 for Puppeteer compatibility
+      minify: "terser",  // CHANGED: Use terser instead of esbuild
       // Ensure proper handling of assets
       assetsDir: "assets",
       // Generate clean URLs
@@ -28,7 +29,16 @@ export default defineConfig(({ mode }) => {
         output: {
           manualChunks: undefined,
         }
-      }
+      },
+      // Add terser options
+      terserOptions: {
+        compress: {
+          drop_console: false,
+        },
+        format: {
+          comments: false,
+        },
+      },
     },
   };
 });
