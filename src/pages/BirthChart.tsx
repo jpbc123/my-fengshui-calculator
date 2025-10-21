@@ -1,4 +1,5 @@
 // src/pages/BirthChart.tsx
+import { Helmet } from "react-helmet-async";
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, Clock, MapPin, Star, Download, ArrowRight, Check } from 'lucide-react';
@@ -504,12 +505,40 @@ const BirthChart = () => {
   };
 
   return (
+  <>
+  <Helmet>
+  <title>Free Birth Chart Analysis - AI-Powered Natal Chart Reading</title>
+  <meta name="description" content="Get your free professional birth chart analysis with AI-powered interpretation. Discover your natal chart, planetary positions, house meanings, life path insights, and relationship compatibility. Instant PDF report delivered to your email." />
+  <meta name="keywords" content="birth chart, natal chart, free birth chart, birth chart analysis, astrology birth chart, natal chart reading, birth chart calculator, astrological chart, planetary positions, horoscope chart" />
+  <link rel="canonical" href="https://fengshuiandbeyond.com/birth-chart" />
+  
+  <meta property="og:title" content="Free Birth Chart Analysis - Professional Natal Chart Reading" />
+  <meta property="og:description" content="Get your free AI-powered birth chart analysis with detailed interpretations delivered instantly." />
+  
+  <script type="application/ld+json">
+    {JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "name": "Birth Chart Analysis",
+      "description": "Professional birth chart analysis service with AI-powered interpretation",
+      "provider": {
+        "@type": "Organization",
+        "name": "Feng Shui & Beyond"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    })}
+  </script>
+</Helmet>
+  
+  
     <div className="min-h-screen bg-white text-black flex flex-col">
       <Header />
-      
       <main className="flex-grow container mx-auto px-4 py-8 max-w-6xl mt-20">
         <Breadcrumb items={breadcrumbs} />
-
         <div className="grid lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <motion.div
@@ -970,6 +999,7 @@ const BirthChart = () => {
         </div>
       </main>
     </div>
+	</>
   );
 };
 

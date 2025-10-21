@@ -1,4 +1,5 @@
 // src/pages/WesternDailyHoroscope.tsx
+import { Helmet } from "react-helmet-async";
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -424,6 +425,24 @@ export default function WesternDailyHoroscope() {
   };
 
   return (
+  <>
+  <Helmet>
+  <title>Western Zodiac Horoscope - Daily, Weekly & Yearly Predictions</title>
+  <meta name="description" content="Get your free Western zodiac horoscope with daily, weekly, and yearly predictions. Spin the zodiac wheel to discover insights for love, career, wealth, and more for all 12 astrological signs." />
+  <meta name="keywords" content="western horoscope, daily horoscope, zodiac wheel, astrology predictions, sun sign horoscope, zodiac forecast, horoscope today" />
+  <link rel="canonical" href="https://fengshuiandbeyond.com/horoscope/western-zodiac" />
+  
+  <script type="application/ld+json">
+    {JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Western Zodiac Horoscope Wheel",
+      "description": "Interactive zodiac wheel for daily, weekly, and yearly horoscope predictions",
+      "url": "https://fengshuiandbeyond.com/horoscope/western-zodiac",
+      "applicationCategory": "LifestyleApplication"
+    })}
+  </script>
+</Helmet>
     <div className="min-h-screen bg-white text-black flex flex-col">
       <Header />
       <main className="flex-grow container mx-auto px-4 py-8 max-w-6xl mt-20">
@@ -530,5 +549,6 @@ export default function WesternDailyHoroscope() {
         </div>
       </main>
     </div>
+	</>
   );
 }

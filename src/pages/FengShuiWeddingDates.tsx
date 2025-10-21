@@ -1,4 +1,5 @@
 // src/pages/FengShuiWeddingDates.tsx
+import { Helmet } from "react-helmet-async";
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Heart, Calendar, Star, CheckCircle, CalendarCheck, Gift, Shield, Sparkles, Users, Clock, AlertTriangle, ChevronDown, ChevronUp } from 'lucide-react';
@@ -533,6 +534,28 @@ const FengShuiWeddingDates = () => {
   };
 
   return (
+  <>
+  <Helmet>
+  <title>Feng Shui Wedding Dates 2025 - Auspicious Wedding Date Calculator</title>
+  <meta name="description" content="Find your perfect feng shui wedding date for 2025 with our free calculator. Analyzes Chinese lunar calendar, zodiac compatibility, Ghost Month, San Niang Sha, and auspicious times. Year-round wedding dates with traditional guidance." />
+  <meta name="keywords" content="feng shui wedding dates, auspicious wedding dates, chinese wedding calendar, lunar wedding dates, ghost month wedding, san niang sha, zodiac wedding compatibility, wedding date calculator" />
+  <link rel="canonical" href="https://fengshuiandbeyond.com/feng-shui-wedding-dates" />
+  
+  <script type="application/ld+json">
+    {JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Feng Shui Wedding Date Calculator",
+      "description": "Calculate auspicious wedding dates based on Chinese feng shui principles",
+      "applicationCategory": "UtilitiesApplication",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    })}
+  </script>
+</Helmet>
     <div className="min-h-screen bg-gradient-to-br from-rose-50 via-pink-50 to-red-50 text-slate-800 overflow-x-hidden">
       <Header />
       
@@ -1097,6 +1120,7 @@ const FengShuiWeddingDates = () => {
         )}
       </main>
     </div>
+	</>
   );
 };
 

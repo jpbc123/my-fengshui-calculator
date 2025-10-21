@@ -1,3 +1,5 @@
+// src/pages/VisiberCalculator.tsx
+import { Helmet } from "react-helmet-async";
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -373,6 +375,23 @@ const VisiberCalculator = () => {
   };
 
   return (
+  <>
+  <Helmet>
+    <title>Visiber Calculator - Discover Your Life Path Number</title>
+    <meta name="description" content="Free Visiber numerology calculator to discover your character number. Get comprehensive personality analysis, strengths, weaknesses, and life path insights based on your birth date." />
+    <meta name="keywords" content="visiber calculator, visiber numerology, character number, life path number, numerology calculator, personality analysis, birth date numerology" />
+    <link rel="canonical" href="https://fengshuiandbeyond.com/numerology/visiber-calculator" />
+    
+    <script type="application/ld+json">
+      {JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Visiber Calculator",
+        "applicationCategory": "UtilitiesApplication",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      })}
+    </script>
+  </Helmet>
     <div className="flex flex-col min-h-screen bg-white text-black overflow-hidden">
       <Header />
       <main className="flex-grow pt-6 px-1 pb-10">
@@ -683,6 +702,7 @@ const VisiberCalculator = () => {
         </div>
       </main>
     </div>
+	</>
   );
 };
 

@@ -1,4 +1,5 @@
 // src/pages/ChineseHoroscopeResult.tsx
+import { Helmet } from "react-helmet-async";
 import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
@@ -428,6 +429,37 @@ const allFeatureImages = useMemo(() =>
     }
 
     return (
+<>
+<Helmet>
+  <title>{zodiacName} Chinese Horoscope - Daily, Weekly & Yearly Predictions | Feng Shui and Beyond</title>
+  <meta name="description" content={`Get your ${zodiacName} Chinese horoscope with daily, weekly, and yearly predictions. Discover love, career, wealth, and social insights based on Chinese zodiac wisdom.`} />
+  <meta name="keywords" content={`${zodiacName.toLowerCase()} horoscope, chinese horoscope ${zodiacName.toLowerCase()}, ${zodiacName.toLowerCase()} zodiac, chinese zodiac ${zodiacName.toLowerCase()}, daily horoscope, weekly horoscope, yearly horoscope`} />
+  <link rel="canonical" href={`https://fengshuiandbeyond.com/zodiac/${zodiacName.toLowerCase()}`} />
+  
+  <meta property="og:title" content={`${zodiacName} Chinese Horoscope - Your Daily Guide`} />
+  <meta property="og:description" content={`Free ${zodiacName} Chinese horoscope with daily, weekly, and yearly predictions for love, career, and wealth.`} />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content={`https://fengshuiandbeyond.com/zodiac/${zodiacName.toLowerCase()}`} />
+  <meta property="og:image" content={zodiacImages[currentZodiac]} />
+  
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={`${zodiacName} Chinese Horoscope`} />
+  <meta name="twitter:description" content={`Daily predictions for ${zodiacName} sign`} />
+  
+  <script type="application/ld+json">
+    {JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": `${zodiacName} Chinese Horoscope - ${activePeriodTab.charAt(0).toUpperCase() + activePeriodTab.slice(1)}`,
+      "description": `Chinese horoscope predictions for ${zodiacName} sign`,
+      "url": `https://fengshuiandbeyond.com/zodiac/${zodiacName.toLowerCase()}`,
+      "publisher": {
+        "@type": "Organization",
+        "name": "Feng Shui and Beyond"
+      }
+    })}
+  </script>
+</Helmet>
         <div className="min-h-screen bg-white text-black flex flex-col">
             <Header />
             <main className="flex-grow container mx-auto px-4 py-8 max-w-6xl mt-20">
@@ -571,6 +603,7 @@ const allFeatureImages = useMemo(() =>
                 </div>
             </main>
         </div>
+	</>
     );
 };
 

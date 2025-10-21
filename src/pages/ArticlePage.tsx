@@ -516,7 +516,7 @@ export default function ArticlePage() {
                   </div>
                   <div className="flex flex-wrap gap-3">
                     {article.tags
-                      .filter(tag => !['kua', 'element', 'numerology', 'western zodiac'].includes(tag.toLowerCase()))
+                      .filter(tag => !['kua', 'element', 'numerology', 'western zodiac', 'chinese'].includes(tag.toLowerCase()))
                       .map((tag, index) => (
                         <span
                           key={index}

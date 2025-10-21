@@ -1,4 +1,5 @@
-// src/components/PlanetaryOverviewPage.tsx - FIXED TO USE VERCEL API ROUTES
+// src/components/PlanetaryOverviewPage.tsx 
+import { Helmet } from "react-helmet-async";
 import { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import utc from 'dayjs/plugin/utc';
@@ -88,6 +89,73 @@ export default function PlanetaryOverviewPage() {
     }, [today]);
 
     return (
+	<>
+  <Helmet>
+    <title>Daily Planetary Overview {dayjs().format('MMMM D, YYYY')} | Cosmic Energy Report | Feng Shui and Beyond</title>
+    <meta name="description" content={`Today's planetary overview for ${dayjs().format('MMMM D, YYYY')}. Discover how cosmic alignments and planetary energies influence your day. Get your daily planetary index and astrological guidance.`} />
+    <meta name="keywords" content="daily planetary overview, planetary alignment today, cosmic energy, daily astrology, planetary index, astrological forecast, today's planets, celestial energy" />
+    
+    {/* Open Graph */}
+    <meta property="og:title" content={`Daily Planetary Overview - ${dayjs().format('MMMM D, YYYY')}`} />
+    <meta property="og:description" content="Understand today's cosmic influences with our daily planetary overview. Real-time celestial alignment analysis and energy guidance." />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://fengshuiandbeyond.com/planetary-overview" />
+    <meta property="og:image" content="https://fengshuiandbeyond.com/images/planetary-overview-og.jpg" />
+    
+    {/* Twitter Card */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={`Planetary Overview - ${dayjs().format('MMM D')}`} />
+    <meta name="twitter:description" content="Today's cosmic energy report and planetary alignment analysis." />
+    <meta name="twitter:image" content="https://fengshuiandbeyond.com/images/planetary-twitter.jpg" />
+    
+    {/* Structured Data - Article */}
+    {data && (
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Article",
+          "headline": `Daily Planetary Overview - ${dayjs(data.date).format('MMMM D, YYYY')}`,
+          "description": data.summary,
+          "datePublished": data.date,
+          "dateModified": data.date,
+          "author": {
+            "@type": "Organization",
+            "name": "Feng Shui and Beyond"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "Feng Shui and Beyond",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://fengshuiandbeyond.com/logo.png"
+            }
+          },
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://fengshuiandbeyond.com/planetary-overview"
+          }
+        })}
+      </script>
+    )}
+    
+    {/* Structured Data - FAQPage for Planetary Index explanation */}
+    <script type="application/ld+json">
+      {JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [{
+          "@type": "Question",
+          "name": "What is the Planetary Index?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The Planetary Index reflects the overall harmony and intensity of celestial alignments. It's a score from 1 to 5 that indicates how favorable the day's cosmic energies are for various activities. A higher score suggests better alignment and more positive energy flow."
+          }
+        }]
+      })}
+    </script>
+    
+    <link rel="canonical" href="https://fengshuiandbeyond.com/planetary-overview" />
+  </Helmet>
         <div className="flex flex-col min-h-screen bg-white text-black overflow-hidden">
             <Header />
             <main className="flex-grow pt-6 px-1 pb-10">
@@ -167,5 +235,6 @@ export default function PlanetaryOverviewPage() {
                 </div>
             </main>
         </div>
+		</>
     );
 }

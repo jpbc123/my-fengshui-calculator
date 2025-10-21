@@ -1,4 +1,5 @@
 // src/pages/ArticleMainPage.tsx
+import { Helmet } from "react-helmet-async";
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import Header from "../components/Header";
@@ -345,6 +346,85 @@ export default function ArticlesPage() {
   }
 
   return (
+    <>
+<Helmet>
+  <title>Articles - Astrology, Feng Shui, Numerology & Spiritual Wisdom | Feng Shui and Beyond</title>
+  <meta name="description" content="Explore our comprehensive collection of articles on astrology, feng shui, numerology, planetary overviews, and celebrity insights. Deep dive into ancient wisdom and modern spiritual practices." />
+  <meta name="keywords" content="astrology articles, feng shui guide, numerology readings, spiritual articles, planetary overview, celebrity astrology, horoscope insights, metaphysical wisdom" />
+  
+  {/* Open Graph */}
+  <meta property="og:title" content="Articles - Astrology, Feng Shui & Spiritual Wisdom" />
+  <meta property="og:description" content="Comprehensive articles covering astrology, feng shui, numerology, and planetary insights. Explore ancient wisdom and modern spiritual practices." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://fengshuiandbeyond.com/article" />
+  <meta property="og:image" content="https://fengshuiandbeyond.com/images/articles-og.jpg" />
+  
+  {/* Twitter Card */}
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Spiritual Articles & Wisdom" />
+  <meta name="twitter:description" content="Explore astrology, feng shui, numerology and more through our expert articles." />
+  <meta name="twitter:image" content="https://fengshuiandbeyond.com/images/articles-twitter.jpg" />
+  
+  {/* Dynamic title based on selected category */}
+  {selectedCategory !== "All" && (
+    <>
+      <meta property="og:title" content={`${selectedCategory} Articles | Feng Shui and Beyond`} />
+      <title>{selectedCategory} Articles - Expert Insights & Guidance | Feng Shui and Beyond</title>
+    </>
+  )}
+  
+  {/* Structured Data - Blog/Collection */}
+  <script type="application/ld+json">
+    {JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": selectedCategory === "All" ? "All Articles" : `${selectedCategory} Articles`,
+      "description": "Collection of articles about astrology, feng shui, numerology, and spiritual wisdom",
+      "url": `https://fengshuiandbeyond.com/article${selectedCategory !== "All" ? `?category=${selectedCategory}` : ''}`,
+      "publisher": {
+        "@type": "Organization",
+        "name": "Feng Shui and Beyond",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://fengshuiandbeyond.com/logo.png"
+        }
+      },
+      "mainEntity": {
+        "@type": "ItemList",
+        "numberOfItems": filteredArticles.length,
+        "itemListElement": paginatedArticles.slice(0, 10).map((article, index) => ({
+          "@type": "ListItem",
+          "position": index + 1,
+          "url": `https://fengshuiandbeyond.com${getArticleLink(article)}`
+        }))
+      }
+    })}
+  </script>
+  
+  {/* Structured Data - BreadcrumbList */}
+  <script type="application/ld+json">
+    {JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://fengshuiandbeyond.com"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Articles",
+          "item": "https://fengshuiandbeyond.com/article"
+        }
+      ]
+    })}
+  </script>
+  
+  <link rel="canonical" href={`https://fengshuiandbeyond.com/article${selectedCategory !== "All" ? `?category=${selectedCategory}` : ''}`} />
+</Helmet>
     <div className="flex flex-col min-h-screen font-sans bg-white">
       <Header />
       <main className="flex-grow pt-16">
@@ -497,5 +577,6 @@ export default function ArticlesPage() {
         </div>
       </main>
     </div>
+	</>
   );
 }

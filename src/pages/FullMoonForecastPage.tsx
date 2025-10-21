@@ -1,5 +1,5 @@
 // src/pages/FullMoonForecastPage.tsx
-
+import { Helmet } from "react-helmet-async";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "../components/Header";
@@ -235,6 +235,75 @@ export default function FullMoonForecastPage() {
   }
 
   return (
+  <>
+  <Helmet>
+    <title>Full Moon Forecast 2025 | Lunar Calendar & Moon Phases | Feng Shui and Beyond</title>
+    <meta name="description" content="Track the 2025 full moon calendar with real-time countdown, lunar eclipse dates, and zodiac insights. Discover full moon rituals, meanings, and how each moon phase affects your life." />
+    <meta name="keywords" content="full moon calendar 2025, lunar calendar, moon phases, full moon dates, lunar eclipse, full moon rituals, moon in zodiac signs, full moon astrology, when is the next full moon" />
+    
+    {/* Open Graph */}
+    <meta property="og:title" content="Full Moon Forecast 2025 | Lunar Calendar & Rituals" />
+    <meta property="og:description" content="Complete 2025 full moon calendar with real-time tracking, eclipse alerts, and personalized zodiac guidance. Learn powerful full moon rituals and manifestation practices." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://fengshuiandbeyond.com/full-moon-forecast" />
+    <meta property="og:image" content="https://fengshuiandbeyond.com/images/full-moon-og.jpg" />
+    
+    {/* Twitter Card */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Full Moon Forecast 2025 | Lunar Calendar" />
+    <meta name="twitter:description" content="Track 2025 full moons with real-time countdown. Discover rituals, zodiac insights, and lunar eclipse dates." />
+    <meta name="twitter:image" content="https://fengshuiandbeyond.com/images/full-moon-twitter.jpg" />
+    
+    {/* Structured Data - Event for Next Full Moon */}
+    {nextFullMoon && (
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Event",
+          "name": `${nextFullMoon.name} Full Moon in ${nextFullMoon.sign}`,
+          "startDate": nextFullMoon.date,
+          "description": nextFullMoon.description,
+          "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
+          "eventStatus": "https://schema.org/EventScheduled",
+          "location": {
+            "@type": "VirtualLocation",
+            "url": "https://fengshuiandbeyond.com/full-moon-forecast"
+          },
+          "organizer": {
+            "@type": "Organization",
+            "name": "Feng Shui and Beyond",
+            "url": "https://fengshuiandbeyond.com"
+          }
+        })}
+      </script>
+    )}
+    
+    {/* Structured Data - Article/Guide */}
+    <script type="application/ld+json">
+      {JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Full Moon Forecast 2025 - Complete Lunar Calendar",
+        "description": "Comprehensive guide to 2025 full moons including dates, zodiac signs, rituals, and how lunar phases affect different areas of life.",
+        "author": {
+          "@type": "Organization",
+          "name": "Feng Shui and Beyond"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Feng Shui and Beyond",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://fengshuiandbeyond.com/logo.png"
+          }
+        },
+        "datePublished": "2025-01-01",
+        "dateModified": new Date().toISOString()
+      })}
+    </script>
+    
+    <link rel="canonical" href="https://fengshuiandbeyond.com/full-moon-forecast" />
+  </Helmet>
     <div className="flex flex-col min-h-screen font-sans bg-white">
       <Header />
       <main className="flex-grow pt-16">
@@ -567,5 +636,6 @@ export default function FullMoonForecastPage() {
         </div>
       </main>
     </div>
+	</>
   );
 }

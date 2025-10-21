@@ -1,4 +1,5 @@
 // src/pages/MeditationLanding.tsx
+import { Helmet } from "react-helmet-async";
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -89,6 +90,22 @@ const MeditationLanding = () => {
   ];
 
   return (
+  <>
+  <Helmet>
+    <title>Meditation & Mindfulness - Guided Practices for Inner Peace</title>
+    <meta name="description" content="Discover guided meditation and mindfulness practices including daily affirmations, morning mindfulness, visualization exercises, yoga poses, and evening relaxation for better wellbeing." />
+    <meta name="keywords" content="meditation, mindfulness, guided meditation, daily affirmations, morning meditation, visualization, yoga, evening relaxation, stress relief, inner peace" />
+    <link rel="canonical" href="https://fengshuiandbeyond.com/meditation" />
+    
+    <script type="application/ld+json">
+      {JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Meditation & Mindfulness Practices",
+        "description": "Complete collection of guided meditation and mindfulness practices"
+      })}
+    </script>
+  </Helmet>
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
       <Header />
       <main className="pt-6 px-4 pb-16">
@@ -283,6 +300,7 @@ const MeditationLanding = () => {
         </div>
       </main>
     </div>
+	</>
   );
 };
 

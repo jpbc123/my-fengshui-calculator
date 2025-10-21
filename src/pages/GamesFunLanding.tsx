@@ -1,4 +1,5 @@
 // src/pages/GamesFunLanding.tsx
+import { Helmet } from "react-helmet-async";
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -111,6 +112,22 @@ const GamesFunLanding = () => {
   ];
 
   return (
+  <>
+  <Helmet>
+    <title>Games & Fun - Compatibility Tests, Fortune & Spiritual Games</title>
+    <meta name="description" content="Explore fun spiritual games including name compatibility, zodiac compatibility calculators, aura analysis, daily fortune cookies, and lucky number generators. Discover your cosmic connections!" />
+    <meta name="keywords" content="compatibility test, name compatibility, zodiac compatibility, fortune cookie, lucky numbers, aura analysis, spiritual games, astrology games, fun tests" />
+    <link rel="canonical" href="https://fengshuiandbeyond.com/games-fun" />
+    
+    <script type="application/ld+json">
+      {JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Games & Fun - Spiritual Entertainment",
+        "description": "Collection of entertaining spiritual games and compatibility tests"
+      })}
+    </script>
+  </Helmet>
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50">
       <Header />
       <main className="pt-6 px-4 pb-16">
@@ -330,6 +347,7 @@ const GamesFunLanding = () => {
         </div>
       </main>
     </div>
+	</>
   );
 };
 

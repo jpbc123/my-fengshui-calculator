@@ -1,3 +1,5 @@
+//src/pages/ZhineseZodiacCalculator.tsx
+import { Helmet } from "react-helmet-async";
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -211,6 +213,24 @@ const ChineseZodiacCalculator = () => {
   };
   
   return (
+  <>
+  <Helmet>
+  <title>Chinese Zodiac Calculator - Find Your Animal Sign & Personality Traits</title>
+  <meta name="description" content="Free Chinese zodiac calculator to discover your animal sign based on birth date. Get detailed personality traits, 2025 forecast, compatibility, lucky numbers, and career guidance." />
+  <meta name="keywords" content="chinese zodiac calculator, find my chinese zodiac, chinese astrology calculator, zodiac animal calculator, shengxiao calculator, birth year zodiac" />
+  <link rel="canonical" href="https://fengshuiandbeyond.com/astrology/chinese-zodiac-calculator" />
+  
+  <script type="application/ld+json">
+    {JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Chinese Zodiac Calculator",
+      "applicationCategory": "UtilitiesApplication",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "description": "Calculate your Chinese zodiac sign with detailed personality analysis"
+    })}
+  </script>
+</Helmet>
     <div className="flex flex-col min-h-screen bg-white text-black overflow-hidden">
       <Header />
       <main className="flex-grow pt-6 px-1 pb-10">
@@ -477,6 +497,7 @@ const ChineseZodiacCalculator = () => {
         </div>
       </main>
     </div>
+	</>
   );
 };
 

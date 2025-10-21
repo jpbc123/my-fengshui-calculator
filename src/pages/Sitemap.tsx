@@ -1,4 +1,5 @@
 // src/pages/Sitemap.tsx
+import { Helmet } from "react-helmet-async";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { SplashCursor } from "@/components/ui/splash-cursor";
@@ -110,7 +111,63 @@ const Sitemap = () => {
   ];
 
   return (
-    <>
+	<>
+  <Helmet>
+    <title>Sitemap | Complete Site Navigation | Feng Shui and Beyond</title>
+    <meta name="description" content="Browse our complete sitemap to find all horoscopes, astrology calculators, feng shui tools, numerology readings, meditation guides, and premium services. Easy navigation to 50+ pages." />
+    <meta name="keywords" content="sitemap, site navigation, astrology tools, horoscope directory, feng shui calculators, numerology tools, meditation resources, spiritual guidance index" />
+    
+    {/* Open Graph */}
+    <meta property="og:title" content="Feng Shui and Beyond Sitemap - Complete Site Navigation" />
+    <meta property="og:description" content="Explore our complete directory of astrology tools, horoscopes, calculators, and spiritual guidance resources. Find everything in one place." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://fengshuiandbeyond.com/sitemap" />
+    <meta property="og:image" content="https://fengshuiandbeyond.com/images/sitemap-og.jpg" />
+    
+    {/* Twitter Card */}
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Feng Shui and Beyond Sitemap" />
+    <meta name="twitter:description" content="Complete navigation guide to all our astrology and spiritual wellness tools." />
+    
+    {/* Structured Data - WebSite */}
+    <script type="application/ld+json">
+      {JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Feng Shui and Beyond",
+        "url": "https://fengshuiandbeyond.com",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://fengshuiandbeyond.com/search?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      })}
+    </script>
+    
+    {/* Structured Data - BreadcrumbList */}
+    <script type="application/ld+json">
+      {JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://fengshuiandbeyond.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Sitemap",
+            "item": "https://fengshuiandbeyond.com/sitemap"
+          }
+        ]
+      })}
+    </script>
+    
+    <link rel="canonical" href="https://fengshuiandbeyond.com/sitemap" />
+  </Helmet>
       <SplashCursor />
       <div className="relative min-h-screen bg-white text-black">
         <Header />

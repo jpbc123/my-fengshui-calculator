@@ -1,4 +1,5 @@
 // src/pages/MercuryRetrogradePage.tsx
+import { Helmet } from "react-helmet-async";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "../components/Header";
@@ -307,6 +308,123 @@ export default function MercuryRetrogradePage() {
   }
 
   return (
+  <>
+  <Helmet>
+  {/* Primary Meta Tags */}
+  <title>Mercury Retrograde 2025 - Dates, Meaning & Survival Guide</title>
+  <meta name="description" content="Track Mercury retrograde 2025 with real-time countdown, expert guidance, and zodiac-specific effects. Learn what Mercury retrograde means, when it happens, and how to navigate communication challenges, technology glitches, and relationship issues." />
+  <meta name="keywords" content="mercury retrograde, mercury retrograde 2025, mercury retrograde dates, mercury retrograde meaning, what is mercury retrograde, mercury retrograde effects, mercury retrograde survival guide, shadow period, retrograde astrology" />
+  <link rel="canonical" href="https://fengshuiandbeyond.com/mercury-retrograde" />
+
+  {/* Open Graph / Facebook */}
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://fengshuiandbeyond.com/mercury-retrograde" />
+  <meta property="og:title" content="Mercury Retrograde 2025 - Real-Time Tracker & Survival Guide" />
+  <meta property="og:description" content="Navigate Mercury retrograde with confidence. Get real-time tracking, expert guidance, and zodiac-specific advice for 2025." />
+  <meta property="og:image" content="https://fengshuiandbeyond.com/circle-logo.png" />
+
+  {/* Twitter Card */}
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Mercury Retrograde 2025 Tracker & Guide" />
+  <meta name="twitter:description" content="Real-time Mercury retrograde tracking with expert survival tips and zodiac guidance." />
+
+  {/* Schema.org - Article */}
+  <script type="application/ld+json">
+    {JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Mercury Retrograde 2025 - Complete Guide and Real-Time Tracker",
+      "description": "Comprehensive guide to Mercury retrograde including dates, meanings, effects by zodiac sign, and survival tips",
+      "url": "https://fengshuiandbeyond.com/mercury-retrograde",
+      "datePublished": "2025-01-01",
+      "dateModified": new Date().toISOString(),
+      "author": {
+        "@type": "Organization",
+        "name": "Feng Shui & Beyond"
+      }
+    })}
+  </script>
+
+  {/* Schema.org - BreadcrumbList */}
+  <script type="application/ld+json">
+    {JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://fengshuiandbeyond.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Astrology",
+          "item": "https://fengshuiandbeyond.com/astrology"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Mercury Retrograde",
+          "item": "https://fengshuiandbeyond.com/mercury-retrograde"
+        }
+      ]
+    })}
+  </script>
+
+  {/* Schema.org - FAQPage */}
+  <script type="application/ld+json">
+    {JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is Mercury retrograde?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Mercury retrograde is an optical illusion that occurs when Mercury appears to move backward in the sky from Earth's perspective. This happens 3-4 times per year, lasting about three weeks each time. In astrology, Mercury governs communication, technology, and travel, so these areas often experience disruptions during retrograde periods."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "When is Mercury retrograde in 2025?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Mercury goes retrograde multiple times in 2025. Check our real-time tracker above for exact dates, countdown timers, and shadow period information for each retrograde cycle throughout the year."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What should I avoid during Mercury retrograde?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Avoid signing important contracts without thorough review, starting major new projects, making large purchases (especially electronics), sending important emails when emotional, rushing into new relationships, and relying solely on technology without backups. However, it's a great time to review, revise, and reconnect."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What are Mercury retrograde shadow periods?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Shadow periods extend Mercury retrograde's influence for about 2 weeks before (pre-shadow) and 2 weeks after (post-shadow) the actual retrograde. Pre-shadow brings early warning signs, while post-shadow is for cleaning up retrograde messes and implementing lessons learned. The total influence period lasts 7-8 weeks per cycle."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does Mercury retrograde affect each zodiac sign differently?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Mercury retrograde influences each zodiac sign differently based on astrological house placements. Fire signs may experience impulsiveness, earth signs face practical delays, air signs encounter communication mishaps, and water signs deal with emotional fog. Check our zodiac-specific guide above for personalized effects and advice."
+          }
+        }
+      ]
+    })}
+  </script>
+</Helmet>
+  
+  
     <div className="flex flex-col min-h-screen font-sans bg-white">
       <Header />
       <main className="flex-grow pt-16">
@@ -885,5 +1003,6 @@ export default function MercuryRetrogradePage() {
         </div>
       </main>
     </div>
+	</>
   );
 }

@@ -1,4 +1,5 @@
 // src/pages/KuaNumberCalculator.tsx
+import { Helmet } from "react-helmet-async";
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -355,6 +356,23 @@ export default function KuaNumberCalculator() {
   const group = kuaNumber ? kuaGroup(kuaNumber) : null;
 
   return (
+  <>
+    <Helmet>
+    <title>Kua Number Calculator - Find Your Lucky Feng Shui Directions</title>
+    <meta name="description" content="Calculate your Kua number for free and discover your lucky directions for health, wealth, love, and growth. Based on authentic Ba Zhai Feng Shui principles with personalized guidance." />
+    <meta name="keywords" content="kua number calculator, ming gua, ba zhai feng shui, lucky directions, feng shui calculator, eight mansions, personal feng shui number" />
+    <link rel="canonical" href="https://fengshuiandbeyond.com/feng-shui/kua-number" />
+    
+    <script type="application/ld+json">
+      {JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Kua Number Calculator",
+        "applicationCategory": "UtilitiesApplication",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      })}
+    </script>
+  </Helmet>
     <div className="flex flex-col min-h-screen bg-white text-black overflow-hidden">
       <Header />
       <main className="flex-grow pt-6 px-1 pb-10">
@@ -628,5 +646,6 @@ export default function KuaNumberCalculator() {
         </div>
       </main>
     </div>
+	</>
   );
 }

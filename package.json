@@ -7,7 +7,7 @@
     "dev": "vite --host",
     "build": "npm run generate-sitemap && vite build",
     "postbuild": "react-snap",
-    "build:dev": "npm run generate-sitemap && vite build --mode development",
+    "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
     "vercel-build": "npm run generate-sitemap && vite build",
@@ -22,7 +22,7 @@
       "removeComments": false
     },
     "include": [
-	  "/"
+      "/"
     ],
     "puppeteerArgs": [
       "--no-sandbox",
@@ -107,6 +107,7 @@
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.3.1",
     "react-helmet": "^6.1.0",
+    "react-helmet-async": "^2.0.5",
     "react-hook-form": "^7.53.0",
     "react-markdown": "^10.1.0",
     "react-resizable-panels": "^2.1.3",

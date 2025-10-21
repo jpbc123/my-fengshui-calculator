@@ -1,5 +1,5 @@
 // src/pages/PersonalElement.tsx
-
+import { Helmet } from "react-helmet-async";
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -397,6 +397,23 @@ export default function PersonalElement() {
   };
 
   return (
+  <>
+    <Helmet>
+    <title>Personal Element Analysis - Find Your Five Element Profile</title>
+    <meta name="description" content="Discover your personal element (Wood, Fire, Earth, Metal, Water) based on your birth date. Get detailed Five Elements analysis with personality insights, compatibility, and Feng Shui guidance." />
+    <meta name="keywords" content="personal element calculator, five elements, wu xing, heavenly stem, feng shui elements, birth element, chinese elements, elemental analysis" />
+    <link rel="canonical" href="https://fengshuiandbeyond.com/feng-shui/personal-element" />
+    
+    <script type="application/ld+json">
+      {JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Personal Element Calculator",
+        "applicationCategory": "UtilitiesApplication",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      })}
+    </script>
+  </Helmet>
     <div className="flex flex-col min-h-screen bg-white text-black overflow-hidden">
       <Header />
       <main className="flex-grow pt-6 px-1 pb-10">
@@ -580,5 +597,6 @@ export default function PersonalElement() {
         </div>
       </main>
     </div>
+	</>
   );
 }

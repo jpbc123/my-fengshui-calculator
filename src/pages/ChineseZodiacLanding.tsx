@@ -1,3 +1,5 @@
+//src/pages/ChineseZodiacLanding.tsx
+import { Helmet } from "react-helmet-async";
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
@@ -57,6 +59,23 @@ const ChineseZodiacLanding = () => {
     };
 
     return (
+	<>
+	<Helmet>
+  <title>Chinese Zodiac Signs - Choose Your Animal Sign for Daily Horoscope</title>
+  <meta name="description" content="Select your Chinese zodiac animal sign to discover your daily, weekly, and yearly horoscope. Explore Rat, Ox, Tiger, Rabbit, Dragon, Snake, Horse, Goat, Monkey, Rooster, Dog, and Pig signs." />
+  <meta name="keywords" content="chinese zodiac signs, chinese astrology, zodiac animals, 12 chinese zodiac, shengxiao, chinese horoscope signs, lunar zodiac" />
+  <link rel="canonical" href="https://fengshuiandbeyond.com/horoscope/chinese-zodiac" />
+  
+  <script type="application/ld+json">
+    {JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Chinese Zodiac Signs",
+      "description": "Complete guide to 12 Chinese zodiac animal signs with daily horoscopes",
+      "url": "https://fengshuiandbeyond.com/horoscope/chinese-zodiac"
+    })}
+  </script>
+</Helmet>
         <div className="flex flex-col min-h-screen bg-white text-black overflow-hidden">
             <Header />
             <main className="flex-grow"> {/* Removed alignment classes from here */}
@@ -139,6 +158,7 @@ const ChineseZodiacLanding = () => {
                 </div>
             </main>
         </div>
+		</>
     );
 };
 

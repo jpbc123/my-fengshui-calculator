@@ -1,3 +1,5 @@
+//src/pages/WesternZodiacCalculator.tsx
+import { Helmet } from "react-helmet-async";
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -200,6 +202,24 @@ const WesternZodiacCalculator = () => {
   };
   
   return (
+  <>
+  <Helmet>
+  <title>Western Zodiac Calculator - Find Your Sun Sign & Astrological Profile</title>
+  <meta name="description" content="Free Western zodiac calculator to discover your sun sign. Get comprehensive personality traits, 2025 forecast, compatibility insights, lucky elements, and career guidance for all 12 zodiac signs." />
+  <meta name="keywords" content="western zodiac calculator, sun sign calculator, astrology calculator, find my zodiac sign, horoscope sign calculator, birth date zodiac" />
+  <link rel="canonical" href="https://fengshuiandbeyond.com/astrology/western-zodiac-calculator" />
+  
+  <script type="application/ld+json">
+    {JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Western Zodiac Calculator",
+      "applicationCategory": "UtilitiesApplication",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "description": "Calculate your Western zodiac sun sign with detailed astrological profile"
+    })}
+  </script>
+</Helmet>
     <div className="flex flex-col min-h-screen bg-white text-black overflow-hidden">
       <Header />
       <main className="flex-grow pt-6 px-1 pb-10">
@@ -486,6 +506,7 @@ const WesternZodiacCalculator = () => {
         </div>
       </main>
     </div>
+	</>
   );
 };
 
