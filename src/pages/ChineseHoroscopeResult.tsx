@@ -596,7 +596,7 @@ const allFeatureImages = useMemo(() =>
                                     {zodiac ? `No horoscope data found for ${zodiacName} today. Please try another sign or check back later.` : 'Please select a Chinese Zodiac sign to view its horoscope.'}
                                 </p>
                                 <p>You can also use the Chinese Zodiac Calculator to find your sign.</p>
-                                <button onClick={() => navigate('/chinese-zodiac-calculator')} className="bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors mt-4 inline-block">Calculate My Sign</button>
+                                <button onClick={() => navigate('/astrology/chinese-zodiac-calculator')} className="bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors mt-4 inline-block">Calculate My Sign</button>
                             </div>
                         )}
                     </div>
