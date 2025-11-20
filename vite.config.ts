@@ -9,6 +9,7 @@ export default defineConfig(({ mode }) => {
     // The base path must be '/' for Vercel deployments.
     base: '/',
     server: {
+	  host: true,
       port: 8080,
     },
     plugins: [react()],

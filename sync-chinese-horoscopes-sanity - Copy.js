@@ -1,4 +1,4 @@
-// sync-western-horoscopes-sanity.js - Fixed for Gemini 2.5 Flash with rate limiting
+// sync-chinese-horoscopes-sanity.js - Enhanced with command line parameters
 import { createClient } from '@sanity/client';
 import dotenv from 'dotenv';
 import dayjs from 'dayjs';
@@ -20,21 +20,22 @@ const sanityClient = createClient({
 });
 
 const geminiApiKey = process.env.GEMINI_API_KEY;
-// FIXED: Use gemini-2.5-flash instead of preview version
-const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`;
+const geminiApiUrl =
+`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`;
 
-const westernZodiacSigns = [
-  'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
-  'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
+
+const chineseZodiacSigns = [
+  'rat', 'ox', 'tiger', 'rabbit', 'dragon', 'snake',
+  'horse', 'goat', 'monkey', 'rooster', 'dog', 'pig',
 ];
 
-// Parse command line arguments (matching Chinese sync)
+// Parse command line arguments
 function parseArgs() {
   const args = process.argv.slice(2);
   const config = {
     mode: 'tomorrow', // default
     types: ['daily', 'weekly', 'yearly'], // default all types
-    signs: westernZodiacSigns // default all signs
+    signs: chineseZodiacSigns // default all signs
   };
 
   for (let i = 0; i < args.length; i++) {
@@ -62,11 +63,11 @@ function parseArgs() {
       case '--sign':
         if (i + 1 < args.length) {
           const sign = args[i + 1].toLowerCase();
-          if (westernZodiacSigns.includes(sign)) {
+          if (chineseZodiacSigns.includes(sign)) {
             config.signs = [sign];
             i++; // skip next arg since we used it
           } else {
-            console.error(`Invalid sign: ${args[i + 1]}. Valid signs: ${westernZodiacSigns.join(', ')}`);
+            console.error(`Invalid sign: ${args[i + 1]}. Valid signs: ${chineseZodiacSigns.join(', ')}`);
             process.exit(1);
           }
         }
@@ -86,9 +87,9 @@ function parseArgs() {
 
 function showHelp() {
   console.log(`
-Western Horoscope Sync Script
+Chinese Horoscope Sync Script
 
-Usage: node sync-western-horoscopes-sanity.js [OPTIONS]
+Usage: node sync-chinese-horoscopes-sanity.js [OPTIONS]
 
 Date Options (choose one):
   --today       Generate horoscopes for today's date
@@ -104,13 +105,13 @@ Type Options (choose one):
 Sign Options:
   --sign [SIGN]  Generate for specific zodiac sign only
   (default: generates for all signs)
-  Valid signs: ${westernZodiacSigns.join(', ')}
+  Valid signs: ${chineseZodiacSigns.join(', ')}
 
 Examples:
-  node sync-western-horoscopes-sanity.js --today
-  node sync-western-horoscopes-sanity.js --tomorrow --daily-only
-  node sync-western-horoscopes-sanity.js --today --sign aries
-  node sync-western-horoscopes-sanity.js --weekly-only --sign leo
+  node sync-chinese-horoscopes-sanity.js --today
+  node sync-chinese-horoscopes-sanity.js --tomorrow --daily-only
+  node sync-chinese-horoscopes-sanity.js --today --sign rat
+  node sync-chinese-horoscopes-sanity.js --weekly-only --sign dragon
   `);
 }
 
@@ -151,7 +152,7 @@ async function generateHoroscope(sign, period, type, config) {
   let responseSchema;
   let targetDate, targetWeekStart, targetWeekEnd, targetDayName;
 
-  // Calculate target dates based on mode (matching Chinese sync logic)
+  // Calculate target dates based on mode
   const dayOffset = config.mode === 'today' ? 0 : config.mode === 'tomorrow' ? 1 : -1;
   
   const currentYear = dayjs().year();
@@ -161,18 +162,19 @@ async function generateHoroscope(sign, period, type, config) {
   targetDayName = dayjs().add(dayOffset, 'day').format('dddd');
 
   if (type === 'daily') {
-    promptText = `Generate a detailed daily Western horoscope for the ${sign} sign for ${targetDate} (${targetDayName}).
-    Cover the following categories: horoscope, money, social, career, love.
-    Also provide a lucky color and lucky number.
+    promptText = `Generate a detailed daily Chinese horoscope for the ${sign} sign for ${targetDate} (${targetDayName}).
+    Cover the following categories in both Chinese and English: horoscope, money, social, career, love.
+    Also provide a lucky color and lucky number (both Chinese and English).
     Format as a JSON object with these exact keys:
     {
-      "horoscope": "General daily forecast...",
-      "money": "Financial outlook...",
-      "social": "Social interactions...",
-      "career": "Career outlook...",
-      "love": "Love forecast...",
-      "luckyColor": "Blue",
-      "luckyNumber": 7
+      "horoscope": "...", "horoscope_en": "...",
+      "money": "...", "money_en": "...",
+      "social": "...", "social_en": "...",
+      "career": "...", "career_en": "...",
+      "love": "...", "love_en": "...",
+      "lucky_color": "...", "lucky_color_en": "...",
+      "lucky_number": 5, "lucky_number_en": "five",
+      "lucky_number_cn": "五"
     }`;
     identifier = targetDate;
 
@@ -180,29 +182,40 @@ async function generateHoroscope(sign, period, type, config) {
       type: "OBJECT",
       properties: {
         horoscope: { type: "STRING" },
+        horoscope_en: { type: "STRING" },
         money: { type: "STRING" },
+        money_en: { type: "STRING" },
         social: { type: "STRING" },
+        social_en: { type: "STRING" },
         career: { type: "STRING" },
+        career_en: { type: "STRING" },
         love: { type: "STRING" },
-        luckyColor: { type: "STRING" },
-        luckyNumber: { type: "STRING" }
+        love_en: { type: "STRING" },
+        lucky_color: { type: "STRING" },
+        lucky_color_en: { type: "STRING" },
+        lucky_number: { type: "STRING" },
+        lucky_number_en: { type: "STRING" },
+        lucky_number_cn: { type: "STRING" }
       },
-      required: ["horoscope", "money", "social", "career", "love", "luckyColor", "luckyNumber"]
+      required: ["horoscope","horoscope_en","money","money_en","social","social_en",
+                 "career","career_en","love","love_en","lucky_color","lucky_color_en",
+                 "lucky_number","lucky_number_en","lucky_number_cn"]
     };
 
   } else if (type === 'weekly') {
-    promptText = `Generate a detailed weekly Western horoscope for the ${sign} sign for the week starting ${targetWeekStart} and ending ${targetWeekEnd}.
-    Cover the following categories: horoscope, money, social, career, love.
-    Also provide a lucky color and lucky number.
+    promptText = `Generate a detailed weekly Chinese horoscope for the ${sign} sign for the week starting ${targetWeekStart} and ending ${targetWeekEnd}.
+    Cover the following categories in both Chinese and English: horoscope, money, social, career, love.
+    Also provide a lucky color and lucky number (both Chinese and English).
     Format as a JSON object with these exact keys:
     {
-      "horoscope": "General weekly forecast...",
-      "money": "Financial outlook...",
-      "social": "Social interactions...",
-      "career": "Career outlook...",
-      "love": "Love forecast...",
-      "luckyColor": "Green",
-      "luckyNumber": 3
+      "horoscope": "...", "horoscope_en": "...",
+      "money": "...", "money_en": "...",
+      "social": "...", "social_en": "...",
+      "career": "...", "career_en": "...",
+      "love": "...", "love_en": "...",
+      "lucky_color": "...", "lucky_color_en": "...",
+      "lucky_number": 8, "lucky_number_en": "eight",
+      "lucky_number_cn": "八"
     }`;
     identifier = targetWeekStart;
 
@@ -210,44 +223,64 @@ async function generateHoroscope(sign, period, type, config) {
       type: "OBJECT",
       properties: {
         horoscope: { type: "STRING" },
+        horoscope_en: { type: "STRING" },
         money: { type: "STRING" },
+        money_en: { type: "STRING" },
         social: { type: "STRING" },
+        social_en: { type: "STRING" },
         career: { type: "STRING" },
+        career_en: { type: "STRING" },
         love: { type: "STRING" },
-        luckyColor: { type: "STRING" },
-        luckyNumber: { type: "STRING" }
+        love_en: { type: "STRING" },
+        lucky_color: { type: "STRING" },
+        lucky_color_en: { type: "STRING" },
+        lucky_number: { type: "STRING" },
+        lucky_number_en: { type: "STRING" },
+        lucky_number_cn: { type: "STRING" }
       },
-      required: ["horoscope", "money", "social", "career", "love", "luckyColor", "luckyNumber"]
+      required: ["horoscope","horoscope_en","money","money_en","social","social_en",
+                 "career","career_en","love","love_en","lucky_color","lucky_color_en",
+                 "lucky_number","lucky_number_en","lucky_number_cn"]
     };
 
   } else if (type === 'yearly') {
-    promptText = `Generate a detailed yearly Western horoscope for the ${sign} sign for the year ${currentYear}.
-    Provide comprehensive content for: overview, love, career, wealth, and social.
-    Also provide a lucky color and lucky number.
+    promptText = `Generate a detailed yearly Chinese horoscope for the ${sign} sign for the year ${currentYear}.
+    Provide both Chinese and English for: overview, love, career, wealth, and social.
+    Also provide a lucky color and lucky number (both Chinese and English).
     Format as a JSON object with these exact keys:
     {
-      "overviewContent": "Detailed yearly overview...",
-      "loveContent": "Yearly love forecast...",
-      "careerContent": "Career outlook for the year...",
-      "wealthContent": "Financial prospects...",
-      "socialContent": "Social interactions and networking...",
-      "luckyColor": "Red",
-      "luckyNumber": 9
+      "overview_content": "...", "overview_content_cn": "...",
+      "love_content": "...", "love_content_cn": "...",
+      "career_content": "...", "career_content_cn": "...",
+      "wealth_content": "...", "wealth_content_cn": "...",
+      "social_content": "...", "social_content_cn": "...",
+      "lucky_color": "...", "lucky_color_cn": "...",
+      "lucky_number": 6, "lucky_number_cn": "六"
     }`;
     identifier = currentYear;
 
     responseSchema = {
       type: "OBJECT",
       properties: {
-        overviewContent: { type: "STRING" },
-        loveContent: { type: "STRING" },
-        careerContent: { type: "STRING" },
-        wealthContent: { type: "STRING" },
-        socialContent: { type: "STRING" },
-        luckyColor: { type: "STRING" },
-        luckyNumber: { type: "STRING" }
+        overview_content: { type: "STRING" },
+        overview_content_cn: { type: "STRING" },
+        love_content: { type: "STRING" },
+        love_content_cn: { type: "STRING" },
+        career_content: { type: "STRING" },
+        career_content_cn: { type: "STRING" },
+        wealth_content: { type: "STRING" },
+        wealth_content_cn: { type: "STRING" },
+        social_content: { type: "STRING" },
+        social_content_cn: { type: "STRING" },
+        lucky_color: { type: "STRING" },
+        lucky_color_cn: { type: "STRING" },
+        lucky_number: { type: "STRING" },
+        lucky_number_cn: { type: "STRING" }
       },
-      required: ["overviewContent", "loveContent", "careerContent", "wealthContent", "socialContent", "luckyColor", "luckyNumber"]
+      required: ["overview_content","overview_content_cn","love_content","love_content_cn",
+                 "career_content","career_content_cn","wealth_content","wealth_content_cn",
+                 "social_content","social_content_cn","lucky_color","lucky_color_cn",
+                 "lucky_number","lucky_number_cn"]
     };
   }
 
@@ -266,39 +299,26 @@ async function generateHoroscope(sign, period, type, config) {
   });
 
   const result = await response.json();
-  
-  // Handle the response - Gemini 2.5 Flash returns JSON directly in parts[0].text
-  const candidate = result?.candidates?.[0];
-  if (!candidate) {
-    throw new Error(`No candidate returned from model: ${JSON.stringify(result)}`);
-  }
-
-  let jsonResponseText = null;
-  
-  // Check if response is in parts[0].text (for JSON mode responses)
-  if (candidate.content && candidate.content.parts && candidate.content.parts[0]) {
-    jsonResponseText = candidate.content.parts[0].text;
-  } else if (candidate.content && typeof candidate.content === 'string') {
-    jsonResponseText = candidate.content;
-  }
-
-  if (!jsonResponseText) {
-    console.error('Debug - Full result:', JSON.stringify(result, null, 2));
-    throw new Error(`No text response found in model result`);
-  }
-
+  const jsonResponseText = result.candidates[0].content.parts[0].text;
   const parsedData = JSON.parse(jsonResponseText);
 
   if (type === 'yearly') {
     return {
       year: identifier,
-      overviewContent: parsedData.overviewContent,
-      loveContent: parsedData.loveContent,
-      careerContent: parsedData.careerContent,
-      wealthContent: parsedData.wealthContent,
-      socialContent: parsedData.socialContent,
-      luckyColor: parsedData.luckyColor,
-      luckyNumber: parsedData.luckyNumber
+      overview_content: parsedData.overview_content,
+      overview_content_cn: parsedData.overview_content_cn,
+      love_content: parsedData.love_content,
+      love_content_cn: parsedData.love_content_cn,
+      career_content: parsedData.career_content,
+      career_content_cn: parsedData.career_content_cn,
+      wealth_content: parsedData.wealth_content,
+      wealth_content_cn: parsedData.wealth_content_cn,
+      social_content: parsedData.social_content,
+      social_content_cn: parsedData.social_content_cn,
+      lucky_color: parsedData.lucky_color,
+      lucky_color_cn: parsedData.lucky_color_cn,
+      lucky_number: parsedData.lucky_number,
+      lucky_number_cn: parsedData.lucky_number_cn
     };
   }
 
@@ -311,7 +331,7 @@ async function generateHoroscope(sign, period, type, config) {
   };
 }
 
-async function syncWesternHoroscopes() {
+async function syncChineseHoroscopes() {
   const config = parseArgs();
   
   const modeDisplay = config.mode === 'today' ? 'TODAY' : config.mode === 'tomorrow' ? 'TOMORROW' : 'YESTERDAY';
@@ -319,20 +339,20 @@ async function syncWesternHoroscopes() {
   const targetDate = dayjs().add(dayOffset, 'day').format('YYYY-MM-DD');
   const targetDay = dayjs().add(dayOffset, 'day').format('dddd');
   
-  console.log(`🚀 [${dayjs().format('YYYY-MM-DD HH:mm:ss')}] Starting Western horoscope sync for ${modeDisplay}: ${targetDate} (${targetDay})`);
+  console.log(`🚀 [${dayjs().format('YYYY-MM-DD HH:mm:ss')}] Starting Chinese horoscope sync for ${modeDisplay}: ${targetDate} (${targetDay})`);
   console.log(`📊 Generating ${config.types.join(', ')} content for ${config.signs.length} zodiac sign(s): ${config.signs.join(', ')}`);
 
   for (const sign of config.signs) {
     const transaction = sanityClient.transaction();
 
     try {
-      console.log(`⭐ [${dayjs().format('HH:mm:ss')}] Processing ${sign.toUpperCase()}...`);
+      console.log(`🐉 [${dayjs().format('HH:mm:ss')}] Processing ${sign.toUpperCase()}...`);
 
       // Daily
       if (config.types.includes('daily')) {
         const dailyData = await generateHoroscope(sign, 'daily', 'daily', config);
         const dailyDoc = {
-          _type: 'dailyWesternHoroscope',
+          _type: 'dailyChineseHoroscope',
           _id: `daily-${sign}-${dailyData.forDate}`,
           sign: sign,
           forDate: dailyData.forDate,
@@ -341,58 +361,73 @@ async function syncWesternHoroscopes() {
           social: dailyData.social,
           career: dailyData.career,
           love: dailyData.love,
-          luckyColor: dailyData.luckyColor,
-          luckyNumber: dailyData.luckyNumber
+          luckyColor: dailyData.lucky_color,
+          luckyNumber: dailyData.lucky_number,
+          horoscopeEn: dailyData.horoscope_en,
+          moneyEn: dailyData.money_en,
+          socialEn: dailyData.social_en,
+          careerEn: dailyData.career_en,
+          loveEn: dailyData.love_en,
+          luckyColorEn: dailyData.lucky_color_en,
+          luckyNumberEn: dailyData.lucky_number_en,
         };
         transaction.createOrReplace(dailyDoc);
         console.log(`   ✅ Daily horoscope prepared for ${dailyData.forDate}`);
-        // Add delay after each API call to avoid rate limiting
-        await delay(3000);
       }
 
       // Weekly
       if (config.types.includes('weekly')) {
         const weeklyData = await generateHoroscope(sign, 'weekly', 'weekly', config);
         const weeklyDoc = {
-          _type: 'weeklyWesternHoroscope',
+          _type: 'weeklyChineseHoroscope',
           _id: `weekly-${sign}-${weeklyData.startDate}`,
           sign: sign,
           startDate: weeklyData.startDate,
           endDate: weeklyData.endDate,
           horoscope: weeklyData.horoscope,
+          horoscopeEn: weeklyData.horoscope_en,
           money: weeklyData.money,
+          moneyEn: weeklyData.money_en,
           social: weeklyData.social,
+          socialEn: weeklyData.social_en,
           career: weeklyData.career,
+          careerEn: weeklyData.career_en,
           love: weeklyData.love,
-          luckyColor: weeklyData.luckyColor,
-          luckyNumber: weeklyData.luckyNumber
+          loveEn: weeklyData.love_en,
+          luckyColor: weeklyData.lucky_color,
+          luckyColorEn: weeklyData.lucky_color_en,
+          luckyNumber: weeklyData.lucky_number,
+          luckyNumberEn: weeklyData.lucky_number_en,
         };
         transaction.createOrReplace(weeklyDoc);
         console.log(`   ✅ Weekly horoscope prepared (${weeklyData.startDate} to ${weeklyData.endDate})`);
-        // Add delay after each API call to avoid rate limiting
-        await delay(3000);
       }
 
       // Yearly
       if (config.types.includes('yearly')) {
         const yearlyData = await generateHoroscope(sign, 'yearly', 'yearly', config);
         const yearlyDoc = {
-          _type: 'yearlyWesternHoroscope',
+          _type: 'yearlyChineseHoroscope',
           _id: `yearly-${sign}-${yearlyData.year}`,
           sign: sign,
           year: yearlyData.year,
-          overviewContent: yearlyData.overviewContent,
-          loveContent: yearlyData.loveContent,
-          careerContent: yearlyData.careerContent,
-          wealthContent: yearlyData.wealthContent,
-          socialContent: yearlyData.socialContent,
-          luckyColor: yearlyData.luckyColor,
-          luckyNumber: yearlyData.luckyNumber
+          overviewContent: yearlyData.overview_content,
+          overviewContentCn: yearlyData.overview_content_cn,
+          loveContent: yearlyData.love_content,
+          loveContentCn: yearlyData.love_content_cn,
+          careerContent: yearlyData.career_content,
+          careerContentCn: yearlyData.career_content_cn,
+          wealthContent: yearlyData.wealth_content,
+          wealthContentCn: yearlyData.wealth_content_cn,
+          socialContent: yearlyData.social_content,
+          socialContentCn: yearlyData.social_content_cn,
+          luckyColor: yearlyData.lucky_color,
+          luckyColorCn: yearlyData.lucky_color_cn,
+          luckyNumber: yearlyData.lucky_number,
+          luckyNumberCn: yearlyData.lucky_number_cn,
         };
         transaction.createOrReplace(yearlyDoc);
         console.log(`   ✅ Yearly horoscope prepared for ${yearlyData.year}`);
-        // Add delay after each API call to avoid rate limiting
-        await delay(3000);
       }
   
       await transaction.commit();
@@ -406,7 +441,7 @@ async function syncWesternHoroscopes() {
     }
   }
 
-  console.log(`🏆 [${dayjs().format('YYYY-MM-DD HH:mm:ss')}] Western horoscope sync completed! Content prepared for ${targetDate} (${targetDay})`);
+  console.log(`🏆 [${dayjs().format('YYYY-MM-DD HH:mm:ss')}] Chinese horoscope sync completed! Content prepared for ${targetDate} (${targetDay})`);
 }
 
-syncWesternHoroscopes();
+syncChineseHoroscopes();
