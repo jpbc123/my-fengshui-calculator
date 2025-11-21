@@ -183,8 +183,12 @@ const HeroSection = () => {
           </div>
           
           <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 max-w-5xl mx-auto items-stretch">
-            {chineseZodiacs.map((zodiac) => {
+            {chineseZodiacs.map((zodiac, index) => { // Added index for lazy loading logic
               const preview = previews[zodiac.name.toLowerCase()];
+              
+              // PERFORMANCE FIX 2: Apply loading="lazy" to images beyond the first two rows (index >= 6)
+              // This reduces initial network contention, improving FCP/LCP.
+              const loadingStrategy = index >= 6 ? 'lazy' : 'eager'; 
               
               return (
                 <div
@@ -201,15 +205,18 @@ const HeroSection = () => {
                   aria-label={`View ${zodiac.name} horoscope for today`}
                 >
                   {/* The Base Button: Always visible */}
-                  <div className={`relative bg-gray-100 rounded-xl p-4 text-center text-black shadow-md border-2 border-gray-200 transition-all duration-300 h-full flex flex-col ${
-                    showPreviews && preview ? 'min-h-[200px]' : 'min-h-[120px]'
-                  }`}>
+                  {/* PERFORMANCE FIX 1: Set fixed min-h-[200px] to prevent CLS when preview text loads. */}
+                  <div className={`relative bg-gray-100 rounded-xl p-4 text-center text-black shadow-md border-2 border-gray-200 transition-all duration-300 h-full flex flex-col min-h-[200px]`}>
                     <div className="absolute inset-0 opacity-10 bg-gradient-to-br from-white to-transparent rounded-xl"></div>
                     
                     <div className="relative mb-2 group-hover:scale-110 transition-transform duration-300">
                       <img
                         src={zodiac.image}
                         alt={`Year of the ${zodiac.name} Chinese Zodiac`}
+                        // PERFORMANCE FIX 2 & 3: Add explicit width/height (64px based on md:w-16) and conditional lazy loading.
+                        width="64"
+                        height="64"
+                        loading={loadingStrategy}
                         className="w-10 h-10 md:w-16 md:h-16 mx-auto object-contain"
                       />
                     </div>
@@ -219,6 +226,7 @@ const HeroSection = () => {
                     </h3>
 
                     {/* Today's Preview - Show only when previews are enabled */}
+                    {/* The parent container's fixed min-h prevents layout shift here. */}
                     {showPreviews && (
                       <div className="mt-auto">
                         {previewsLoading ? (
@@ -244,6 +252,10 @@ const HeroSection = () => {
 						<img
 						src={zodiac.image}
 						alt={zodiac.name}
+                        // PERFORMANCE FIX 2: Add explicit width/height to the hover state image as well.
+                        width="32"
+                        height="32"
+                        loading={loadingStrategy} // Apply same loading strategy
 						className="w-8 h-8 mx-auto object-contain" // Made smaller for better fit
 						/>
 					</div>

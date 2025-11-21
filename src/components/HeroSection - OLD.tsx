@@ -1,8 +1,7 @@
 // src/components/HeroSection.tsx
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-// NOTE: We keep the import for reference, but the hook is no longer used for automatic fetching.
-// import { useZodiacPreviews } from '../hooks/useZodiacPreviews'; 
+import { useZodiacPreviews } from '../hooks/useZodiacPreviews'; // Add this import
 
 // Import zodiac images (keep your existing imports)
 import ratImage from '../assets/chinese-zodiac/year-of-the-rat.png';
@@ -28,73 +27,11 @@ interface Zodiac {
   traits: string;
 }
 
-// Define type for preview data
-interface PreviewData {
-    [key: string]: { preview: string };
-}
-
-
 const HeroSection = () => {
   const navigate = useNavigate();
-  
-  // 1. STATE FOR MANUAL FETCHING (REPLACING THE HOOK)
-  const [previews, setPreviews] = useState<PreviewData>({});
-  const [previewsLoading, setPreviewsLoading] = useState(false);
-  const [previewsFetched, setPreviewsFetched] = useState(false);
-  const [showPreviews, setShowPreviews] = useState(false); 
+  const { previews, loading: previewsLoading } = useZodiacPreviews(); // Add this hook
+  const [showPreviews, setShowPreviews] = useState(false); // Add state for toggling previews
 
-  // ** ⚠️ YOU MUST REPLACE THE LOGIC IN THIS FUNCTION ⚠️ **
-  // Move the actual data fetching logic from your useZodiacPreviews hook here.
-  const fetchZodiacPreviews = async () => {
-      if (previewsFetched || previewsLoading) return;
-
-      setPreviewsLoading(true);
-      try {
-          // ----------------------------------------------------
-          // REPLACE THIS WITH YOUR SANITY.IO FETCH LOGIC
-          // Example Placeholder (Replace with your actual implementation):
-          // const data = await getZodiacPreviewsData();
-          
-          // Dummy data for testing (REMOVE THIS)
-          await new Promise(resolve => setTimeout(resolve, 500)); 
-          const data: PreviewData = {
-            rat: { preview: "A day for careful planning." },
-            ox: { preview: "Solid progress is ahead." },
-            tiger: { preview: "Seek new opportunities." },
-            rabbit: { preview: "Harmony is your focus." },
-            dragon: { preview: "Energy is running high." },
-            snake: { preview: "Trust your intuition today." },
-            horse: { preview: "Time for a needed break." },
-            goat: { preview: "Be open to new ideas." },
-            monkey: { preview: "A friendly challenge awaits." },
-            rooster: { preview: "Attention to detail pays off." },
-            dog: { preview: "Loyalty brings rewards." },
-            pig: { preview: "Relax and enjoy company." },
-          };
-          // END OF PLACEHOLDER
-          // ----------------------------------------------------
-          
-          setPreviews(data);
-          setPreviewsFetched(true);
-      } catch (error) {
-          console.error("Failed to fetch zodiac previews:", error);
-      } finally {
-          setPreviewsLoading(false);
-      }
-  };
-  
-  // 3. NEW HANDLER FOR BUTTON CLICK
-  const handleTogglePreviews = () => {
-    const shouldShow = !showPreviews;
-    
-    if (shouldShow && !previewsFetched) {
-        // Only fetch data if the user is toggling to 'Show' AND we haven't fetched yet
-        fetchZodiacPreviews();
-    }
-    
-    setShowPreviews(shouldShow);
-  };
-  
   // Your existing zodiac data
   const chineseZodiacs: Zodiac[] = [
     {
@@ -199,15 +136,13 @@ const HeroSection = () => {
     navigate(`/zodiac/${zodiac.name.toLowerCase()}`);
   };
 
-  // ❌ REMOVE: The old auto-show logic is removed to stop automatic data loading.
-  /*
+  // Auto-show previews after they load
   useEffect(() => {
     if (!previewsLoading && Object.keys(previews).length > 0) {
       const timer = setTimeout(() => setShowPreviews(true), 1000);
       return () => clearTimeout(timer);
     }
   }, [previewsLoading, previews]);
-  */
 
   return (
     <section className="relative bg-white text-black min-h-[90vh] py-28 overflow-hidden">
@@ -235,10 +170,10 @@ const HeroSection = () => {
             })}
           </p>
 
-          {/* Update preview toggle to use the new handler */}
+          {/* Add preview toggle */}
           <div className="mb-6">
             <button 
-              onClick={handleTogglePreviews}
+              onClick={() => setShowPreviews(!showPreviews)}
               className="text-sm text-indigo-600 hover:text-indigo-800 transition-colors px-4 py-2 border border-indigo-300 rounded-full hover:bg-indigo-50"
               disabled={previewsLoading}
             >
@@ -248,12 +183,8 @@ const HeroSection = () => {
           </div>
           
           <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 max-w-5xl mx-auto items-stretch">
-            {chineseZodiacs.map((zodiac, index) => { // Added index for lazy loading logic
+            {chineseZodiacs.map((zodiac) => {
               const preview = previews[zodiac.name.toLowerCase()];
-              
-              // PERFORMANCE FIX 2: Apply loading="lazy" to images beyond the first two rows (index >= 6)
-              // This reduces initial network contention, improving FCP/LCP.
-              const loadingStrategy = index >= 6 ? 'lazy' : 'eager'; 
               
               return (
                 <div
@@ -270,18 +201,15 @@ const HeroSection = () => {
                   aria-label={`View ${zodiac.name} horoscope for today`}
                 >
                   {/* The Base Button: Always visible */}
-                  {/* ✅ FIX APPLIED HERE: min-h is conditional based on showPreviews for reduced initial height. */}
-                  <div className={`relative bg-gray-100 rounded-xl p-4 text-center text-black shadow-md border-2 border-gray-200 transition-all duration-300 h-full flex flex-col ${showPreviews ? 'min-h-[200px]' : 'min-h-[140px]'}`}>
+                  <div className={`relative bg-gray-100 rounded-xl p-4 text-center text-black shadow-md border-2 border-gray-200 transition-all duration-300 h-full flex flex-col ${
+                    showPreviews && preview ? 'min-h-[200px]' : 'min-h-[120px]'
+                  }`}>
                     <div className="absolute inset-0 opacity-10 bg-gradient-to-br from-white to-transparent rounded-xl"></div>
                     
                     <div className="relative mb-2 group-hover:scale-110 transition-transform duration-300">
                       <img
                         src={zodiac.image}
                         alt={`Year of the ${zodiac.name} Chinese Zodiac`}
-                        // PERFORMANCE FIX 2 & 3: Add explicit width/height (64px based on md:w-16) and conditional lazy loading.
-                        width="64"
-                        height="64"
-                        loading={loadingStrategy}
                         className="w-10 h-10 md:w-16 md:h-16 mx-auto object-contain"
                       />
                     </div>
@@ -291,7 +219,6 @@ const HeroSection = () => {
                     </h3>
 
                     {/* Today's Preview - Show only when previews are enabled */}
-                    {/* The parent container's fixed min-h prevents layout shift here. */}
                     {showPreviews && (
                       <div className="mt-auto">
                         {previewsLoading ? (
@@ -317,10 +244,6 @@ const HeroSection = () => {
 						<img
 						src={zodiac.image}
 						alt={zodiac.name}
-                        // PERFORMANCE FIX 2: Add explicit width/height to the hover state image as well.
-                        width="32"
-                        height="32"
-                        loading={loadingStrategy} // Apply same loading strategy
 						className="w-8 h-8 mx-auto object-contain" // Made smaller for better fit
 						/>
 					</div>

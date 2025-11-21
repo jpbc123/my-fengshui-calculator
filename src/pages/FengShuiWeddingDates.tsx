@@ -539,7 +539,7 @@ const FengShuiWeddingDates = () => {
   <title>Feng Shui Wedding Dates 2025 - Auspicious Wedding Date Calculator</title>
   <meta name="description" content="Find your perfect feng shui wedding date for 2025 with our free calculator. Analyzes Chinese lunar calendar, zodiac compatibility, Ghost Month, San Niang Sha, and auspicious times. Year-round wedding dates with traditional guidance." />
   <meta name="keywords" content="feng shui wedding dates, auspicious wedding dates, chinese wedding calendar, lunar wedding dates, ghost month wedding, san niang sha, zodiac wedding compatibility, wedding date calculator" />
-  <link rel="canonical" href="https://fengshuiandbeyond.com/feng-shui-wedding-dates" />
+  <link rel="canonical" href="https://fengshuiandbeyond.com/auspicious-wedding-date-planner" />
   
   <script type="application/ld+json">
     {JSON.stringify({
