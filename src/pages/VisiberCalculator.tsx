@@ -403,10 +403,12 @@ const VisiberCalculator = () => {
               {/* Breadcrumbs + title */}
               <div className="mb-8">
                 <Breadcrumb items={breadcrumbs} className="text-black/80" />
-                <h1 className="text-2xl font-bold text-gold mt-4 mb-6">Visiber Calculator</h1>
-                <p className="text-black/80 mb-6">
-                  Unlock the secrets of your personality and life path through <span className="font-semibold">Visiber numerology</span>, a unique system that interprets your birthdate's energetic patterns.
-                </p>
+                <h1 className="text-3xl md:text-4xl font-bold text-gold mt-6 mb-6">
+  Visiber Calculator - Discover Your Character Number & Life Path
+</h1>
+                <p className="text-black/80 mb-6 text-lg leading-relaxed">
+				Unlock the secrets of your personality and life path through <span className="font-semibold">Visiber numerology</span>, a unique system that interprets your birthdate's energetic patterns. Our free calculator provides comprehensive insights into your character number, revealing your natural strengths, potential challenges, and the unique energetic signature that guides your life journey. Discover how ancient numerology wisdom can help you make better decisions in relationships, career, and personal growth.
+				</p>
               </div>
 
               {/* Summary Box */}
@@ -691,6 +693,7 @@ const VisiberCalculator = () => {
                       >
                         {article.title}
                       </Link>
+					  
                     </div>
                   ))}
                 </div>
@@ -699,6 +702,110 @@ const VisiberCalculator = () => {
               )}
             </div>
           </div>
+		  {/* Related Resources - Internal Links Section */}
+<section className="mt-12 mb-8">
+  <h2 className="text-2xl font-bold text-gold mb-6">Explore More Numerology Tools</h2>
+  
+  <div className="grid md:grid-cols-3 gap-6">
+    <Link 
+      to="/numerology" 
+      className="block p-6 bg-white border border-gray-200 rounded-lg hover:border-gold/50 hover:shadow-md transition-all"
+    >
+      <h3 className="text-lg font-semibold text-gold mb-2">
+        All Numerology Tools
+      </h3>
+      <p className="text-sm text-gray-600">
+        Explore our complete collection of numerology calculators and tools
+      </p>
+    </Link>
+
+    <Link 
+      to="/astrology" 
+      className="block p-6 bg-white border border-gray-200 rounded-lg hover:border-gold/50 hover:shadow-md transition-all"
+    >
+      <h3 className="text-lg font-semibold text-gold mb-2">
+        Astrology Tools
+      </h3>
+      <p className="text-sm text-gray-600">
+        Discover your Chinese and Western zodiac signs
+      </p>
+    </Link>
+
+    <Link 
+      to="/meditation" 
+      className="block p-6 bg-white border border-gray-200 rounded-lg hover:border-gold/50 hover:shadow-md transition-all"
+    >
+      <h3 className="text-lg font-semibold text-gold mb-2">
+        Meditation Guide
+      </h3>
+      <p className="text-sm text-gray-600">
+        Practice daily yoga and meditation for inner peace
+      </p>
+    </Link>
+  </div>
+</section>
+
+{/* Understanding Visiber - Additional SEO Content */}
+<section className="mt-12 mb-8 bg-gray-50 rounded-xl p-8 border border-gray-200">
+  <h2 className="text-2xl font-bold text-gold mb-4">
+    Understanding Visiber Numerology
+  </h2>
+  <div className="border-t-4 border-gold w-32 mb-6"></div>
+
+  <p className="mb-6 text-black/80 leading-relaxed">
+    <span className="font-semibold">Visiber numerology</span> is a comprehensive life philosophy system that combines ancient numerological wisdom with modern insights. Founded by Datuk Patrick Tan and Datuk David Hew, this unique approach analyzes your birth date to reveal your <span className="font-semibold">character number</span>, which serves as a blueprint for understanding your personality, destiny, and life path.
+  </p>
+
+  <p className="mb-6 text-black/80 leading-relaxed">
+    Unlike traditional numerology systems, Visiber focuses specifically on the energetic patterns derived from your birth date. The name "Visiber" itself is a combination of "Vision" and "Number," reflecting the belief that with clear vision and understanding of your numbers, you can achieve extraordinary personal growth and success.
+  </p>
+
+  <h3 className="text-xl font-semibold text-gray-800 mb-3 mt-8">
+    How Visiber Calculations Work
+  </h3>
+  
+  <p className="mb-6 text-black/80 leading-relaxed">
+    The Visiber calculator uses your complete birth date to derive your character number through a specific mathematical formula. This number, ranging from 1 to 9, reveals core aspects of your personality including your natural strengths, potential weaknesses, and the unique challenges you may face throughout life.
+  </p>
+
+  <p className="mb-6 text-black/80 leading-relaxed">
+    Each character number carries distinct vibrations and meanings. For instance, Character Number 1 represents leadership and independence, while Character Number 2 symbolizes partnership and diplomacy. Understanding your character number helps you navigate relationships, make career decisions, and pursue personal development aligned with your true nature.
+  </p>
+
+  <h3 className="text-xl font-semibold text-gray-800 mb-3 mt-8">
+    Benefits of Knowing Your Visiber Number
+  </h3>
+
+  <div className="grid md:grid-cols-2 gap-4 mt-4">
+    <div className="bg-white p-4 rounded-lg">
+      <h4 className="font-semibold text-gray-800 mb-2">Self-Awareness</h4>
+      <p className="text-sm text-gray-700">
+        Gain deeper understanding of your natural tendencies and behavioral patterns
+      </p>
+    </div>
+
+    <div className="bg-white p-4 rounded-lg">
+      <h4 className="font-semibold text-gray-800 mb-2">Relationship Insights</h4>
+      <p className="text-sm text-gray-700">
+        Understand compatibility and improve communication with others
+      </p>
+    </div>
+
+    <div className="bg-white p-4 rounded-lg">
+      <h4 className="font-semibold text-gray-800 mb-2">Career Guidance</h4>
+      <p className="text-sm text-gray-700">
+        Identify career paths that align with your natural strengths
+      </p>
+    </div>
+
+    <div className="bg-white p-4 rounded-lg">
+      <h4 className="font-semibold text-gray-800 mb-2">Personal Growth</h4>
+      <p className="text-sm text-gray-700">
+        Recognize challenges and develop strategies to overcome them
+      </p>
+    </div>
+  </div>
+</section>
         </div>
       </main>
     </div>

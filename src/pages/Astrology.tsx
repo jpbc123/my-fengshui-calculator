@@ -142,9 +142,14 @@ export default function Astrology() {
             {/* Tools Intro Section */}
             <div className="mb-8">
               <Breadcrumb items={breadcrumbs} className="text-black/80" />
-              <h1 className="text-2xl font-bold text-gold mt-4 mb-6">Astrology Calculation Tools</h1>
-              <p className="text-black/80 mb-6">
-                Discover your cosmic blueprint with our <span className="font-semibold">free astrology tools</span>. Find your <span className="font-semibold">Chinese Zodiac animal</span> or <span className="font-semibold">Western zodiac sign</span> to explore the unique traits and celestial influences that shape your life's path.
+              
+              {/* H1 - CRITICAL FOR SEO - Improved */}
+              <h1 className="text-3xl md:text-4xl font-bold text-gold mt-6 mb-6">
+                Astrology Calculator Tools - Chinese & Western Zodiac Signs
+              </h1>
+              
+              <p className="text-black/80 mb-6 text-lg leading-relaxed">
+                Discover your cosmic blueprint with our <span className="font-semibold">free astrology tools</span>. Find your <span className="font-semibold">Chinese Zodiac animal</span> or <span className="font-semibold">Western zodiac sign</span> to explore the unique traits and celestial influences that shape your life's path. Whether you're curious about personality insights, compatibility, or your astrological destiny, our calculators provide ancient wisdom backed by centuries of celestial observation.
               </p>
             </div>
 
@@ -200,7 +205,7 @@ export default function Astrology() {
               <div className="mb-6">
                 <img
                   src={astrologyImage}
-                  alt="Astrology zodiac wheel"
+                  alt="Astrology zodiac wheel showing the twelve zodiac signs and celestial patterns"
                   className="w-full object-cover rounded-xl shadow-lg border border-gold/20"
                 />
               </div>
@@ -213,6 +218,105 @@ export default function Astrology() {
                 Whether you're exploring your <span className="font-semibold">zodiac sign</span>, seeking guidance for important decisions, or simply curious about the <span className="font-semibold">patterns of the universe</span>, astrology provides a timeless framework for understanding life's rhythms and your place within them.
               </p>
             </div>
+
+            {/* Understanding Chinese Zodiac - Additional SEO Content */}
+            <section className="mb-12">
+              <h2 className="text-2xl font-bold text-gold mb-4">Understanding the Chinese Zodiac</h2>
+              <div className="border-t-4 border-gold w-32 mb-6"></div>
+
+              <p className="mb-6 text-black/80 leading-relaxed">
+                The <span className="font-semibold">Chinese zodiac</span>, also known as Shengxiao, is a 12-year cycle where each year is associated with an animal sign. These twelve animals—Rat, Ox, Tiger, Rabbit, Dragon, Snake, Horse, Goat, Monkey, Rooster, Dog, and Pig—each represent different personality characteristics and life patterns.
+              </p>
+
+              <p className="mb-6 text-black/80 leading-relaxed">
+                Unlike Western astrology which is based on months, the <span className="font-semibold">Chinese zodiac</span> assigns your animal based on your birth year. This ancient system has been used for over 2,000 years to predict fortunes, determine compatibility in relationships, and guide important life decisions.
+              </p>
+
+              <p className="mb-6 text-black/80 leading-relaxed">
+                Each zodiac animal also interacts with one of five elements (Wood, Fire, Earth, Metal, Water), creating 60 possible combinations that add depth and nuance to your astrological profile. Understanding your Chinese zodiac animal can provide valuable insights into your natural strengths, potential challenges, and life path.
+              </p>
+            </section>
+
+            {/* Western Zodiac Signs Section */}
+            <section className="mb-12">
+              <h2 className="text-2xl font-bold text-gold mb-4">The Twelve Western Zodiac Signs</h2>
+              <div className="border-t-4 border-gold w-32 mb-6"></div>
+
+              <p className="mb-6 text-black/80 leading-relaxed">
+                Western astrology divides the year into twelve <span className="font-semibold">zodiac signs</span>, each spanning approximately 30 days. These signs are based on the position of the Sun relative to Earth at the time of your birth and are categorized into four elements: Fire, Earth, Air, and Water.
+              </p>
+
+              <p className="mb-6 text-black/80 leading-relaxed">
+                The <span className="font-semibold">fire signs</span> (Aries, Leo, Sagittarius) are known for passion and energy. <span className="font-semibold">Earth signs</span> (Taurus, Virgo, Capricorn) are grounded and practical. <span className="font-semibold">Air signs</span> (Gemini, Libra, Aquarius) are intellectual and communicative, while <span className="font-semibold">water signs</span> (Cancer, Scorpio, Pisces) are emotional and intuitive.
+              </p>
+
+              <p className="mb-6 text-black/80 leading-relaxed">
+                Your sun sign is just one part of your complete <span className="font-semibold">birth chart</span>, which also includes your moon sign, rising sign, and the positions of other planets. However, your sun sign remains the foundation of your astrological identity and influences your core personality traits.
+              </p>
+            </section>
+
+            {/* How to Use Astrology Section */}
+            <section className="mb-12 bg-gray-50 rounded-xl p-8 border border-gray-200">
+              <h2 className="text-2xl font-bold text-gold mb-6">How to Use Astrology in Daily Life</h2>
+              
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Personal Development</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    Use your zodiac insights to understand your natural strengths, overcome challenges, and align with your true purpose.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Relationship Compatibility</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    Explore compatibility between zodiac signs to build stronger relationships and understand interpersonal dynamics.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Career Guidance</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    Discover career paths that align with your zodiac traits and maximize your professional potential.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Timing Decisions</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    Use astrological insights to choose favorable timing for important life events and decisions.
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            {/* Related Resources - Internal Links */}
+            <section className="mb-12">
+              <h2 className="text-2xl font-bold text-gold mb-6">Explore More Spiritual Tools</h2>
+              
+              <div className="grid md:grid-cols-3 gap-6">
+                <Link to="/numerology" className="block p-6 bg-white border border-gray-200 rounded-lg hover:border-gold/50 hover:shadow-md transition-all">
+                  <h3 className="text-lg font-semibold text-gold mb-2">Numerology Tools</h3>
+                  <p className="text-sm text-gray-600">
+                    Calculate your life path number and discover the power of numerology
+                  </p>
+                </Link>
+
+                <Link to="/meditation" className="block p-6 bg-white border border-gray-200 rounded-lg hover:border-gold/50 hover:shadow-md transition-all">
+                  <h3 className="text-lg font-semibold text-gold mb-2">Meditation Guide</h3>
+                  <p className="text-sm text-gray-600">
+                    Practice daily yoga poses and meditation techniques for inner peace
+                  </p>
+                </Link>
+
+                <Link to="/games-fun" className="block p-6 bg-white border border-gray-200 rounded-lg hover:border-gold/50 hover:shadow-md transition-all">
+                  <h3 className="text-lg font-semibold text-gold mb-2">Fun Tools</h3>
+                  <p className="text-sm text-gray-600">
+                    Try lucky number generators and interactive spiritual games
+                  </p>
+                </Link>
+              </div>
+            </section>
           </div>
         </main>
       </div>

@@ -21,7 +21,7 @@ const Index = () => {
     <>
       <Helmet>
         {/* Primary Meta Tags */}
-        <title>Feng Shui & Beyond - Feng Shui, Horoscope, Astrology, Numerology Tools & More</title>
+        <title>Feng Shui & Beyond - Feng Shui, Horoscopes, Astrology, Numerology & More</title>
         <meta name="description" content="Get your daily horoscope, birth chart analysis, feng shui tips, and numerology insights. Expert astrology readings, Chinese zodiac forecasts, and authentic feng shui guidance for balance and empowerment." />
         <meta name="keywords" content="feng shui, astrology, numerology, western zodiac, chinese zodiac, daily horoscope, chinese horoscope, western horoscope, birth chart analysis, auspicious wedding dates, kua number calculator, personal element calculator, visiber calculator" />
         <meta name="author" content="Feng Shui & Beyond" />
@@ -326,80 +326,7 @@ const Index = () => {
             </div>
           </div>
           
-                    {/* SEO CONTENT SECTION - Additional 800+ words for SEO */}
-          <section className="py-16 px-4 bg-gray-50">
-            <div className="max-w-5xl mx-auto">
-              <h2 className="text-3xl font-bold text-gold mb-6 text-center">
-                Your Gateway to Ancient Wisdom and Spiritual Growth
-              </h2>
-              
-              <div className="prose prose-lg max-w-none text-gray-700">
-                <p className="mb-6 leading-relaxed">
-                  Welcome to <span className="font-semibold">Feng Shui and Beyond</span>, your comprehensive resource for <span className="font-semibold">ancient wisdom tools</span> and <span className="font-semibold">spiritual guidance</span>. We offer free calculators and insights for Chinese zodiac, Western astrology, numerology, and authentic feng shui principles to help you navigate life's journey with clarity and purpose.
-                </p>
-
-                <h3 className="text-2xl font-semibold text-gray-800 mt-8 mb-4">
-                  Discover Your Chinese Zodiac Sign
-                </h3>
-                <p className="mb-6 leading-relaxed">
-                  The <span className="font-semibold">Chinese zodiac</span> is a 12-year cycle where each year is represented by an animal sign: Rat, Ox, Tiger, Rabbit, Dragon, Snake, Horse, Goat, Monkey, Rooster, Dog, and Pig. Your zodiac animal, determined by your birth year, reveals profound insights into your personality, strengths, challenges, and destiny. Our free Chinese zodiac calculator instantly determines your sign and provides detailed personality analysis, compatibility insights, and fortune predictions based on centuries of astrological wisdom.
-                </p>
-
-                <h3 className="text-2xl font-semibold text-gray-800 mt-8 mb-4">
-                  Unlock the Power of Numerology
-                </h3>
-                <p className="mb-6 leading-relaxed">
-                  <span className="font-semibold">Numerology</span> is the mystical study of numbers and their influence on human life. Through our comprehensive numerology tools, including the Visiber calculator and life path number analysis, you can decode the hidden meanings in your birth date and name. Each number carries unique vibrations that reveal your life purpose, natural talents, and the challenges you'll face. Whether you're seeking guidance on relationships, career decisions, or personal growth, numerology provides a roadmap to understanding your true self.
-                </p>
-
-                <h3 className="text-2xl font-semibold text-gray-800 mt-8 mb-4">
-                  Harness Feng Shui for Harmony and Prosperity
-                </h3>
-                <p className="mb-6 leading-relaxed">
-                  <span className="font-semibold">Feng Shui</span>, which translates to "wind and water," is an ancient Chinese metaphysical system that harmonizes individuals with their environment. Our Kua number calculator and personal element analysis tools help you identify your most auspicious directions for wealth, health, relationships, and personal growth. By understanding the flow of Qi (energy) and applying the Five Elements theory—Wood, Fire, Earth, Metal, and Water—you can optimize your living spaces and life choices for maximum prosperity and well-being.
-                </p>
-
-                <h3 className="text-2xl font-semibold text-gray-800 mt-8 mb-4">
-                  Daily Horoscopes and Astrological Insights
-                </h3>
-                <p className="mb-6 leading-relaxed">
-                  Stay connected to cosmic energies with our <span className="font-semibold">daily horoscopes</span> for both Western and Chinese zodiac signs. Our expert astrologers provide accurate forecasts that help you navigate daily challenges, seize opportunities, and make informed decisions. Whether you follow your Western sun sign (Aries, Taurus, Gemini, etc.) or your Chinese zodiac animal, our horoscopes offer timely guidance tailored to your astrological profile.
-                </p>
-
-                <h3 className="text-2xl font-semibold text-gray-800 mt-8 mb-4">
-                  Find Your Perfect Wedding Date
-                </h3>
-                <p className="mb-6 leading-relaxed">
-                  Planning a wedding? Our <span className="font-semibold">auspicious wedding date calculator</span> uses traditional Chinese almanac (Tong Shu) principles combined with feng shui wisdom to identify the most harmonious dates for your special day. We consider both partners' birth charts, zodiac compatibility, and favorable cosmic alignments to ensure your marriage begins under the most blessed circumstances.
-                </p>
-
-                <h3 className="text-2xl font-semibold text-gray-800 mt-8 mb-4">
-                  Meditation and Spiritual Wellness
-                </h3>
-                <p className="mb-6 leading-relaxed">
-                  Beyond calculations and predictions, we offer <span className="font-semibold">daily meditation guides</span> and <span className="font-semibold">yoga poses</span> to help you cultivate inner peace and spiritual balance. Our meditation resources combine ancient Eastern wisdom with modern mindfulness practices, providing you with tools for stress relief, mental clarity, and emotional well-being.
-                </p>
-
-                <h3 className="text-2xl font-semibold text-gray-800 mt-8 mb-4">
-                  Why Choose Feng Shui and Beyond?
-                </h3>
-                <p className="mb-6 leading-relaxed">
-                  What sets us apart is our commitment to <span className="font-semibold">authentic spiritual tools</span> grounded in centuries of Eastern wisdom. All our calculators and insights are based on traditional methodologies, carefully researched and verified by experts in feng shui, astrology, and numerology. We believe that ancient wisdom, when properly understood and applied, provides invaluable guidance for navigating modern life's complexities.
-                </p>
-
-                <p className="mb-6 leading-relaxed">
-                  Our platform is designed to be accessible, user-friendly, and completely free. Whether you're new to spiritual practices or a seasoned practitioner, our tools provide instant, accurate results with detailed explanations that help you understand and apply the insights to your daily life. From <span className="font-semibold">zodiac compatibility</span> analysis to <span className="font-semibold">personal element balancing</span>, every tool is crafted to empower you on your journey of self-discovery and growth.
-                </p>
-
-                <h3 className="text-2xl font-semibold text-gray-800 mt-8 mb-4">
-                  Start Your Journey Today
-                </h3>
-                <p className="mb-6 leading-relaxed">
-                  Begin exploring your cosmic blueprint today with our comprehensive suite of free tools. Calculate your Chinese zodiac sign, discover your life path number, find your Kua number, check daily horoscopes, and unlock the secrets of feng shui—all in one place. Join thousands of users who have found clarity, balance, and empowerment through ancient wisdom combined with modern insights.
-                </p>
-              </div>
-            </div>
-          </section>
+          {/* 6. End - No extra banner needed, removed MeditationBanner */}
         </main>
       </div>
     </>

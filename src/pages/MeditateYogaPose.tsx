@@ -1,5 +1,6 @@
 // src/pages/MeditateYogaPose.tsx
 import React, { useState, useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import { motion, AnimatePresence } from "framer-motion";
 import { Flower2, RotateCcw, Calendar, Target, Heart } from 'lucide-react';
 import Header from "@/components/Header";
@@ -190,13 +191,13 @@ const yogaPoses = [
     name: "Lotus Pose",
     sanskrit: "Padmasana",
     image: lotusPoseImage,
-    description: "Iconic seated meditation posture with crossed legs.",
+    description: "An iconic cross-legged meditation pose promoting mental clarity.",
     difficulty: "Advanced",
     duration: "1-5 minutes",
     category: "Seated",
     benefits: [
-      "Promotes relaxation and inner calm",
-      "Supports meditation and breathing",
+      "Opens hips and stretches knees",
+      "Calms the mind and promotes meditation",
       "Improves posture and spinal alignment",
     ],
   },
@@ -204,118 +205,177 @@ const yogaPoses = [
     name: "Plank Pose",
     sanskrit: "Phalakasana",
     image: plankPoseImage,
-    description: "A strength-building posture that engages the entire body.",
+    description: "A core-strengthening pose that builds endurance and stability.",
     difficulty: "Beginner",
-    duration: "15 seconds - 1 minute",
+    duration: "30 seconds - 2 minutes",
     category: "Core",
     benefits: [
-      "Strengthens core, arms, shoulders, and legs",
-      "Builds endurance and stability",
-      "Improves posture and body awareness",
+      "Strengthens core, arms, and shoulders",
+      "Improves posture and endurance",
+      "Tones abdominal muscles",
     ],
   },
   {
     name: "Boat Pose",
     sanskrit: "Navasana",
     image: boatPoseImage,
-    description: "A seated balance pose that fires up the abdominal muscles.",
+    description: "A powerful core-strengthening balance pose.",
     difficulty: "Intermediate",
-    duration: "15-30 seconds",
+    duration: "10-30 seconds",
     category: "Core",
     benefits: [
-      "Strengthens abs, hip flexors, and spine",
-      "Improves balance and focus",
-      "Stimulates digestion and metabolism",
+      "Strengthens core and hip flexors",
+      "Improves balance and digestion",
+      "Stimulates abdominal organs",
     ],
   },
   {
     name: "Pigeon Pose",
-    sanskrit: "Kapotasana Variation",
+    sanskrit: "Kapotasana",
     image: pigeonPoseImage,
-    description: "A deep hip-opening posture that releases built-up tension.",
+    description: "A deep hip-opening stretch that releases tension.",
     difficulty: "Intermediate",
     duration: "1-3 minutes each side",
     category: "Hip Opener",
     benefits: [
-      "Stretches hip flexors, glutes, and thighs",
-      "Improves hip flexibility and mobility",
-      "Relieves stress and calms the mind",
+      "Deep hip and glute stretch",
+      "Relieves lower back pain",
+      "Releases emotional tension stored in hips",
     ],
-  }
+  },
 ];
 
-const YogaPose = () => {
-  const [poseIndex, setPoseIndex] = useState(0);
+const YogaPose: React.FC = () => {
+  const [poseIndex, setPoseIndex] = useState<number>(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const pose = yogaPoses[poseIndex];
 
-  // Pick a "pose of the day" based on date
   useEffect(() => {
     const today = new Date();
-    const index = today.getDate() % yogaPoses.length;
-    setPoseIndex(index);
+    const dayOfYear = Math.floor((today.getTime() - new Date(today.getFullYear(), 0, 0).getTime()) / 86400000);
+    setPoseIndex(dayOfYear % yogaPoses.length);
   }, []);
 
   const handleNewPose = () => {
     setIsAnimating(true);
     setTimeout(() => {
-      setPoseIndex((prevIndex) => (prevIndex + 1) % yogaPoses.length);
+      setPoseIndex((prev) => (prev + 1) % yogaPoses.length);
       setIsAnimating(false);
     }, 300);
-  };
-
-  const pose = yogaPoses[poseIndex];
-
-  const getDifficultyColor = (difficulty) => {
-    switch (difficulty) {
-      case 'Beginner': return 'from-green-400 to-green-500';
-      case 'Intermediate': return 'from-yellow-400 to-orange-500';
-      case 'Advanced': return 'from-red-400 to-red-500';
-      default: return 'from-gray-400 to-gray-500';
-    }
-  };
-
-  const getCategoryIcon = (category) => {
-    switch (category) {
-      case 'Standing': return '🧘‍♀️';
-      case 'Balance': return '⚖️';
-      case 'Backbend': return '🌙';
-      case 'Core': return '💪';
-      case 'Seated': return '🪷';
-      case 'Inversion': return '🔄';
-      case 'Hip Opener': return '🦋';
-      case 'Restorative': return '😌';
-      default: return '✨';
-    }
   };
 
   const getGreeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) return "Good Morning";
-    if (hour < 17) return "Good Afternoon";
+    if (hour < 18) return "Good Afternoon";
     return "Good Evening";
   };
 
+  const getDifficultyColor = (difficulty: string) => {
+    switch (difficulty) {
+      case "Beginner":
+        return "from-green-400 to-emerald-500";
+      case "Intermediate":
+        return "from-blue-400 to-cyan-500";
+      case "Advanced":
+        return "from-purple-400 to-pink-500";
+      default:
+        return "from-gray-400 to-gray-500";
+    }
+  };
+
+  const getCategoryIcon = (category: string) => {
+    const icons: { [key: string]: string } = {
+      Standing: "🧘",
+      Balance: "⚖️",
+      Inversion: "🔄",
+      Restorative: "☮️",
+      Backbend: "🌉",
+      Seated: "🪷",
+      Core: "💪",
+      "Hip Opener": "🦋",
+    };
+    return icons[category] || "✨";
+  };
+
+  // Generate structured data for SEO
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": `${pose.name} (${pose.sanskrit}) - Daily Yoga Pose Guide`,
+    "description": `Learn how to practice ${pose.name} (${pose.sanskrit}), a ${pose.difficulty.toLowerCase()} level ${pose.category.toLowerCase()} yoga pose. ${pose.description}`,
+    "image": pose.image,
+    "author": {
+      "@type": "Organization",
+      "name": "Feng Shui and Beyond"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Feng Shui and Beyond"
+    },
+    "datePublished": new Date().toISOString(),
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://fengshuiandbeyond.com/meditation/yoga"
+    }
+  };
+
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 text-black overflow-hidden">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-emerald-50 via-teal-50 to-green-50">
+      {/* SEO Meta Tags */}
+      <Helmet>
+        <title>{`${pose.name} (${pose.sanskrit}) - Daily Yoga Pose | Feng Shui and Beyond`}</title>
+        <meta 
+          name="description" 
+          content={`Discover ${pose.name} (${pose.sanskrit}), a ${pose.difficulty.toLowerCase()} yoga pose for ${pose.category.toLowerCase()} practice. Learn proper form, benefits, and duration. ${pose.description}`}
+        />
+        <meta 
+          name="keywords" 
+          content={`${pose.name}, ${pose.sanskrit}, yoga poses, ${pose.difficulty} yoga, ${pose.category} poses, meditation, mindfulness, daily yoga practice, yoga benefits`}
+        />
+        
+        {/* Open Graph Meta Tags */}
+        <meta property="og:title" content={`${pose.name} (${pose.sanskrit}) - Daily Yoga Pose`} />
+        <meta property="og:description" content={`Learn ${pose.name}, a ${pose.difficulty.toLowerCase()} yoga pose. ${pose.description}`} />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content="https://fengshuiandbeyond.com/meditation/yoga" />
+        
+        {/* Twitter Card Meta Tags */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`${pose.name} (${pose.sanskrit}) - Daily Yoga Pose`} />
+        <meta name="twitter:description" content={pose.description} />
+        
+        {/* Canonical URL */}
+        <link rel="canonical" href="https://fengshuiandbeyond.com/meditation/yoga" />
+        
+        {/* Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData)}
+        </script>
+      </Helmet>
+
       <Header />
-      <main className="flex-grow pt-6 px-4 pb-10">
-        <div className="pt-24 max-w-4xl mx-auto">
-          <Breadcrumb items={breadcrumbs} className="text-black/80" />
-          
-          {/* Header Section */}
-          <div className="text-center mb-8">
-            <div className="flex items-center justify-center mb-4">
-              <Flower2 className="w-8 h-8 text-emerald-500 mr-2" />
-              <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-emerald-600 via-teal-600 to-green-600 bg-clip-text text-transparent">
-                Yoga Pose for the Day
+      
+      <main className="flex-grow pt-20">
+        <div className="max-w-6xl mx-auto px-4 py-12">
+          <Breadcrumb items={breadcrumbs} />
+
+          {/* H1 - Critical for SEO */}
+          <div className="text-center mb-12">
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+                Daily Yoga Pose: {pose.name}
               </h1>
-              <Flower2 className="w-8 h-8 text-emerald-500 ml-2" />
-            </div>
-            <div className="mb-4">
-              <span className="text-lg text-gray-600 font-medium">{getGreeting()}! </span>
-              <span className="text-gray-500">Move your body with intention and grace</span>
-            </div>
-            <div className="w-20 h-1 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full mx-auto"></div>
+              <div className="flex flex-col items-center gap-2">
+                <span className="text-lg text-gray-600 font-medium">{getGreeting()}! </span>
+                <span className="text-gray-500">Move your body with intention and grace</span>
+              </div>
+              <div className="w-20 h-1 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full mx-auto"></div>
+            </motion.div>
           </div>
 
           {/* Main Pose Section */}
@@ -423,6 +483,62 @@ const YogaPose = () => {
             </motion.button>
           </div>
 
+          {/* Additional SEO Content - Increases word count */}
+          <section className="mb-12 bg-white/60 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+              Understanding {pose.name} ({pose.sanskrit})
+            </h2>
+            
+            <div className="prose prose-lg max-w-none text-gray-700 space-y-4">
+              <p>
+                {pose.name}, known in Sanskrit as {pose.sanskrit}, is a {pose.difficulty.toLowerCase()}-level 
+                {pose.category.toLowerCase()} yoga pose that has been practiced for centuries as part of traditional 
+                yoga disciplines. This pose is designed to be held for approximately {pose.duration}, allowing 
+                practitioners to experience its full range of physical and mental benefits.
+              </p>
+              
+              <h3 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
+                How to Practice {pose.name}
+              </h3>
+              <p>
+                When practicing {pose.name}, it's essential to approach the pose with mindfulness and respect for 
+                your body's current capabilities. Begin by finding a quiet, comfortable space where you can focus 
+                on your breath and movement. {pose.description}
+              </p>
+              
+              <h3 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
+                Key Benefits and Therapeutic Applications
+              </h3>
+              <p>
+                The practice of {pose.name} offers numerous benefits for both body and mind. Regular practice can 
+                lead to improved flexibility, increased strength, better balance, and enhanced mental clarity. This 
+                pose is particularly beneficial for those seeking to develop their {pose.category.toLowerCase()} practice 
+                and can be incorporated into both beginner and advanced yoga sequences.
+              </p>
+              
+              <h3 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
+                Safety Considerations and Modifications
+              </h3>
+              <p>
+                As with all yoga poses, it's important to listen to your body and avoid pushing beyond your current 
+                limits. If you're new to yoga or have any existing injuries or conditions, consider working with a 
+                qualified yoga instructor who can provide personalized guidance and modifications. Remember that yoga 
+                is a personal practice, and there's no competition or rush to achieve perfect form.
+              </p>
+              
+              <h3 className="text-xl font-semibold text-gray-800 mt-6 mb-3">
+                Integrating This Pose into Your Practice
+              </h3>
+              <p>
+                {pose.name} can be practiced as part of a longer yoga sequence or as a standalone pose during your 
+                daily meditation routine. Many practitioners find it helpful to practice this pose at the same time 
+                each day, creating a consistent habit that supports both physical and mental well-being. Whether you 
+                practice in the morning to energize your day or in the evening to unwind, this pose can become a 
+                valuable part of your wellness journey.
+              </p>
+            </div>
+          </section>
+
           {/* Yoga Tips Section */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -491,8 +607,31 @@ const YogaPose = () => {
               </div>
             </div>
           </motion.div>
+
+          {/* Related Content Section for Internal Linking */}
+          <section className="mt-12 bg-white/60 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+              Explore More Meditation & Wellness Resources
+            </h2>
+            <div className="grid md:grid-cols-3 gap-6">
+              <a href="/meditation" className="block p-4 bg-white/50 rounded-lg hover:bg-white/80 transition-colors">
+                <h4 className="font-semibold text-gray-800 mb-2">Meditation Practices</h4>
+                <p className="text-sm text-gray-600">Discover guided meditations and mindfulness techniques</p>
+              </a>
+              <a href="/meditation/breathing" className="block p-4 bg-white/50 rounded-lg hover:bg-white/80 transition-colors">
+                <h4 className="font-semibold text-gray-800 mb-2">Breathing Exercises</h4>
+                <p className="text-sm text-gray-600">Learn pranayama and breathwork for stress relief</p>
+              </a>
+              <a href="/meditation/mindfulness" className="block p-4 bg-white/50 rounded-lg hover:bg-white/80 transition-colors">
+                <h4 className="font-semibold text-gray-800 mb-2">Mindfulness Tips</h4>
+                <p className="text-sm text-gray-600">Daily practices for present-moment awareness</p>
+              </a>
+            </div>
+          </section>
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 };

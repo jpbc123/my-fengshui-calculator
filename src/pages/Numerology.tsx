@@ -141,9 +141,14 @@ export default function Numerology() {
             {/* Tools Intro Section */}
             <div className="mb-8">
               <Breadcrumb items={breadcrumbs} className="text-black/80" />
-              <h1 className="text-2xl font-bold text-gold mt-4 mb-6">Numerology Calculation Tools</h1>
-              <p className="text-black/80 mb-6">
-                Unlock the hidden power of numbers and how they shape your destiny. Begin with our <span className="font-semibold">free Numerology tools</span> below to reveal your unique <span className="font-semibold">life path and personal insights</span>.
+              
+              {/* H1 - CRITICAL FOR SEO - Improved */}
+              <h1 className="text-3xl md:text-4xl font-bold text-gold mt-6 mb-6">
+                Numerology Calculator Tools - Discover Your Life Path Number
+              </h1>
+              
+              <p className="text-black/80 mb-6 text-lg leading-relaxed">
+                Unlock the hidden power of numbers and how they shape your destiny. Begin with our <span className="font-semibold">free Numerology tools</span> below to reveal your unique <span className="font-semibold">life path and personal insights</span>. Whether you're seeking guidance on relationships, career decisions, or personal growth, our numerology calculators provide ancient wisdom combined with modern insights to help you understand your true potential and life purpose.
               </p>
             </div>
 
@@ -195,7 +200,7 @@ export default function Numerology() {
               <div className="mb-6">
                 <img
                   src={numerologyImage}
-                  alt="Numerology"
+                  alt="Numerology symbols and sacred geometry patterns representing the mystical significance of numbers"
                   className="w-full object-cover rounded-xl shadow-lg border border-gold/20"
                 />
               </div>
@@ -208,6 +213,87 @@ export default function Numerology() {
                 From ancient <span className="font-semibold">Pythagorean teachings</span> to modern interpretations, <span className="font-semibold">numerology</span> remains a powerful tool for self-discovery and guidance.
               </p>
             </div>
+
+            {/* How Numerology Works - Additional SEO Content */}
+            <section className="mb-12">
+              <h2 className="text-2xl font-bold text-gold mb-4">How Numerology Calculator Works</h2>
+              <div className="border-t-4 border-gold w-32 mb-6"></div>
+
+              <p className="mb-6 text-black/80 leading-relaxed">
+                Our <span className="font-semibold">numerology calculator tools</span> use proven mathematical formulas based on <span className="font-semibold">Pythagorean numerology</span> principles. By analyzing your birth date and name, these calculators reduce numbers to single digits (1-9) or master numbers (11, 22, 33) that reveal specific personality traits and life patterns.
+              </p>
+
+              <p className="mb-6 text-black/80 leading-relaxed">
+                The <span className="font-semibold">life path number</span> is perhaps the most important number in your numerology chart. It represents your core identity, natural talents, and the challenges you'll face throughout life. This number is calculated by reducing your complete birth date to a single digit or master number.
+              </p>
+
+              <p className="mb-6 text-black/80 leading-relaxed">
+                Each number from 1 to 9, plus the master numbers, carries unique vibrations and meanings. For example, the number 1 represents leadership and independence, while 2 signifies partnership and diplomacy. Understanding these numbers helps you navigate life with greater awareness and purpose.
+              </p>
+            </section>
+
+            {/* Benefits Section */}
+            <section className="mb-12 bg-gray-50 rounded-xl p-8 border border-gray-200">
+              <h2 className="text-2xl font-bold text-gold mb-6">Benefits of Using Numerology</h2>
+              
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Personal Growth</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    Gain deeper self-awareness and understand your natural strengths, weaknesses, and life purpose through number analysis.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Relationship Insights</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    Discover compatibility patterns and understand relationship dynamics through numerology compatibility analysis.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Career Guidance</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    Identify career paths that align with your life path number and natural talents for greater professional fulfillment.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Decision Making</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    Use numerology insights to make important life decisions with greater confidence and clarity.
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            {/* Related Resources - Internal Links */}
+            <section className="mb-12">
+              <h2 className="text-2xl font-bold text-gold mb-6">Explore More Spiritual Tools</h2>
+              
+              <div className="grid md:grid-cols-3 gap-6">
+                <Link to="/feng-shui" className="block p-6 bg-white border border-gray-200 rounded-lg hover:border-gold/50 hover:shadow-md transition-all">
+                  <h3 className="text-lg font-semibold text-gold mb-2">Feng Shui Tools</h3>
+                  <p className="text-sm text-gray-600">
+                    Discover your personal element and kua numbers
+                  </p>
+                </Link>
+
+                <Link to="/meditation" className="block p-6 bg-white border border-gray-200 rounded-lg hover:border-gold/50 hover:shadow-md transition-all">
+                  <h3 className="text-lg font-semibold text-gold mb-2">Meditation Guide</h3>
+                  <p className="text-sm text-gray-600">
+                    Practice daily yoga poses and meditation techniques for inner peace
+                  </p>
+                </Link>
+
+                <Link to="/games-fun" className="block p-6 bg-white border border-gray-200 rounded-lg hover:border-gold/50 hover:shadow-md transition-all">
+                  <h3 className="text-lg font-semibold text-gold mb-2">Fun Tools</h3>
+                  <p className="text-sm text-gray-600">
+                    Try lucky number generators and interactive spiritual games
+                  </p>
+                </Link>
+              </div>
+            </section>
           </div>
         </main>
       </div>
