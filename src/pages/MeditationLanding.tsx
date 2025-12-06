@@ -137,7 +137,7 @@ const MeditationLanding = () => {
               transition={{ delay: 0.2 }}
               className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-4"
             >
-              Meditation & Mindfulness
+              Meditation & Mindfulness - Guided Practices for Inner Peace
             </motion.h1>
             
             <motion.div

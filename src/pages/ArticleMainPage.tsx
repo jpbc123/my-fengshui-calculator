@@ -334,9 +334,9 @@ export default function ArticlesPage() {
         <main className="flex-grow pt-16">
           <div className="container mx-auto px-4 py-8 md:py-16">
             <Breadcrumb items={breadcrumbs} />
-            <h1 className="text-3xl sm:text-4xl font-bold text-black mt-8">
+            <h2 className="text-3xl sm:text-4xl font-bold text-black mt-8">
               Articles
-            </h1>
+            </h2>
             <p className="text-center text-gray-500 mt-8">No articles found.</p>
           </div>
         </main>

@@ -21,7 +21,7 @@ const Index = () => {
     <>
       <Helmet>
         {/* Primary Meta Tags */}
-        <title>Feng Shui & Beyond - Feng Shui, Horoscope, Astrology, Numerology Tools & More</title>
+        <title>Feng Shui & Beyond - Free Astrology & Feng Shui Tools</title>
         <meta name="description" content="Get your daily horoscope, birth chart analysis, feng shui tips, and numerology insights. Expert astrology readings, Chinese zodiac forecasts, and authentic feng shui guidance for balance and empowerment." />
         <meta name="keywords" content="feng shui, astrology, numerology, western zodiac, chinese zodiac, daily horoscope, chinese horoscope, western horoscope, birth chart analysis, auspicious wedding dates, kua number calculator, personal element calculator, visiber calculator" />
         <meta name="author" content="Feng Shui & Beyond" />
@@ -32,7 +32,7 @@ const Index = () => {
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://fengshuiandbeyond.com/" />
-        <meta property="og:title" content="Feng Shui & Beyond - Feng Shui, Horoscopes, Astrology, Numerology & More" />
+        <meta property="og:title" content="Feng Shui & Beyond - Free Astrology & Feng Shui Tools" />
         <meta property="og:description" content="Get your daily horoscope, birth chart analysis, feng shui tips, and numerology insights. Expert astrology readings, Chinese zodiac forecasts, and authentic feng shui guidance for balance and empowerment." />
         <meta property="og:image" content="https://fengshuiandbeyond.com/circle-logo.png" />
         <meta property="og:image:width" content="1200" />
@@ -42,7 +42,7 @@ const Index = () => {
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:url" content="https://fengshuiandbeyond.com/" />
-        <meta name="twitter:title" content="Feng Shui & Beyond - Feng Shui, Horoscopes, Astrology, Numerology & More" />
+        <meta name="twitter:title" content="Feng Shui & Beyond - Free Astrology & Feng Shui Tools" />
         <meta name="twitter:description" content="Get your daily horoscope, birth chart analysis, feng shui tips, and numerology insights. Expert astrology readings, Chinese zodiac forecasts, and authentic feng shui guidance for balance and empowerment." />
         <meta name="twitter:image" content="https://fengshuiandbeyond.com/circle-logo.png" />
 
@@ -243,6 +243,9 @@ const Index = () => {
       <div className="min-h-screen bg-white text-foreground flex flex-col overflow-hidden">
         <Header />
         <main>
+		<div className="sr-only">
+			<h1>Feng Shui & Beyond - Free Chinese Zodiac, Numerology & Astrology Tools</h1>
+		</div>
           {/* 1. Hero Section */}
           <HeroSection />
           

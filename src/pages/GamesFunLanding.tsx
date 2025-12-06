@@ -165,7 +165,7 @@ const GamesFunLanding = () => {
               transition={{ delay: 0.2 }}
               className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 bg-clip-text text-transparent mb-4"
             >
-              Games & Fun
+              Games & Fun - Compatibility Tests & Fortune Telling
             </motion.h1>
             
             <motion.div

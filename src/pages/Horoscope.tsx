@@ -117,7 +117,7 @@ export default function Horoscope() {
             {/* Breadcrumbs + title */}
             <div className="mb-8">
               <Breadcrumb items={breadcrumbs} className="text-black/80" />
-              <h1 className="text-2xl font-bold text-gold mt-4 mb-6">Horoscope Tools</h1>
+              <h1 className="text-2xl font-bold text-gold mt-4 mb-6">Daily Horoscope - Free Western & Chinese Zodiac Readings</h1>
               <p className="text-black/80 mb-6">
                 Discover how <span className="font-semibold">horoscopes</span> can guide <span className="font-semibold">your daily life, relationships, and future endeavors</span>. Explore your personal cosmic insights with our free tools below, including your <span className="font-semibold">Western and Chinese zodiac</span> forecasts.
               </p>
@@ -228,6 +228,53 @@ export default function Horoscope() {
                 </div>
               </div>
             </div>
+			{/* SEO Content Section */}
+		<section className="mt-12 mb-12">
+		<h2 className="text-2xl font-bold text-gold mb-6">How to Use Your Daily Horoscope</h2>
+		<div className="border-t-4 border-gold w-32 mb-6"></div>
+		
+		<p className="mb-6 text-black/80 leading-relaxed">
+			Reading your <span className="font-semibold">daily horoscope</span> is a powerful practice for gaining cosmic guidance and clarity. Whether you follow your Western zodiac sign based on your birth month or your Chinese zodiac animal from your birth year, these forecasts provide valuable insights into the energies affecting your day.
+		</p>
+		
+		<h3 className="text-xl font-semibold text-gray-800 mb-4">Making the Most of Your Horoscope Reading</h3>
+		
+		<p className="mb-6 text-black/80 leading-relaxed">
+			To get the most from your horoscope, read it in the morning to set intentions for the day. Pay attention to the areas of focus mentioned—whether career, relationships, health, or personal growth. Use the guidance as a framework for self-reflection rather than absolute predictions.
+		</p>
+		
+		<p className="mb-6 text-black/80 leading-relaxed">
+			For deeper insights, combine both your Western and Chinese horoscopes. The Western forecast provides daily cosmic influences based on planetary movements, while the Chinese horoscope offers broader yearly themes and monthly guidance. Together, they create a comprehensive view of your astrological landscape.
+		</p>
+		</section>
+		
+		{/* Related Resources - Internal Links */}
+		<section className="mb-12">
+		<h2 className="text-2xl font-bold text-gold mb-6">Explore More Spiritual Tools</h2>
+		
+		<div className="grid md:grid-cols-3 gap-6">
+			<Link to="/astrology" className="block p-6 bg-white border border-gray-200 rounded-lg hover:border-gold/50 hover:shadow-md transition-all">
+			<h3 className="text-lg font-semibold text-gold mb-2">Astrology Calculators</h3>
+			<p className="text-sm text-gray-600">
+				Find your Chinese and Western zodiac signs with our free calculators
+			</p>
+			</Link>
+		
+			<Link to="/numerology" className="block p-6 bg-white border border-gray-200 rounded-lg hover:border-gold/50 hover:shadow-md transition-all">
+			<h3 className="text-lg font-semibold text-gold mb-2">Numerology Tools</h3>
+			<p className="text-sm text-gray-600">
+				Calculate your life path number and discover numerology insights
+			</p>
+			</Link>
+		
+			<Link to="/birth-chart" className="block p-6 bg-white border border-gray-200 rounded-lg hover:border-gold/50 hover:shadow-md transition-all">
+			<h3 className="text-lg font-semibold text-gold mb-2">Birth Chart Analysis</h3>
+			<p className="text-sm text-gray-600">
+				Get your complete astrological birth chart reading
+			</p>
+			</Link>
+		</div>
+		</section>
           </div>
         </main>
       </div>

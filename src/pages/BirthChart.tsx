@@ -507,13 +507,19 @@ const BirthChart = () => {
   return (
   <>
   <Helmet>
-  <title>Free Birth Chart Analysis - AI-Powered Natal Chart Reading</title>
+  <title>Birth Chart Calculator - Free Astrological Analysis | Feng Shui & Beyond</title>
   <meta name="description" content="Get your free professional birth chart analysis with AI-powered interpretation. Discover your natal chart, planetary positions, house meanings, life path insights, and relationship compatibility. Instant PDF report delivered to your email." />
   <meta name="keywords" content="birth chart, natal chart, free birth chart, birth chart analysis, astrology birth chart, natal chart reading, birth chart calculator, astrological chart, planetary positions, horoscope chart" />
   <link rel="canonical" href="https://fengshuiandbeyond.com/birth-chart" />
   
   <meta property="og:title" content="Free Birth Chart Analysis - Professional Natal Chart Reading" />
   <meta property="og:description" content="Get your free AI-powered birth chart analysis with detailed interpretations delivered instantly." />
+  <meta property="og:url" content="https://fengshuiandbeyond.com/birth-chart" />
+  <meta property="og:type" content="website" />
+  
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Free Birth Chart Calculator" />
+  <meta name="twitter:description" content="Get your complete astrological birth chart with detailed analysis." />
   
   <script type="application/ld+json">
     {JSON.stringify({
@@ -558,7 +564,7 @@ const BirthChart = () => {
                 
                 <div className="relative z-10 py-16 px-8">
                   <h1 className="text-4xl md:text-5xl font-bold text-yellow-200 mb-4">
-                    Birth Chart Analysis
+                    Free Birth Chart Calculator - Detailed Astrological Analysis
                   </h1>
                   <div className="text-3xl font-bold text-purple-600 mb-6"></div>
                   
