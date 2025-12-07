@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
 import { Mail } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { StarsBackground } from "@/components/starsBackground";
+import { supabase } from '@/lib/supabase';
 
 const MAX_MESSAGE_LENGTH = 255;
 
@@ -26,9 +26,7 @@ export default function ContactUs() {
     window.scrollTo(0, 0);
   }, []);
 
-  const handleChange = (
-    e
-  ) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -49,7 +47,7 @@ export default function ContactUs() {
       setEmailMatchError("Emails do not match.");
       return;
     } else {
-      setEmailMatchError(null); // Clear the error if they now match
+      setEmailMatchError(null);
     }
 
     if (formData.message.length > MAX_MESSAGE_LENGTH) {
@@ -60,25 +58,25 @@ export default function ContactUs() {
     setStatus("loading");
 
     try {
-      // Send form data to the new server endpoint
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          subject: formData.subject,
-          message: formData.message,
-        }),
-      });
+      // Direct Supabase insert
+      const { data, error } = await supabase
+        .from('contact_messages')
+        .insert([
+          {
+            name: formData.name,
+            email: formData.email,
+            subject: formData.subject || '',
+            message: formData.message,
+          }
+        ])
+        .select();
 
-      if (!response.ok) {
-        throw new Error('Failed to submit form.');
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
       }
 
-      // If the request was successful
+      console.log('Success:', data);
       setStatus("success");
       setFormData({
         subject: "",
@@ -104,7 +102,6 @@ export default function ContactUs() {
         <Header />
         <main className="flex-grow container mx-auto px-4 py-12 flex flex-col items-center justify-center text-center">
           <div className="max-w-xl w-full mt-4">
-
             <div className="bg-black/80 backdrop-blur-sm p-6 md:p-12 shadow-2xl rounded-lg text-left w-full max-w-2xl mx-auto border border-gray-600">
               <h2 className="text-5xl md:text-7xl font-bold text-yellow-400 mb-4 animate-pulse text-center">Talk to Us</h2>
               <p className="text-gray-300 mb-6 text-center">
@@ -140,6 +137,7 @@ export default function ContactUs() {
                     className="w-full rounded-md border-gray-500 focus:border-yellow-400 focus:ring-yellow-400 bg-gray-800/50 text-white placeholder-gray-400"
                   />
                 </div>
+
                 <div>
                   <label htmlFor="confirmEmail" className="block text-sm font-medium mb-1 text-gray-200">
                     Confirm Email
@@ -191,11 +189,6 @@ export default function ContactUs() {
                   {messageLengthError && (
                     <p className="text-red-400 text-sm mt-1">{messageLengthError}</p>
                   )}
-                </div>
-
-                {/* reCAPTCHA Placeholder */}
-                <div className="flex justify-center pt-2">
-                  <div className="g-recaptcha" data-sitekey="YOUR_RECAPTCHA_SITE_KEY"></div>
                 </div>
 
                 <div className="pt-6">

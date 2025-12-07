@@ -1,7 +1,7 @@
 // src/pages/ChineseHoroscopeResult.tsx
 import { Helmet } from "react-helmet-async";
 import { useState, useEffect, useMemo } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Breadcrumb from '../components/Breadcrumb';
@@ -562,6 +562,31 @@ const allFeatureImages = useMemo(() =>
 
                                 {/* ADD THIS NEW SECTION - IMAGESWIPER */}
                                 <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
+
+		{/* Related Zodiac Signs - Internal Links - FIXES ORPHAN PAGES */}
+        <section className="max-w-6xl mx-auto px-4 mt-16 mb-12">
+          <h2 className="text-2xl md:text-3xl font-bold text-gold mb-6 text-center">
+            Explore Other Chinese Zodiac Signs
+          </h2>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {allZodiacs.map((zodiacSign) => (
+              <Link
+                key={zodiacSign}
+                to={`/zodiac/${zodiacSign.toLowerCase()}`}
+                className="block p-4 bg-white border border-gray-200 rounded-lg hover:border-gold/50 hover:shadow-md transition-all text-center"
+              >
+                <img
+                  src={zodiacImages[zodiacSign.toLowerCase()]}
+                  alt={`${zodiacSign} Chinese zodiac sign`}
+                  className="w-16 h-16 mx-auto mb-2 object-contain"
+                />
+                <h3 className="text-sm font-semibold text-gray-800">{zodiacSign}</h3>
+              </Link>
+            ))}
+          </div>
+        </section>
+		
             <h2 className="text-2xl md:text-3xl font-bold text-gray-800 text-center mb-8">
                 Play & Discover
             </h2>
@@ -597,6 +622,7 @@ const allFeatureImages = useMemo(() =>
                                 </p>
                                 <p>You can also use the Chinese Zodiac Calculator to find your sign.</p>
                                 <button onClick={() => navigate('/astrology/chinese-zodiac-calculator')} className="bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors mt-4 inline-block">Calculate My Sign</button>
+
                             </div>
                         )}
                     </div>
