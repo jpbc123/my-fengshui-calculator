@@ -24,6 +24,7 @@ const Index = () => {
         <title>Feng Shui & Beyond - Free Astrology & Feng Shui Tools</title>
         <meta name="description" content="Get your daily horoscope, birth chart analysis, feng shui tips, and numerology insights. Expert astrology readings, Chinese zodiac forecasts, and authentic feng shui guidance for balance and empowerment." />
         <meta name="keywords" content="feng shui, astrology, numerology, western zodiac, chinese zodiac, daily horoscope, chinese horoscope, western horoscope, birth chart analysis, auspicious wedding dates, kua number calculator, personal element calculator, visiber calculator" />
+		<meta name="msvalidate.01" content="A97DD7D7079EF369574BA7ED9DBF53B1" />
         <meta name="author" content="Feng Shui & Beyond" />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://fengshuiandbeyond.com/" />
