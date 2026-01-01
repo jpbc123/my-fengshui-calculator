@@ -1,4 +1,4 @@
-// sync-chinese-horoscopes-sanity.js - Updated to use Gemini 2.5 Flash
+// sync-chinese-horoscopes-sanity.js - Enhanced with command line parameters
 import { createClient } from '@sanity/client';
 import dotenv from 'dotenv';
 import dayjs from 'dayjs';
@@ -20,9 +20,9 @@ const sanityClient = createClient({
 });
 
 const geminiApiKey = process.env.GEMINI_API_KEY;
+const geminiApiUrl =
+`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`;
 
-// Use gemini-2.5-flash which is the current supported model
-const geminiApiUrlBase = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`;
 
 const chineseZodiacSigns = [
   'rat', 'ox', 'tiger', 'rabbit', 'dragon', 'snake',
@@ -146,86 +146,10 @@ async function fetchWithBackoff(url, options, retries = 5, baseDelay = 5000) {
   throw new Error("Maximum retries exceeded for API call.");
 }
 
-/**
- * Build function declarations for the model's function-calling interface.
- * These declarations **exactly** match the schemas you requested.
- */
-function createFunctionDeclarations() {
-  const dailyAndWeeklyParams = {
-    type: "object",
-    properties: {
-      horoscope: { type: "string" },
-      horoscope_en: { type: "string" },
-      money: { type: "string" },
-      money_en: { type: "string" },
-      social: { type: "string" },
-      social_en: { type: "string" },
-      career: { type: "string" },
-      career_en: { type: "string" },
-      love: { type: "string" },
-      love_en: { type: "string" },
-      lucky_color: { type: "string" },
-      lucky_color_en: { type: "string" },
-      lucky_number: { type: "string" },
-      lucky_number_en: { type: "string" },
-      lucky_number_cn: { type: "string" }
-    },
-    required: ["horoscope","horoscope_en","money","money_en","social","social_en",
-               "career","career_en","love","love_en","lucky_color","lucky_color_en",
-               "lucky_number","lucky_number_en","lucky_number_cn"]
-  };
-
-  const yearlyParams = {
-    type: "object",
-    properties: {
-      overview_content: { type: "string" },
-      overview_content_cn: { type: "string" },
-      love_content: { type: "string" },
-      love_content_cn: { type: "string" },
-      career_content: { type: "string" },
-      career_content_cn: { type: "string" },
-      wealth_content: { type: "string" },
-      wealth_content_cn: { type: "string" },
-      social_content: { type: "string" },
-      social_content_cn: { type: "string" },
-      lucky_color: { type: "string" },
-      lucky_color_cn: { type: "string" },
-      lucky_number: { type: "string" },
-      lucky_number_cn: { type: "string" }
-    },
-    required: ["overview_content","overview_content_cn","love_content","love_content_cn",
-               "career_content","career_content_cn","wealth_content","wealth_content_cn",
-               "social_content","social_content_cn","lucky_color","lucky_color_cn",
-               "lucky_number","lucky_number_cn"]
-  };
-
-  return [
-    {
-      name: "daily_horoscope",
-      description: "Daily Chinese horoscope result in both Chinese and English (exact schema).",
-      parameters: dailyAndWeeklyParams
-    },
-    {
-      name: "weekly_horoscope",
-      description: "Weekly Chinese horoscope result in both Chinese and English (exact schema).",
-      parameters: dailyAndWeeklyParams
-    },
-    {
-      name: "yearly_horoscope",
-      description: "Yearly Chinese horoscope result in both Chinese and English (exact schema).",
-      parameters: yearlyParams
-    }
-  ];
-}
-
-/**
- * Generate horoscope using function-calling so the model returns JSON
- * that strictly matches the schema. Returns a JS object matching your
- * existing script's expectations.
- */
 async function generateHoroscope(sign, period, type, config) {
   let promptText;
   let identifier;
+  let responseSchema;
   let targetDate, targetWeekStart, targetWeekEnd, targetDayName;
 
   // Calculate target dates based on mode
@@ -237,208 +161,147 @@ async function generateHoroscope(sign, period, type, config) {
   targetWeekEnd = dayjs().add(dayOffset, 'day').endOf('week').format('YYYY-MM-DD');
   targetDayName = dayjs().add(dayOffset, 'day').format('dddd');
 
-  // Build natural language prompt — the model will be instructed to call a function with exact JSON
   if (type === 'daily') {
+    promptText = `Generate a detailed daily Chinese horoscope for the ${sign} sign for ${targetDate} (${targetDayName}).
+    Cover the following categories in both Chinese and English: horoscope, money, social, career, love.
+    Also provide a lucky color and lucky number (both Chinese and English).
+    Format as a JSON object with these exact keys:
+    {
+      "horoscope": "...", "horoscope_en": "...",
+      "money": "...", "money_en": "...",
+      "social": "...", "social_en": "...",
+      "career": "...", "career_en": "...",
+      "love": "...", "love_en": "...",
+      "lucky_color": "...", "lucky_color_en": "...",
+      "lucky_number": 5, "lucky_number_en": "five",
+      "lucky_number_cn": "五"
+    }`;
     identifier = targetDate;
-    promptText = `You are a helpful bilingual (Chinese and English) horoscope writer.
-Please generate a detailed DAILY Chinese horoscope for the ${sign} sign for ${targetDate} (${targetDayName}).
-Provide content in Chinese and English for these categories: horoscope, money, social, career, love.
-Also provide a lucky color and lucky number in both Chinese and English.
-Do not write any commentary outside the JSON. Instead, call the function named "daily_horoscope" with arguments that are valid JSON matching this exact schema:
-{
-  "horoscope": "...", "horoscope_en": "...",
-  "money": "...", "money_en": "...",
-  "social": "...", "social_en": "...",
-  "career": "...", "career_en": "...",
-  "love": "...", "love_en": "...",
-  "lucky_color": "...", "lucky_color_en": "...",
-  "lucky_number": "...", "lucky_number_en": "...",
-  "lucky_number_cn": "..."
-}
-Use concise, natural language; ensure both language versions are consistent in meaning.`;
+
+    responseSchema = {
+      type: "OBJECT",
+      properties: {
+        horoscope: { type: "STRING" },
+        horoscope_en: { type: "STRING" },
+        money: { type: "STRING" },
+        money_en: { type: "STRING" },
+        social: { type: "STRING" },
+        social_en: { type: "STRING" },
+        career: { type: "STRING" },
+        career_en: { type: "STRING" },
+        love: { type: "STRING" },
+        love_en: { type: "STRING" },
+        lucky_color: { type: "STRING" },
+        lucky_color_en: { type: "STRING" },
+        lucky_number: { type: "STRING" },
+        lucky_number_en: { type: "STRING" },
+        lucky_number_cn: { type: "STRING" }
+      },
+      required: ["horoscope","horoscope_en","money","money_en","social","social_en",
+                 "career","career_en","love","love_en","lucky_color","lucky_color_en",
+                 "lucky_number","lucky_number_en","lucky_number_cn"]
+    };
+
   } else if (type === 'weekly') {
+    promptText = `Generate a detailed weekly Chinese horoscope for the ${sign} sign for the week starting ${targetWeekStart} and ending ${targetWeekEnd}.
+    Cover the following categories in both Chinese and English: horoscope, money, social, career, love.
+    Also provide a lucky color and lucky number (both Chinese and English).
+    Format as a JSON object with these exact keys:
+    {
+      "horoscope": "...", "horoscope_en": "...",
+      "money": "...", "money_en": "...",
+      "social": "...", "social_en": "...",
+      "career": "...", "career_en": "...",
+      "love": "...", "love_en": "...",
+      "lucky_color": "...", "lucky_color_en": "...",
+      "lucky_number": 8, "lucky_number_en": "eight",
+      "lucky_number_cn": "八"
+    }`;
     identifier = targetWeekStart;
-    promptText = `You are a helpful bilingual (Chinese and English) horoscope writer.
-Please generate a detailed WEEKLY Chinese horoscope for the ${sign} sign for the week starting ${targetWeekStart} and ending ${targetWeekEnd}.
-Provide content in Chinese and English for these categories: horoscope, money, social, career, love.
-Also provide a lucky color and lucky number in both Chinese and English.
-Do not write any commentary outside the JSON. Instead, call the function named "weekly_horoscope" with arguments that are valid JSON matching this exact schema:
-{
-  "horoscope": "...", "horoscope_en": "...",
-  "money": "...", "money_en": "...",
-  "social": "...", "social_en": "...",
-  "career": "...", "career_en": "...",
-  "love": "...", "love_en": "...",
-  "lucky_color": "...", "lucky_color_en": "...",
-  "lucky_number": "...", "lucky_number_en": "...",
-  "lucky_number_cn": "..."
-}
-Use concise, natural language; ensure both language versions are consistent in meaning.`;
+
+    responseSchema = {
+      type: "OBJECT",
+      properties: {
+        horoscope: { type: "STRING" },
+        horoscope_en: { type: "STRING" },
+        money: { type: "STRING" },
+        money_en: { type: "STRING" },
+        social: { type: "STRING" },
+        social_en: { type: "STRING" },
+        career: { type: "STRING" },
+        career_en: { type: "STRING" },
+        love: { type: "STRING" },
+        love_en: { type: "STRING" },
+        lucky_color: { type: "STRING" },
+        lucky_color_en: { type: "STRING" },
+        lucky_number: { type: "STRING" },
+        lucky_number_en: { type: "STRING" },
+        lucky_number_cn: { type: "STRING" }
+      },
+      required: ["horoscope","horoscope_en","money","money_en","social","social_en",
+                 "career","career_en","love","love_en","lucky_color","lucky_color_en",
+                 "lucky_number","lucky_number_en","lucky_number_cn"]
+    };
+
   } else if (type === 'yearly') {
+    promptText = `Generate a detailed yearly Chinese horoscope for the ${sign} sign for the year ${currentYear}.
+    Provide both Chinese and English for: overview, love, career, wealth, and social.
+    Also provide a lucky color and lucky number (both Chinese and English).
+    Format as a JSON object with these exact keys:
+    {
+      "overview_content": "...", "overview_content_cn": "...",
+      "love_content": "...", "love_content_cn": "...",
+      "career_content": "...", "career_content_cn": "...",
+      "wealth_content": "...", "wealth_content_cn": "...",
+      "social_content": "...", "social_content_cn": "...",
+      "lucky_color": "...", "lucky_color_cn": "...",
+      "lucky_number": 6, "lucky_number_cn": "六"
+    }`;
     identifier = currentYear;
-    promptText = `You are a helpful bilingual (Chinese and English) horoscope writer.
-Please generate a detailed YEARLY Chinese horoscope for the ${sign} sign for the year ${currentYear}.
-Provide Chinese and English for overview, love, career, wealth, and social.
-Also provide a lucky color and lucky number in both Chinese and English.
-Do not write any commentary outside the JSON. Instead, call the function named "yearly_horoscope" with arguments that are valid JSON matching this exact schema:
-{
-  "overview_content": "...", "overview_content_cn": "...",
-  "love_content": "...", "love_content_cn": "...",
-  "career_content": "...", "career_content_cn": "...",
-  "wealth_content": "...", "wealth_content_cn": "...",
-  "social_content": "...", "social_content_cn": "...",
-  "lucky_color": "...", "lucky_color_cn": "...",
-  "lucky_number": "...", "lucky_number_cn": "..."
-}
-Use concise, natural language; ensure both language versions are consistent in meaning.`;
+
+    responseSchema = {
+      type: "OBJECT",
+      properties: {
+        overview_content: { type: "STRING" },
+        overview_content_cn: { type: "STRING" },
+        love_content: { type: "STRING" },
+        love_content_cn: { type: "STRING" },
+        career_content: { type: "STRING" },
+        career_content_cn: { type: "STRING" },
+        wealth_content: { type: "STRING" },
+        wealth_content_cn: { type: "STRING" },
+        social_content: { type: "STRING" },
+        social_content_cn: { type: "STRING" },
+        lucky_color: { type: "STRING" },
+        lucky_color_cn: { type: "STRING" },
+        lucky_number: { type: "STRING" },
+        lucky_number_cn: { type: "STRING" }
+      },
+      required: ["overview_content","overview_content_cn","love_content","love_content_cn",
+                 "career_content","career_content_cn","wealth_content","wealth_content_cn",
+                 "social_content","social_content_cn","lucky_color","lucky_color_cn",
+                 "lucky_number","lucky_number_cn"]
+    };
   }
-
-  // Build the payload using the tools/function-calling interface
-  const functionDeclarations = createFunctionDeclarations();
-
-  const functionName =
-    type === 'daily' ? 'daily_horoscope' :
-    type === 'weekly' ? 'weekly_horoscope' :
-    'yearly_horoscope';
 
   const payload = {
     contents: [{ role: "user", parts: [{ text: promptText }] }],
     generationConfig: {
-      temperature: 0.0,
-      maxOutputTokens: 1600
-    },
-    // Tools: declare the function schemas for structured output
-    tools: [
-      {
-        function_declarations: functionDeclarations
-      }
-    ],
-    // Instruct the model which function it should call (only allow the specific one for this request)
-    toolConfig: {
-      function_calling_config: {
-        mode: "ANY",
-        allowed_function_names: [functionName]
-      }
+      responseMimeType: "application/json",
+      responseSchema
     }
   };
 
-  // POST to the v1beta endpoint
-  const response = await fetchWithBackoff(geminiApiUrlBase, {
+  const response = await fetchWithBackoff(geminiApiUrl, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)
   });
 
   const result = await response.json();
+  const jsonResponseText = result.candidates[0].content.parts[0].text;
+  const parsedData = JSON.parse(jsonResponseText);
 
-  /**
-   * The model should return a function call. Different responses may place
-   * the function_call in different nesting, so we look for it in a few places:
-   *
-   * Typical successful structure:
-   * result.candidates[0].content -> array of content pieces, one of which contains a function_call object:
-   * { function_call: { name: "...", arguments: "{\"key\":\"value\"}" } }
-   *
-   * Some older/other responses may put JSON text into content.parts[0].text, so we handle that too.
-   */
-  const candidate = result?.candidates?.[0] || null;
-
-  if (!candidate) {
-    throw new Error(`No candidate returned from model: ${JSON.stringify(result)}`);
-  }
-
-  // Try to find a function_call inside content array
-  let functionCallObj = null;
-  
-  // First check if content.parts exists directly
-  if (candidate.content && candidate.content.parts && Array.isArray(candidate.content.parts)) {
-    for (const part of candidate.content.parts) {
-      if (part && part.functionCall) {
-        functionCallObj = part.functionCall;
-        break;
-      }
-      if (part && part.function_call) {
-        functionCallObj = part.function_call;
-        break;
-      }
-    }
-  }
-  
-  // Fallback: check if content is array
-  if (!functionCallObj && Array.isArray(candidate.content)) {
-    for (const piece of candidate.content) {
-      if (piece && piece.function_call) {
-        functionCallObj = piece.function_call;
-        break;
-      }
-      if (piece && piece.functionCall) {
-        functionCallObj = piece.functionCall;
-        break;
-      }
-      // Sometimes it's nested as content.parts[0].function_call
-      if (piece && Array.isArray(piece.parts)) {
-        for (const p of piece.parts) {
-          if (p && p.function_call) {
-            functionCallObj = p.function_call;
-            break;
-          }
-          if (p && p.functionCall) {
-            functionCallObj = p.functionCall;
-            break;
-          }
-        }
-        if (functionCallObj) break;
-      }
-    }
-  }
-
-  // Fallback: some responses may put the final text under content.parts[0].text
-  let jsonResponseText = null;
-  if (functionCallObj && functionCallObj.args) {
-    // In newer models, it's 'args' (already an object, not a string)
-    jsonResponseText = typeof functionCallObj.args === 'string' 
-      ? functionCallObj.args 
-      : JSON.stringify(functionCallObj.args);
-  } else if (functionCallObj && functionCallObj.arguments) {
-    // arguments may already be a JSON string
-    jsonResponseText = functionCallObj.arguments;
-  } else if (Array.isArray(candidate.content) && candidate.content[0] && candidate.content[0].parts && candidate.content[0].parts[0]) {
-    // try the plain text fallback
-    const part = candidate.content[0].parts[0];
-    if (part.functionCall && part.functionCall.args) {
-      jsonResponseText = typeof part.functionCall.args === 'string' 
-        ? part.functionCall.args 
-        : JSON.stringify(part.functionCall.args);
-    } else {
-      jsonResponseText = part.text;
-    }
-  } else if (candidate.content && typeof candidate.content === 'string') {
-    jsonResponseText = candidate.content;
-  }
-
-  if (!jsonResponseText) {
-    console.error('Debug - Full result:', JSON.stringify(result, null, 2));
-    console.error('Debug - Candidate structure:', JSON.stringify(candidate, null, 2));
-    throw new Error(`No function_call.args/arguments or text response found in model result`);
-  }
-
-  // If arguments is a JSON string, parse it.
-  let parsedData;
-  try {
-    parsedData = typeof jsonResponseText === 'string' ? JSON.parse(jsonResponseText) : jsonResponseText;
-  } catch (err) {
-    // If parse fails, try to recover by cleaning common issues (like starting/ending backticks)
-    let cleaned = jsonResponseText.trim();
-    // Remove triple/back ticks
-    cleaned = cleaned.replace(/^```json\s*/, '').replace(/```$/, '').trim();
-    try {
-      parsedData = JSON.parse(cleaned);
-    } catch (err2) {
-      throw new Error(`Failed to parse JSON from model output. Raw output: ${jsonResponseText}. Error: ${err2.message}`);
-    }
-  }
-
-  // Map parsed data to your expected return shape
   if (type === 'yearly') {
     return {
       year: identifier,
@@ -569,12 +432,12 @@ async function syncChineseHoroscopes() {
   
       await transaction.commit();
       console.log(`🎉 [${dayjs().format('HH:mm:ss')}] Successfully synced selected horoscopes for ${sign.toUpperCase()}`);
-
+      
       // Add delay between signs to avoid rate limiting
       await delay(2000);
       
     } catch (error) {
-      console.error(`💥 [${dayjs().format('HH:mm:ss')}] Failed to sync ${sign.toUpperCase()}:`, error.message || error);
+      console.error(`💥 [${dayjs().format('HH:mm:ss')}] Failed to sync ${sign.toUpperCase()}:`, error.message);
     }
   }
 

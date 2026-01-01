@@ -1,4 +1,4 @@
-// sync-western-horoscopes-sanity.js - Updated for Gemini 2.5 Flash-Lite
+// sync-western-horoscopes-sanity.js - Fixed for Gemini 2.5 Flash with rate limiting
 import { createClient } from '@sanity/client';
 import dotenv from 'dotenv';
 import dayjs from 'dayjs';
@@ -20,15 +20,15 @@ const sanityClient = createClient({
 });
 
 const geminiApiKey = process.env.GEMINI_API_KEY;
-// UPDATED: Now using gemini-2.5-flash-lite for better rate limits
-const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${geminiApiKey}`;
+// FIXED: Use gemini-2.5-flash instead of preview version
+const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`;
 
 const westernZodiacSigns = [
   'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
   'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
 ];
 
-// Parse command line arguments
+// Parse command line arguments (matching Chinese sync)
 function parseArgs() {
   const args = process.argv.slice(2);
   const config = {
@@ -64,7 +64,7 @@ function parseArgs() {
           const sign = args[i + 1].toLowerCase();
           if (westernZodiacSigns.includes(sign)) {
             config.signs = [sign];
-            i++; 
+            i++; // skip next arg since we used it
           } else {
             console.error(`Invalid sign: ${args[i + 1]}. Valid signs: ${westernZodiacSigns.join(', ')}`);
             process.exit(1);
@@ -89,7 +89,28 @@ function showHelp() {
 Western Horoscope Sync Script
 
 Usage: node sync-western-horoscopes-sanity.js [OPTIONS]
-... (help text omitted for brevity)
+
+Date Options (choose one):
+  --today       Generate horoscopes for today's date
+  --tomorrow    Generate horoscopes for tomorrow's date (default)
+  --yesterday   Generate horoscopes for yesterday's date
+
+Type Options (choose one):
+  --daily-only   Generate only daily horoscopes
+  --weekly-only  Generate only weekly horoscopes  
+  --yearly-only  Generate only yearly horoscopes
+  (default: generates all types)
+
+Sign Options:
+  --sign [SIGN]  Generate for specific zodiac sign only
+  (default: generates for all signs)
+  Valid signs: ${westernZodiacSigns.join(', ')}
+
+Examples:
+  node sync-western-horoscopes-sanity.js --today
+  node sync-western-horoscopes-sanity.js --tomorrow --daily-only
+  node sync-western-horoscopes-sanity.js --today --sign aries
+  node sync-western-horoscopes-sanity.js --weekly-only --sign leo
   `);
 }
 
@@ -130,6 +151,7 @@ async function generateHoroscope(sign, period, type, config) {
   let responseSchema;
   let targetDate, targetWeekStart, targetWeekEnd, targetDayName;
 
+  // Calculate target dates based on mode (matching Chinese sync logic)
   const dayOffset = config.mode === 'today' ? 0 : config.mode === 'tomorrow' ? 1 : -1;
   
   const currentYear = dayjs().year();
@@ -244,21 +266,43 @@ async function generateHoroscope(sign, period, type, config) {
   });
 
   const result = await response.json();
+  
+  // Handle the response - Gemini 2.5 Flash returns JSON directly in parts[0].text
   const candidate = result?.candidates?.[0];
-  if (!candidate) throw new Error(`No candidate returned from model: ${JSON.stringify(result)}`);
+  if (!candidate) {
+    throw new Error(`No candidate returned from model: ${JSON.stringify(result)}`);
+  }
 
-  let jsonResponseText = candidate.content?.parts?.[0]?.text || candidate.content;
-  if (!jsonResponseText) throw new Error(`No text response found in model result`);
+  let jsonResponseText = null;
+  
+  // Check if response is in parts[0].text (for JSON mode responses)
+  if (candidate.content && candidate.content.parts && candidate.content.parts[0]) {
+    jsonResponseText = candidate.content.parts[0].text;
+  } else if (candidate.content && typeof candidate.content === 'string') {
+    jsonResponseText = candidate.content;
+  }
+
+  if (!jsonResponseText) {
+    console.error('Debug - Full result:', JSON.stringify(result, null, 2));
+    throw new Error(`No text response found in model result`);
+  }
 
   const parsedData = JSON.parse(jsonResponseText);
 
   if (type === 'yearly') {
     return {
       year: identifier,
-      ...parsedData
+      overviewContent: parsedData.overviewContent,
+      loveContent: parsedData.loveContent,
+      careerContent: parsedData.careerContent,
+      wealthContent: parsedData.wealthContent,
+      socialContent: parsedData.socialContent,
+      luckyColor: parsedData.luckyColor,
+      luckyNumber: parsedData.luckyNumber
     };
   }
 
+  // Daily + Weekly
   return {
     ...parsedData,
     forDate: targetDate,
@@ -269,62 +313,100 @@ async function generateHoroscope(sign, period, type, config) {
 
 async function syncWesternHoroscopes() {
   const config = parseArgs();
+  
   const modeDisplay = config.mode === 'today' ? 'TODAY' : config.mode === 'tomorrow' ? 'TOMORROW' : 'YESTERDAY';
   const dayOffset = config.mode === 'today' ? 0 : config.mode === 'tomorrow' ? 1 : -1;
   const targetDate = dayjs().add(dayOffset, 'day').format('YYYY-MM-DD');
+  const targetDay = dayjs().add(dayOffset, 'day').format('dddd');
   
-  console.log(`🚀 [${dayjs().format('YYYY-MM-DD HH:mm:ss')}] Starting Western horoscope sync for ${modeDisplay}: ${targetDate}`);
+  console.log(`🚀 [${dayjs().format('YYYY-MM-DD HH:mm:ss')}] Starting Western horoscope sync for ${modeDisplay}: ${targetDate} (${targetDay})`);
+  console.log(`📊 Generating ${config.types.join(', ')} content for ${config.signs.length} zodiac sign(s): ${config.signs.join(', ')}`);
 
   for (const sign of config.signs) {
     const transaction = sanityClient.transaction();
 
     try {
-      console.log(`⭐ Processing ${sign.toUpperCase()}...`);
+      console.log(`⭐ [${dayjs().format('HH:mm:ss')}] Processing ${sign.toUpperCase()}...`);
 
+      // Daily
       if (config.types.includes('daily')) {
         const dailyData = await generateHoroscope(sign, 'daily', 'daily', config);
-        transaction.createOrReplace({
+        const dailyDoc = {
           _type: 'dailyWesternHoroscope',
           _id: `daily-${sign}-${dailyData.forDate}`,
           sign: sign,
-          ...dailyData
-        });
-        console.log(`   ✅ Daily horoscope prepared`);
+          forDate: dailyData.forDate,
+          horoscope: dailyData.horoscope,
+          money: dailyData.money,
+          social: dailyData.social,
+          career: dailyData.career,
+          love: dailyData.love,
+          luckyColor: dailyData.luckyColor,
+          luckyNumber: dailyData.luckyNumber
+        };
+        transaction.createOrReplace(dailyDoc);
+        console.log(`   ✅ Daily horoscope prepared for ${dailyData.forDate}`);
+        // Add delay after each API call to avoid rate limiting
         await delay(3000);
       }
 
+      // Weekly
       if (config.types.includes('weekly')) {
         const weeklyData = await generateHoroscope(sign, 'weekly', 'weekly', config);
-        transaction.createOrReplace({
+        const weeklyDoc = {
           _type: 'weeklyWesternHoroscope',
           _id: `weekly-${sign}-${weeklyData.startDate}`,
           sign: sign,
-          ...weeklyData
-        });
-        console.log(`   ✅ Weekly horoscope prepared`);
+          startDate: weeklyData.startDate,
+          endDate: weeklyData.endDate,
+          horoscope: weeklyData.horoscope,
+          money: weeklyData.money,
+          social: weeklyData.social,
+          career: weeklyData.career,
+          love: weeklyData.love,
+          luckyColor: weeklyData.luckyColor,
+          luckyNumber: weeklyData.luckyNumber
+        };
+        transaction.createOrReplace(weeklyDoc);
+        console.log(`   ✅ Weekly horoscope prepared (${weeklyData.startDate} to ${weeklyData.endDate})`);
+        // Add delay after each API call to avoid rate limiting
         await delay(3000);
       }
 
+      // Yearly
       if (config.types.includes('yearly')) {
         const yearlyData = await generateHoroscope(sign, 'yearly', 'yearly', config);
-        transaction.createOrReplace({
+        const yearlyDoc = {
           _type: 'yearlyWesternHoroscope',
           _id: `yearly-${sign}-${yearlyData.year}`,
           sign: sign,
-          ...yearlyData
-        });
-        console.log(`   ✅ Yearly horoscope prepared`);
+          year: yearlyData.year,
+          overviewContent: yearlyData.overviewContent,
+          loveContent: yearlyData.loveContent,
+          careerContent: yearlyData.careerContent,
+          wealthContent: yearlyData.wealthContent,
+          socialContent: yearlyData.socialContent,
+          luckyColor: yearlyData.luckyColor,
+          luckyNumber: yearlyData.luckyNumber
+        };
+        transaction.createOrReplace(yearlyDoc);
+        console.log(`   ✅ Yearly horoscope prepared for ${yearlyData.year}`);
+        // Add delay after each API call to avoid rate limiting
         await delay(3000);
       }
   
       await transaction.commit();
-      console.log(`🎉 Successfully synced ${sign.toUpperCase()}`);
+      console.log(`🎉 [${dayjs().format('HH:mm:ss')}] Successfully synced selected horoscopes for ${sign.toUpperCase()}`);
+      
+      // Add delay between signs to avoid rate limiting
       await delay(2000);
       
     } catch (error) {
-      console.error(`💥 Failed to sync ${sign.toUpperCase()}:`, error.message);
+      console.error(`💥 [${dayjs().format('HH:mm:ss')}] Failed to sync ${sign.toUpperCase()}:`, error.message);
     }
   }
+
+  console.log(`🏆 [${dayjs().format('YYYY-MM-DD HH:mm:ss')}] Western horoscope sync completed! Content prepared for ${targetDate} (${targetDay})`);
 }
 
 syncWesternHoroscopes();
