@@ -34,7 +34,8 @@ jobs:
         echo "VITE_SANITY_DATASET=$VITE_SANITY_DATASET" >> .env
         echo "SANITY_API_WRITE_TOKEN=$SANITY_API_WRITE_TOKEN" >> .env
         echo "GEMINI_API_KEY=$GEMINI_API_KEY" >> .env
-        
+    
+    # === DAILY CONTENT (5 API calls) ===
     - name: Generate Daily Wisdom (Tomorrow)
       run: node sync-daily-wisdom.js --tomorrow
       continue-on-error: true
@@ -47,39 +48,61 @@ jobs:
       run: node sync-daily-planetary-overview.js --tomorrow
       continue-on-error: true
       
-    - name: Generate Western Horoscopes (Tomorrow - Daily Only)
+    - name: Generate Western Horoscopes - All 12 Signs (Tomorrow - Daily)
       run: node sync-western-horoscopes-sanity.js --tomorrow --daily-only
       continue-on-error: true
       
-    - name: Generate Chinese Horoscopes (Tomorrow - Daily Only)
+    - name: Generate Chinese Horoscopes - All 12 Signs (Tomorrow - Daily)
       run: node sync-chinese-horoscopes-sanity.js --tomorrow --daily-only
       continue-on-error: true
-      
-    # Weekly content only on Sundays
-    - name: Generate Weekly Content (Sundays only)
+    
+    # === WEEKLY CONTENT (Sundays only - 2 additional API calls) ===
+    - name: Generate Weekly Horoscopes (Sundays only)
+      if: ${{ success() || failure() }}  # Run even if previous steps failed
       run: |
         if [ $(date -u +%u) -eq 7 ]; then
-          echo "It's Sunday, generating weekly content..."
-          node sync-western-horoscopes-sanity.js --tomorrow --weekly-only || echo "Western weekly failed"
-          node sync-chinese-horoscopes-sanity.js --tomorrow --weekly-only || echo "Chinese weekly failed"
+          echo "📅 It's Sunday! Generating weekly content..."
+          echo "📊 This will make 2 additional API calls (Western + Chinese weekly)"
+          node sync-western-horoscopes-sanity.js --tomorrow --weekly-only || echo "⚠️ Western weekly failed"
+          node sync-chinese-horoscopes-sanity.js --tomorrow --weekly-only || echo "⚠️ Chinese weekly failed"
         else
-          echo "Not Sunday, skipping weekly content"
+          echo "ℹ️ Not Sunday, skipping weekly content"
         fi
-        
-    # REMOVED YEARLY CONTENT FROM DAILY RUN
-    # Yearly content should be manually triggered or run separately
     
-    # Astronomical data (once per year on December 31st)
+    # === ASTRONOMICAL DATA (December 31st only - 1 API call) ===
     - name: Generate Astronomical Data for Next Year (December 31st only)
+      if: ${{ success() || failure() }}  # Run even if previous steps failed
       run: |
         CURRENT_YEAR=$(date -u +%Y)
         NEXT_YEAR=$((CURRENT_YEAR + 1))
         if [ $(date -u +%m-%d) = "12-31" ]; then
-          echo "It's December 31st, generating astronomical data for $NEXT_YEAR..."
-          node sync-mercury-retrograde.js --year=$NEXT_YEAR || echo "Mercury retrograde failed"
-          node sync-full-moon.js --year=$NEXT_YEAR || echo "Full moon failed"
+          echo "🎆 It's December 31st! Generating astronomical data for $NEXT_YEAR..."
+          echo "📊 This will make 1 API call (Full Moon only - Mercury Retrograde uses hardcoded data)"
+          node sync-mercury-retrograde.js --year=$NEXT_YEAR || echo "⚠️ Mercury retrograde failed"
+          node sync-full-moon.js --year=$NEXT_YEAR || echo "⚠️ Full moon failed"
         else
-          echo "Not December 31st, skipping astronomical data generation"
+          echo "ℹ️ Not December 31st, skipping astronomical data generation"
+        fi
+    
+    # === SUMMARY ===
+    - name: Summary
+      if: always()
+      run: |
+        echo "✅ Daily content generation completed!"
+        echo ""
+        echo "📊 API Calls Summary:"
+        echo "  - Daily Wisdom: 1 call"
+        echo "  - Feng Shui Tip: 1 call"
+        echo "  - Planetary Overview: 1 call"
+        echo "  - Western Horoscopes (12 signs): 1 call"
+        echo "  - Chinese Horoscopes (12 signs): 1 call"
+        echo "  Total: 5 API calls"
+        echo ""
+        if [ $(date -u +%u) -eq 7 ]; then
+          echo "📅 Sunday Bonus: +2 API calls (weekly horoscopes)"
+        fi
+        if [ $(date -u +%m-%d) = "12-31" ]; then
+          echo "🎆 December 31st Bonus: +1 API call (Full Moon data)"
         fi
 
   # Separate job for error notification
@@ -91,6 +114,11 @@ jobs:
     steps:
     - name: Send failure notification
       run: |
-        echo "Daily content sync failed at $(date)"
-        echo "Check logs: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-        # Add email/Slack notification here if needed
+        echo "❌ Daily content sync failed at $(date)"
+        echo "🔗 Check logs: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        echo ""
+        echo "Common issues:"
+        echo "  - Rate limit exceeded (check Gemini API quota)"
+        echo "  - Network timeout"
+        echo "  - Invalid API response"
+        # TODO: Add email/Slack notification here if needed
