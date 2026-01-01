@@ -37,53 +37,52 @@ jobs:
         
     - name: Generate Daily Wisdom (Tomorrow)
       run: node sync-daily-wisdom.js --tomorrow
+      continue-on-error: true
       
     - name: Generate Daily Feng Shui Tip (Tomorrow)  
       run: node sync-daily-fengshui-tip.js --tomorrow
+      continue-on-error: true
       
     - name: Generate Daily Planetary Overview (Tomorrow)
       run: node sync-daily-planetary-overview.js --tomorrow
+      continue-on-error: true
       
     - name: Generate Western Horoscopes (Tomorrow - Daily Only)
       run: node sync-western-horoscopes-sanity.js --tomorrow --daily-only
+      continue-on-error: true
       
     - name: Generate Chinese Horoscopes (Tomorrow - Daily Only)
       run: node sync-chinese-horoscopes-sanity.js --tomorrow --daily-only
+      continue-on-error: true
       
+    # Weekly content only on Sundays
     - name: Generate Weekly Content (Sundays only)
       run: |
         if [ $(date -u +%u) -eq 7 ]; then
           echo "It's Sunday, generating weekly content..."
-          node sync-western-horoscopes-sanity.js --tomorrow --weekly-only
-          node sync-chinese-horoscopes-sanity.js --tomorrow --weekly-only
+          node sync-western-horoscopes-sanity.js --tomorrow --weekly-only || echo "Western weekly failed"
+          node sync-chinese-horoscopes-sanity.js --tomorrow --weekly-only || echo "Chinese weekly failed"
         else
           echo "Not Sunday, skipping weekly content"
         fi
         
-    - name: Generate Yearly Content (December 31st only)
-      run: |
-        if [ $(date -u +%m-%d) = "12-31" ]; then
-          echo "It's December 31st, generating next year's content..."
-          node sync-western-horoscopes-sanity.js --tomorrow --yearly-only
-          node sync-chinese-horoscopes-sanity.js --tomorrow --yearly-only
-        else
-          echo "Not December 31st, skipping yearly content"
-        fi
+    # REMOVED YEARLY CONTENT FROM DAILY RUN
+    # Yearly content should be manually triggered or run separately
     
-    # NEW: Astronomical data generation (once per year on December 31st)
+    # Astronomical data (once per year on December 31st)
     - name: Generate Astronomical Data for Next Year (December 31st only)
       run: |
         CURRENT_YEAR=$(date -u +%Y)
         NEXT_YEAR=$((CURRENT_YEAR + 1))
         if [ $(date -u +%m-%d) = "12-31" ]; then
           echo "It's December 31st, generating astronomical data for $NEXT_YEAR..."
-          node sync-mercury-retrograde.js --year=$NEXT_YEAR
-          node sync-full-moon.js --year=$NEXT_YEAR
+          node sync-mercury-retrograde.js --year=$NEXT_YEAR || echo "Mercury retrograde failed"
+          node sync-full-moon.js --year=$NEXT_YEAR || echo "Full moon failed"
         else
           echo "Not December 31st, skipping astronomical data generation"
         fi
 
-  # Separate job for error handling and notifications
+  # Separate job for error notification
   notify-on-failure:
     runs-on: ubuntu-latest
     needs: sync-daily-content
@@ -93,4 +92,5 @@ jobs:
     - name: Send failure notification
       run: |
         echo "Daily content sync failed at $(date)"
+        echo "Check logs: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         # Add email/Slack notification here if needed

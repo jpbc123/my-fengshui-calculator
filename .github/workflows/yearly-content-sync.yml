@@ -1,0 +1,73 @@
+name: Yearly Content Sync
+
+on:
+  # Only run manually or on December 31st
+  schedule:
+    - cron: '0 6 31 12 *'  # December 31st at 6:00 AM UTC
+  workflow_dispatch:  # Allow manual triggering
+    inputs:
+      year:
+        description: 'Year to generate content for'
+        required: false
+        default: 'next'
+
+jobs:
+  sync-yearly-content:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm install
+      
+    - name: Set up environment variables
+      env:
+        VITE_SANITY_PROJECT_ID: ${{ secrets.VITE_SANITY_PROJECT_ID }}
+        VITE_SANITY_DATASET: ${{ secrets.VITE_SANITY_DATASET }}
+        SANITY_API_WRITE_TOKEN: ${{ secrets.SANITY_API_WRITE_TOKEN }}
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      run: |
+        echo "VITE_SANITY_PROJECT_ID=$VITE_SANITY_PROJECT_ID" >> .env
+        echo "VITE_SANITY_DATASET=$VITE_SANITY_DATASET" >> .env
+        echo "SANITY_API_WRITE_TOKEN=$SANITY_API_WRITE_TOKEN" >> .env
+        echo "GEMINI_API_KEY=$GEMINI_API_KEY" >> .env
+        
+    - name: Generate Western Yearly Horoscopes
+      run: |
+        echo "Generating Western yearly horoscopes..."
+        node sync-western-horoscopes-sanity.js --tomorrow --yearly-only
+      continue-on-error: true
+      
+    - name: Wait between batches
+      run: sleep 30
+      
+    - name: Generate Chinese Yearly Horoscopes
+      run: |
+        echo "Generating Chinese yearly horoscopes..."
+        node sync-chinese-horoscopes-sanity.js --tomorrow --yearly-only
+      continue-on-error: true
+      
+    - name: Wait before astronomical data
+      run: sleep 30
+      
+    - name: Generate Astronomical Data
+      run: |
+        CURRENT_YEAR=$(date -u +%Y)
+        NEXT_YEAR=$((CURRENT_YEAR + 1))
+        echo "Generating astronomical data for $NEXT_YEAR..."
+        node sync-mercury-retrograde.js --year=$NEXT_YEAR || echo "Mercury retrograde failed"
+        node sync-full-moon.js --year=$NEXT_YEAR || echo "Full moon failed"
+      
+    - name: Summary
+      if: always()
+      run: |
+        echo "Yearly content sync completed!"
+        echo "Check individual step results above for any failures."

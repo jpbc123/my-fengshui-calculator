@@ -1,4 +1,4 @@
-// sync-full-moon.js
+// sync-full-moon.js - FIXED: Changed to gemini-2.5-flash
 import { createClient } from '@sanity/client';
 import dotenv from 'dotenv';
 import dayjs from 'dayjs';
@@ -15,7 +15,8 @@ const sanityClient = createClient({
 });
 
 const geminiApiKey = process.env.GEMINI_API_KEY;
-const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${geminiApiKey}`;
+// FIXED: Changed from preview model to stable gemini-2.5-flash
+const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`;
 
 async function fetchWithBackoff(url, options, retries = 5, baseDelay = 2000) {
   for (let i = 0; i < retries; i++) {
@@ -112,8 +113,27 @@ async function generateFullMoons(year) {
   });
 
   const result = await response.json();
-  const jsonResponse = result.candidates[0].content.parts[0].text;
-  return JSON.parse(jsonResponse);
+  
+  // Handle response (matching your other fixed scripts)
+  const candidate = result?.candidates?.[0];
+  if (!candidate) {
+    throw new Error(`No candidate returned from model: ${JSON.stringify(result)}`);
+  }
+
+  let jsonResponseText = null;
+  
+  if (candidate.content && candidate.content.parts && candidate.content.parts[0]) {
+    jsonResponseText = candidate.content.parts[0].text;
+  } else if (candidate.content && typeof candidate.content === 'string') {
+    jsonResponseText = candidate.content;
+  }
+
+  if (!jsonResponseText) {
+    console.error('Debug - Full result:', JSON.stringify(result, null, 2));
+    throw new Error(`No text response found in model result`);
+  }
+  
+  return JSON.parse(jsonResponseText);
 }
 
 async function syncFullMoon() {
