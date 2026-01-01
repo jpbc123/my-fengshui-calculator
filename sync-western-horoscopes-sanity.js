@@ -1,4 +1,4 @@
-// sync-western-horoscopes-sanity.js - Updated for Gemini 2.5 Flash-Lite
+// sync-western-horoscopes-sanity.js - Fixed Batch Version
 import { createClient } from '@sanity/client';
 import dotenv from 'dotenv';
 import dayjs from 'dayjs';
@@ -8,7 +8,6 @@ import fetch from 'node-fetch';
 
 dayjs.extend(weekOfYear);
 dayjs.extend(customParseFormat);
-
 dotenv.config();
 
 const sanityClient = createClient({
@@ -20,218 +19,169 @@ const sanityClient = createClient({
 });
 
 const geminiApiKey = process.env.GEMINI_API_KEY;
-// UPDATED: Now using gemini-2.5-flash-lite for better rate limits
-const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${geminiApiKey}`;
+const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`;
 
 const westernZodiacSigns = [
   'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
   'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
 ];
 
-// Parse command line arguments
 function parseArgs() {
   const args = process.argv.slice(2);
   const config = {
-    mode: 'tomorrow', // default
-    types: ['daily', 'weekly', 'yearly'], // default all types
-    signs: westernZodiacSigns // default all signs
+    mode: 'tomorrow',
+    types: ['daily'],
+    signs: westernZodiacSigns,
+    specificDate: null
   };
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
-    
     switch (arg) {
-      case '--today':
-        config.mode = 'today';
-        break;
-      case '--tomorrow':
-        config.mode = 'tomorrow';
-        break;
-      case '--yesterday':
-        config.mode = 'yesterday';
-        break;
-      case '--daily-only':
-        config.types = ['daily'];
-        break;
-      case '--weekly-only':
-        config.types = ['weekly'];
-        break;
-      case '--yearly-only':
-        config.types = ['yearly'];
+      case '--today': config.mode = 'today'; break;
+      case '--tomorrow': config.mode = 'tomorrow'; break;
+      case '--yesterday': config.mode = 'yesterday'; break;
+      case '--daily-only': config.types = ['daily']; break;
+      case '--weekly-only': config.types = ['weekly']; break;
+      case '--yearly-only': config.types = ['yearly']; break;
+      case '--date':
+        if (i + 1 < args.length) {
+          config.specificDate = args[i + 1];
+          i++;
+        }
         break;
       case '--sign':
         if (i + 1 < args.length) {
           const sign = args[i + 1].toLowerCase();
-          if (westernZodiacSigns.includes(sign)) {
-            config.signs = [sign];
+          if (westernZodiacSigns.includes(sign)) { 
+            config.signs = [sign]; 
             i++; 
-          } else {
-            console.error(`Invalid sign: ${args[i + 1]}. Valid signs: ${westernZodiacSigns.join(', ')}`);
-            process.exit(1);
           }
         }
         break;
-      case '--help':
-        showHelp();
-        process.exit(0);
-        break;
-      default:
-        console.error(`Unknown argument: ${arg}. Use --help for usage information.`);
-        process.exit(1);
     }
   }
-
   return config;
 }
 
-function showHelp() {
-  console.log(`
-Western Horoscope Sync Script
-
-Usage: node sync-western-horoscopes-sanity.js [OPTIONS]
-... (help text omitted for brevity)
-  `);
-}
-
-function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-async function fetchWithBackoff(url, options, retries = 5, baseDelay = 5000) {
+async function fetchWithBackoff(url, options, retries = 3, baseDelay = 10000) {
   for (let i = 0; i < retries; i++) {
     try {
+      console.log(`📡 [${dayjs().format('HH:mm:ss')}] Calling Gemini API (Attempt ${i + 1}/${retries})...`);
       const response = await fetch(url, options);
-      if (response.status === 429 && i < retries - 1) {
-        const delayTime = Math.pow(2, i) * baseDelay + Math.random() * 5000;
-        console.warn(`Rate limit hit (429), retrying in ${Math.round(delayTime / 1000)}s...`);
-        await new Promise(resolve => setTimeout(resolve, delayTime));
+      
+      if (response.status === 429) {
+        const errorData = await response.json();
+        const waitTime = Math.pow(2, i) * baseDelay + Math.random() * 5000;
+        console.warn(`⚠️  [429] Rate limit. Waiting ${Math.round(waitTime/1000)}s...`);
+        await new Promise(res => setTimeout(res, waitTime));
         continue;
       }
+
       if (response.ok) {
+        console.log(`✅ [${dayjs().format('HH:mm:ss')}] API Response Received.`);
         return response;
       }
-      throw new Error(`HTTP error! Status: ${response.status}, Body: ${await response.text()}`);
+      
+      const errorText = await response.text();
+      throw new Error(`HTTP ${response.status}: ${errorText}`);
     } catch (error) {
-      console.error(`Fetch attempt ${i + 1} failed: ${error.message}`);
-      if (i === retries - 1) {
-        throw error;
-      }
-      const delayTime = Math.pow(2, i) * baseDelay + Math.random() * 5000;
-      console.warn(`Retrying in ${Math.round(delayTime / 1000)}s...`);
-      await new Promise(resolve => setTimeout(resolve, delayTime));
+      console.error(`❌ [${dayjs().format('HH:mm:ss')}] Error: ${error.message}`);
+      if (i === retries - 1) throw error;
+      await new Promise(res => setTimeout(res, Math.pow(2, i) * baseDelay));
     }
   }
-  throw new Error("Maximum retries exceeded for API call.");
 }
 
-async function generateHoroscope(sign, period, type, config) {
-  let promptText;
-  let identifier;
-  let responseSchema;
-  let targetDate, targetWeekStart, targetWeekEnd, targetDayName;
-
+async function generateBatch(type, config) {
   const dayOffset = config.mode === 'today' ? 0 : config.mode === 'tomorrow' ? 1 : -1;
+  const targetDate = config.specificDate || dayjs().add(dayOffset, 'day').format('YYYY-MM-DD');
+  const weekStart = dayjs(targetDate).startOf('week').format('YYYY-MM-DD');
+  const weekEnd = dayjs(targetDate).endOf('week').format('YYYY-MM-DD');
+  const currentYear = dayjs(targetDate).year();
+
+  console.log(`📝 Preparing ${type.toUpperCase()} prompt for all 12 signs...`);
   
-  const currentYear = dayjs().year();
-  targetDate = dayjs().add(dayOffset, 'day').format('YYYY-MM-DD');
-  targetWeekStart = dayjs().add(dayOffset, 'day').startOf('week').format('YYYY-MM-DD');
-  targetWeekEnd = dayjs().add(dayOffset, 'day').endOf('week').format('YYYY-MM-DD');
-  targetDayName = dayjs().add(dayOffset, 'day').format('dddd');
+  let promptText, responseSchema;
 
-  if (type === 'daily') {
-    promptText = `Generate a detailed daily Western horoscope for the ${sign} sign for ${targetDate} (${targetDayName}).
-    Cover the following categories: horoscope, money, social, career, love.
-    Also provide a lucky color and lucky number.
-    Format as a JSON object with these exact keys:
-    {
-      "horoscope": "General daily forecast...",
-      "money": "Financial outlook...",
-      "social": "Social interactions...",
-      "career": "Career outlook...",
-      "love": "Love forecast...",
-      "luckyColor": "Blue",
-      "luckyNumber": 7
-    }`;
-    identifier = targetDate;
+  if (type === 'daily' || type === 'weekly') {
+    const dateInfo = type === 'daily' 
+      ? `${targetDate} (${dayjs(targetDate).format('dddd')})`
+      : `week starting ${weekStart} and ending ${weekEnd}`;
 
-    responseSchema = {
-      type: "OBJECT",
-      properties: {
-        horoscope: { type: "STRING" },
-        money: { type: "STRING" },
-        social: { type: "STRING" },
-        career: { type: "STRING" },
-        love: { type: "STRING" },
-        luckyColor: { type: "STRING" },
-        luckyNumber: { type: "STRING" }
-      },
-      required: ["horoscope", "money", "social", "career", "love", "luckyColor", "luckyNumber"]
-    };
+    promptText = `Generate detailed ${type} Western horoscopes for ALL 12 zodiac signs for ${dateInfo}.
 
-  } else if (type === 'weekly') {
-    promptText = `Generate a detailed weekly Western horoscope for the ${sign} sign for the week starting ${targetWeekStart} and ending ${targetWeekEnd}.
-    Cover the following categories: horoscope, money, social, career, love.
-    Also provide a lucky color and lucky number.
-    Format as a JSON object with these exact keys:
-    {
-      "horoscope": "General weekly forecast...",
-      "money": "Financial outlook...",
-      "social": "Social interactions...",
-      "career": "Career outlook...",
-      "love": "Love forecast...",
-      "luckyColor": "Green",
-      "luckyNumber": 3
-    }`;
-    identifier = targetWeekStart;
+Return a JSON array with EXACTLY 12 objects (one per sign: aries, taurus, gemini, cancer, leo, virgo, libra, scorpio, sagittarius, capricorn, aquarius, pisces).
+
+Each object must have this EXACT structure:
+{
+  "sign": "aries",
+  "horoscope": "General forecast...",
+  "money": "Financial outlook...",
+  "social": "Social interactions...",
+  "career": "Career outlook...",
+  "love": "Love forecast...",
+  "luckyColor": "Blue",
+  "luckyNumber": "7"
+}`;
 
     responseSchema = {
-      type: "OBJECT",
-      properties: {
-        horoscope: { type: "STRING" },
-        money: { type: "STRING" },
-        social: { type: "STRING" },
-        career: { type: "STRING" },
-        love: { type: "STRING" },
-        luckyColor: { type: "STRING" },
-        luckyNumber: { type: "STRING" }
-      },
-      required: ["horoscope", "money", "social", "career", "love", "luckyColor", "luckyNumber"]
+      type: "ARRAY",
+      items: {
+        type: "OBJECT",
+        properties: {
+          sign: { type: "STRING" },
+          horoscope: { type: "STRING" },
+          money: { type: "STRING" },
+          social: { type: "STRING" },
+          career: { type: "STRING" },
+          love: { type: "STRING" },
+          luckyColor: { type: "STRING" },
+          luckyNumber: { type: "STRING" }
+        },
+        required: ["sign", "horoscope", "money", "social", "career", "love", "luckyColor", "luckyNumber"]
+      }
     };
 
   } else if (type === 'yearly') {
-    promptText = `Generate a detailed yearly Western horoscope for the ${sign} sign for the year ${currentYear}.
-    Provide comprehensive content for: overview, love, career, wealth, and social.
-    Also provide a lucky color and lucky number.
-    Format as a JSON object with these exact keys:
-    {
-      "overviewContent": "Detailed yearly overview...",
-      "loveContent": "Yearly love forecast...",
-      "careerContent": "Career outlook for the year...",
-      "wealthContent": "Financial prospects...",
-      "socialContent": "Social interactions and networking...",
-      "luckyColor": "Red",
-      "luckyNumber": 9
-    }`;
-    identifier = currentYear;
+    promptText = `Generate detailed YEARLY Western horoscopes for ALL 12 zodiac signs for the year ${currentYear}.
+
+Return a JSON array with EXACTLY 12 objects (one per sign: aries, taurus, gemini, cancer, leo, virgo, libra, scorpio, sagittarius, capricorn, aquarius, pisces).
+
+Each object must have this EXACT structure:
+{
+  "sign": "aries",
+  "overviewContent": "Detailed yearly overview...",
+  "loveContent": "Yearly love forecast...",
+  "careerContent": "Career outlook for the year...",
+  "wealthContent": "Financial prospects...",
+  "socialContent": "Social interactions and networking...",
+  "luckyColor": "Red",
+  "luckyNumber": "9"
+}`;
 
     responseSchema = {
-      type: "OBJECT",
-      properties: {
-        overviewContent: { type: "STRING" },
-        loveContent: { type: "STRING" },
-        careerContent: { type: "STRING" },
-        wealthContent: { type: "STRING" },
-        socialContent: { type: "STRING" },
-        luckyColor: { type: "STRING" },
-        luckyNumber: { type: "STRING" }
-      },
-      required: ["overviewContent", "loveContent", "careerContent", "wealthContent", "socialContent", "luckyColor", "luckyNumber"]
+      type: "ARRAY",
+      items: {
+        type: "OBJECT",
+        properties: {
+          sign: { type: "STRING" },
+          overviewContent: { type: "STRING" },
+          loveContent: { type: "STRING" },
+          careerContent: { type: "STRING" },
+          wealthContent: { type: "STRING" },
+          socialContent: { type: "STRING" },
+          luckyColor: { type: "STRING" },
+          luckyNumber: { type: "STRING" }
+        },
+        required: ["sign", "overviewContent", "loveContent", "careerContent", "wealthContent", "socialContent", "luckyColor", "luckyNumber"]
+      }
     };
   }
 
   const payload = {
     contents: [{ role: "user", parts: [{ text: promptText }] }],
-    generationConfig: {
+    generationConfig: { 
       responseMimeType: "application/json",
       responseSchema
     }
@@ -244,87 +194,125 @@ async function generateHoroscope(sign, period, type, config) {
   });
 
   const result = await response.json();
+  
+  // Parse response
   const candidate = result?.candidates?.[0];
-  if (!candidate) throw new Error(`No candidate returned from model: ${JSON.stringify(result)}`);
-
-  let jsonResponseText = candidate.content?.parts?.[0]?.text || candidate.content;
-  if (!jsonResponseText) throw new Error(`No text response found in model result`);
-
-  const parsedData = JSON.parse(jsonResponseText);
-
-  if (type === 'yearly') {
-    return {
-      year: identifier,
-      ...parsedData
-    };
+  if (!candidate) {
+    throw new Error(`No candidate in response: ${JSON.stringify(result)}`);
   }
 
-  return {
-    ...parsedData,
+  let jsonText = candidate.content?.parts?.[0]?.text;
+  if (!jsonText) {
+    console.error('Full result:', JSON.stringify(result, null, 2));
+    throw new Error('No text in response');
+  }
+
+  let parsed = JSON.parse(jsonText);
+  
+  // Handle if wrapped in object
+  if (!Array.isArray(parsed)) {
+    if (parsed.horoscopes) parsed = parsed.horoscopes;
+    else if (parsed.data) parsed = parsed.data;
+  }
+  
+  if (!Array.isArray(parsed)) {
+    throw new Error('Response is not an array');
+  }
+
+  console.log(`📊 Parsed ${parsed.length} signs from API response.`);
+
+  // Add date info to each sign
+  return parsed.map(item => ({
+    ...item,
     forDate: targetDate,
-    startDate: targetWeekStart,
-    endDate: targetWeekEnd
-  };
+    startDate: weekStart,
+    endDate: weekEnd,
+    year: currentYear
+  }));
 }
 
 async function syncWesternHoroscopes() {
   const config = parseArgs();
-  const modeDisplay = config.mode === 'today' ? 'TODAY' : config.mode === 'tomorrow' ? 'TOMORROW' : 'YESTERDAY';
   const dayOffset = config.mode === 'today' ? 0 : config.mode === 'tomorrow' ? 1 : -1;
-  const targetDate = dayjs().add(dayOffset, 'day').format('YYYY-MM-DD');
+  const targetDate = config.specificDate || dayjs().add(dayOffset, 'day').format('YYYY-MM-DD');
   
-  console.log(`🚀 [${dayjs().format('YYYY-MM-DD HH:mm:ss')}] Starting Western horoscope sync for ${modeDisplay}: ${targetDate}`);
+  console.log(`\n🚀 [${dayjs().format('YYYY-MM-DD HH:mm:ss')}] STARTING BATCH SYNC`);
+  console.log(`📅 Target Date: ${targetDate} | Types: ${config.types.join(', ')}\n`);
 
-  for (const sign of config.signs) {
-    const transaction = sanityClient.transaction();
+  try {
+    for (const type of config.types) {
+      console.log(`\n=== Processing ${type.toUpperCase()} ===`);
+      const results = await generateBatch(type, config);
+      const transaction = sanityClient.transaction();
+      let count = 0;
 
-    try {
-      console.log(`⭐ Processing ${sign.toUpperCase()}...`);
+      results.forEach(d => {
+        if (!config.signs.includes(d.sign)) return;
 
-      if (config.types.includes('daily')) {
-        const dailyData = await generateHoroscope(sign, 'daily', 'daily', config);
-        transaction.createOrReplace({
-          _type: 'dailyWesternHoroscope',
-          _id: `daily-${sign}-${dailyData.forDate}`,
-          sign: sign,
-          ...dailyData
-        });
-        console.log(`   ✅ Daily horoscope prepared`);
-        await delay(3000);
-      }
+        let doc;
+        if (type === 'daily') {
+          doc = {
+            _type: 'dailyWesternHoroscope',
+            _id: `daily-${d.sign}-${d.forDate}`,
+            sign: d.sign,
+            forDate: d.forDate,
+            horoscope: d.horoscope,
+            money: d.money,
+            social: d.social,
+            career: d.career,
+            love: d.love,
+            luckyColor: d.luckyColor,
+            luckyNumber: d.luckyNumber
+          };
+        } else if (type === 'weekly') {
+          doc = {
+            _type: 'weeklyWesternHoroscope',
+            _id: `weekly-${d.sign}-${d.startDate}`,
+            sign: d.sign,
+            startDate: d.startDate,
+            endDate: d.endDate,
+            horoscope: d.horoscope,
+            money: d.money,
+            social: d.social,
+            career: d.career,
+            love: d.love,
+            luckyColor: d.luckyColor,
+            luckyNumber: d.luckyNumber
+          };
+        } else if (type === 'yearly') {
+          doc = {
+            _type: 'yearlyWesternHoroscope',
+            _id: `yearly-${d.sign}-${d.year}`,
+            sign: d.sign,
+            year: d.year,
+            overviewContent: d.overviewContent,
+            loveContent: d.loveContent,
+            careerContent: d.careerContent,
+            wealthContent: d.wealthContent,
+            socialContent: d.socialContent,
+            luckyColor: d.luckyColor,
+            luckyNumber: d.luckyNumber
+          };
+        }
 
-      if (config.types.includes('weekly')) {
-        const weeklyData = await generateHoroscope(sign, 'weekly', 'weekly', config);
-        transaction.createOrReplace({
-          _type: 'weeklyWesternHoroscope',
-          _id: `weekly-${sign}-${weeklyData.startDate}`,
-          sign: sign,
-          ...weeklyData
-        });
-        console.log(`   ✅ Weekly horoscope prepared`);
-        await delay(3000);
-      }
+        if (doc) {
+          transaction.createOrReplace(doc);
+          count++;
+          console.log(`   ✓ ${d.sign.toUpperCase()}`);
+        }
+      });
 
-      if (config.types.includes('yearly')) {
-        const yearlyData = await generateHoroscope(sign, 'yearly', 'yearly', config);
-        transaction.createOrReplace({
-          _type: 'yearlyWesternHoroscope',
-          _id: `yearly-${sign}-${yearlyData.year}`,
-          sign: sign,
-          ...yearlyData
-        });
-        console.log(`   ✅ Yearly horoscope prepared`);
-        await delay(3000);
-      }
-  
+      console.log(`\n💾 Committing ${count} ${type} documents to Sanity...`);
       await transaction.commit();
-      console.log(`🎉 Successfully synced ${sign.toUpperCase()}`);
-      await delay(2000);
-      
-    } catch (error) {
-      console.error(`💥 Failed to sync ${sign.toUpperCase()}:`, error.message);
+      console.log(`✨ Successfully synced ${type.toUpperCase()} batch.\n`);
     }
+  } catch (error) {
+    console.error(`\n💥 SYNC FAILED: ${error.message}`);
+    console.error(error.stack);
+    process.exit(1);
   }
+  
+  console.log(`🏆 [${dayjs().format('HH:mm:ss')}] ALL TASKS COMPLETED.\n`);
 }
 
 syncWesternHoroscopes();
