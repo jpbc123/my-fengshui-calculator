@@ -9,7 +9,7 @@ const routes = [
   // Main pages
   '/',
   '/feng-shui',
-  '/numerology', 
+  '/numerology',
   '/astrology',
   '/horoscope',
   '/store',
@@ -19,22 +19,22 @@ const routes = [
   '/terms-of-service',
   '/credits',
   '/sitemap',
-  
+
   // Feng Shui subpages
   '/feng-shui/personal-element',
   '/feng-shui/kua-number',
-  
+
   // Numerology subpages
   '/numerology/visiber-calculator',
-  
+
   // Astrology subpages
   '/astrology/chinese-zodiac-calculator',
   '/astrology/western-zodiac-calculator',
-  
+
   // Horoscope pages
   '/horoscope/chinese-zodiac',
   '/horoscope/western-zodiac',
-  
+
   // Games
   '/games-fun',
   '/games-fun/aura-analysis',
@@ -43,7 +43,7 @@ const routes = [
   '/games-fun/chinese-zodiac-compatibility',
   '/games-fun/western-zodiac-compatibility',
   '/games-fun/fortune-cookie',
-  
+
   // Meditation
   '/meditation',
   '/meditation/visualization-exercises',
@@ -51,13 +51,30 @@ const routes = [
   '/meditation/daily-affirmation',
   '/meditation/morning-mindfulness',
   '/meditation/evening-relaxation',
-  
+
   // Services
   '/birth-chart',
   '/auspicious-wedding-date-planner',
-  
+
   // Articles
-  '/article'
+  '/article',
+  '/articles/feng-shui-2026-lucky-colors-symbols-zodiac-forecast',
+  '/articles/flying-stars-2026-feng-shui-sector-guide',
+  '/articles/feng-shui-2026-year-of-fire-horse',
+  '/articles/chinese-zodiac-hilarious-roast',
+  '/articles/astrology-101-complete-beginners-guide',
+  '/articles/feng-shui-traditional-vs-modern',
+  '/articles/astrology-roast-zodiac-signs',
+  '/articles/dating-by-elements',
+  '/articles/house-numbers-destiny',
+  '/articles/must-have-feng-shui-items-for-a-happier-balanced-home',
+  '/articles/hollywood-success-fengshui',
+
+  // Dedicated astrology pages
+  '/mercury-retrograde',
+  '/full-moon-forecast',
+  '/daily-wisdom-article',
+  '/planetary-overview',
 ];
 
 // Chinese zodiac signs for dynamic routes
@@ -70,9 +87,11 @@ const chineseZodiacSigns = [
 function getPriority(route) {
   if (route === '/') return '1.0';
   if (['/feng-shui', '/numerology', '/astrology', '/horoscope'].includes(route)) return '0.9';
+  if (['/meditation', '/games-fun', '/article', '/birth-chart'].includes(route)) return '0.9';
+  if (route.startsWith('/articles/')) return '0.8';
   if (['/about-us', '/contact-us'].includes(route)) return '0.8';
   if (route.includes('/zodiac/')) return '0.7';
-  if (route.includes('/games-') || route.includes('/meditate-')) return '0.6';
+  if (route.includes('/games-fun/') || route.includes('/meditation/')) return '0.6';
   return '0.7';
 }
 
@@ -82,7 +101,8 @@ function getChangefreq(route) {
   if (route.includes('/horoscope') || route.includes('/zodiac/')) return 'daily';
   if (route.includes('/daily-wisdom') || route.includes('/aura-')) return 'daily';
   if (['/feng-shui', '/numerology', '/astrology'].includes(route)) return 'weekly';
-  if (route.includes('/games-') || route.includes('/meditate-')) return 'weekly';
+  if (route.includes('/games-fun/') || route.includes('/meditation/')) return 'weekly';
+  if (route.startsWith('/articles/')) return 'monthly';
   return 'monthly';
 }
 
