@@ -69,6 +69,7 @@ const routes = [
   '/articles/house-numbers-destiny',
   '/articles/must-have-feng-shui-items-for-a-happier-balanced-home',
   '/articles/hollywood-success-fengshui',
+  '/articles/the-number-33',
 
   // Dedicated astrology pages
   '/mercury-retrograde',

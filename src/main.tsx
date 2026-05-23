@@ -1,13 +1,8 @@
 // src/main.tsx
-import { createRoot } from 'react-dom/client'
-import { HelmetProvider } from 'react-helmet-async'
-import App from './App.tsx'
-import './index.css'
+import { ViteReactSSG } from 'vite-react-ssg';
+import { routes } from './routes';
+import './index.css';
 
-const rootElement = document.getElementById("root")!;
-
-createRoot(rootElement).render(
-  <HelmetProvider>
-    <App />
-  </HelmetProvider>
-);
+export const createRoot = ViteReactSSG({
+  routes,
+});

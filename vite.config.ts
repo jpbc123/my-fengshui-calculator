@@ -19,6 +19,9 @@ export default defineConfig(({ mode }) => {
         "@root": path.resolve(__dirname, "./"),
       },
     },
+    ssr: {
+      noExternal: ['react-helmet-async'],
+    },
     build: {
       sourcemap: false,
       target: 'es2015', // CHANGED: Transpile to ES2015 for Puppeteer compatibility

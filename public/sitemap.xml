@@ -120,7 +120,13 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-  
+  <url>
+    <loc>https://fengshuiandbeyond.com/articles/the-number-33</loc>
+    <lastmod>2026-05-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <!-- Premium Services -->
   <url>
     <loc>https://fengshuiandbeyond.com/birth-chart</loc>

@@ -25,6 +25,7 @@ import DailyWisdomArticlePage from "@/pages/DailyWisdomArticlePage";
 import PlanetaryOverviewPage from "@/pages/PlanetaryOverviewPage"; 
 import ArticlePage from './pages/ArticlePage';
 import ArticleMainPage from './pages/ArticleMainPage';
+import Number33Article from './pages/Number33Article';
 
 // NEW: Mercury Retrograde and Full Moon pages
 import MercuryRetrogradePage from './pages/MercuryRetrogradePage';
@@ -135,6 +136,7 @@ const App = () => (
 				
                 {/* Articles Routing */}
                 <Route path="/article" element={<ArticleMainPage />} />
+                <Route path="/articles/the-number-33" element={<Number33Article />} />
                 <Route path="/articles/:slug" element={<ArticlePage />} />
                 
                 {/* Dedicated Astrology Pages */}

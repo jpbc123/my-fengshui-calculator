@@ -5,11 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host",
-    "build": "vite build",
+    "build": "vite-react-ssg build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "vercel-build": "npm run generate-sitemap && vite build",
+    "vercel-build": "npm run generate-sitemap && vite-react-ssg build",
     "generate-sitemap": "node utils/generate-sitemap.js"
   },
   "dependencies": {
@@ -122,7 +122,8 @@
     "terser": "^5.36.0",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
-    "vite": "^5.4.1"
+    "vite": "^5.4.1",
+    "vite-react-ssg": "^0.9.1-beta.1"
   },
   "description": "Astrology and Feng Shui Calculator with Birth Chart Analysis",
   "main": "index.html",

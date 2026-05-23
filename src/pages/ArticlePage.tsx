@@ -426,7 +426,7 @@ export default function ArticlePage() {
         {article.tags && <meta name="keywords" content={article.tags.join(', ')} />}
         <meta name="author" content="Feng Shui & Beyond" />
         <meta name="publish-date" content={article.publishDate} />
-        <link rel="canonical" href={`${window.location.origin}/articles/${slug}`} />
+        <link rel="canonical" href={`https://fengshuiandbeyond.com/articles/${slug}`} />
       </Helmet>
       
       <Header />

@@ -13,6 +13,7 @@ import { motion } from "framer-motion";
 import { Calendar, Tag, ArrowRight, Search } from "lucide-react";
 
 import planetaryOverviewImage from '../assets/planetary-overview.jpg';
+import staticArticleImage from '../assets/numerology.jpg';
 
 // Create Sanity client inline
 const sanityClient = createClient({
@@ -49,6 +50,8 @@ interface SanityArticle {
     };
     alt?: string;
   };
+  mainImageUrl?: string;
+  mainImageAlt?: string;
   publishDate: string;
   tags?: string[];
   body: any[];
@@ -76,6 +79,21 @@ type CombinedArticle = SanityArticle | (DailyPlanetaryOverview & {
 });
 
 const ARTICLES_PER_PAGE = 9;
+
+const staticArticles: SanityArticle[] = [
+  {
+    _id: 'static-number-33',
+    _type: 'article',
+    slug: { current: 'the-number-33' },
+    title: 'The Number 33: Elite Obsession, Hidden Patterns, or a Trick of Your Mind?',
+    publishDate: '2026-05-24',
+    tags: ['Numerology'],
+    body: [],
+    metaDescription: 'Why does the number 33 appear everywhere—from Freemasonry to the human spine to world-changing events? Explore the conspiracies, the coincidences, and the psychological trick that might explain it all.',
+    mainImageUrl: '/the-number-33.jpg',
+    mainImageAlt: 'Glowing numerology artwork featuring the number 33',
+  },
+];
 
 const categories = [
   { name: "All", icon: null, color: "bg-gray-100 text-gray-700 hover:bg-gray-200" },
@@ -174,12 +192,15 @@ export default function ArticlesPage() {
           tags: ['Planetary Overview'] // Ensure it gets the right tag
         }));
 
-        // Combine and sort by publish date
-        const combinedArticles = [...fetchedArticles, ...transformedPlanetary]
-          .sort((a, b) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime());
+        // Combine fetched articles with planetary overviews
+        const combinedArticles = [...fetchedArticles, ...transformedPlanetary];
 
-        console.log('Combined articles:', combinedArticles.length);
-        setArticles(combinedArticles);
+        // Prepend any hardcoded static articles and sort all by publish date
+        const allArticles = [...staticArticles, ...combinedArticles]
+          .sort((a, b) => new Date((b as any).publishDate).getTime() - new Date((a as any).publishDate).getTime());
+
+        console.log('Combined articles (including static):', allArticles.length);
+        setArticles(allArticles);
         setError(null);
       } catch (err) {
         console.error("Failed to fetch articles from Sanity:", err);
@@ -507,6 +528,14 @@ export default function ArticlesPage() {
                             "https://placehold.co/500x300/E5E7EB/4B5563?text=Image+Not+Found";
                           e.currentTarget.onerror = null;
                         }}
+                      />
+                    </div>
+                  ) : article._type === 'article' && (article as SanityArticle).mainImageUrl ? (
+                    <div className="relative overflow-hidden">
+                      <img
+                        src={(article as SanityArticle).mainImageUrl}
+                        alt={(article as SanityArticle).mainImageAlt || article.title}
+                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                     </div>
                   ) : article._type === 'dailyPlanetaryOverview' ? (
