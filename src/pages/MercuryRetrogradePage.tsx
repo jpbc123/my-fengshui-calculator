@@ -1,5 +1,5 @@
 // src/pages/MercuryRetrogradePage.tsx
-import { Helmet } from "react-helmet-async";
+import { Helmet } from "@/lib/helmet-shim";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "../components/Header";
@@ -283,6 +283,11 @@ export default function MercuryRetrogradePage() {
   if (loading) {
     return (
       <div className="flex flex-col min-h-screen font-sans bg-white">
+        <Helmet>
+          <title>Mercury Retrograde 2025 - Dates, Meaning & Survival Guide</title>
+          <meta name="description" content="Track Mercury retrograde 2025 with real-time countdown, expert guidance, and zodiac-specific effects. Learn what Mercury retrograde means and how to navigate it." />
+          <link rel="canonical" href="https://fengshuiandbeyond.com/mercury-retrograde" />
+        </Helmet>
         <Header />
         <main className="flex-grow pt-16 flex items-center justify-center">
           <div className="text-center">
@@ -298,6 +303,11 @@ export default function MercuryRetrogradePage() {
   if (error) {
     return (
       <div className="flex flex-col min-h-screen font-sans bg-white">
+        <Helmet>
+          <title>Mercury Retrograde 2025 - Dates, Meaning & Survival Guide</title>
+          <meta name="description" content="Track Mercury retrograde 2025 with real-time countdown, expert guidance, and zodiac-specific effects." />
+          <link rel="canonical" href="https://fengshuiandbeyond.com/mercury-retrograde" />
+        </Helmet>
         <Header />
         <main className="flex-grow pt-16 flex items-center justify-center">
           <div className="text-center text-red-500">Error: {error}</div>

@@ -1,5 +1,5 @@
 // src/pages/GamesFunLanding.tsx
-import { Helmet } from "react-helmet-async";
+import { Helmet } from "@/lib/helmet-shim";
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';

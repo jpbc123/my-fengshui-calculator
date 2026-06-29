@@ -1,6 +1,6 @@
 // src/pages/Index.tsx
 import { useState } from "react";
-import { Helmet } from "react-helmet-async";
+import { Helmet } from "@/lib/helmet-shim";
 import Header from "@/components/Header"; 
 import { FengShuiCalculatorModal } from "@/components/FengShuiCalculatorModal";
 import HeroSection from "@/components/HeroSection";
@@ -360,7 +360,7 @@ const Index = () => {
                   Harness Feng Shui for Harmony and Prosperity
                 </h3>
                 <p className="mb-6 leading-relaxed">
-                  <span className="font-semibold">Feng Shui</span>, which translates to "wind and water," is an ancient Chinese metaphysical system that harmonizes individuals with their environment. Our Kua number calculator and personal element analysis tools help you identify your most auspicious directions for wealth, health, relationships, and personal growth. By understanding the flow of Qi (energy) and applying the Five Elements theory—Wood, Fire, Earth, Metal, and Water—you can optimize your living spaces and life choices for maximum prosperity and well-being.
+                  <span className="font-semibold">Feng Shui</span>, which translates to "wind and water," is an ancient Chinese metaphysical system that harmonizes individuals with their environment. Our Kua number calculator and personal element analysis tools help you identify your most auspicious directions for wealth, health, relationships, and personal growth. By understanding the flow of Qi (energy) and applying the Five Elements theory; Wood, Fire, Earth, Metal, and Water; you can optimize your living spaces and life choices for maximum prosperity and well-being.
                 </p>
 
                 <h3 className="text-2xl font-semibold text-gray-800 mt-8 mb-4">
@@ -399,7 +399,7 @@ const Index = () => {
                   Start Your Journey Today
                 </h3>
                 <p className="mb-6 leading-relaxed">
-                  Begin exploring your cosmic blueprint today with our comprehensive suite of free tools. Calculate your Chinese zodiac sign, discover your life path number, find your Kua number, check daily horoscopes, and unlock the secrets of feng shui—all in one place. Join thousands of users who have found clarity, balance, and empowerment through ancient wisdom combined with modern insights.
+                  Begin exploring your cosmic blueprint today with our comprehensive suite of free tools. Calculate your Chinese zodiac sign, discover your life path number, find your Kua number, check daily horoscopes, and unlock the secrets of feng shui, all in one place. Join thousands of users who have found clarity, balance, and empowerment through ancient wisdom combined with modern insights.
                 </p>
               </div>
             </div>

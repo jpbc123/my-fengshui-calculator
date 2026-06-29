@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Helmet } from "@/lib/helmet-shim";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import products from "@/data/storeProducts.json";
@@ -14,6 +15,11 @@ const Store = () => {
 
   return (
     <div className="min-h-screen bg-white text-gray-900 flex flex-col">
+      <Helmet>
+        <title>Store - Feng Shui & Astrology Products | Feng Shui & Beyond</title>
+        <meta name="description" content="Shop curated feng shui items, astrology accessories, and numerology tools. Find crystals, bagua mirrors, zodiac gifts, and more to enhance your spiritual journey." />
+        <link rel="canonical" href="https://fengshuiandbeyond.com/store" />
+      </Helmet>
       <Header />
 
       <main className="flex-grow px-4 py-8 md:px-12 lg:px-20">

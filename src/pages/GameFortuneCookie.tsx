@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Helmet } from "@/lib/helmet-shim";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, Cookie } from "lucide-react";
 import Header from "@/components/Header";
@@ -201,6 +202,11 @@ const FortuneCookie = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-white text-black overflow-hidden">
+      <Helmet>
+        <title>Virtual Fortune Cookie - Get Your Daily Fortune | Feng Shui & Beyond</title>
+        <meta name="description" content="Crack open a virtual fortune cookie and receive your daily wisdom, lucky numbers, and inspirational message. Fun and free fortune cookie generator." />
+        <link rel="canonical" href="https://fengshuiandbeyond.com/games-fun/fortune-cookie" />
+      </Helmet>
       <Header />
       <main className="flex-grow pt-6 px-1 pb-10">
         <div className="pt-24 px-4 max-w-3xl mx-auto">

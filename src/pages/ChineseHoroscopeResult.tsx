@@ -1,5 +1,5 @@
 // src/pages/ChineseHoroscopeResult.tsx
-import { Helmet } from "react-helmet-async";
+import { Helmet } from "@/lib/helmet-shim";
 import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import Header from '../components/Header';
@@ -413,6 +413,11 @@ const allFeatureImages = useMemo(() =>
     if (loading && zodiac && !periodLoading) {
         return (
             <div className="min-h-screen bg-white text-black flex flex-col justify-center items-center p-4">
+                <Helmet>
+                  <title>{zodiacName} Chinese Horoscope - Daily, Weekly & Yearly Predictions | Feng Shui and Beyond</title>
+                  <meta name="description" content={`Get your ${zodiacName} Chinese horoscope with daily, weekly, and yearly predictions. Discover love, career, wealth, and social insights based on Chinese zodiac wisdom.`} />
+                  <link rel="canonical" href={`https://fengshuiandbeyond.com/zodiac/${currentZodiac}`} />
+                </Helmet>
                 <Header />
                 <div className="flex flex-col items-center justify-center flex-grow">
                     <div className="text-center">

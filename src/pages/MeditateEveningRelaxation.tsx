@@ -1,5 +1,6 @@
 // src/pages/EveningRelaxation.tsx
 import React, { useState, useEffect, useCallback } from 'react';
+import { Helmet } from "@/lib/helmet-shim";
 import { motion, AnimatePresence } from 'framer-motion';
 import { Moon, Heart, BookOpen, Sunset } from 'lucide-react';
 import Header from "@/components/Header";
@@ -189,6 +190,11 @@ const EveningRelaxation = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 text-black overflow-hidden">
+      <Helmet>
+        <title>Evening Relaxation - Wind Down Meditation | Feng Shui & Beyond</title>
+        <meta name="description" content="Unwind with guided evening relaxation exercises. Free nighttime meditation for stress relief, better sleep, and peaceful reflection." />
+        <link rel="canonical" href="https://fengshuiandbeyond.com/meditation/evening-relaxation" />
+      </Helmet>
       <Header />
       <main className="flex-grow pt-6 px-1 pb-10">
         <div className="pt-24 px-4 max-w-3xl mx-auto">

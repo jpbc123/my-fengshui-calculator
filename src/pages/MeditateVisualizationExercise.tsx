@@ -1,5 +1,6 @@
 // src/pages/MeditateVisualizationExercise.tsx
 import React, { useState, useEffect, useCallback } from 'react';
+import { Helmet } from "@/lib/helmet-shim";
 import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, Play, Pause, RotateCcw, Timer, Brain } from 'lucide-react';
 import Header from "@/components/Header";
@@ -175,6 +176,11 @@ const VisualizationExercise = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 text-black overflow-hidden">
+      <Helmet>
+        <title>Guided Visualization Exercises - Meditation | Feng Shui & Beyond</title>
+        <meta name="description" content="Practice guided visualization exercises for relaxation and mental clarity. Free meditation tool with timed sessions and calming visualizations." />
+        <link rel="canonical" href="https://fengshuiandbeyond.com/meditation/visualization-exercises" />
+      </Helmet>
       <Header />
       <main className="flex-grow pt-6 px-4 pb-10">
         <div className="pt-24 max-w-4xl mx-auto">

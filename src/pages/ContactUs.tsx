@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Helmet } from "@/lib/helmet-shim";
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Button } from "@/components/ui/button";
@@ -92,6 +93,12 @@ export default function ContactUs() {
   };
 
   return (
+    <>
+    <Helmet>
+      <title>Contact Us | Feng Shui & Beyond</title>
+      <meta name="description" content="Get in touch with Feng Shui & Beyond. Send us your questions, feedback, or suggestions about our feng shui, astrology, and numerology tools." />
+      <link rel="canonical" href="https://fengshuiandbeyond.com/contact-us" />
+    </Helmet>
     <StarsBackground
       className="min-h-screen"
       starColor="#FFD700"
@@ -217,5 +224,6 @@ export default function ContactUs() {
         </main>
       </div>
     </StarsBackground>
+    </>
   );
 }

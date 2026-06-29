@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Helmet } from "@/lib/helmet-shim";
 import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -192,6 +193,11 @@ const DailyWisdomArticlePage = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
+        <Helmet>
+          <title>Daily Wisdom - Feng Shui & Astrology Insights | Feng Shui & Beyond</title>
+          <meta name="description" content="Get your daily dose of feng shui wisdom, astrology insights, and spiritual guidance. Fresh daily content to inspire balance and positive energy." />
+          <link rel="canonical" href="https://fengshuiandbeyond.com/daily-wisdom-article" />
+        </Helmet>
         <div className="text-center">
           <div className="flex items-center space-x-2 mb-4">
             <div className="w-3 h-3 bg-purple-600 rounded-full animate-bounce"></div>
@@ -206,6 +212,11 @@ const DailyWisdomArticlePage = () => {
 
   return (
     <div className="min-h-screen bg-white">
+      <Helmet>
+        <title>Daily Wisdom - Feng Shui & Astrology Insights | Feng Shui & Beyond</title>
+        <meta name="description" content="Get your daily dose of feng shui wisdom, astrology insights, and spiritual guidance. Fresh daily content to inspire balance and positive energy." />
+        <link rel="canonical" href="https://fengshuiandbeyond.com/daily-wisdom-article" />
+      </Helmet>
       <Header />
       
       <main className="container mx-auto px-4 py-8 mt-16">

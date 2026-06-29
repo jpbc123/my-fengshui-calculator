@@ -1,5 +1,5 @@
 // src/pages/FullMoonForecastPage.tsx
-import { Helmet } from "react-helmet-async";
+import { Helmet } from "@/lib/helmet-shim";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "../components/Header";
@@ -210,6 +210,11 @@ export default function FullMoonForecastPage() {
   if (loading) {
     return (
       <div className="flex flex-col min-h-screen font-sans bg-white">
+        <Helmet>
+          <title>Full Moon Forecast 2025 | Lunar Calendar & Moon Phases | Feng Shui and Beyond</title>
+          <meta name="description" content="Track the 2025 full moon calendar with real-time countdown, lunar eclipse dates, and zodiac insights. Discover full moon rituals and meanings." />
+          <link rel="canonical" href="https://fengshuiandbeyond.com/full-moon-forecast" />
+        </Helmet>
         <Header />
         <main className="flex-grow pt-16 flex items-center justify-center">
           <div className="text-center">
@@ -225,6 +230,11 @@ export default function FullMoonForecastPage() {
   if (error) {
     return (
       <div className="flex flex-col min-h-screen font-sans bg-white">
+        <Helmet>
+          <title>Full Moon Forecast 2025 | Lunar Calendar & Moon Phases | Feng Shui and Beyond</title>
+          <meta name="description" content="Track the 2025 full moon calendar with real-time countdown, lunar eclipse dates, and zodiac insights." />
+          <link rel="canonical" href="https://fengshuiandbeyond.com/full-moon-forecast" />
+        </Helmet>
         <Header />
         <main className="flex-grow pt-16 flex items-center justify-center">
           <div className="text-center text-red-500">Error: {error}</div>

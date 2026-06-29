@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Helmet } from "@/lib/helmet-shim";
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart, HeartHandshake } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -126,6 +127,11 @@ const NameCompatibility = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-white text-black overflow-hidden">
+      <Helmet>
+        <title>Name Compatibility Calculator - Love Match | Feng Shui & Beyond</title>
+        <meta name="description" content="Check your name compatibility with your partner. Our free name compatibility calculator reveals the harmony between two names using numerology principles." />
+        <link rel="canonical" href="https://fengshuiandbeyond.com/games-fun/name-compatibility" />
+      </Helmet>
       <Header />
       <main className="flex-grow pt-6 px-1 pb-10">
         <div className="pt-24 px-4 max-w-3xl mx-auto">

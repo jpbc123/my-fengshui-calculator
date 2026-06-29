@@ -1,5 +1,5 @@
 // src/pages/BirthChart.tsx
-import { Helmet } from "react-helmet-async";
+import { Helmet } from "@/lib/helmet-shim";
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, Clock, MapPin, Star, Download, ArrowRight, Check } from 'lucide-react';

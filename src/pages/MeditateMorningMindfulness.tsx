@@ -1,5 +1,6 @@
 // src/pages/MorningMindfulness.tsx
 import React, { useState, useEffect, useCallback } from 'react';
+import { Helmet } from "@/lib/helmet-shim";
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sun, Heart, Target, Sunrise } from 'lucide-react';
 import Header from "@/components/Header";
@@ -181,6 +182,11 @@ const MorningMindfulness = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-white text-black overflow-hidden">
+      <Helmet>
+        <title>Morning Mindfulness Routine - Start Your Day Right | Feng Shui & Beyond</title>
+        <meta name="description" content="Begin each morning with a guided mindfulness routine. Free morning meditation exercises for gratitude, intention-setting, and mental clarity." />
+        <link rel="canonical" href="https://fengshuiandbeyond.com/meditation/morning-mindfulness" />
+      </Helmet>
       <Header />
       <main className="flex-grow pt-6 px-1 pb-10">
         <div className="pt-24 px-4 max-w-3xl mx-auto">

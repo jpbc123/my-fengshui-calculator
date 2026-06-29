@@ -1,4 +1,5 @@
 // src/pages/TermsOfService.tsx
+import { Helmet } from "@/lib/helmet-shim";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { SplashCursor } from "@/components/ui/splash-cursor";
@@ -6,6 +7,11 @@ import { SplashCursor } from "@/components/ui/splash-cursor";
 const TermsOfService = () => {
   return (
     <>
+      <Helmet>
+        <title>Terms of Service | Feng Shui & Beyond</title>
+        <meta name="description" content="Terms of Service for Feng Shui & Beyond. Read our terms and conditions for using our feng shui, astrology, and numerology tools." />
+        <link rel="canonical" href="https://fengshuiandbeyond.com/terms-of-service" />
+      </Helmet>
       <SplashCursor />
       <div className="relative min-h-screen bg-white text-black">
         <Header />

@@ -1,5 +1,5 @@
 // src/components/PlanetaryOverviewPage.tsx 
-import { Helmet } from "react-helmet-async";
+import { Helmet } from "@/lib/helmet-shim";
 import { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import utc from 'dayjs/plugin/utc';

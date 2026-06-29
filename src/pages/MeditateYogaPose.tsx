@@ -1,6 +1,6 @@
 // src/pages/MeditateYogaPose.tsx
 import React, { useState, useEffect } from "react";
-import { Helmet } from "react-helmet-async";
+import { Helmet } from "@/lib/helmet-shim";
 import { motion, AnimatePresence } from "framer-motion";
 import { Flower2, RotateCcw, Calendar, Target, Heart } from 'lucide-react';
 import Header from "@/components/Header";

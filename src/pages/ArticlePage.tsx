@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
+import { Helmet } from '@/lib/helmet-shim';
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
@@ -353,6 +353,10 @@ export default function ArticlePage() {
   if (loading) {
     return (
       <div className="flex flex-col min-h-screen font-sans bg-white">
+        <Helmet>
+          <title>Article | Feng Shui & Beyond</title>
+          <meta name="description" content="Read insightful articles about feng shui, astrology, numerology, and spiritual wisdom at Feng Shui & Beyond." />
+        </Helmet>
         <Header />
         <main className="flex-grow pt-16 flex items-center justify-center">
           <div className="text-center">

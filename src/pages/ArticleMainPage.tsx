@@ -1,5 +1,5 @@
 // src/pages/ArticleMainPage.tsx
-import { Helmet } from "react-helmet-async";
+import { Helmet } from "@/lib/helmet-shim";
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import Header from "../components/Header";
@@ -92,6 +92,18 @@ const staticArticles: SanityArticle[] = [
     metaDescription: 'Why does the number 33 appear everywhere—from Freemasonry to the human spine to world-changing events? Explore the conspiracies, the coincidences, and the psychological trick that might explain it all.',
     mainImageUrl: '/the-number-33.jpg',
     mainImageAlt: 'Glowing numerology artwork featuring the number 33',
+  },
+  {
+    _id: 'static-celebrity-birthdays',
+    _type: 'article',
+    slug: { current: 'famous-celebrity-birthdays' },
+    title: 'Famous Celebrity Birthdays & Their Zodiac Signs',
+    publishDate: '2026-05-25',
+    tags: ['Celebrity'],
+    body: [],
+    metaDescription: 'Explore famous celebrity birthdays organized by month. Discover the Western zodiac signs and Chinese zodiac animals of your favorite stars.',
+    mainImageUrl: '/celebrity-birthdays.jpg',
+    mainImageAlt: 'Famous celebrity birthdays and zodiac signs',
   },
 ];
 
@@ -324,6 +336,11 @@ export default function ArticlesPage() {
   if (loading) {
     return (
       <div className="flex flex-col min-h-screen font-sans bg-white">
+        <Helmet>
+          <title>Articles - Astrology, Feng Shui & Spiritual Wisdom | Feng Shui and Beyond</title>
+          <meta name="description" content="Explore articles on astrology, feng shui, numerology, and spiritual wisdom. Deep dive into ancient wisdom and modern spiritual practices." />
+          <link rel="canonical" href="https://fengshuiandbeyond.com/article" />
+        </Helmet>
         <Header />
         <main className="flex-grow pt-16 flex items-center justify-center">
           <div className="text-center">

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Helmet } from "@/lib/helmet-shim";
 import { motion, AnimatePresence } from "framer-motion";
 import { Wand2 } from "lucide-react";
 import Header from "@/components/Header";
@@ -100,6 +101,11 @@ const LuckyNumbersGenerator = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-white text-black overflow-hidden">
+      <Helmet>
+        <title>Lucky Numbers Generator - Find Your Lucky Numbers | Feng Shui & Beyond</title>
+        <meta name="description" content="Generate your personalized lucky numbers based on numerology and astrology. Discover numbers that align with your birth date and zodiac energy." />
+        <link rel="canonical" href="https://fengshuiandbeyond.com/games-fun/lucky-numbers-generator" />
+      </Helmet>
       <Header />
       <main className="flex-grow pt-6 px-1 pb-10">
         <div className="pt-24 px-4 max-w-3xl mx-auto">

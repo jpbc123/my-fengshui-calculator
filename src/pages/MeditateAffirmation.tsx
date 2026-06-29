@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Helmet } from "@/lib/helmet-shim";
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart, Sparkles, RotateCcw } from 'lucide-react';
 import Header from "@/components/Header";
@@ -124,6 +125,11 @@ const Affirmations = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-orange-50 text-black overflow-hidden">
+      <Helmet>
+        <title>Daily Affirmations - Positive Mantras | Feng Shui & Beyond</title>
+        <meta name="description" content="Start your day with powerful daily affirmations. Free positive mantras for self-love, abundance, confidence, and inner peace." />
+        <link rel="canonical" href="https://fengshuiandbeyond.com/meditation/daily-affirmation" />
+      </Helmet>
       <Header />
       <main className="flex-grow pt-6 px-4 pb-10">
         <div className="pt-24 max-w-4xl mx-auto">

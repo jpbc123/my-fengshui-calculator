@@ -1,3 +1,4 @@
+import { Helmet } from "@/lib/helmet-shim";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { SplashCursor } from "@/components/ui/splash-cursor";
@@ -5,6 +6,11 @@ import { SplashCursor } from "@/components/ui/splash-cursor";
 const PrivacyPolicy = () => {
   return (
     <>
+      <Helmet>
+        <title>Privacy Policy | Feng Shui & Beyond</title>
+        <meta name="description" content="Privacy Policy for Feng Shui & Beyond. Learn how we collect, use, and protect your personal information." />
+        <link rel="canonical" href="https://fengshuiandbeyond.com/privacy-policy" />
+      </Helmet>
       <SplashCursor />
       <div className="relative min-h-screen bg-white text-black">
         <Header />

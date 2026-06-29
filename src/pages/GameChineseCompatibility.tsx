@@ -1,5 +1,6 @@
 // src/pages/GameChineseCompatibility.tsx
 import { useState, useEffect } from "react";
+import { Helmet } from "@/lib/helmet-shim";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useSearchParams } from "react-router-dom";
 import { MoonStar, Sparkles } from "lucide-react";
@@ -1142,6 +1143,11 @@ const handleCalculate = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-white text-black overflow-hidden">
+      <Helmet>
+        <title>Chinese Zodiac Compatibility - Love Match Calculator | Feng Shui & Beyond</title>
+        <meta name="description" content="Discover your Chinese zodiac compatibility. Find out how your animal sign matches with your partner's for love, friendship, and business relationships." />
+        <link rel="canonical" href="https://fengshuiandbeyond.com/games-fun/chinese-zodiac-compatibility" />
+      </Helmet>
       <Header />
       <main className="flex-grow pt-6 px-1 pb-10">
         <div className="pt-24 px-4 max-w-3xl mx-auto">

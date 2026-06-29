@@ -70,6 +70,10 @@ const routes = [
   '/articles/must-have-feng-shui-items-for-a-happier-balanced-home',
   '/articles/hollywood-success-fengshui',
   '/articles/the-number-33',
+  '/articles/famous-celebrity-birthdays',
+
+  // Feng Shui Room Analyzer
+  '/feng-shui/room-analyzer',
 
   // Dedicated astrology pages
   '/mercury-retrograde',

@@ -8,7 +8,7 @@ const FeaturesSection = () => {
 		<h3 className="text-4xl md:text-4xl font-bold mb-4 text-gold">Numerology & Astrology</h3>
         
         <p className="text-lg max-w-3xl mx-auto mb-10 text-gray-300">
-          Gain personalized insights into your energy, relationships, and life path with our all-in-one guidance tools — blending ancient traditions with modern precision.
+          Gain personalized insights into your energy, relationships, and life path with our all-in-one guidance tools, blending ancient traditions with modern precision.
         </p>
 
         {/* Grid of features */}

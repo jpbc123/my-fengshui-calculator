@@ -1,5 +1,6 @@
 // src/pages/AuraAnalysisPage.tsx
 import React, { useState } from 'react';
+import { Helmet } from "@/lib/helmet-shim";
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -220,6 +221,11 @@ export default function AuraAnalysisPage() {
 
   return (
     <div className="bg-gradient-to-br from-slate-50 via-purple-50 to-indigo-50 text-black min-h-screen overflow-x-hidden">
+      <Helmet>
+        <title>Aura Analysis - Discover Your Energy Color | Feng Shui & Beyond</title>
+        <meta name="description" content="Take our free aura analysis quiz to discover your dominant energy color. Learn what your aura reveals about your personality, emotions, and spiritual energy." />
+        <link rel="canonical" href="https://fengshuiandbeyond.com/games-fun/aura-analysis" />
+      </Helmet>
       <Header />
       <div className="container mx-auto px-4 py-6 sm:py-12 mt-12 max-w-6xl overflow-x-hidden">
         {/* Header Section */}

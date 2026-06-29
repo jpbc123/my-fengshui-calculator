@@ -1,5 +1,5 @@
 // src/pages/FengShuiWeddingDates.tsx
-import { Helmet } from "react-helmet-async";
+import { Helmet } from "@/lib/helmet-shim";
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Heart, Calendar, Star, CheckCircle, CalendarCheck, Gift, Shield, Sparkles, Users, Clock, AlertTriangle, ChevronDown, ChevronUp } from 'lucide-react';

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Helmet } from "@/lib/helmet-shim";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Sparkles, Star } from "lucide-react"; // Changed Constellation to Star
@@ -316,6 +317,11 @@ const WesternZodiacCompatibility = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-white text-black overflow-hidden">
+      <Helmet>
+        <title>Western Zodiac Compatibility - Star Sign Love Match | Feng Shui & Beyond</title>
+        <meta name="description" content="Check your Western zodiac compatibility. See how your star sign pairs with others for love, romance, and friendship based on astrology." />
+        <link rel="canonical" href="https://fengshuiandbeyond.com/games-fun/western-zodiac-compatibility" />
+      </Helmet>
       <Header />
       <main className="flex-grow pt-6 px-1 pb-10">
         <div className="pt-24 px-4 max-w-3xl mx-auto">
