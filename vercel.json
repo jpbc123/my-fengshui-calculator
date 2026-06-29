@@ -2,10 +2,11 @@
   "buildCommand": "npm run vercel-build",
   "outputDirectory": "dist",
   "framework": "vite",
+  "cleanUrls": true,
   "redirects": [],
   "rewrites": [
     {
-      "source": "/((?!@|src|node_modules|.*\\..*).*)",
+      "source": "/((?!api|@|src|node_modules|static-loader-data|.*\\..*).*)",
       "destination": "/index.html"
     }
   ],
