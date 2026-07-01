@@ -14,6 +14,7 @@ import { Calendar, Tag, ArrowRight, Search } from "lucide-react";
 
 import planetaryOverviewImage from '../assets/planetary-overview.jpg';
 import staticArticleImage from '../assets/numerology.jpg';
+import { ARTICLES } from "@/data/articles-manifest";
 
 // Create Sanity client inline
 const sanityClient = createClient({
@@ -116,9 +117,26 @@ const categories = [
   { name: "Planetary Overview", icon: null, color: "bg-orange-100 text-orange-700 hover:bg-orange-200" },
 ];
 
+// Build-time seed: every article from the manifest (Sanity + static), so the
+// prerendered (static) HTML ships real article cards + links for Googlebot.
+// The Sanity fetch below then refreshes with live data (incl. planetary overviews).
+const seedArticles: CombinedArticle[] = ARTICLES.map((a) => ({
+  _id: a._id,
+  _type: 'article',
+  slug: a.slug,
+  title: a.title,
+  publishDate: a.publishDate,
+  tags: a.tags,
+  metaDescription: a.metaDescription,
+  mainImage: a.mainImage,
+  mainImageUrl: a.mainImageUrl,
+  mainImageAlt: a.mainImageAlt,
+  body: [],
+})) as CombinedArticle[];
+
 export default function ArticlesPage() {
-  const [articles, setArticles] = useState<CombinedArticle[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [articles, setArticles] = useState<CombinedArticle[]>(seedArticles);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -333,7 +351,7 @@ export default function ArticlesPage() {
     return categories.find(cat => cat.name === categoryName) || categories[0];
   };
 
-  if (loading) {
+  if (loading && articles.length === 0) {
     return (
       <div className="flex flex-col min-h-screen font-sans bg-white">
         <Helmet>
@@ -353,7 +371,7 @@ export default function ArticlesPage() {
     );
   }
 
-  if (error) {
+  if (error && articles.length === 0) {
     return (
       <div className="flex flex-col min-h-screen font-sans bg-white">
         <Header />

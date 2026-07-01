@@ -12,6 +12,8 @@ import { PortableText, PortableTextComponents } from '@portabletext/react';
 import { toPlainText } from '@portabletext/react';
 import { Calendar, Tag, Star, ArrowLeft, Share2 } from "lucide-react";
 import useDocumentTitle from '@/hooks/useDocumentTitle';
+import { ARTICLES } from '@/data/articles-manifest';
+import { ARTICLE_CONTENT } from '@/data/articles-content';
 
 // Define the interface for your article data from Sanity
 interface SanityArticle {
@@ -155,10 +157,58 @@ const components: PortableTextComponents = {
   },
 };
 
+// Build-time seed: for Sanity articles we have the full body in the manifest,
+// so we can render real content into the prerendered (static) HTML instead of a
+// loading skeleton. The Sanity fetch below then refreshes with live data.
+function getSeedArticle(slug?: string): CombinedArticle | null {
+  if (!slug) return null;
+  const meta = ARTICLES.find((a) => a.slug.current === slug && a.source === 'sanity');
+  const content = ARTICLE_CONTENT[slug];
+  if (!meta || !content) return null;
+  return {
+    _type: 'article',
+    slug: meta.slug,
+    title: meta.title,
+    subtitle: content.subtitle,
+    publishDate: meta.publishDate,
+    tags: meta.tags,
+    body: content.body,
+    mainImage: content.mainImage ?? meta.mainImage,
+    metaDescription: meta.metaDescription,
+  } as CombinedArticle;
+}
+
+// Pick related articles for cross-linking. Prefers articles sharing a tag, then
+// fills with circular neighbours so EVERY article receives real inbound <a href>
+// links in the prerendered HTML (fixes the older articles that fall past the
+// hub's first pagination page).
+function getRelatedArticles(slug: string | undefined, limit = 6) {
+  const cur = ARTICLES.find((a) => a.slug.current === slug);
+  const curTags = new Set((cur?.tags || []).map((t) => t.toLowerCase()));
+  const sameTag = ARTICLES.filter(
+    (a) => a.slug.current !== slug && a.tags?.some((t) => curTags.has(t.toLowerCase()))
+  );
+  const idx = ARTICLES.findIndex((a) => a.slug.current === slug);
+  const circular = [];
+  if (idx >= 0) {
+    for (let k = 1; k <= ARTICLES.length; k++) circular.push(ARTICLES[(idx + k) % ARTICLES.length]);
+  }
+  const seen = new Set([slug]);
+  const out = [];
+  for (const a of [...sameTag, ...circular, ...ARTICLES]) {
+    if (out.length >= limit) break;
+    if (seen.has(a.slug.current)) continue;
+    seen.add(a.slug.current);
+    out.push(a);
+  }
+  return out;
+}
+
 export default function ArticlePage() {
   const { slug } = useParams<{ slug: string }>();
-  const [article, setArticle] = useState<CombinedArticle | null>(null);
-  const [loading, setLoading] = useState(true);
+  const seedArticle = getSeedArticle(slug);
+  const [article, setArticle] = useState<CombinedArticle | null>(seedArticle);
+  const [loading, setLoading] = useState(!seedArticle);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
@@ -250,6 +300,8 @@ export default function ArticlePage() {
   const formattedDate = useMemo(() => {
     return article?.publishDate ? dayjs(article.publishDate).format('MMMM D, YYYY') : '';
   }, [article]);
+
+  const relatedArticles = useMemo(() => getRelatedArticles(slug), [slug]);
 
   // Generate fallback meta description
   const metaDescription = useMemo(() => {
@@ -350,7 +402,7 @@ export default function ArticlePage() {
     }
   };
 
-  if (loading) {
+  if (loading && !article) {
     return (
       <div className="flex flex-col min-h-screen font-sans bg-white">
         <Helmet>
@@ -369,7 +421,7 @@ export default function ArticlePage() {
     );
   }
 
-  if (error) {
+  if (error && !article) {
     return (
       <div className="flex flex-col min-h-screen font-sans bg-white">
         <Header />
@@ -530,6 +582,29 @@ export default function ArticlePage() {
                         </span>
                       ))}
                   </div>
+                </div>
+              )}
+
+              {/* Related Articles — real crawlable links so every article gets
+                  internal inbound links in the prerendered HTML */}
+              {relatedArticles.length > 0 && (
+                <div className="mt-12 pt-8 border-t border-gray-200">
+                  <h2 className="text-xl font-bold text-black mb-5">You Might Also Like</h2>
+                  <ul className="grid gap-4 sm:grid-cols-2">
+                    {relatedArticles.map((related) => (
+                      <li key={related.slug.current}>
+                        <Link
+                          to={`/articles/${related.slug.current}`}
+                          className="group flex items-start gap-2 text-gray-800 hover:text-gold transition-colors"
+                        >
+                          <ArrowLeft size={16} className="mt-1 rotate-180 flex-shrink-0 text-gold" />
+                          <span className="font-medium leading-snug group-hover:underline">
+                            {related.title}
+                          </span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               )}
 

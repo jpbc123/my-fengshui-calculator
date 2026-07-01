@@ -1,6 +1,14 @@
 import { lazy } from 'react';
 import type { RouteObject } from 'react-router-dom';
 import AppLayout from '@/components/AppLayout';
+import { ARTICLES } from '@/data/articles-manifest';
+
+// Prerender every Sanity-sourced article (the 2 static ones have their own
+// dedicated routes/components below). Sourced from the build-time manifest so
+// this never goes stale.
+const sanityArticlePaths = ARTICLES
+  .filter((a) => a.source === 'sanity')
+  .map((a) => `articles/${a.slug.current}`);
 
 const Index = lazy(() => import('./pages/Index'));
 const NotFound = lazy(() => import('./pages/NotFound'));
@@ -127,19 +135,7 @@ export const routes: RouteObject[] = [
       {
         path: 'articles/:slug',
         element: <ArticlePage />,
-        getStaticPaths: () => [
-          'articles/feng-shui-2026-lucky-colors-symbols-zodiac-forecast',
-          'articles/flying-stars-2026-feng-shui-sector-guide',
-          'articles/feng-shui-2026-year-of-fire-horse',
-          'articles/chinese-zodiac-hilarious-roast',
-          'articles/astrology-101-complete-beginners-guide',
-          'articles/feng-shui-traditional-vs-modern',
-          'articles/astrology-roast-zodiac-signs',
-          'articles/dating-by-elements',
-          'articles/house-numbers-destiny',
-          'articles/must-have-feng-shui-items-for-a-happier-balanced-home',
-          'articles/hollywood-success-fengshui',
-        ],
+        getStaticPaths: () => sanityArticlePaths,
       },
 
       // Dedicated Astrology Pages

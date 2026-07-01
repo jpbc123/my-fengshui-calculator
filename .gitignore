@@ -1,7 +1,16 @@
+# Screenshots
+git1.png
+git2.png
+broke.png
+
 # Environment variables
 .env
 .env.*
 !.env.example
+
+# Google Indexing API service account key — NEVER commit this
+service-account.json
+*.gserviceaccount.json
 
 # Logs
 logs
@@ -32,3 +41,4 @@ dist-ssr
 
 #MD Files
 SSG-SEO-LESSONS-LEARNED.md
+TODO-CONVERSION-PLAN.md

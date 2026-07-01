@@ -9,7 +9,8 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "vercel-build": "npm run generate-sitemap && vite-react-ssg build",
+    "vercel-build": "npm run generate-articles && npm run generate-sitemap && vite-react-ssg build",
+    "generate-articles": "node utils/generate-articles-manifest.mjs",
     "generate-sitemap": "node utils/generate-sitemap.js"
   },
   "dependencies": {
@@ -72,6 +73,7 @@
     "ephemeris": "^2.2.0",
     "express": "^5.1.0",
     "framer-motion": "^12.23.12",
+    "googleapis": "^173.0.0",
     "html-pdf-node": "^1.0.8",
     "html2canvas": "^1.4.1",
     "input-otp": "^1.2.4",

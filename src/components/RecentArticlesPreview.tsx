@@ -7,6 +7,7 @@ import { toPlainText } from "@portabletext/react";
 import dayjs from "dayjs";
 import { Calendar, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
+import { ARTICLES } from "@/data/articles-manifest";
 
 // Create Sanity client inline
 const sanityClient = createClient({
@@ -41,14 +42,29 @@ interface SanityArticle {
     };
     alt?: string;
   };
+  mainImageUrl?: string;
   publishDate: string;
   body: any[];
   metaDescription?: string;
 }
 
+// Build-time seed: the 3 most recent articles from the manifest. This renders
+// real links into the prerendered (static) HTML so Googlebot sees them without
+// running JS. The Sanity fetch below then refreshes with live data.
+const seedArticles: SanityArticle[] = ARTICLES.slice(0, 3).map((a) => ({
+  _id: a._id,
+  slug: a.slug,
+  title: a.title,
+  publishDate: a.publishDate,
+  mainImage: a.mainImage,
+  mainImageUrl: a.mainImageUrl,
+  metaDescription: a.metaDescription,
+  body: [],
+}));
+
 const RecentArticlesPreview = () => {
-  const [articles, setArticles] = useState<SanityArticle[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [articles, setArticles] = useState<SanityArticle[]>(seedArticles);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -103,7 +119,7 @@ const RecentArticlesPreview = () => {
     return 'Read this insightful article to discover more...';
   };
 
-  if (loading) {
+  if (loading && articles.length === 0) {
     return (
       <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
         <div className="flex items-center gap-3 mb-6">
@@ -126,7 +142,7 @@ const RecentArticlesPreview = () => {
     );
   }
 
-  if (error || articles.length === 0) {
+  if (articles.length === 0) {
     return (
       <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
         <div className="text-center text-gray-500">
@@ -175,6 +191,12 @@ const RecentArticlesPreview = () => {
                     onError={(e) => {
                       e.currentTarget.src = "https://placehold.co/120x120/E5E7EB/4B5563?text=No+Image";
                     }}
+                  />
+                ) : article.mainImageUrl ? (
+                  <img
+                    src={article.mainImageUrl}
+                    alt={article.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
