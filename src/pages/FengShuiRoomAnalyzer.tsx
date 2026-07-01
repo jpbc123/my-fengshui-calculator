@@ -8,7 +8,13 @@ import Footer from '@/components/Footer';
 import Breadcrumb from '@/components/Breadcrumb';
 import { Upload, Camera, RotateCcw, Sparkles, ArrowRight, Loader2, X, CheckCircle2 } from 'lucide-react';
 
-const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+// SECURITY: Do NOT read the Gemini key from a VITE_ env var here. Any VITE_-prefixed
+// value is inlined as plaintext into the shipped browser bundle (e.g.
+// dist/assets/FengShuiRoomAnalyzer-*.js) and can be read by anyone — this is what
+// caused the key to be flagged/leaked. This page is intentionally disabled until the
+// Gemini call is moved to a server-side endpoint (see FIX-STEPS-key-leak.txt Part D).
+const GEMINI_API_KEY = '';
+const ROOM_ANALYZER_ENABLED = false;
 const ANALYSIS_MODEL = 'gemini-2.0-flash';
 const IMAGE_GEN_MODEL = 'gemini-2.0-flash-exp-image-generation';
 
@@ -238,6 +244,10 @@ const FengShuiRoomAnalyzer: React.FC = () => {
 
   const handleAnalyze = async () => {
     if (!selectedImage) return;
+    if (!ROOM_ANALYZER_ENABLED || !GEMINI_API_KEY) {
+      setError('The Room Analyzer is coming soon and is temporarily unavailable.');
+      return;
+    }
     setIsAnalyzing(true);
     setError(null);
     setAnalysis(null);
