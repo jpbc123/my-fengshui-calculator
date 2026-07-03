@@ -483,6 +483,44 @@ export default function ArticlePage() {
         <meta name="author" content="Feng Shui & Beyond" />
         <meta name="publish-date" content={article.publishDate} />
         <link rel="canonical" href={`https://fengshuiandbeyond.com/articles/${slug}`} />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": article.title,
+            "description": metaDescription,
+            "image": article._type === 'article' && (article as SanityArticle).mainImage
+              ? urlFor((article as SanityArticle).mainImage).width(1200).height(630).url()
+              : "https://fengshuiandbeyond.com/og-default.jpg",
+            "datePublished": article.publishDate,
+            "dateModified": article.publishDate,
+            "author": {
+              "@type": "Person",
+              "name": "Feng Shui & Beyond",
+              "url": "https://fengshuiandbeyond.com/about-us"
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "Feng Shui & Beyond",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://fengshuiandbeyond.com/circle-logo.png"
+              }
+            },
+            "mainEntityOfPage": `https://fengshuiandbeyond.com/articles/${slug}`
+          })}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://fengshuiandbeyond.com/" },
+              { "@type": "ListItem", "position": 2, "name": "Articles", "item": "https://fengshuiandbeyond.com/article" },
+              { "@type": "ListItem", "position": 3, "name": article.title, "item": `https://fengshuiandbeyond.com/articles/${slug}` }
+            ]
+          })}
+        </script>
       </Helmet>
       
       <Header />

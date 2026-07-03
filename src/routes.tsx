@@ -54,7 +54,7 @@ const ComingSoonStore = lazy(() => import('./pages/ComingSoonStore'));
 const Store = lazy(() => import('./pages/Store'));
 const BirthChart = lazy(() => import('./pages/BirthChart'));
 const FengShuiWeddingDates = lazy(() => import('./pages/FengShuiWeddingDates'));
-const FengShuiRoomAnalyzer = lazy(() => import('./pages/FengShuiRoomAnalyzer'));
+
 const Number33Article = lazy(() => import('./pages/Number33Article'));
 const CelebrityBirthdaysArticle = lazy(() => import('./pages/CelebrityBirthdaysArticle'));
 
@@ -81,8 +81,6 @@ export const routes: RouteObject[] = [
       // Submenu - Feng Shui
       { path: 'feng-shui/personal-element', element: <PersonalElement /> },
       { path: 'feng-shui/kua-number', element: <KuaNumberCalculator /> },
-      { path: 'feng-shui/room-analyzer', element: <FengShuiRoomAnalyzer /> },
-
       // Submenu - Numerology
       { path: 'numerology/visiber-calculator', element: <VisiberCalculator /> },
 

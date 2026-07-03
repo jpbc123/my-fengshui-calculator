@@ -9,9 +9,10 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "vercel-build": "npm run generate-articles && npm run generate-sitemap && vite-react-ssg build",
+    "vercel-build": "npm run generate-articles && npm run generate-sitemap && vite-react-ssg build && npm run submit-indexnow",
     "generate-articles": "node utils/generate-articles-manifest.mjs",
-    "generate-sitemap": "node utils/generate-sitemap.js"
+    "generate-sitemap": "node utils/generate-sitemap.js",
+    "submit-indexnow": "node utils/submit-indexnow.mjs"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

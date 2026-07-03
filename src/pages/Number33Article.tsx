@@ -145,11 +145,23 @@ const Number33Article = () => {
             "@type": "Article",
             "headline": "The Number 33: Elite Obsession, Hidden Patterns, or a Trick of Your Mind?",
             "description": "Why does the number 33 appear everywhere, from Freemasonry to the human spine to world-changing events?",
-            "author": { "@type": "Organization", "name": "Feng Shui & Beyond", "url": "https://fengshuiandbeyond.com" },
-            "publisher": { "@type": "Organization", "name": "Feng Shui & Beyond", "url": "https://fengshuiandbeyond.com" },
-            "datePublished": "2026-05-24",
-            "url": "https://fengshuiandbeyond.com/articles/the-number-33",
             "image": "https://fengshuiandbeyond.com/the-number-33.jpg",
+            "datePublished": "2026-05-24",
+            "dateModified": "2026-05-24",
+            "author": { "@type": "Person", "name": "Feng Shui & Beyond", "url": "https://fengshuiandbeyond.com/about-us" },
+            "publisher": { "@type": "Organization", "name": "Feng Shui & Beyond", "logo": { "@type": "ImageObject", "url": "https://fengshuiandbeyond.com/circle-logo.png" } },
+            "mainEntityOfPage": "https://fengshuiandbeyond.com/articles/the-number-33"
+          })}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://fengshuiandbeyond.com/" },
+              { "@type": "ListItem", "position": 2, "name": "Articles", "item": "https://fengshuiandbeyond.com/article" },
+              { "@type": "ListItem", "position": 3, "name": "The Number 33", "item": "https://fengshuiandbeyond.com/articles/the-number-33" }
+            ]
           })}
         </script>
       </Helmet>

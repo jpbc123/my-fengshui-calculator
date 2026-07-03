@@ -132,7 +132,7 @@ const Index = () => {
                 "@type": "ListItem",
                 "position": 1,
                 "name": "Daily Horoscopes",
-                "url": "https://fengshuiandbeyond.com/horoscopes",
+                "url": "https://fengshuiandbeyond.com/horoscope",
                 "description": "Get your daily Western and Chinese zodiac horoscope readings"
               },
               {
@@ -160,14 +160,14 @@ const Index = () => {
                 "@type": "ListItem",
                 "position": 5,
                 "name": "Kua Number Calculator",
-                "url": "https://fengshuiandbeyond.com/kua-calculator",
+                "url": "https://fengshuiandbeyond.com/feng-shui/kua-number",
                 "description": "Calculate your personal feng shui Kua number"
               },
               {
                 "@type": "ListItem",
                 "position": 6,
                 "name": "Auspicious Wedding Dates",
-                "url": "https://fengshuiandbeyond.com/wedding-dates",
+                "url": "https://fengshuiandbeyond.com/auspicious-wedding-date-planner",
                 "description": "Find the most auspicious dates for your wedding"
               }
             ]

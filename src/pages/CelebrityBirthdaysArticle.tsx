@@ -456,10 +456,23 @@ const CelebrityBirthdaysArticle = () => {
             "@type": "Article",
             "headline": "Famous Celebrity Birthdays & Their Zodiac Signs",
             "description": "Explore famous celebrity birthdays organized by month with their Western zodiac signs and Chinese zodiac animals.",
-            "author": { "@type": "Organization", "name": "Feng Shui & Beyond", "url": "https://fengshuiandbeyond.com" },
-            "publisher": { "@type": "Organization", "name": "Feng Shui & Beyond", "url": "https://fengshuiandbeyond.com" },
+            "image": "https://fengshuiandbeyond.com/celebrity-birthdays.jpg",
             "datePublished": "2026-05-25",
-            "url": "https://fengshuiandbeyond.com/articles/famous-celebrity-birthdays",
+            "dateModified": "2026-05-25",
+            "author": { "@type": "Person", "name": "Feng Shui & Beyond", "url": "https://fengshuiandbeyond.com/about-us" },
+            "publisher": { "@type": "Organization", "name": "Feng Shui & Beyond", "logo": { "@type": "ImageObject", "url": "https://fengshuiandbeyond.com/circle-logo.png" } },
+            "mainEntityOfPage": "https://fengshuiandbeyond.com/articles/famous-celebrity-birthdays"
+          })}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://fengshuiandbeyond.com/" },
+              { "@type": "ListItem", "position": 2, "name": "Articles", "item": "https://fengshuiandbeyond.com/article" },
+              { "@type": "ListItem", "position": 3, "name": "Celebrity Birthdays", "item": "https://fengshuiandbeyond.com/articles/famous-celebrity-birthdays" }
+            ]
           })}
         </script>
       </Helmet>
