@@ -16,6 +16,10 @@ import ccompatibilityImage from '../assets/chinese-compatibility.jpg';
 import wcompatibilityImage from '../assets/western-compatibility.jpg';
 import fcookieImage from '../assets/fortunecookie.jpg';
 
+// Evergreen per-sign content, rendered at build time so the prerendered HTML has
+// real, unique content instead of an empty client-fetched shell.
+import { westernZodiacData } from '../data/westernZodiacData';
+
 const breadcrumbs = [
   { label: "Home", path: "/" },
   { label: "Horoscope", path: "/horoscope" },
@@ -447,7 +451,20 @@ export default function WesternDailyHoroscope() {
       <Header />
       <main className="flex-grow container mx-auto px-4 py-8 max-w-6xl mt-20">
         <Breadcrumb items={breadcrumbs} />
-        
+
+        {/* Always-rendered heading + intro so the prerendered HTML has a real h1 and
+            descriptive copy even before the client-side wheel/forecast loads. */}
+        <header className="text-center mt-6 mb-2">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-800">
+            Western Zodiac Horoscope
+          </h1>
+          <p className="mt-4 max-w-3xl mx-auto text-lg text-gray-600 leading-relaxed">
+            Spin the zodiac wheel to get today's free daily, weekly, and yearly horoscope for
+            your Western sun sign — with insights on love, career, wealth, and more. Below you'll
+            find an overview of all 12 astrological signs, their dates, and core traits.
+          </p>
+        </header>
+
         <div className="flex flex-col lg:flex-row gap-6 mt-8">
           <div className="flex-1">
             <div className="space-y-8">
@@ -547,6 +564,35 @@ export default function WesternDailyHoroscope() {
             </div>
           </div>
         </div>
+
+        {/* Evergreen, prerendered overview of all 12 signs. Sourced from static data
+            (not the client-fetched API), so it renders into the SSG HTML and gives the
+            landing page real, unique, indexable content. */}
+        <section className="mt-16 mb-8">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-8 text-center">
+            The 12 Western Zodiac Signs
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {Object.values(westernZodiacData).map((sign) => (
+              <article key={sign.name} className="p-5 bg-white border border-gray-200 rounded-xl shadow-sm">
+                <div className="flex items-baseline justify-between mb-2">
+                  <h3 className="text-xl font-semibold text-gray-800">{sign.name}</h3>
+                  <span className="text-sm text-gray-500">{sign.dateRange}</span>
+                </div>
+                <p className="text-gray-700 leading-relaxed mb-3">{sign.personalityInsights}</p>
+                <p className="text-sm text-gray-600 mb-1">
+                  <span className="font-semibold">Traits:</span> {sign.traits.join(', ')}
+                </p>
+                <p className="text-sm text-gray-600 mb-1">
+                  <span className="font-semibold">Most compatible with:</span> {sign.compatibility.join(', ')}
+                </p>
+                <p className="text-sm text-gray-600">
+                  <span className="font-semibold">Lucky colors:</span> {sign.luckyColors.join(', ')}
+                </p>
+              </article>
+            ))}
+          </div>
+        </section>
       </main>
     </div>
 	</>
