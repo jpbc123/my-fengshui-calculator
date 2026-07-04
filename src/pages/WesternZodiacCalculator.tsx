@@ -205,7 +205,7 @@ const WesternZodiacCalculator = () => {
   <>
   <Helmet>
   <title>Western Zodiac Calculator - Find Your Sun Sign & Astrological Profile</title>
-  <meta name="description" content="Free Western zodiac calculator to discover your sun sign. Get comprehensive personality traits, 2025 forecast, compatibility insights, lucky elements, and career guidance for all 12 zodiac signs." />
+  <meta name="description" content="Free Western zodiac calculator to find your sun sign by date of birth. Get personality traits, sign dates, elements, compatibility, cusp guidance, and lucky elements for all 12 zodiac signs." />
   <meta name="keywords" content="western zodiac calculator, sun sign calculator, astrology calculator, find my zodiac sign, horoscope sign calculator, birth date zodiac" />
   <link rel="canonical" href="https://fengshuiandbeyond.com/astrology/western-zodiac-calculator" />
   
@@ -503,6 +503,128 @@ const WesternZodiacCalculator = () => {
               )}
             </div>
           </div>
+
+          {/* Evergreen SEO content — always rendered in the static HTML */}
+          <section className="mt-16 border-t border-gray-200 pt-12">
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mb-4">
+              How to Find Your Zodiac Sign by Date of Birth
+            </h2>
+            <p className="text-black/80 leading-relaxed mb-4">
+              Your <strong>Western zodiac sign</strong> — also called your <strong>sun sign</strong> or star
+              sign — is determined by the position of the Sun on the day you were born. There are twelve signs,
+              each covering roughly one month of the year. To find out <em>"what zodiac sign am I,"</em> just
+              enter your date of birth above and the calculator returns your sun sign along with your
+              personality traits, compatibility, and lucky elements.
+            </p>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mt-10 mb-6">
+              The 12 Zodiac Signs and Their Dates
+            </h2>
+            <div className="overflow-x-auto mb-10">
+              <table className="w-full text-sm text-left border border-gray-200 rounded-lg">
+                <thead className="bg-gray-50 text-black">
+                  <tr>
+                    <th className="p-3 font-semibold">Sign</th>
+                    <th className="p-3 font-semibold">Dates</th>
+                    <th className="p-3 font-semibold">Element</th>
+                    <th className="p-3 font-semibold">Ruling Planet</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    { name: "Aries", dates: "Mar 21 – Apr 19", element: "Fire", planet: "Mars" },
+                    { name: "Taurus", dates: "Apr 20 – May 20", element: "Earth", planet: "Venus" },
+                    { name: "Gemini", dates: "May 21 – Jun 20", element: "Air", planet: "Mercury" },
+                    { name: "Cancer", dates: "Jun 21 – Jul 22", element: "Water", planet: "Moon" },
+                    { name: "Leo", dates: "Jul 23 – Aug 22", element: "Fire", planet: "Sun" },
+                    { name: "Virgo", dates: "Aug 23 – Sep 22", element: "Earth", planet: "Mercury" },
+                    { name: "Libra", dates: "Sep 23 – Oct 22", element: "Air", planet: "Venus" },
+                    { name: "Scorpio", dates: "Oct 23 – Nov 21", element: "Water", planet: "Pluto / Mars" },
+                    { name: "Sagittarius", dates: "Nov 22 – Dec 21", element: "Fire", planet: "Jupiter" },
+                    { name: "Capricorn", dates: "Dec 22 – Jan 19", element: "Earth", planet: "Saturn" },
+                    { name: "Aquarius", dates: "Jan 20 – Feb 18", element: "Air", planet: "Uranus / Saturn" },
+                    { name: "Pisces", dates: "Feb 19 – Mar 20", element: "Water", planet: "Neptune / Jupiter" },
+                  ].map((row) => (
+                    <tr key={row.name} className="border-t border-gray-200">
+                      <td className="p-3 font-semibold text-black whitespace-nowrap">
+                        <span className="mr-2">{zodiacSymbols[row.name]}</span>{row.name}
+                      </td>
+                      <td className="p-3 text-black/70 whitespace-nowrap">{row.dates}</td>
+                      <td className="p-3 text-black/70">{row.element}</td>
+                      <td className="p-3 text-black/70">{row.planet}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mt-10 mb-6">
+              The Four Zodiac Elements
+            </h2>
+            <div className="grid gap-4 sm:grid-cols-2 mb-10">
+              {[
+                { el: "🔥 Fire Signs", signs: "Aries, Leo, Sagittarius", desc: "Passionate, bold, and energetic. Fire signs are natural leaders driven by inspiration and action." },
+                { el: "🌍 Earth Signs", signs: "Taurus, Virgo, Capricorn", desc: "Grounded, practical, and reliable. Earth signs value stability, hard work, and tangible results." },
+                { el: "💨 Air Signs", signs: "Gemini, Libra, Aquarius", desc: "Intellectual, social, and communicative. Air signs live in the world of ideas, connection, and curiosity." },
+                { el: "🌊 Water Signs", signs: "Cancer, Scorpio, Pisces", desc: "Emotional, intuitive, and deep. Water signs feel everything and are guided by empathy and instinct." },
+              ].map((e) => (
+                <div key={e.el} className="bg-gray-50 border border-gray-200 rounded-xl p-5">
+                  <h3 className="text-base font-bold text-black mb-1">{e.el}</h3>
+                  <p className="text-xs font-semibold text-black/60 mb-2">{e.signs}</p>
+                  <p className="text-sm text-black/70 leading-relaxed">{e.desc}</p>
+                </div>
+              ))}
+            </div>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mt-10 mb-4">
+              What About Cusp Birthdays?
+            </h2>
+            <p className="text-black/80 leading-relaxed mb-8">
+              If you were born on the boundary between two signs — a <strong>zodiac cusp</strong> — your sun
+              sign can vary by a day depending on the exact year and time of your birth, because the Sun does
+              not change signs at the same clock time every year. If your birthday falls on or near a start/end
+              date in the table above and your result feels off, you may have been born just inside the
+              neighboring sign. A full birth chart using your exact time and place gives the definitive answer.
+            </p>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mt-10 mb-6">
+              Frequently Asked Questions
+            </h2>
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-bold text-black mb-1">What is the difference between a sun sign and a star sign?</h3>
+                <p className="text-black/70 leading-relaxed">
+                  They are the same thing. "Sun sign" and "star sign" both refer to the zodiac sign the Sun was
+                  travelling through when you were born — the sign this calculator gives you.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-black mb-1">Is my zodiac sign the same as my horoscope?</h3>
+                <p className="text-black/70 leading-relaxed">
+                  Your zodiac sign is fixed for life; your horoscope is the changing daily, weekly, or monthly
+                  forecast written for that sign. Once you know your sign here, you can read its current
+                  horoscope.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-black mb-1">Why is my sign different on some websites?</h3>
+                <p className="text-black/70 leading-relaxed">
+                  Most differences come from cusp dates or from sites using the astronomical constellations
+                  rather than the standard tropical zodiac. This calculator uses the widely accepted tropical
+                  date ranges shown in the table above.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-10 flex flex-wrap gap-4">
+              <Link to="/horoscope/western-zodiac" className="text-gold font-semibold hover:underline">
+                Read your daily horoscope →
+              </Link>
+              <Link to="/birth-chart" className="text-gold font-semibold hover:underline">
+                Get your full birth chart →
+              </Link>
+            </div>
+          </section>
         </div>
       </main>
     </div>

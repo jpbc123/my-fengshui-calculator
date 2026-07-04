@@ -26,7 +26,6 @@ const ChineseZodiacLanding = lazy(() => import('./pages/ChineseZodiacLanding'));
 const WesternDailyHoroscope = lazy(() => import('./pages/WesternDailyHoroscope'));
 const AuraAnalysisPage = lazy(() => import('./pages/AuraAnalysisPage'));
 const DailyWisdomArticlePage = lazy(() => import('./pages/DailyWisdomArticlePage'));
-const PlanetaryOverviewPage = lazy(() => import('./pages/PlanetaryOverviewPage'));
 const ArticlePage = lazy(() => import('./pages/ArticlePage'));
 const ArticleMainPage = lazy(() => import('./pages/ArticleMainPage'));
 const MercuryRetrogradePage = lazy(() => import('./pages/MercuryRetrogradePage'));
@@ -103,7 +102,6 @@ export const routes: RouteObject[] = [
 
       // Tools
       { path: 'daily-wisdom-article', element: <DailyWisdomArticlePage /> },
-      { path: 'planetary-overview', element: <PlanetaryOverviewPage /> },
 
       // Games
       { path: 'games-fun', element: <GamesFunLanding /> },

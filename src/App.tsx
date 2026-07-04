@@ -21,8 +21,7 @@ import ChineseZodiacLanding from "@/pages/ChineseZodiacLanding";
 import WesternDailyHoroscope from "./pages/WesternDailyHoroscope";
 
 import AuraAnalysisPage from "@/pages/AuraAnalysisPage";
-import DailyWisdomArticlePage from "@/pages/DailyWisdomArticlePage"; 
-import PlanetaryOverviewPage from "@/pages/PlanetaryOverviewPage"; 
+import DailyWisdomArticlePage from "@/pages/DailyWisdomArticlePage";
 import ArticlePage from './pages/ArticlePage';
 import ArticleMainPage from './pages/ArticleMainPage';
 import Number33Article from './pages/Number33Article';
@@ -110,7 +109,6 @@ const App = () => (
                 
                 {/* Tools Section */}
                 <Route path="/daily-wisdom-article" element={<DailyWisdomArticlePage />} />
-                <Route path="/planetary-overview" element={<PlanetaryOverviewPage />} />
                 
                 {/* Games Section */}
                 <Route path="/games-fun" element={<GamesFunLanding />} />

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Helmet } from "@/lib/helmet-shim";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom";
 import { Sparkles, Cookie } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -290,6 +291,76 @@ const FortuneCookie = () => {
               </Button>
             )}
           </div>
+
+          {/* Evergreen SEO content — always rendered in the static HTML */}
+          <section className="text-left mt-16">
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mb-4">
+              About the Virtual Fortune Cookie
+            </h2>
+            <p className="text-black/80 leading-relaxed mb-4">
+              Crack open a virtual fortune cookie for a moment of daily inspiration, wisdom, or feng shui insight.
+              Each click reveals a randomly chosen message — some are timeless proverbs, others are practical feng
+              shui tips for inviting good energy into your home and life. It is a fun, free way to set a positive
+              intention or find a little spark of guidance whenever you need it.
+            </p>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mt-10 mb-4">
+              A Short History of the Fortune Cookie
+            </h2>
+            <p className="text-black/80 leading-relaxed mb-8">
+              Despite being served in Chinese restaurants around the world, the fortune cookie as we know it was
+              actually popularised in early-1900s <strong>California</strong>, with roots in Japanese cracker-making
+              traditions. The little slip of paper inside — the "fortune" — traditionally carries a proverb, a lucky
+              number, or a hopeful prediction. Over time, fortune cookies have become a beloved symbol of optimism
+              and playful curiosity about what the future holds.
+            </p>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mt-10 mb-4">
+              How to Use Your Daily Fortune
+            </h2>
+            <ul className="list-disc list-inside space-y-2 text-black/80 mb-8">
+              <li>Read your fortune in the morning and treat it as a gentle theme for the day.</li>
+              <li>When a message is a feng shui tip, try applying it to your space that same day.</li>
+              <li>Draw again anytime you want a fresh dose of encouragement or perspective.</li>
+              <li>Share a meaningful fortune with a friend who might need a lift.</li>
+            </ul>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mt-10 mb-6">
+              Frequently Asked Questions
+            </h2>
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-bold text-black mb-1">Is the fortune cookie free?</h3>
+                <p className="text-black/70 leading-relaxed">
+                  Yes — it is completely free and you can open as many cookies as you like. There is no sign-up and
+                  nothing to install.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-black mb-1">Are the fortunes random?</h3>
+                <p className="text-black/70 leading-relaxed">
+                  Each fortune is chosen at random from a large collection of inspirational sayings and feng shui
+                  tips, so every cookie is a little surprise.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-black mb-1">What do the feng shui fortunes mean?</h3>
+                <p className="text-black/70 leading-relaxed">
+                  Many messages are practical feng shui reminders — such as keeping your entryway clear or adding
+                  plants for vitality — small changes believed to improve the flow of positive energy (chi) at home.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-10 flex flex-wrap gap-4">
+              <Link to="/feng-shui" className="text-gold font-semibold hover:underline">
+                Explore feng shui tips →
+              </Link>
+              <Link to="/games-fun" className="text-gold font-semibold hover:underline">
+                More games &amp; fun tools →
+              </Link>
+            </div>
+          </section>
 
           {/* Explore More Features Section using ImageSwiper */}
           <div className="mt-16 bg-white rounded-xl p-6 shadow-lg border border-gray-200">

@@ -1327,6 +1327,89 @@ const handleCalculate = () => {
             </motion.div>
           )}
       
+          {/* Evergreen SEO content — always rendered in the static HTML */}
+          <section className="text-left mt-16">
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mb-4">
+              Chinese Zodiac Compatibility Explained
+            </h2>
+            <p className="text-black/80 leading-relaxed mb-4">
+              Chinese zodiac compatibility looks at how two animal signs get along in love, marriage, friendship,
+              and business. Choose any two of the twelve animals — Rat, Ox, Tiger, Rabbit, Dragon, Snake, Horse,
+              Goat, Monkey, Rooster, Dog, or Pig — to reveal a compatibility score and a detailed look at your
+              connection. For thousands of years, families across Asia have consulted zodiac compatibility when
+              considering relationships and even wedding dates.
+            </p>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mt-10 mb-6">
+              The Four Compatibility Triangles
+            </h2>
+            <p className="text-black/80 leading-relaxed mb-4">
+              The animals sort into four "affinity triangles" — groups of three signs that naturally understand and
+              support one another:
+            </p>
+            <div className="grid gap-4 sm:grid-cols-2 mb-8">
+              {[
+                { group: "🐀 Rat · 🐉 Dragon · 🐒 Monkey", desc: "Ambitious, clever, and action-oriented — a powerful, dynamic trio." },
+                { group: "🐂 Ox · 🐍 Snake · 🐓 Rooster", desc: "Determined, thoughtful, and hardworking — steady and dependable together." },
+                { group: "🐅 Tiger · 🐎 Horse · 🐕 Dog", desc: "Loyal, honest, and freedom-loving — passionate and principled allies." },
+                { group: "🐇 Rabbit · 🐐 Goat · 🐖 Pig", desc: "Gentle, kind, and artistic — a caring, harmonious circle." },
+              ].map((t) => (
+                <div key={t.group} className="bg-gray-50 border border-gray-200 rounded-xl p-5">
+                  <h3 className="text-base font-bold text-black mb-1">{t.group}</h3>
+                  <p className="text-sm text-black/70 leading-relaxed">{t.desc}</p>
+                </div>
+              ))}
+            </div>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mt-10 mb-4">
+              Which Signs Clash?
+            </h2>
+            <p className="text-black/80 leading-relaxed mb-8">
+              Signs that sit directly opposite each other on the twelve-year wheel (six years apart) are considered
+              the most challenging pairings — such as Rat &amp; Horse, Ox &amp; Goat, Tiger &amp; Monkey, and
+              Dragon &amp; Dog. These "clash" combinations are not doomed, but they usually take more patience and
+              compromise to thrive. Attraction between opposites can be strong, and understanding the difference is
+              half the work.
+            </p>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mt-10 mb-6">
+              Frequently Asked Questions
+            </h2>
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-bold text-black mb-1">Which Chinese zodiac signs are most compatible?</h3>
+                <p className="text-black/70 leading-relaxed">
+                  The strongest matches usually come from within the same affinity triangle — for example
+                  Dragon &amp; Rat, Snake &amp; Rooster, Tiger &amp; Dog, or Rabbit &amp; Pig. Signs three or four
+                  places apart on the wheel also tend to harmonise well.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-black mb-1">Does compatibility only matter for romance?</h3>
+                <p className="text-black/70 leading-relaxed">
+                  Not at all. Zodiac compatibility is used for friendships, family harmony, business partnerships,
+                  and choosing auspicious timing — anywhere two people's energies need to work together.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-black mb-1">Is a "clash" pairing a bad relationship?</h3>
+                <p className="text-black/70 leading-relaxed">
+                  No — a lower score simply means more differences to navigate. Many happy couples are "clashing"
+                  signs; awareness, communication, and shared goals matter far more than the animals alone.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-10 flex flex-wrap gap-4">
+              <Link to="/astrology/chinese-zodiac-calculator" className="text-gold font-semibold hover:underline">
+                Find your Chinese zodiac sign →
+              </Link>
+              <Link to="/games-fun/western-zodiac-compatibility" className="text-gold font-semibold hover:underline">
+                Try Western zodiac compatibility →
+              </Link>
+            </div>
+          </section>
+
           {/* Explore More Features Section using ImageSwiper */}
           <div className="mt-16 bg-white rounded-xl p-6 shadow-lg border border-gray-200">
             <h2 className="text-2xl md:text-3xl font-bold text-gray-800 text-center mb-3">

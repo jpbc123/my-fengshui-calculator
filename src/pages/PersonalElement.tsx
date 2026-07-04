@@ -594,6 +594,148 @@ export default function PersonalElement() {
               )}
             </div>
           </div>
+
+          {/* Evergreen SEO content — always rendered in the static HTML */}
+          <section className="mt-16 border-t border-gray-200 pt-12">
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mb-4">
+              What Is Your Personal Element?
+            </h2>
+            <p className="text-black/80 leading-relaxed mb-4">
+              In Chinese metaphysics, your <strong>personal element</strong> — often called your{" "}
+              <em>Day Master</em> — is the one of the Five Elements (Wood, Fire, Earth, Metal, or Water)
+              that represents your core self. It comes from the <strong>Heavenly Stem of the day you were
+              born</strong> in the traditional Chinese solar calendar, not simply your birth year. That is
+              why two people born in the same year can have entirely different personal elements. Your Day
+              Master is the anchor of a full <strong>BaZi (Four Pillars of Destiny)</strong> chart and gives
+              a fast, meaningful snapshot of your natural temperament, your strengths, and the environments
+              where you flourish.
+            </p>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mt-10 mb-4">
+              How to Find Your Personal Element by Date of Birth
+            </h2>
+            <p className="text-black/80 leading-relaxed mb-8">
+              Enter your date of birth above and the calculator converts it to the Chinese solar calendar,
+              identifies the Heavenly Stem of your birth day, and maps it to one of the five elements. No
+              birth time is needed for this day-element reading. If you have ever wondered{" "}
+              <em>"what is my feng shui element"</em> or <em>"which of the five elements am I"</em>, this is
+              the quickest authentic way to find out — free and instant.
+            </p>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mt-10 mb-6">
+              The Five Elements and Their Personalities
+            </h2>
+            <div className="grid gap-4 sm:grid-cols-2 mb-10">
+              {(["Wood", "Fire", "Earth", "Metal", "Water"] as const).map((el) => (
+                <div key={el} className={`rounded-xl p-5 border ${elementBgColors[el]}`}>
+                  <h3 className={`text-lg font-bold mb-1 flex items-center gap-2 ${elementColors[el]}`}>
+                    <span>{elementEmojis[el]}</span> {el} Element Personality
+                  </h3>
+                  <p className="text-sm text-black/80 leading-relaxed mb-2">{elementDescriptions[el]}</p>
+                  <p className="text-xs text-black/60">
+                    <strong>Lucky colors:</strong> {luckyTips[el].colors.join(", ")} ·{" "}
+                    <strong>Numbers:</strong> {luckyTips[el].numbers.join(", ")}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mt-10 mb-4">
+              How the Five Elements Interact
+            </h2>
+            <p className="text-black/80 leading-relaxed mb-3">
+              The elements are not isolated — they flow through two classic cycles that explain compatibility,
+              balance, and tension in Chinese astrology and feng shui:
+            </p>
+            <ul className="list-disc list-inside space-y-2 text-black/80 mb-8">
+              <li>
+                <strong>The Generating (Sheng) cycle</strong> — each element nourishes the next: Water feeds
+                Wood, Wood fuels Fire, Fire creates Earth (ash), Earth bears Metal, and Metal collects Water.
+                Elements that generate yours are supportive and energising.
+              </li>
+              <li>
+                <strong>The Controlling (Ke) cycle</strong> — each element restrains another: Water puts out
+                Fire, Fire melts Metal, Metal cuts Wood, Wood breaks up Earth, and Earth dams Water.
+                Understanding what controls your element shows where you may feel drained or challenged.
+              </li>
+            </ul>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mt-10 mb-6">
+              Using Your Personal Element in Feng Shui
+            </h2>
+            <div className="overflow-x-auto mb-10">
+              <table className="w-full text-sm text-left border border-gray-200 rounded-lg">
+                <thead className="bg-gray-50 text-black">
+                  <tr>
+                    <th className="p-3 font-semibold">Element</th>
+                    <th className="p-3 font-semibold">Feng Shui Tip</th>
+                    <th className="p-3 font-semibold">Best Careers</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(["Wood", "Fire", "Earth", "Metal", "Water"] as const).map((el) => (
+                    <tr key={el} className="border-t border-gray-200">
+                      <td className={`p-3 font-semibold ${elementColors[el]}`}>
+                        {elementEmojis[el]} {el}
+                      </td>
+                      <td className="p-3 text-black/80">{fengShuiTips[el]}</td>
+                      <td className="p-3 text-black/70">{luckyTips[el].careers.join(", ")}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mt-10 mb-6">
+              Frequently Asked Questions
+            </h2>
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-bold text-black mb-1">
+                  What is the difference between my personal element and my Chinese zodiac?
+                </h3>
+                <p className="text-black/70 leading-relaxed">
+                  Your Chinese zodiac animal comes from your birth <em>year</em>, while your personal element
+                  comes from your birth <em>day</em>. They describe different layers of your chart — the zodiac
+                  is your outward, social self, and the Day Master element is your deeper core nature.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-black mb-1">Do I need my exact birth time?</h3>
+                <p className="text-black/70 leading-relaxed">
+                  Not for the personal (day) element shown here. Birth time is only needed for the full
+                  four-pillar BaZi chart, which adds the "hour pillar" for more detailed analysis.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-black mb-1">Can my personal element change over time?</h3>
+                <p className="text-black/70 leading-relaxed">
+                  No — your Day Master element is fixed at birth. What changes is how the elements around you
+                  (in a year, a home, or a relationship) support or challenge it, which is where feng shui
+                  adjustments come in.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-black mb-1">
+                  How do I balance my element with feng shui?
+                </h3>
+                <p className="text-black/70 leading-relaxed">
+                  Use the colors, directions, and décor linked to your element (see the table above) to
+                  strengthen it, and add its "generating" element to nourish it. For example, a Wood person
+                  benefits from Water features and green tones in the East or Southeast.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-10 flex flex-wrap gap-4">
+              <Link to="/feng-shui/kua-number" className="text-gold font-semibold hover:underline">
+                Calculate your Kua number →
+              </Link>
+              <Link to="/astrology/chinese-zodiac-calculator" className="text-gold font-semibold hover:underline">
+                Find your Chinese zodiac sign →
+              </Link>
+            </div>
+          </section>
         </div>
       </main>
     </div>

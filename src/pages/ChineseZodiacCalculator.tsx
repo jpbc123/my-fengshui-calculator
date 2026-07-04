@@ -216,7 +216,7 @@ const ChineseZodiacCalculator = () => {
   <>
   <Helmet>
   <title>Chinese Zodiac Calculator - Find Your Animal Sign & Personality Traits</title>
-  <meta name="description" content="Free Chinese zodiac calculator to discover your animal sign based on birth date. Get detailed personality traits, 2025 forecast, compatibility, lucky numbers, and career guidance." />
+  <meta name="description" content="Free Chinese zodiac calculator to find your animal sign by date of birth. Get detailed personality traits, compatibility, lucky numbers, birth-year charts, and career guidance." />
   <meta name="keywords" content="chinese zodiac calculator, find my chinese zodiac, chinese astrology calculator, zodiac animal calculator, shengxiao calculator, birth year zodiac" />
   <link rel="canonical" href="https://fengshuiandbeyond.com/astrology/chinese-zodiac-calculator" />
   
@@ -494,6 +494,125 @@ const ChineseZodiacCalculator = () => {
               )}
             </div>
           </div>
+
+          {/* Evergreen SEO content — always rendered in the static HTML */}
+          <section className="mt-16 border-t border-gray-200 pt-12">
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mb-4">
+              How to Find Your Chinese Zodiac Sign
+            </h2>
+            <p className="text-black/80 leading-relaxed mb-4">
+              Your <strong>Chinese zodiac sign</strong> (生肖, <em>shēngxiào</em>) is the animal that rules the
+              year you were born, on a repeating twelve-year cycle: Rat, Ox, Tiger, Rabbit, Dragon, Snake,
+              Horse, Goat, Monkey, Rooster, Dog, and Pig. To find yours, simply enter your date of birth
+              above — the calculator checks it against the correct <strong>Chinese New Year</strong> cut-off
+              and returns your animal instantly, along with your personality traits, compatibility, and lucky
+              elements.
+            </p>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mt-10 mb-4">
+              Why Your Zodiac Year Starts at Chinese New Year
+            </h2>
+            <p className="text-black/80 leading-relaxed mb-8">
+              This is the mistake most online charts get wrong. The Chinese zodiac follows the{" "}
+              <strong>lunar calendar</strong>, so the animal year does not begin on January 1 — it begins on
+              Chinese New Year, which falls between <strong>late January and mid-February</strong>. If you were
+              born in January or early February, you may actually belong to the <em>previous</em> year's animal.
+              For example, someone born on February 10, 2024 is a Rabbit (2023's animal), not a Dragon, because
+              they arrived before Chinese New Year. Our calculator accounts for this automatically.
+            </p>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mt-10 mb-6">
+              The 12 Chinese Zodiac Animals &amp; Birth Years
+            </h2>
+            <div className="overflow-x-auto mb-10">
+              <table className="w-full text-sm text-left border border-gray-200 rounded-lg">
+                <thead className="bg-gray-50 text-black">
+                  <tr>
+                    <th className="p-3 font-semibold">Animal</th>
+                    <th className="p-3 font-semibold">Recent Birth Years</th>
+                    <th className="p-3 font-semibold">Key Traits</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    { animal: "🐀 Rat", years: "2020, 2008, 1996, 1984, 1972", traits: "Quick-witted, resourceful, charming" },
+                    { animal: "🐂 Ox", years: "2021, 2009, 1997, 1985, 1973", traits: "Diligent, dependable, patient" },
+                    { animal: "🐅 Tiger", years: "2022, 2010, 1998, 1986, 1974", traits: "Brave, confident, competitive" },
+                    { animal: "🐇 Rabbit", years: "2023, 2011, 1999, 1987, 1975", traits: "Gentle, elegant, compassionate" },
+                    { animal: "🐉 Dragon", years: "2024, 2012, 2000, 1988, 1976", traits: "Ambitious, charismatic, lucky" },
+                    { animal: "🐍 Snake", years: "2025, 2013, 2001, 1989, 1977", traits: "Wise, intuitive, graceful" },
+                    { animal: "🐎 Horse", years: "2026, 2014, 2002, 1990, 1978", traits: "Energetic, free-spirited, warm" },
+                    { animal: "🐐 Goat", years: "2027, 2015, 2003, 1991, 1979", traits: "Kind, creative, calm" },
+                    { animal: "🐒 Monkey", years: "2028, 2016, 2004, 1992, 1980", traits: "Clever, playful, adaptable" },
+                    { animal: "🐓 Rooster", years: "2029, 2017, 2005, 1993, 1981", traits: "Observant, hardworking, honest" },
+                    { animal: "🐕 Dog", years: "2030, 2018, 2006, 1994, 1982", traits: "Loyal, sincere, protective" },
+                    { animal: "🐖 Pig", years: "2031, 2019, 2007, 1995, 1983", traits: "Generous, easygoing, sincere" },
+                  ].map((row) => (
+                    <tr key={row.animal} className="border-t border-gray-200">
+                      <td className="p-3 font-semibold text-black whitespace-nowrap">{row.animal}</td>
+                      <td className="p-3 text-black/70">{row.years}</td>
+                      <td className="p-3 text-black/70">{row.traits}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="text-sm text-black/60 mb-10">
+              Years shown are approximate — if your birthday is in January or February, confirm it against the
+              Chinese New Year date using the calculator above.
+            </p>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mt-10 mb-4">
+              Chinese Zodiac Compatibility
+            </h2>
+            <p className="text-black/80 leading-relaxed mb-8">
+              In Chinese astrology, the animals form <strong>four compatibility triangles</strong> of allies
+              who naturally understand one another: Rat–Dragon–Monkey; Ox–Snake–Rooster;
+              Tiger–Horse–Dog; and Rabbit–Goat–Pig. Signs directly opposite on the twelve-year wheel (six
+              years apart) are traditionally considered the most challenging matches. Compatibility is used for
+              love, marriage timing, friendships, and business partnerships — though a full reading also
+              considers each person's element and birth chart.
+            </p>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mt-10 mb-6">
+              Frequently Asked Questions
+            </h2>
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-bold text-black mb-1">What is my Chinese zodiac sign if I was born in January?</h3>
+                <p className="text-black/70 leading-relaxed">
+                  It depends on whether you were born before or after Chinese New Year that year. Anyone born in
+                  January (and often early February) usually belongs to the previous year's animal. Enter your
+                  full date above for an accurate result.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-black mb-1">Is the Chinese zodiac based on the year or the month?</h3>
+                <p className="text-black/70 leading-relaxed">
+                  The animal sign comes from your birth <em>year</em> (on the lunar calendar). There is also an
+                  "inner animal" tied to your birth month and a "secret animal" from your birth hour, but the
+                  year animal is the one most people mean by "Chinese zodiac sign."
+                </p>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-black mb-1">What element is my Chinese zodiac sign?</h3>
+                <p className="text-black/70 leading-relaxed">
+                  Each animal also pairs with one of the five elements (Wood, Fire, Earth, Metal, Water) on a
+                  sixty-year cycle — for example, 2024 is a Wood Dragon year. To find your personal birth
+                  element, try our personal element calculator.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-10 flex flex-wrap gap-4">
+              <Link to="/feng-shui/personal-element" className="text-gold font-semibold hover:underline">
+                Find your personal element →
+              </Link>
+              <Link to="/horoscope/chinese-zodiac" className="text-gold font-semibold hover:underline">
+                Read your daily Chinese horoscope →
+              </Link>
+            </div>
+          </section>
         </div>
       </main>
     </div>

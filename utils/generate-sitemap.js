@@ -35,9 +35,9 @@ const staticRoutes = [
   { path: '/numerology', lastmod: '2026-01-15' },
   { path: '/astrology', lastmod: '2026-01-15' },
   { path: '/horoscope', lastmod: '2026-01-15' },
-  { path: '/store', lastmod: '2026-01-15' },
+  // /about-us kept for E-E-A-T / brand trust; utility pages (/store, /contact-us,
+  // /privacy-policy, /terms-of-service, /credits) deliberately excluded — no search value.
   { path: '/about-us', lastmod: '2026-01-15' },
-  { path: '/contact-us', lastmod: '2026-01-15' },
 
   { path: '/feng-shui/personal-element', lastmod: '2026-01-15' },
   { path: '/feng-shui/kua-number', lastmod: '2026-01-15' },
@@ -72,6 +72,7 @@ const staticRoutes = [
 
   { path: '/mercury-retrograde', lastmod: '2026-01-15' },
   { path: '/full-moon-forecast', lastmod: '2026-01-15' },
+  { path: '/daily-wisdom-article', lastmod: '2026-07-04' },
 ];
 
 const chineseZodiacSigns = [

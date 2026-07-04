@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, RotateCcw, Sparkles } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
@@ -439,6 +440,80 @@ export default function AuraAnalysisPage() {
             </p>
           </div>
         </motion.div>
+
+        {/* Evergreen SEO content — always rendered in the static HTML */}
+        <section className="mt-16 max-w-4xl mx-auto px-2 sm:px-4 text-left">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4">
+            What Is an Aura?
+          </h2>
+          <p className="text-gray-700 leading-relaxed mb-4">
+            An <strong>aura</strong> is the subtle field of energy said to surround every living being. In many
+            spiritual traditions, this energy radiates in colors that reflect your emotions, personality, and
+            state of mind. Aura readers believe the dominant color of your aura reveals your core nature — how you
+            think, love, communicate, and move through the world. Our free aura quiz asks ten questions about your
+            instincts and preferences to estimate your <strong>dominant aura color</strong> and what it means.
+          </p>
+
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mt-10 mb-6">
+            The 7 Aura Colors and Their Meanings
+          </h2>
+          <div className="grid gap-4 sm:grid-cols-2 mb-10">
+            {Object.values(auraResults).map((a) => (
+              <div key={a.color} className={`rounded-xl p-5 text-white bg-gradient-to-br ${a.colorCode}`}>
+                <h3 className="text-lg font-bold mb-1">{a.color} Aura</h3>
+                <p className="text-xs font-semibold opacity-90 mb-2">{a.chakra}</p>
+                <p className="text-sm leading-relaxed opacity-95">{a.meaning}</p>
+              </div>
+            ))}
+          </div>
+
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mt-10 mb-4">
+            Auras and the Chakras
+          </h2>
+          <p className="text-gray-700 leading-relaxed mb-8">
+            Each aura color is closely tied to one of the body's seven main <strong>chakras</strong> — the energy
+            centers running from the base of the spine to the crown of the head. A red aura resonates with the Root
+            Chakra (grounding and vitality), green with the Heart Chakra (love and healing), blue with the Throat
+            Chakra (communication), and purple with the Crown Chakra (spiritual connection). Understanding which
+            chakra your aura color relates to can guide your meditation, energy work, and self-care.
+          </p>
+
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mt-10 mb-6">
+            Frequently Asked Questions
+          </h2>
+          <div className="space-y-6">
+            <div>
+              <h3 className="text-lg font-bold text-gray-800 mb-1">Can your aura color change?</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Yes. Many believe your aura shifts with your mood, health, and life circumstances. You may have a
+                stable "core" color while temporary colors come and go with your emotional state.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-gray-800 mb-1">Can I have more than one aura color?</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Often, yes. Most people have a dominant color plus secondary hues. This quiz highlights your
+                strongest color, but you may recognise traits from several.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-gray-800 mb-1">Is aura reading scientific?</h3>
+              <p className="text-gray-600 leading-relaxed">
+                No — aura reading is a spiritual and metaphysical practice, not a scientific one. This quiz is meant
+                for entertainment, reflection, and a little self-discovery.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-10 flex flex-wrap gap-4">
+            <Link to="/meditation" className="text-purple-600 font-semibold hover:underline">
+              Explore guided meditation →
+            </Link>
+            <Link to="/games-fun" className="text-purple-600 font-semibold hover:underline">
+              More games &amp; fun tools →
+            </Link>
+          </div>
+        </section>
       </div>
     </div>
   );

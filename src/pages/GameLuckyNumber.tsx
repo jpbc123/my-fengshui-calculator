@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Helmet } from "@/lib/helmet-shim";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom";
 import { Wand2 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -205,6 +206,83 @@ const LuckyNumbersGenerator = () => {
               </motion.div>
             )}
           </AnimatePresence>
+
+          {/* Evergreen SEO content — always rendered in the static HTML */}
+          <section className="text-left mt-16">
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mb-4">
+              How the Lucky Numbers Generator Works
+            </h2>
+            <p className="text-black/80 leading-relaxed mb-4">
+              Our free lucky numbers generator picks a set of random numbers within the range you choose — perfect
+              for lottery tickets, raffles, bingo, picking a winner, or simply adding a little fortune to your day.
+              Set how many numbers you want and the minimum and maximum range, then generate as many fresh sets as
+              you like. Every draw is independent and random, so no two sets are ever guaranteed to repeat.
+            </p>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mt-10 mb-4">
+              What Makes a Number "Lucky"?
+            </h2>
+            <p className="text-black/80 leading-relaxed mb-8">
+              Across cultures, certain numbers carry special meaning. In Chinese culture, <strong>8</strong> is the
+              luckiest number (it sounds like "prosperity"), while <strong>9</strong> symbolises longevity and{" "}
+              <strong>6</strong> means smooth progress. In Western numerology, <strong>7</strong> is the classic
+              lucky number tied to intuition and spirituality, and <strong>3</strong> represents joy and creativity.
+              Lucky numbers can also come from meaningful dates — a birthday, an anniversary, or the day something
+              wonderful happened to you.
+            </p>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mt-10 mb-4">
+              How to Find Your Personal Lucky Number
+            </h2>
+            <p className="text-black/80 leading-relaxed mb-3">
+              In numerology, your <strong>Life Path number</strong> is one of your most personal lucky numbers. To
+              find it, add up all the digits of your full birth date and reduce to a single digit. For example, a
+              birthday of <em>14 March 1990</em> becomes 1+4+3+1+9+9+0 = 27, then 2+7 = <strong>9</strong>. Many
+              people also treat their birth day, house number, or a repeating "angel number" they keep noticing as
+              lucky.
+            </p>
+            <ul className="list-disc list-inside space-y-2 text-black/80 mb-8">
+              <li><strong>Life Path number</strong> — reduce your full birth date to a single digit.</li>
+              <li><strong>Birth day number</strong> — the day of the month you were born.</li>
+              <li><strong>Zodiac lucky numbers</strong> — each sign has its own traditional favourites.</li>
+            </ul>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mt-10 mb-6">
+              Frequently Asked Questions
+            </h2>
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-bold text-black mb-1">Are these numbers truly random?</h3>
+                <p className="text-black/70 leading-relaxed">
+                  Yes — each set is generated randomly within the range you set, with no duplicates in a single
+                  draw. It works just like drawing numbered balls from a bag.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-black mb-1">Can I use this for lottery numbers?</h3>
+                <p className="text-black/70 leading-relaxed">
+                  Absolutely. Set the count and range to match your game (for example, 6 numbers from 1 to 49) and
+                  generate a quick pick. Remember that all lottery outcomes are pure chance — play responsibly.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-black mb-1">How do I make my numbers more meaningful?</h3>
+                <p className="text-black/70 leading-relaxed">
+                  Combine the generator with your personal lucky numbers — your Life Path number, birthday, or a
+                  culturally lucky digit like 8 — for a set that feels uniquely yours.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-10 flex flex-wrap gap-4">
+              <Link to="/numerology/visiber-calculator" className="text-gold font-semibold hover:underline">
+                Explore your numerology chart →
+              </Link>
+              <Link to="/games-fun" className="text-gold font-semibold hover:underline">
+                More games &amp; fun tools →
+              </Link>
+            </div>
+          </section>
 
           {/* Explore More Features Section using ImageSwiper */}
           <div className="mt-16 bg-white rounded-xl p-6 shadow-lg border border-gray-200">

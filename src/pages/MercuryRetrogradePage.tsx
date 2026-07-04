@@ -280,26 +280,6 @@ export default function MercuryRetrogradePage() {
     </div>
   );
 
-  if (loading) {
-    return (
-      <div className="flex flex-col min-h-screen font-sans bg-white">
-        <Helmet>
-          <title>Mercury Retrograde 2025 - Dates, Meaning & Survival Guide</title>
-          <meta name="description" content="Track Mercury retrograde 2025 with real-time countdown, expert guidance, and zodiac-specific effects. Learn what Mercury retrograde means and how to navigate it." />
-          <link rel="canonical" href="https://fengshuiandbeyond.com/mercury-retrograde" />
-        </Helmet>
-        <Header />
-        <main className="flex-grow pt-16 flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold mx-auto mb-4"></div>
-            <div className="text-gray-500">Loading Mercury Retrograde data...</div>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
-
   if (error) {
     return (
       <div className="flex flex-col min-h-screen font-sans bg-white">
@@ -321,21 +301,21 @@ export default function MercuryRetrogradePage() {
   <>
   <Helmet>
   {/* Primary Meta Tags */}
-  <title>Mercury Retrograde 2025 - Dates, Meaning & Survival Guide</title>
-  <meta name="description" content="Track Mercury retrograde 2025 with real-time countdown, expert guidance, and zodiac-specific effects. Learn what Mercury retrograde means, when it happens, and how to navigate communication challenges, technology glitches, and relationship issues." />
-  <meta name="keywords" content="mercury retrograde, mercury retrograde 2025, mercury retrograde dates, mercury retrograde meaning, what is mercury retrograde, mercury retrograde effects, mercury retrograde survival guide, shadow period, retrograde astrology" />
+  <title>Mercury Retrograde - Dates, Meaning & Survival Guide</title>
+  <meta name="description" content="Track Mercury retrograde with real-time countdown, expert guidance, and zodiac-specific effects. Learn what Mercury retrograde means, when it happens, and how to navigate communication challenges, technology glitches, and relationship issues." />
+  <meta name="keywords" content="mercury retrograde, mercury retrograde dates, mercury retrograde meaning, what is mercury retrograde, mercury retrograde effects, mercury retrograde survival guide, shadow period, retrograde astrology" />
   <link rel="canonical" href="https://fengshuiandbeyond.com/mercury-retrograde" />
 
   {/* Open Graph / Facebook */}
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://fengshuiandbeyond.com/mercury-retrograde" />
-  <meta property="og:title" content="Mercury Retrograde 2025 - Real-Time Tracker & Survival Guide" />
-  <meta property="og:description" content="Navigate Mercury retrograde with confidence. Get real-time tracking, expert guidance, and zodiac-specific advice for 2025." />
+  <meta property="og:title" content="Mercury Retrograde - Real-Time Tracker & Survival Guide" />
+  <meta property="og:description" content="Navigate Mercury retrograde with confidence. Get real-time tracking, expert guidance, and zodiac-specific advice." />
   <meta property="og:image" content="https://fengshuiandbeyond.com/circle-logo.png" />
 
   {/* Twitter Card */}
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Mercury Retrograde 2025 Tracker & Guide" />
+  <meta name="twitter:title" content="Mercury Retrograde Tracker & Guide" />
   <meta name="twitter:description" content="Real-time Mercury retrograde tracking with expert survival tips and zodiac guidance." />
 
   {/* Schema.org - Article */}
@@ -343,7 +323,7 @@ export default function MercuryRetrogradePage() {
     {JSON.stringify({
       "@context": "https://schema.org",
       "@type": "Article",
-      "headline": "Mercury Retrograde 2025 - Complete Guide and Real-Time Tracker",
+      "headline": "Mercury Retrograde - Complete Guide and Real-Time Tracker",
       "description": "Comprehensive guide to Mercury retrograde including dates, meanings, effects by zodiac sign, and survival tips",
       "url": "https://fengshuiandbeyond.com/mercury-retrograde",
       "datePublished": "2025-01-01",
@@ -399,10 +379,10 @@ export default function MercuryRetrogradePage() {
         },
         {
           "@type": "Question",
-          "name": "When is Mercury retrograde in 2025?",
+          "name": "When is the next Mercury retrograde?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Mercury goes retrograde multiple times in 2025. Check our real-time tracker above for exact dates, countdown timers, and shadow period information for each retrograde cycle throughout the year."
+            "text": "Mercury goes retrograde three to four times per year. Check our real-time tracker above for the exact upcoming dates, countdown timers, and shadow period information for each retrograde cycle."
           }
         },
         {

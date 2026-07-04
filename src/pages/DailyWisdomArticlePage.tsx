@@ -190,26 +190,6 @@ const DailyWisdomArticlePage = () => {
     }
   ];
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <Helmet>
-          <title>Daily Wisdom - Feng Shui & Astrology Insights | Feng Shui & Beyond</title>
-          <meta name="description" content="Get your daily dose of feng shui wisdom, astrology insights, and spiritual guidance. Fresh daily content to inspire balance and positive energy." />
-          <link rel="canonical" href="https://fengshuiandbeyond.com/daily-wisdom-article" />
-        </Helmet>
-        <div className="text-center">
-          <div className="flex items-center space-x-2 mb-4">
-            <div className="w-3 h-3 bg-purple-600 rounded-full animate-bounce"></div>
-            <div className="w-3 h-3 bg-purple-600 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-            <div className="w-3 h-3 bg-purple-600 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
-          </div>
-          <p className="text-gray-800 text-lg">Loading your daily insights...</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-white">
       <Helmet>
@@ -321,12 +301,53 @@ const DailyWisdomArticlePage = () => {
           <div className="absolute inset-0 bg-gradient-to-r from-gray-50 to-purple-50 rounded-3xl"></div>
           <article className="relative bg-white rounded-3xl p-8 md:p-12 shadow-xl border-2 border-gray-100">
             <div className="prose lg:prose-xl mx-auto max-w-none">
-              <div className="whitespace-pre-line text-gray-800 leading-relaxed text-lg">
-                {articleContent}
-              </div>
+              {isLoading ? (
+                <div className="flex items-center justify-center py-8" aria-label="Loading today's insight">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 bg-purple-600 rounded-full animate-bounce"></div>
+                    <div className="w-3 h-3 bg-purple-600 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                    <div className="w-3 h-3 bg-purple-600 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                  </div>
+                </div>
+              ) : (
+                <div className="whitespace-pre-line text-gray-800 leading-relaxed text-lg">
+                  {articleContent}
+                </div>
+              )}
             </div>
           </article>
         </motion.div>
+
+        {/* Evergreen explainer — always rendered so the page is never an empty shell */}
+        <section className="max-w-4xl mx-auto mb-12">
+          <h2 className="text-3xl font-bold text-center mb-6 bg-gradient-to-r from-purple-700 to-blue-600 bg-clip-text text-transparent">
+            About Daily Wisdom
+          </h2>
+          <div className="prose lg:prose-lg mx-auto max-w-none text-gray-700">
+            <p>
+              Daily Wisdom is a short, fresh reflection designed to help you start each day with intention
+              and perspective. Drawing on numerology, feng shui, and timeless spiritual philosophy, each
+              insight distils the day's prevailing energy into practical guidance you can carry with you —
+              whether you're facing a big decision, seeking calm, or simply looking for a moment of clarity.
+            </p>
+            <h3 className="text-xl font-bold text-gray-800 mt-8 mb-3">How Numerology Shapes the Day</h3>
+            <p>
+              In numerology, every date carries its own vibration. The <strong>Universal Year</strong> sets the
+              broad theme for the year, the <strong>Universal Month</strong> refines it, and the{' '}
+              <strong>Universal Day</strong> — found by reducing the full date to a single digit — reveals the
+              specific energy of the day itself. A Day 1 favours fresh starts and initiative; a Day 7 invites
+              reflection and study; a Day 3 sparks creativity, communication, and joy. Our daily reading blends
+              these numbers into a single, easy-to-apply message.
+            </p>
+            <h3 className="text-xl font-bold text-gray-800 mt-8 mb-3">How to Use Your Daily Insight</h3>
+            <p>
+              Read it in the morning and let it frame your intentions. Notice where the day's theme shows up in
+              your work, relationships, and mood, and lean into activities that match the energy. Small,
+              mindful alignments — pausing before you react, choosing rest when reflection is called for,
+              acting boldly when momentum is high — compound into meaningful change over time.
+            </p>
+          </div>
+        </section>
 
         {/* Related Content Section */}
         <motion.div

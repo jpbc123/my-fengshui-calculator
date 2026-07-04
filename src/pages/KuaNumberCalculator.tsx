@@ -643,6 +643,153 @@ export default function KuaNumberCalculator() {
               )}
             </div>
           </div>
+
+          {/* Evergreen SEO content — always rendered in the static HTML */}
+          <section className="mt-16 border-t border-gray-200 pt-12">
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mb-4">
+              What Is a Kua Number?
+            </h2>
+            <p className="text-black/80 leading-relaxed mb-4">
+              Your <strong>Kua number</strong> (also written <em>Gua number</em> or <em>Ming Gua, 命卦</em>) is
+              your personal feng shui number, calculated from your <strong>year of birth and gender</strong>.
+              It comes from the <strong>Eight Mansions (Ba Zhai)</strong> school of feng shui and links you to
+              one of the eight trigrams of the I Ching. Your Kua number reveals your <strong>four lucky
+              directions</strong> and four unlucky ones — the compass directions you should face and orient
+              toward for better sleep, focus, health, and prosperity.
+            </p>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mt-10 mb-4">
+              How to Calculate Your Kua Number
+            </h2>
+            <p className="text-black/80 leading-relaxed mb-3">
+              The calculator above does this for you instantly, but here is the traditional method so you can
+              see how your <em>"what is my kua number"</em> result is derived:
+            </p>
+            <ul className="list-disc list-inside space-y-2 text-black/80 mb-4">
+              <li>Add the last two digits of your birth year together, then reduce to a single digit.</li>
+              <li>
+                <strong>For men:</strong> born before 2000, subtract that digit from 10; born in 2000 or
+                later, subtract from 9. (If the result is 5, it becomes 2.)
+              </li>
+              <li>
+                <strong>For women:</strong> born before 2000, add 5; born in 2000 or later, add 6; then reduce
+                to a single digit. (If the result is 5, it becomes 8.)
+              </li>
+              <li>
+                Because the feng shui year begins at <strong>Chinese New Year</strong> (late January to
+                mid-February), anyone born in January or early February should use the previous year.
+              </li>
+            </ul>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mt-10 mb-6">
+              Kua Numbers 1 to 9 and Their Meanings
+            </h2>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-10">
+              {[1, 2, 3, 4, 6, 7, 8, 9].map((n) => (
+                <div key={n} className={`rounded-xl p-5 border ${kuaBgColors[n]}`}>
+                  <h3 className={`text-lg font-bold mb-1 flex items-center gap-2 ${kuaColors[n]}`}>
+                    <span>{kuaEmojis[n]}</span> Kua {n} — {kuaProfiles[n].name}
+                  </h3>
+                  <p className="text-xs font-semibold text-black/60 mb-2">
+                    {kuaProfiles[n].element} · {kuaGroup(n)}
+                  </p>
+                  <p className="text-sm text-black/80 leading-relaxed">{kuaProfiles[n].description}</p>
+                </div>
+              ))}
+            </div>
+            <p className="text-sm text-black/60 mb-10">
+              Note: there is no Kua 5 — men with a result of 5 use Kua 2, and women use Kua 8.
+            </p>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mt-10 mb-4">
+              East Group vs West Group
+            </h2>
+            <p className="text-black/80 leading-relaxed mb-8">
+              Every Kua number belongs to one of two groups. <strong>East Group</strong> people (Kua 1, 3, 4,
+              and 9) are most in harmony with the east, southeast, south, and north. <strong>West Group</strong>{" "}
+              people (Kua 2, 6, 7, and 8) thrive facing west, northwest, southwest, and northeast. Ideally your
+              bed, desk, and main door align with your own group's directions. This grouping is also used in
+              feng shui compatibility — partners in the same group often share more naturally aligned energy at
+              home.
+            </p>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mt-10 mb-6">
+              Your Four Lucky Directions
+            </h2>
+            <div className="grid gap-4 sm:grid-cols-2 mb-10">
+              {[
+                { name: "Sheng Chi (生氣) — Success & Wealth", desc: "Your best direction for career growth, prosperity, and important goals. Face it while working or place your main door here." },
+                { name: "Tian Yi (天醫) — Health", desc: "The direction for wellbeing and recovery. Sleep with your head pointing here to support good health." },
+                { name: "Yan Nian (延年) — Love & Relationships", desc: "Enhances harmony, marriage, and family bonds. Ideal for the bedroom and shared spaces." },
+                { name: "Fu Wei (伏位) — Stability & Focus", desc: "Brings calm, clarity, and personal growth. Great for a study, meditation corner, or desk." },
+              ].map((d) => (
+                <div key={d.name} className="bg-gray-50 border border-gray-200 rounded-xl p-5">
+                  <h3 className="text-base font-bold text-black mb-1">{d.name}</h3>
+                  <p className="text-sm text-black/70 leading-relaxed">{d.desc}</p>
+                </div>
+              ))}
+            </div>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mt-10 mb-4">
+              How to Use Your Kua Number at Home
+            </h2>
+            <ul className="list-disc list-inside space-y-2 text-black/80 mb-10">
+              <li>
+                <strong>Best sleeping direction:</strong> point the top of your head toward one of your four
+                lucky directions (many prefer their Tian Yi health direction).
+              </li>
+              <li>
+                <strong>Desk and study:</strong> face your Sheng Chi success direction while working or studying.
+              </li>
+              <li>
+                <strong>Main door:</strong> a front door that opens toward a favorable direction is considered
+                especially auspicious for the whole household.
+              </li>
+              <li>
+                <strong>Avoid</strong> spending long hours facing your unlucky directions — reserve those areas
+                for storage, bathrooms, or utility spaces.
+              </li>
+            </ul>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mt-10 mb-6">
+              Frequently Asked Questions
+            </h2>
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-bold text-black mb-1">Why do men and women calculate it differently?</h3>
+                <p className="text-black/70 leading-relaxed">
+                  Ba Zhai feng shui treats yang (traditionally associated with men) and yin (women) energy as
+                  moving in opposite directions through the trigrams, so the formula differs by gender. This is
+                  why the same birth year can produce two different Kua numbers.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-black mb-1">What if I was born in January or February?</h3>
+                <p className="text-black/70 leading-relaxed">
+                  The feng shui year starts at Chinese New Year, not January 1. If you were born before Chinese
+                  New Year, use the previous year for your calculation. The calculator above handles common
+                  cases, but check the Chinese New Year date for your birth year if you were born in early
+                  February.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-black mb-1">Is a lower or higher Kua number better?</h3>
+                <p className="text-black/70 leading-relaxed">
+                  Neither — no Kua number is luckier than another. Each simply points to a different set of
+                  favorable directions. The goal is to align your space with <em>your</em> directions.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-10 flex flex-wrap gap-4">
+              <Link to="/feng-shui/personal-element" className="text-gold font-semibold hover:underline">
+                Find your personal element →
+              </Link>
+              <Link to="/feng-shui" className="text-gold font-semibold hover:underline">
+                Explore more feng shui tools →
+              </Link>
+            </div>
+          </section>
         </div>
       </main>
     </div>

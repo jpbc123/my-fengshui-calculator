@@ -27,7 +27,6 @@ const PAGE_TITLES: Record<string, string> = {
   '/fortune-cookie': 'Fortune Cookie',
   '/daily-wisdom-article': 'Daily Wisdom',
   '/aura-analysis': 'Aura Analysis',
-  '/planetary-overview': 'Planetary Overview',
   '/personal-element': 'Personal Element',
   '/kua-number-calculator': 'Kua Number Calculator',
   '/visiber-calculator': 'Visiber Calculator',

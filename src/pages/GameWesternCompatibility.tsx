@@ -483,6 +483,90 @@ const WesternZodiacCompatibility = () => {
 		)}
 
 		  
+          {/* Evergreen SEO content — always rendered in the static HTML */}
+          <section className="text-left mt-16">
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mb-4">
+              Western Zodiac Compatibility Explained
+            </h2>
+            <p className="text-black/80 leading-relaxed mb-4">
+              Zodiac compatibility looks at how two <strong>sun signs</strong> interact in love, friendship, and
+              partnership. Select any two of the twelve signs — Aries, Taurus, Gemini, Cancer, Leo, Virgo, Libra,
+              Scorpio, Sagittarius, Capricorn, Aquarius, or Pisces — to see a compatibility score and a description
+              of your cosmic connection. It is a fun way to explore the natural harmony (or spark) between two
+              people based on astrology.
+            </p>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mt-10 mb-6">
+              Compatibility by Element
+            </h2>
+            <p className="text-black/80 leading-relaxed mb-4">
+              The biggest clue to zodiac compatibility is the four elements. Signs of the same element usually feel
+              instantly comfortable together, while complementary elements can balance each other beautifully:
+            </p>
+            <div className="grid gap-4 sm:grid-cols-2 mb-10">
+              {[
+                { el: "🔥 Fire (Aries, Leo, Sagittarius)", desc: "Best with fellow Fire and with Air signs, which fan their flames. Passionate, energetic pairings." },
+                { el: "🌍 Earth (Taurus, Virgo, Capricorn)", desc: "Thrive with other Earth signs and with Water signs, which help them grow. Stable, grounded bonds." },
+                { el: "💨 Air (Gemini, Libra, Aquarius)", desc: "Click with other Air signs and with Fire signs. Intellectual, social, communicative matches." },
+                { el: "🌊 Water (Cancer, Scorpio, Pisces)", desc: "Flow best with other Water signs and with Earth signs. Deep, emotional, intuitive connections." },
+              ].map((e) => (
+                <div key={e.el} className="bg-gray-50 border border-gray-200 rounded-xl p-5">
+                  <h3 className="text-base font-bold text-black mb-1">{e.el}</h3>
+                  <p className="text-sm text-black/70 leading-relaxed">{e.desc}</p>
+                </div>
+              ))}
+            </div>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mt-10 mb-4">
+              What the Score Means
+            </h2>
+            <p className="text-black/80 leading-relaxed mb-8">
+              A high score (80%+) points to natural, easy chemistry; a mid-range score (60–79%) suggests a good
+              match that grows with understanding; and a lower score simply means two signs are more different —
+              which can be challenging <em>or</em> excitingly complementary. Remember that real astrological
+              compatibility considers far more than sun signs alone, including Moon signs, rising signs, and the
+              positions of Venus and Mars. Treat this as a lighthearted starting point.
+            </p>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mt-10 mb-6">
+              Frequently Asked Questions
+            </h2>
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-bold text-black mb-1">Which zodiac signs are most compatible?</h3>
+                <p className="text-black/70 leading-relaxed">
+                  Classic strong matches include Aries &amp; Leo, Taurus &amp; Cancer, Gemini &amp; Libra, and
+                  Scorpio &amp; Pisces. In general, same-element and Fire–Air or Earth–Water pairings flow most
+                  easily.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-black mb-1">Can incompatible signs still work?</h3>
+                <p className="text-black/70 leading-relaxed">
+                  Yes. A lower compatibility score is not a dealbreaker — many lasting relationships thrive on
+                  contrast. Communication, shared values, and full birth charts matter far more than sun signs
+                  alone.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-black mb-1">Do I need my exact birth time?</h3>
+                <p className="text-black/70 leading-relaxed">
+                  Not for this tool — it uses sun signs only. For a deeper reading, a full birth chart using your
+                  exact time and place reveals Moon, rising, and planetary compatibility.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-10 flex flex-wrap gap-4">
+              <Link to="/astrology/western-zodiac-calculator" className="text-gold font-semibold hover:underline">
+                Find your zodiac sign →
+              </Link>
+              <Link to="/games-fun/chinese-zodiac-compatibility" className="text-gold font-semibold hover:underline">
+                Try Chinese zodiac compatibility →
+              </Link>
+            </div>
+          </section>
+
           {/* Explore More Features Section using ImageSwiper */}
           <div className="mt-16 bg-white rounded-xl p-6 shadow-lg border border-gray-200">
             <h2 className="text-2xl md:text-3xl font-bold text-gray-800 text-center mb-3">

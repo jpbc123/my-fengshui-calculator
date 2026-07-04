@@ -220,6 +220,84 @@ const NameCompatibility = () => {
             )}
           </AnimatePresence>
 		  
+          {/* Evergreen SEO content — always rendered in the static HTML */}
+          <section className="text-left mt-16">
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mb-4">
+              How the Name Compatibility Calculator Works
+            </h2>
+            <p className="text-black/80 leading-relaxed mb-4">
+              Our free name compatibility calculator compares two names and reveals a fun compatibility score for
+              love, friendship, or any relationship. It looks at the letters the two names share and how they
+              harmonise, turning that into a percentage. Enter your name and your partner's, crush's, or best
+              friend's name to see how your names click — no birth dates required.
+            </p>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mt-10 mb-4">
+              Names, Numerology, and Compatibility
+            </h2>
+            <p className="text-black/80 leading-relaxed mb-8">
+              The idea that names carry energy is ancient. In <strong>numerology</strong>, each letter maps to a
+              number, and adding them up produces an "Expression" or "Destiny" number believed to reflect a
+              person's character. When two names are compared, their letters and vibrations can feel harmonious or
+              contrasting — which is the playful principle behind name-matching. It is a lighthearted way to explore
+              connection, not a scientific measurement.
+            </p>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mt-10 mb-6">
+              What Your Compatibility Score Means
+            </h2>
+            <div className="grid gap-4 sm:grid-cols-2 mb-10">
+              {[
+                { range: "90–100%", label: "Cosmic Connection", desc: "Your names resonate in near-perfect harmony — a rare and radiant match." },
+                { range: "70–89%", label: "Strong Bond", desc: "Plenty of positive energy and natural chemistry between your names." },
+                { range: "50–69%", label: "Room to Grow", desc: "A promising match that blossoms with understanding and effort." },
+                { range: "Below 50%", label: "Opposites Attract", desc: "Your differences could be exactly what makes the connection interesting." },
+              ].map((s) => (
+                <div key={s.range} className="bg-gray-50 border border-gray-200 rounded-xl p-5">
+                  <h3 className="text-base font-bold text-black mb-1">{s.label}</h3>
+                  <p className="text-xs font-semibold text-gold mb-2">{s.range}</p>
+                  <p className="text-sm text-black/70 leading-relaxed">{s.desc}</p>
+                </div>
+              ))}
+            </div>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-gold mt-10 mb-6">
+              Frequently Asked Questions
+            </h2>
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-bold text-black mb-1">Is name compatibility real?</h3>
+                <p className="text-black/70 leading-relaxed">
+                  It is a fun, entertainment-based tool rooted in numerology traditions — not scientific proof of a
+                  relationship's success. Enjoy it as a playful conversation starter rather than a verdict.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-black mb-1">Should I use full names or nicknames?</h3>
+                <p className="text-black/70 leading-relaxed">
+                  Try both! Numerology traditions often use the full birth name, but comparing the names you
+                  actually call each other can be just as fun and revealing.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-black mb-1">Can I check compatibility for friends?</h3>
+                <p className="text-black/70 leading-relaxed">
+                  Definitely. The calculator works for any pair of names — partners, crushes, friends, or family
+                  members.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-10 flex flex-wrap gap-4">
+              <Link to="/games-fun/western-zodiac-compatibility" className="text-gold font-semibold hover:underline">
+                Try zodiac compatibility →
+              </Link>
+              <Link to="/numerology/visiber-calculator" className="text-gold font-semibold hover:underline">
+                Explore your numerology →
+              </Link>
+            </div>
+          </section>
+
           {/* Explore More Features Section using ImageSwiper */}
           <div className="mt-16 bg-white rounded-xl p-6 shadow-lg border border-gray-200">
             <h2 className="text-2xl md:text-3xl font-bold text-gray-800 text-center mb-3">

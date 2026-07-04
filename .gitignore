@@ -43,6 +43,8 @@ dist-ssr
 .vercel
 .claude
 
-#MD Files
-SSG-SEO-LESSONS-LEARNED.md
-TODO-CONVERSION-PLAN.md
+# Root-level planning notes / scratch docs — keep them local, not in the repo.
+# (README.md is intentionally kept tracked.)
+/*.md
+/*.txt
+!/README.md
