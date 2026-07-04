@@ -467,7 +467,7 @@ export default function ArticlePage() {
 		<meta property="og:image" content={
     (article._type === 'article' && (article as SanityArticle).mainImage) 
       ? urlFor((article as SanityArticle).mainImage).width(1200).height(630).url()
-      : "https://fengshuiandbeyond.com/og-default.jpg"  // Add your default image here
+      : "https://fengshuiandbeyond.com/og-image.jpg"  // site-wide default OG image
   } />
   
         {article._type === 'article' && (article as SanityArticle).mainImage && (
@@ -491,7 +491,7 @@ export default function ArticlePage() {
             "description": metaDescription,
             "image": article._type === 'article' && (article as SanityArticle).mainImage
               ? urlFor((article as SanityArticle).mainImage).width(1200).height(630).url()
-              : "https://fengshuiandbeyond.com/og-default.jpg",
+              : "https://fengshuiandbeyond.com/og-image.jpg",
             "datePublished": article.publishDate,
             "dateModified": article.publishDate,
             "author": {

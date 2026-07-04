@@ -30,6 +30,10 @@ import ccompatibilityImage from '../assets/chinese-compatibility.jpg';
 import wcompatibilityImage from '../assets/western-compatibility.jpg';
 import fcookieImage from '../assets/fortunecookie.jpg';
 
+// Evergreen per-sign content, rendered at build time so Googlebot sees real
+// content instead of an empty client-fetched shell.
+import { ChineseZodiacData2025 } from '../data/ChineseZodiacData2025';
+
 
 const zodiacImages: { [key: string]: string } = {
     rat: ratImage, ox: oxImage, tiger: tigerImage, rabbit: rabbitImage,
@@ -221,6 +225,9 @@ const allFeatureImages = useMemo(() =>
 );
 
     const zodiacName = zodiac ? zodiac.charAt(0).toUpperCase() + zodiac.slice(1) : '';
+    // The dataset keys the Goat sign as "Sheep"; map the route param accordingly.
+    const zodiacDataKey = zodiacName === 'Goat' ? 'Sheep' : zodiacName;
+    const zodiacInfo = (ChineseZodiacData2025 as Record<string, any>)[zodiacDataKey];
     const breadcrumbs = [
         { label: "Home", path: "/" },
 		{ label: "Horoscope", path: "/horoscope" },
@@ -410,28 +417,10 @@ const allFeatureImages = useMemo(() =>
 
     const currentZodiac = zodiac || '';
 
-    if (loading && zodiac && !periodLoading) {
-        return (
-            <div className="min-h-screen bg-white text-black flex flex-col justify-center items-center p-4">
-                <Helmet>
-                  <title>{zodiacName} Chinese Horoscope - Daily, Weekly & Yearly Predictions | Feng Shui and Beyond</title>
-                  <meta name="description" content={`Get your ${zodiacName} Chinese horoscope with daily, weekly, and yearly predictions. Discover love, career, wealth, and social insights based on Chinese zodiac wisdom.`} />
-                  <link rel="canonical" href={`https://fengshuiandbeyond.com/zodiac/${currentZodiac}`} />
-                </Helmet>
-                <Header />
-                <div className="flex flex-col items-center justify-center flex-grow">
-                    <div className="text-center">
-                        <div className="animate-spin rounded-full h-20 w-20 border-t-4 border-b-4 border-purple-500 mx-auto mb-6"></div>
-                        <p className="text-xl md:text-2xl font-semibold mb-2 text-gray-800">
-                            Unveiling Your {zodiacName} Horoscope...
-                        </p>
-                        <p className="text-sm text-gray-500">Please wait, this will only take a moment.</p>
-                    </div>
-                </div>
-                <Footer />
-            </div>
-        );
-    }
+    // NOTE: We intentionally do NOT early-return a full-page spinner while loading.
+    // Doing so meant the prerendered (SSG) HTML was just a spinner, so Googlebot saw
+    // no content. Instead the page shell + evergreen content always render, and the
+    // daily-forecast box shows its own inline loading state (see below).
 
     return (
 <>
@@ -468,8 +457,22 @@ const allFeatureImages = useMemo(() =>
         <div className="min-h-screen bg-white text-black flex flex-col">
             <Header />
             <main className="flex-grow container mx-auto px-4 py-8 max-w-6xl mt-20">
-                <Breadcrumb items={breadcrumbs} />	
-				
+                <Breadcrumb items={breadcrumbs} />
+
+                {/* Always-rendered page heading + intro so the prerendered HTML has a real
+                    h1 and descriptive copy even before the client-side daily forecast loads. */}
+                <header className="text-center mt-6 mb-2">
+                    <h1 className="text-4xl md:text-5xl font-bold text-gray-800">
+                        {zodiacName ? `${zodiacName} Chinese Horoscope` : 'Chinese Horoscope'}
+                    </h1>
+                    {zodiacInfo && (
+                        <p className="mt-4 max-w-3xl mx-auto text-lg text-gray-600 leading-relaxed">
+                            {zodiacInfo.personalityInsights} Below you'll find today's {zodiacName} forecast
+                            alongside the sign's core traits, compatibility, and lucky attributes.
+                        </p>
+                    )}
+                </header>
+
                 <div className="flex flex-col lg:flex-row gap-6 mt-8">
                     {/* Main Content Area */}
                     <div className="flex-1">
@@ -480,7 +483,7 @@ const allFeatureImages = useMemo(() =>
                                     {/* Zodiac title + image */}
                                     <div className="mb-8 text-center">
                                         <img src={zodiacImages[currentZodiac]} alt={zodiacName} className="w-24 h-24 object-contain mx-auto mb-4" />
-                                        <h1 className="text-4xl md:text-5xl font-bold text-gray-800">{zodiacName || 'Chinese Horoscope'}</h1>
+                                        <h2 className="text-4xl md:text-5xl font-bold text-gray-800">{zodiacName || 'Chinese Horoscope'}</h2>
                                     </div>
 
                                     {/* Zodiac Dropdown for changing signs */}
@@ -619,6 +622,14 @@ const allFeatureImages = useMemo(() =>
             </div>
         </div>
                             </div>
+                        ) : loading && zodiac ? (
+                            // Daily forecast is still being fetched client-side.
+                            <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-lg text-center text-gray-600 py-12">
+                                <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-purple-500 mx-auto mb-6"></div>
+                                <p className="text-lg font-semibold text-gray-800">
+                                    Unveiling your {zodiacName} horoscope…
+                                </p>
+                            </div>
                         ) : (
                             // UI for when no horoscope data is found or zodiac is not selected
                             <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-lg text-center text-gray-600 py-8">
@@ -632,6 +643,51 @@ const allFeatureImages = useMemo(() =>
                         )}
                     </div>
                 </div>
+
+                {/* Evergreen, prerendered per-sign content. Sourced from static data (not
+                    the client-fetched API), so this renders into the SSG HTML and gives the
+                    page real, unique, indexable content that never goes stale. */}
+                {zodiacInfo && (
+                    <section className="max-w-3xl mx-auto px-2 mt-16 mb-8">
+                        <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6">
+                            About the {zodiacName} in Chinese Astrology
+                        </h2>
+                        <p className="text-lg leading-relaxed text-gray-700 mb-8">
+                            {zodiacInfo.personalityInsights}{' '}
+                            <span className="font-semibold">Key traits:</span> {zodiacInfo.traits}
+                        </p>
+
+                        <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                            {zodiacName} Compatibility
+                        </h3>
+                        <p className="text-lg leading-relaxed text-gray-700 mb-8">
+                            {zodiacInfo.compatibility}
+                        </p>
+
+                        <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                            {zodiacName} Lucky Numbers, Colors &amp; Directions
+                        </h3>
+                        <ul className="text-lg leading-relaxed text-gray-700 mb-8 list-disc list-inside space-y-1">
+                            <li><span className="font-semibold">Lucky numbers:</span> {zodiacInfo.luckyNumbers.join(', ')}</li>
+                            <li><span className="font-semibold">Lucky colors:</span> {zodiacInfo.luckyColors.join(', ')}</li>
+                            <li><span className="font-semibold">Lucky directions:</span> {zodiacInfo.luckyDirections.join(', ')}</li>
+                        </ul>
+
+                        <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                            Career &amp; Wealth for the {zodiacName}
+                        </h3>
+                        <p className="text-lg leading-relaxed text-gray-700 mb-8">
+                            {zodiacInfo.careerAdvice}
+                        </p>
+
+                        <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                            Feng Shui Tips for the {zodiacName}
+                        </h3>
+                        <p className="text-lg leading-relaxed text-gray-700">
+                            {zodiacInfo.fengShuiTips}
+                        </p>
+                    </section>
+                )}
             </main>
         </div>
 	</>
