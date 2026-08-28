@@ -8,8 +8,2425 @@ export interface ArticleContent {
 }
 
 export const ARTICLE_CONTENT: Record<string, ArticleContent> = {
+  "ghost-month-2026-gates-close-what-happens": {
+    "body": [
+      {
+        "_key": "825f26969928",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "95dd97247ace",
+            "_type": "span",
+            "marks": [],
+            "text": "You made it."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "9eb91a84f24e",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "cc723d63713d",
+            "_type": "span",
+            "marks": [],
+            "text": "Well, almost. If you've spent the last two and a half weeks avoiding swimming pools, refusing to whistle after dark, side-stepping roadside offerings like they were landmines, and politely declining every friend who suggested a midnight beach trip, congratulations. The hardest part is behind you. Ghost Day, the fifteenth night, the peak, the evening when spirits are believed to be at their most active fell on August 27, and it has come and gone."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "edb6aea20975",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "60428c205e2f",
+            "_type": "span",
+            "marks": [],
+            "text": "What's left is the part nobody writes about."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "c617241e8cba",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "0e998f95939a",
+            "_type": "span",
+            "marks": [],
+            "text": "Everyone covers the opening. The gates swing wide, the joss paper burns, the getai stages light up, and the internet fills with lists of things that will supposedly get you followed home. But the "
+          },
+          {
+            "_key": "d04ff3c4f130",
+            "_type": "span",
+            "marks": [
+              "em"
+            ],
+            "text": "closing"
+          },
+          {
+            "_key": "02fb60e75f0e",
+            "_type": "span",
+            "marks": [],
+            "text": "? The moment the whole thing winds down and the seventh lunar month quietly packs up and leaves? That gets almost no attention at all."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "0995eeea933f",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "adc95abd87eb",
+            "_type": "span",
+            "marks": [],
+            "text": "Which is a shame, because the closing is arguably the more interesting half. There's a whole choreography to it: farewell meals, going-home money, priests with swords, lanterns floating out to sea, and a very specific set of instructions for getting a month's worth of houseguests to actually leave."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "ac9b661a6d07",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "8dc68660cc8d",
+            "_type": "span",
+            "marks": [],
+            "text": "Here's what happens in the final stretch of Ghost Month 2026, and what to do about it."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "3ab7a2ecf313",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "750c37130fdf",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "First: When Exactly Do the Gates Close?"
+          }
+        ],
+        "markDefs": [],
+        "style": "blockquote"
+      },
+      {
+        "_key": "c2478ed54d1a",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "50a112299a74",
+            "_type": "span",
+            "marks": [],
+            "text": "Ghost Month runs until September 10, the final day of the seventh lunar month, when the gates of hell are shut."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "305952687c6f",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "de1efacbb4e1",
+            "_type": "span",
+            "marks": [],
+            "text": "Except, and this is where it gets fun - you'll also see September 11 quoted all over the place. That isn't sloppy journalism. It's a genuine calendrical wrinkle."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "352e2f58564a",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "0bc5e95a4965",
+            "_type": "span",
+            "marks": [],
+            "text": "A lunar month runs either 29 or 30 days, so the \"gates close\" date shifts depending on which reckoning a community follows. Singapore listings tend to cite September 11, while several Malaysian and mainland Chinese almanacs cite September 10. Meanwhile some traditions hold that Ghost Month doesn't truly end until the first day of the eighth lunar month, when temple gates are formally closed and the wandering souls are sent home. "
+          },
+          {
+            "_key": "e45d040e7e1b",
+            "_type": "span",
+            "marks": [
+              "aab78fe04af7"
+            ],
+            "text": "MyLing Asia"
+          },
+          {
+            "_key": "0ad4fd4e6bb2",
+            "_type": "span",
+            "marks": [
+              "c059ddf9798a"
+            ],
+            "text": "Wikipedia"
+          }
+        ],
+        "markDefs": [
+          {
+            "_key": "aab78fe04af7",
+            "_type": "link",
+            "href": "https://mylingasia.com/posts/hungry-ghost-festival-2026-taboos"
+          },
+          {
+            "_key": "c059ddf9798a",
+            "_type": "link",
+            "href": "https://simple.wikipedia.org/wiki/Ghost_Festival"
+          }
+        ],
+        "style": "normal"
+      },
+      {
+        "_key": "e91006ec4f0d",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "9ab60fad2d11",
+            "_type": "span",
+            "marks": [],
+            "text": "So you have a one-day margin of error on the end of the supernatural world's busiest month. Which is either deeply reassuring or mildly alarming, depending on your temperament."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "46d389b8a691",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "fe388db103a3",
+            "_type": "span",
+            "marks": [],
+            "text": "The practical takeaway: "
+          },
+          {
+            "_key": "0d1aca7d47af",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "treat September 10 as the last day and September 11 as the buffer."
+          },
+          {
+            "_key": "ce62869f66b4",
+            "_type": "span",
+            "marks": [],
+            "text": " If you were planning to celebrate the reopening of normal life by booking a midnight swim on the 10th, maybe don't. Give it the extra twenty-four hours. What's one more day after twenty-nine?"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "02dc1902aa11",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "32ebc4f2ab71",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "What Actually Happens on the Last Day"
+          }
+        ],
+        "markDefs": [],
+        "style": "blockquote"
+      },
+      {
+        "_key": "4a8e66c7fc7b",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "b7d4cf4c98fa",
+            "_type": "span",
+            "marks": [],
+            "text": "The final day of the seventh month is not a quiet fade-out. It's a full closing ceremony and it has three jobs: feed the spirits one last time, give them travel money, and then firmly but respectfully show them the door."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "2452d5c2682c",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "42fd9c5aa0fb",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "The farewell meal."
+          },
+          {
+            "_key": "c2bea847fc27",
+            "_type": "span",
+            "marks": [],
+            "text": " On the final day, families perform a simple farewell ritual before midnight. Food offerings go out by the roadside in the late afternoon, along with incense and symbolic offerings meant to provision the spirits for the journey back. Think of it as packing someone a lunch for the road. It's the same logic as the offerings on day one and day fifteen - the first, fifteenth and last days of the seventh lunar month are the three big offering dates, but the mood is different. Day one is "
+          },
+          {
+            "_key": "a52becaf7999",
+            "_type": "span",
+            "marks": [
+              "em"
+            ],
+            "text": "welcome."
+          },
+          {
+            "_key": "7eef72ae5ce0",
+            "_type": "span",
+            "marks": [],
+            "text": " Day fifteen is "
+          },
+          {
+            "_key": "7ce57af517d3",
+            "_type": "span",
+            "marks": [
+              "em"
+            ],
+            "text": "please be nice to us."
+          },
+          {
+            "_key": "f094361e9809",
+            "_type": "span",
+            "marks": [],
+            "text": " The last day is "
+          },
+          {
+            "_key": "dac72395b32e",
+            "_type": "span",
+            "marks": [
+              "em"
+            ],
+            "text": "safe travels, see you next year."
+          },
+          {
+            "_key": "dcca68015f84",
+            "_type": "span",
+            "marks": [],
+            "text": " "
+          },
+          {
+            "_key": "373fbd79923a",
+            "_type": "span",
+            "marks": [
+              "36c429a6e698"
+            ],
+            "text": "WOFS"
+          },
+          {
+            "_key": "70c4ddc270d2",
+            "_type": "span",
+            "marks": [
+              "8e94cedd559f"
+            ],
+            "text": "Traveloka"
+          }
+        ],
+        "markDefs": [
+          {
+            "_key": "36c429a6e698",
+            "_type": "link",
+            "href": "https://www.wofs.com/hungry-ghost-festival-2026/"
+          },
+          {
+            "_key": "8e94cedd559f",
+            "_type": "link",
+            "href": "https://www.traveloka.com/en-sg/explore/tips/hungry-ghost-festival-acc/612687"
+          }
+        ],
+        "style": "normal"
+      },
+      {
+        "_key": "60b250097134",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "e44bb241aa4f",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "The going-home allowance."
+          },
+          {
+            "_key": "a08e76e4c583",
+            "_type": "span",
+            "marks": [],
+            "text": " Many people burn extra paper money and clothing on the final day, so the spirits have resources to take back with them. There's something oddly touching about this. Nobody's obligated to send anyone home with money. It's the spiritual equivalent of pressing cash into a departing relative's hand at the airport while they insist they don't need it. "
+          },
+          {
+            "_key": "9b523e7033aa",
+            "_type": "span",
+            "marks": [
+              "f1a401c6d22d"
+            ],
+            "text": "China Highlights"
+          }
+        ],
+        "markDefs": [
+          {
+            "_key": "f1a401c6d22d",
+            "_type": "link",
+            "href": "https://www.chinahighlights.com/festivals/hungry-ghost-festival.htm"
+          }
+        ],
+        "style": "normal"
+      },
+      {
+        "_key": "61fa7c8c6625",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "02c0ce37c73e",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "The eviction, conducted with maximum politeness."
+          },
+          {
+            "_key": "2f68a17fc492",
+            "_type": "span",
+            "marks": [],
+            "text": " Here's where it gets theatrical. Taoist priests chant to drive the ghosts away. The ghosts are said to hate the sound, and to scream and wail as they go. Which is a spectacular image: an entire month of careful hospitality ending with a sonic eviction notice. "
+          },
+          {
+            "_key": "6aadffddc9a7",
+            "_type": "span",
+            "marks": [
+              "ada03d12ed6a"
+            ],
+            "text": "China Highlights"
+          }
+        ],
+        "markDefs": [
+          {
+            "_key": "ada03d12ed6a",
+            "_type": "link",
+            "href": "https://www.chinahighlights.com/festivals/hungry-ghost-festival.htm"
+          }
+        ],
+        "style": "normal"
+      },
+      {
+        "_key": "a8370efa43d1",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "c8b0e40dc509",
+            "_type": "span",
+            "marks": [],
+            "text": "Families also float river lanterns on small boats in the evening. The lanterns are made of wood and paper, often with ancestors' names written on them, and the spirits are believed to follow the drifting lights away. The lanterns that were lit to guide them "
+          },
+          {
+            "_key": "069cf1d4e8b7",
+            "_type": "span",
+            "marks": [
+              "em"
+            ],
+            "text": "in"
+          },
+          {
+            "_key": "290d60b3272c",
+            "_type": "span",
+            "marks": [],
+            "text": " are also finally retired — salvation lanterns are put away once the gates to the ghost world are closed. "
+          },
+          {
+            "_key": "648345de87a3",
+            "_type": "span",
+            "marks": [
+              "5e1395200c17"
+            ],
+            "text": "China Highlights"
+          },
+          {
+            "_key": "3d50d6572976",
+            "_type": "span",
+            "marks": [
+              "9c619b020703"
+            ],
+            "text": "Wikipedia"
+          }
+        ],
+        "markDefs": [
+          {
+            "_key": "5e1395200c17",
+            "_type": "link",
+            "href": "https://www.chinahighlights.com/festivals/hungry-ghost-festival.htm"
+          },
+          {
+            "_key": "9c619b020703",
+            "_type": "link",
+            "href": "https://simple.wikipedia.org/wiki/Ghost_Festival"
+          }
+        ],
+        "style": "normal"
+      },
+      {
+        "_key": "5d3e2285bcdb",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "9226d9578d68",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "The reset."
+          },
+          {
+            "_key": "76e9dcfd45a7",
+            "_type": "span",
+            "marks": [],
+            "text": " Ancestral portraits and tablets get returned to their shelves or rehung on the walls where they normally live. The house goes back to being just a house. "
+          },
+          {
+            "_key": "fab9bcfa2ceb",
+            "_type": "span",
+            "marks": [
+              "900d9918b9d1"
+            ],
+            "text": "China Highlights"
+          }
+        ],
+        "markDefs": [
+          {
+            "_key": "900d9918b9d1",
+            "_type": "link",
+            "href": "https://www.chinahighlights.com/festivals/hungry-ghost-festival.htm"
+          }
+        ],
+        "style": "normal"
+      },
+      {
+        "_key": "92cfa1ba771d",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "bc78c765fa8b",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "Taiwan Does It Bigger, Obviously"
+          }
+        ],
+        "markDefs": [],
+        "style": "blockquote"
+      },
+      {
+        "_key": "c53b409fc93c",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "61c3671a09df",
+            "_type": "span",
+            "marks": [],
+            "text": "If you want to see the closing done at full scale, Keelung is the place. Taiwan's oldest and largest Ghost Month observance treats the ending with the same seriousness as the beginning."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "a126b238f366",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "56fa21cf3ea7",
+            "_type": "span",
+            "marks": [],
+            "text": "The Keelung Mid-Summer Ghost Festival is enormous in scope: it begins on the 29th day of the sixth lunar month with a lantern-lighting ceremony at 11pm, and ends on the first day of the eighth month with the door-closing ceremony and the copper pot transfer ceremony - fifteen events across thirty-two days. The Door-Closing Ceremony takes place at 5pm, the temple gates officially close, and the ceremony hands hosting duties to the next clan in the rotation. "
+          },
+          {
+            "_key": "6ad1772fbec8",
+            "_type": "span",
+            "marks": [
+              "882e736c42d9"
+            ],
+            "text": "Moi"
+          },
+          {
+            "_key": "a9601ad4f82b",
+            "_type": "span",
+            "marks": [
+              "3e4bbfce1a13"
+            ],
+            "text": "Keelung-for-a-walk"
+          }
+        ],
+        "markDefs": [
+          {
+            "_key": "882e736c42d9",
+            "_type": "link",
+            "href": "https://taiwangods.moi.gov.tw/html/landscape_EN/1_0011.aspx?i=1"
+          },
+          {
+            "_key": "3e4bbfce1a13",
+            "_type": "link",
+            "href": "https://keelung-for-a-walk.com/culture/1406-taiwan-ghost-festival/"
+          }
+        ],
+        "style": "normal"
+      },
+      {
+        "_key": "b2a4dd7a174d",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "0450c74456c3",
+            "_type": "span",
+            "marks": [],
+            "text": "Note the detail there: the festival "
+          },
+          {
+            "_key": "69118afa553d",
+            "_type": "span",
+            "marks": [
+              "em"
+            ],
+            "text": "starts before Ghost Month begins"
+          },
+          {
+            "_key": "32a80a6c2cbb",
+            "_type": "span",
+            "marks": [],
+            "text": " and "
+          },
+          {
+            "_key": "36919cc3d521",
+            "_type": "span",
+            "marks": [
+              "em"
+            ],
+            "text": "ends after it's over."
+          },
+          {
+            "_key": "8f9bcfdc91fa",
+            "_type": "span",
+            "marks": [],
+            "text": " The lanterns go up a day early to light the way in. The gates close a day late to make sure everyone's out. It's the ritual equivalent of arriving at the airport three hours before your flight."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "276e12fe50cf",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "de2adca69661",
+            "_type": "span",
+            "marks": [],
+            "text": "And the send-off itself is genuine spectacle. Eyewitness accounts describe priests chanting again around ten at night, a ritual dance involving a chicken, a duck and a sword, and clan members standing before the priest holding incense - the signal to the ghosts that it is time to go. Then a man dressed as Zhong Kui, the legendary demon chaser, having his face painted backstage while the crowd stakes out camera positions. "
+          },
+          {
+            "_key": "a5d16fb6916e",
+            "_type": "span",
+            "marks": [
+              "12eabaab13a3"
+            ],
+            "text": "Coco in Taiwan"
+          },
+          {
+            "_key": "67ec92f23a9f",
+            "_type": "span",
+            "marks": [
+              "ebbaf003e8dc"
+            ],
+            "text": "Coco in Taiwan"
+          }
+        ],
+        "markDefs": [
+          {
+            "_key": "12eabaab13a3",
+            "_type": "link",
+            "href": "https://corissajoy.com/keelung-mid-summer-ghost-festival-guide/"
+          },
+          {
+            "_key": "ebbaf003e8dc",
+            "_type": "link",
+            "href": "https://corissajoy.com/keelung-mid-summer-ghost-festival-guide/"
+          }
+        ],
+        "style": "normal"
+      },
+      {
+        "_key": "90fe41796cbc",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "f9013904d505",
+            "_type": "span",
+            "marks": [],
+            "text": "A demon-queller in full makeup, a swordsman, a chicken, a duck, and a crowd of people with their phones out. Ancient ritual and modern spectatorship, sharing one evening perfectly comfortably."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "c3d7f77322e0",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "140714736008",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "Your Last-Week Checklist"
+          }
+        ],
+        "markDefs": [],
+        "style": "blockquote"
+      },
+      {
+        "_key": "b774dee9a327",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "b601793f4c81",
+            "_type": "span",
+            "marks": [],
+            "text": "Right. Practical section. Here's what to actually do between now and September 10, arranged roughly in order of how much effort it takes."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "59020011fd4e",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "b05ff2639c40",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "1. Don't get sloppy in the home stretch."
+          },
+          {
+            "_key": "cfd85bfb2be2",
+            "_type": "span",
+            "marks": [],
+            "text": " This is the big one. Twenty-nine days is a long time to hold a posture, and human nature says most taboo-breaking happens in the last week, when vigilance drops and someone suggests a late dinner by the water. If you've observed the month this far, finish it. Nobody quits a marathon at kilometre forty."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "62f967b43c34",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "2c264326032d",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "2. Do a final offering, even a small one."
+          },
+          {
+            "_key": "d7927e2e5bc1",
+            "_type": "span",
+            "marks": [],
+            "text": " You don't need an elaborate spread. Fruit, water, a few sticks of incense, set out in the late afternoon of the 10th. The point is the gesture, not the budget. If you set up an offering station at the start of the month, closing it properly is the courteous bookend."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "152ee9f8a418",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "b3770c2242cf",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "3. Clear your offerings — properly."
+          },
+          {
+            "_key": "45b85ec06dda",
+            "_type": "span",
+            "marks": [],
+            "text": " Don't just bin the leftovers on the 11th like last week's groceries. Traditional practice is to let the offerings sit through the ritual, then remove them respectfully. And the standing rule about not stepping on or kicking roadside offerings? Still applies on the last day, when there will be "
+          },
+          {
+            "_key": "48be93af0c58",
+            "_type": "span",
+            "marks": [
+              "em"
+            ],
+            "text": "more"
+          },
+          {
+            "_key": "252af9f39fed",
+            "_type": "span",
+            "marks": [],
+            "text": " of them out than at any point in the month."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "97772d991c24",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "ec650918e2c2",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "4. Reset your home."
+          },
+          {
+            "_key": "2ae8257f6f2f",
+            "_type": "span",
+            "marks": [],
+            "text": " This is where feng shui and basic housekeeping converge, as they so often do. Open the windows. Let daylight in. Deal with the corner you've been ignoring. Refresh the entrance area. Sweep it, wipe the door, replace the doormat if it's seen better days. Some practitioners scatter a little coarse salt at the threshold and sweep it out the following morning as a symbolic clearing."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "900929c9e4b7",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "d7899fa07e9e",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "5. Turn the lights back down."
+          },
+          {
+            "_key": "b2bafd37f1af",
+            "_type": "span",
+            "marks": [],
+            "text": " If you've been leaving your home lit up all month as a yin deterrent, you can stop. Your electricity bill has suffered enough."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "5b5916088c66",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "c248f2cdc2b0",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "6. Retire the protective gear."
+          },
+          {
+            "_key": "dc59046baec6",
+            "_type": "span",
+            "marks": [],
+            "text": " The amulet in your bag, the pouch of glutinous rice, the prayer beads, salt, rice, amulets and beads are all standard seventh-month protective items, and they can go back in the drawer. Or stay in your bag. There is no rule against being a person who simply carries salt now. "
+          },
+          {
+            "_key": "8fadad7b6470",
+            "_type": "span",
+            "marks": [
+              "bd82f6667b8f"
+            ],
+            "text": "Your Chinese Astrology"
+          }
+        ],
+        "markDefs": [
+          {
+            "_key": "bd82f6667b8f",
+            "_type": "link",
+            "href": "https://www.yourchineseastrology.com/calendar/ghost-month.htm"
+          }
+        ],
+        "style": "normal"
+      },
+      {
+        "_key": "aca798a844ce",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "0d13a59ce2f7",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "Everything You Can Finally Do Again"
+          }
+        ],
+        "markDefs": [],
+        "style": "h4"
+      },
+      {
+        "_key": "4a72b5dbd1dc",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "3cba811acdbc",
+            "_type": "span",
+            "marks": [],
+            "text": "The genuinely satisfying part. Once Ghost Month ends, the taboos and superstitions end with it. As of September 11, the following are back on the menu: "
+          },
+          {
+            "_key": "21361f88e3db",
+            "_type": "span",
+            "marks": [
+              "0aa8b9a464b1"
+            ],
+            "text": "Mandarin Zest"
+          }
+        ],
+        "markDefs": [
+          {
+            "_key": "0aa8b9a464b1",
+            "_type": "link",
+            "href": "https://www.mandarinzest.com/blog/our-blog-1/ghost-month-the-hungry-ghost-festival-what-it-is-taboos-and-meaning-99"
+          }
+        ],
+        "style": "normal"
+      },
+      {
+        "_key": "6c4d3ccadf74",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "e8481f466bf9",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "Swimming."
+          },
+          {
+            "_key": "64587f38b226",
+            "_type": "span",
+            "marks": [],
+            "text": " The water ghosts have gone home. The rip currents have not. Check conditions anyway."
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "b9358e051299",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "24713075d3c2",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "Getting married."
+          },
+          {
+            "_key": "5d5f79918448",
+            "_type": "span",
+            "marks": [],
+            "text": " The single heaviest taboo of the month lifts entirely."
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "ac1b344c5f6c",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "156612c0e89b",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "Moving house."
+          },
+          {
+            "_key": "3b65436f426d",
+            "_type": "span",
+            "marks": [],
+            "text": " Book the movers."
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "a76b94b038c5",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "dde2ff50c4c3",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "Signing contracts, launching businesses, buying property."
+          },
+          {
+            "_key": "bb70e493f070",
+            "_type": "span",
+            "marks": [],
+            "text": " All the major beginnings that were considered inauspicious during the seventh month are cleared."
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "47e748ae8ddd",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "19aae26b514a",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "Buying a car."
+          },
+          {
+            "_key": "36ca1d48763d",
+            "_type": "span",
+            "marks": [],
+            "text": " A classic Ghost Month deferral, and one that dealerships across Southeast Asia feel in their quarterly numbers."
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "5b13bb56f2ae",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "53523ecb0d9f",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "Whistling at night."
+          },
+          {
+            "_key": "8864433fed88",
+            "_type": "span",
+            "marks": [],
+            "text": " Go on. You've earned it."
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "ca3b0cca1459",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "94b939c685c1",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "Hanging laundry overnight."
+          },
+          {
+            "_key": "df2093b2755d",
+            "_type": "span",
+            "marks": [],
+            "text": " Nothing will try it on."
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "3574093751fe",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "df09af2f029e",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "Staying out late, taking night photos, leaning on cool walls, and sitting in the front row."
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "4312a44d9216",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "1d6e56790f82",
+            "_type": "span",
+            "marks": [],
+            "text": "That last one deserves a moment. Those empty front-row chairs at every getai stage. the ones reserved all month for guests you couldn't see are just chairs again. You can sit down."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "c1fcf4999265",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "fa2a10e4a819",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "But Should You Rush It?"
+          }
+        ],
+        "markDefs": [],
+        "style": "blockquote"
+      },
+      {
+        "_key": "0cb3639f5a0e",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "13b5be59a345",
+            "_type": "span",
+            "marks": [],
+            "text": "A quick note for the cautious, because there's a real split here."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "3460c961e51b",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "0c92d1ad6d19",
+            "_type": "span",
+            "marks": [],
+            "text": "The strict-calendar reading says the month ends when it ends: gates shut, taboos lifted, normal service resumes at midnight. The more conservative reading — the one Keelung follows with its door-closing ceremony on the first day of the eighth month — builds in a grace period."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "37940f07802e",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "06db68d7ba7e",
+            "_type": "span",
+            "marks": [],
+            "text": "If you're making a genuinely major decision (a wedding date, a property completion, a business launch), the traditional advice is to let a few days pass rather than scheduling for 12:01am on the 11th. Not because anything specific is expected to happen, but because the whole logic of the month is about not cutting things fine."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "64583216e88f",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "03f409052c64",
+            "_type": "span",
+            "marks": [],
+            "text": "And if you're picking auspicious dates seriously, you'd be looking past the calendar entirely and into your own chart anyway — which is a different article."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "807782befee6",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "a06e503b530c",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "So What Was the Point of All That?"
+          }
+        ],
+        "markDefs": [],
+        "style": "blockquote"
+      },
+      {
+        "_key": "4acbae91b978",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "2d53b10656a5",
+            "_type": "span",
+            "marks": [],
+            "text": "Let's do the honest accounting, the same way we did when the month started."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "ea1996f6a266",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "402b7bf734a6",
+            "_type": "span",
+            "marks": [],
+            "text": "If you don't believe in any of this, you have just spent twenty-nine days being slightly more careful than usual, and nothing bad happened. You could argue that proves the whole thing was unnecessary. You could equally argue it proves the whole thing worked. That's the elegant, unfalsifiable trap at the heart of every protective tradition, and pointing it out doesn't actually escape it."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "b727e7d70341",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "de287adfe63a",
+            "_type": "span",
+            "marks": [],
+            "text": "But here's what strikes me about the "
+          },
+          {
+            "_key": "32b46d102606",
+            "_type": "span",
+            "marks": [
+              "em"
+            ],
+            "text": "closing"
+          },
+          {
+            "_key": "e5a3d0f398fc",
+            "_type": "span",
+            "marks": [],
+            "text": " rituals specifically, more than the opening ones."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "d62e6244349e",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "70daa51c59b4",
+            "_type": "span",
+            "marks": [],
+            "text": "Every one of them is about "
+          },
+          {
+            "_key": "dd61fbf22c8d",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "ending things properly."
+          },
+          {
+            "_key": "95811c75c2c4",
+            "_type": "span",
+            "marks": [],
+            "text": " Feed the guests one more time. Send them off with something. Say goodbye out loud. Put the photographs back where they belong. Clean the house. Draw a line."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "9c7a7d774e5c",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "f3b9493c5630",
+            "_type": "span",
+            "marks": [],
+            "text": "That's not superstition. That's closure - a thing human beings are famously bad at manufacturing on their own, which is why nearly every culture on earth has invented formal machinery for it. We hold funerals. We have graduations. We make people sign things and then shake hands. Ghost Month gives you a designated moment to acknowledge the dead, and then a designated moment to stop and that second half is the part we tend to skip in modern life, usually to our cost."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "aaf7edc8a557",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "2a9f8bca0ce6",
+            "_type": "span",
+            "marks": [],
+            "text": "Grief without an endpoint just becomes weather. A ritual ending gives it edges."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "13544348446d",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "a80174b1afee",
+            "_type": "span",
+            "marks": [],
+            "text": "So burn the paper. Set out the fruit. Float the lantern if there's water near you and it's legal where you live. And on the morning of September 11, open every window in the house and let the place air out."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "65317cd3d300",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "f22cdc8dbd20",
+            "_type": "span",
+            "marks": [],
+            "text": "Whether or not anything left, you'll feel like something did."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "322604c3ac75",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "2bb6b562e11a",
+            "_type": "span",
+            "marks": [
+              "em"
+            ],
+            "text": "The gates close on September 10. The front row is yours again on the 11th. And the full moon on September 25 is a considerably friendlier occasion."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      }
+    ],
+    "mainImage": {
+      "_type": "image",
+      "asset": {
+        "_ref": "image-5fa325cc6859b4e641a026d958c377019a5259e4-3648x2736-jpg",
+        "_type": "reference"
+      }
+    }
+  },
+  "vedic-vs-mayan-vs-western-astrology-difference": {
+    "body": [
+      {
+        "_key": "f8e8eca968a3",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "3b85a426f543",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "What Is Astrology, and Why Are There Different Systems?"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "3840131bae75",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "bd95b8992915",
+            "_type": "span",
+            "marks": [],
+            "text": "Astrology is the belief that the positions of celestial bodies — the sun, moon, planets, and stars — influence human personality, behavior, and life events. But astrology isn't one single tradition. Different cultures developed their own systems for tracking the sky and interpreting its meaning, which is why you'll find Vedic, Mayan, and Western astrology answering the same basic question — \"what do the stars say about me?\" — in very different ways."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "aa45240c8335",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "8c674a598d67",
+            "_type": "span",
+            "marks": [],
+            "text": "If you've ever calculated your zodiac sign on different apps and gotten conflicting answers, this is usually why. Each system uses a different calendar, a different starting point in the sky, and a different philosophy about what astrology is even for. Here's a breakdown of all three."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "8817fd969a6b",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "e356408fb864",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "Western Astrology: The System Most People Know"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "dda4e599b544",
+        "_type": "image",
+        "alt": "western astrology signs",
+        "asset": {
+          "_ref": "image-7d582ac45acce511d5ce867de55d56e50cec3e69-1170x780-avif",
+          "_type": "reference"
+        },
+        "caption": "western astrology signs"
+      },
+      {
+        "_key": "23b47e24c8b9",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "55be24eb0cbf",
+            "_type": "span",
+            "marks": [],
+            "text": "Western astrology is the most widely practiced system globally, especially across Europe, the Americas, and much of Asia including Malaysia. It's the source of the familiar 12 zodiac signs — Aries through Pisces — that you see in horoscope columns and apps."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "ba103aae4310",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "f98bd8697a6f",
+            "_type": "span",
+            "marks": [],
+            "text": "Key features of Western astrology:"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "b891a321bf7f",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "df181b831ef8",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "Based on the tropical zodiac"
+          },
+          {
+            "_key": "389bf83fd25d",
+            "_type": "span",
+            "marks": [],
+            "text": ", which is anchored to the seasons rather than the actual position of constellations. The zodiac \"resets\" at the spring equinox every year."
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "3beb5254c2a6",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "155e7cd73668",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "Sun sign is the primary focus."
+          },
+          {
+            "_key": "b890f43970b1",
+            "_type": "span",
+            "marks": [],
+            "text": " Your sun sign (the one people usually mean when they ask \"what's your sign?\") is determined by your birth date."
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "a11cdb31f937",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "dd27edb70144",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "Uses a full birth chart"
+          },
+          {
+            "_key": "cf7fd0514656",
+            "_type": "span",
+            "marks": [],
+            "text": " that also considers your moon sign (emotions), rising sign (outward personality), and the placement of planets like Venus and Mars for a more complete personality map."
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "6ce2287fbef2",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "71331a5583e2",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "Personality-driven."
+          },
+          {
+            "_key": "64d6fae7db14",
+            "_type": "span",
+            "marks": [],
+            "text": " Western astrology tends to focus on individual psychology, compatibility, and self-understanding rather than predicting specific life events."
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "0de330af2ac6",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "81fdacb01a5b",
+            "_type": "span",
+            "marks": [],
+            "text": "This is the system behind most \"daily horoscope\" content and astrology apps you'll find today."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "de27651ed40a",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "ab78a99a6b0b",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "Vedic Astrology: India's Ancient Sidereal System"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "f4500ac3ee07",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "e4b7abdba2ae",
+            "_type": "span",
+            "marks": [],
+            "text": "Vedic astrology (also called Jyotish) originated in ancient India and is still widely practiced today, particularly across South Asia and Tamil-speaking communities. While it also uses 12 zodiac signs with familiar names, the way it calculates them is fundamentally different from Western astrology."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "795825e80982",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "ddb0c58d1c50",
+            "_type": "span",
+            "marks": [],
+            "text": "Key features of Vedic astrology:"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "fea8ae428c34",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "990633bcf725",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "Based on the sidereal zodiac"
+          },
+          {
+            "_key": "1b5b946e3a70",
+            "_type": "span",
+            "marks": [],
+            "text": ", which is aligned with the actual, current position of constellations in the sky — not the seasons. Because the Earth's axis slowly shifts over time (a phenomenon called precession), sidereal and tropical zodiacs have drifted about 24 degrees apart. This means your Vedic sign is often one sign \"behind\" your Western sign."
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "da8c19719dd2",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "725f40c12463",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "Moon sign takes priority"
+          },
+          {
+            "_key": "e7a9e2bc3cdf",
+            "_type": "span",
+            "marks": [],
+            "text": ", not the sun sign. In Vedic astrology, your moon sign (called your Rashi) is considered the most important indicator of personality and is what many predictions are based around."
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "c3b8f403b6b7",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "e8412fdec0bb",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "Focuses on karma and life events."
+          },
+          {
+            "_key": "90cd8130b150",
+            "_type": "span",
+            "marks": [],
+            "text": " Vedic astrology leans more predictive than Western astrology, often used for decisions around marriage, career timing, and major life events. It incorporates planetary periods called Dashas to time these predictions."
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "ed56798810ea",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "22834b4d1019",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "Uses Nakshatras"
+          },
+          {
+            "_key": "b2c77f0cc049",
+            "_type": "span",
+            "marks": [],
+            "text": ", a system of 27 lunar mansions that adds a layer of detail beyond the basic 12 signs."
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "92501db3144b",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "89890ac2f7ef",
+            "_type": "span",
+            "marks": [],
+            "text": "This is also the tradition behind related systems like Tamil astrology (Jothidam), which many people in Malaysia and across South Asia grow up with."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "ce3dbe450fb4",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "e30c4f699cea",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "Mayan Astrology: A Calendar-Based Cosmology"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "38ec20a9a6c8",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "c0486a9904c3",
+            "_type": "span",
+            "marks": [],
+            "text": "Mayan astrology comes from a completely different source: the ancient Maya civilization of Mesoamerica, and it isn't built around the zodiac constellations at all. Instead, it's rooted in the Tzolk'in, a 260-day sacred calendar."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "74d7702d5485",
+        "_type": "image",
+        "alt": "mayan astrology",
+        "asset": {
+          "_ref": "image-2377e92e5efe622efbd84614b1704107a60e660e-3606x4507-jpg",
+          "_type": "reference"
+        },
+        "caption": "mayan astrology"
+      },
+      {
+        "_key": "8ad0b31651a0",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "a9d6a61bb4de",
+            "_type": "span",
+            "marks": [],
+            "text": "Key features of Mayan astrology:"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "d6664c4790ff",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "c64ae01da5d2",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "No connection to the zodiac constellations."
+          },
+          {
+            "_key": "f40de54bd3e4",
+            "_type": "span",
+            "marks": [],
+            "text": " Instead of 12 signs, Mayan astrology uses 20 day-signs (called Nawales or Day Signs), each representing an energy, animal, or natural force — such as Jaguar, Eagle, or Wind."
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "4b74e5a5db44",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "27d7004417b1",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "Combines a day sign with a number (1–13)"
+          },
+          {
+            "_key": "a95f1769adb6",
+            "_type": "span",
+            "marks": [],
+            "text": ", creating 260 unique combinations in the Tzolk'in calendar, which is believed to reflect the human gestation period."
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "15019ffd6d86",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "e8b5b488f611",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "Focuses on destiny and purpose"
+          },
+          {
+            "_key": "f261fc664079",
+            "_type": "span",
+            "marks": [],
+            "text": " rather than personality traits. Your Mayan sign is thought to represent your life's spiritual mission rather than just describing how you behave."
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "371aa7e5e2d2",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "b31295ac26c7",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "Tied to a broader cosmological worldview"
+          },
+          {
+            "_key": "a3ba48f4e896",
+            "_type": "span",
+            "marks": [],
+            "text": " involving cycles of time, ancestral energy, and the natural world, rather than planetary movement."
+          }
+        ],
+        "level": 1,
+        "listItem": "bullet",
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "a13a0df09b97",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "e743a853b972",
+            "_type": "span",
+            "marks": [],
+            "text": "Because it's structurally so different, calculating your Mayan sign requires a specific Tzolk'in converter — you can't use a regular birthday-to-zodiac chart."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "13f209b1d701",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "8b02c6c3cfe0",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "Vedic vs Mayan vs Western Astrology: Quick Comparison"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "f2e9d14820e3",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "0936c3cb11ab",
+            "_type": "span",
+            "marks": [],
+            "text": ""
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "5de18807a8a0",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "fc4e012b9f94",
+            "_type": "span",
+            "marks": [],
+            "text": "Western"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "1d3b04ea2dc3",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "9d647929e0dd",
+            "_type": "span",
+            "marks": [],
+            "text": "Vedic"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "213230d70c7d",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "13c275fd67f0",
+            "_type": "span",
+            "marks": [],
+            "text": "Mayan"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "a95c21d4591f",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "ad5f64226791",
+            "_type": "span",
+            "marks": [],
+            "text": "Origin"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "4a01f5eddbb0",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "80b8896f4fe2",
+            "_type": "span",
+            "marks": [],
+            "text": "Ancient Greece/Babylon"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "54da23b23519",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "a3d669d101ff",
+            "_type": "span",
+            "marks": [],
+            "text": "Ancient India"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "d2d3b3093f0f",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "8d1e8030f35c",
+            "_type": "span",
+            "marks": [],
+            "text": "Ancient Mesoamerica"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "cac3375ce62f",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "4a8c115486b2",
+            "_type": "span",
+            "marks": [],
+            "text": "Zodiac type"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "a3515489810b",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "a16a72bcfbe5",
+            "_type": "span",
+            "marks": [],
+            "text": "Tropical (season-based)"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "b783713e831a",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "306f6a957e4b",
+            "_type": "span",
+            "marks": [],
+            "text": "Sidereal (star-based)"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "09f39094e0cf",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "fd95dc5886d9",
+            "_type": "span",
+            "marks": [],
+            "text": "Not zodiac-based (calendar-based)"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "251128e5b7f1",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "2b2cd548fb5d",
+            "_type": "span",
+            "marks": [],
+            "text": "Number of signs"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "4c270f0a7f2f",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "42ebdf67825a",
+            "_type": "span",
+            "marks": [],
+            "text": "12"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "f4a8205ad079",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "1e147ac0da90",
+            "_type": "span",
+            "marks": [],
+            "text": "12 (shifted from Western)"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "39cc95027cc5",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "d4d9b51fa1b2",
+            "_type": "span",
+            "marks": [],
+            "text": "20 day-signs"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "b7af30509f13",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "224922dd4a1f",
+            "_type": "span",
+            "marks": [],
+            "text": "Key factor"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "addbffcbdc36",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "6663801c481d",
+            "_type": "span",
+            "marks": [],
+            "text": "Sun sign"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "1b2e4f39c52c",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "dafd11407e79",
+            "_type": "span",
+            "marks": [],
+            "text": "Moon sign"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "3c9163bcde1a",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "cb0e5d381c07",
+            "_type": "span",
+            "marks": [],
+            "text": "Day sign + number"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "1f1f74d9d315",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "143611838ea8",
+            "_type": "span",
+            "marks": [],
+            "text": "Main use"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "84f219a609f0",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "ed6c5ee95070",
+            "_type": "span",
+            "marks": [],
+            "text": "Personality, compatibility"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "ce3471c465c0",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "843df7b53643",
+            "_type": "span",
+            "marks": [],
+            "text": "Predictions, life timing"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "85a8d05b751c",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "ce88cd8c13cc",
+            "_type": "span",
+            "marks": [],
+            "text": "Purpose, destiny"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "40f5449a6870",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "00f17a3bc9ac",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "Which Astrology System Should You Follow?"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "01116f9ecff9",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "b0da507931e5",
+            "_type": "span",
+            "marks": [],
+            "text": "There's no \"correct\" system — each reflects a different cultural lens on the same universal question. If you're drawn to psychological insight and compatibility, Western astrology's personality-driven approach might resonate most. If you're interested in life timing and predictive depth, Vedic astrology's Dasha system offers that layer of detail. And if you're curious about a more spiritual, purpose-oriented framework, Mayan astrology offers a completely different lens rooted in nature and destiny."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "32ff5532cc3f",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "bdeb60b9d8e9",
+            "_type": "span",
+            "marks": [],
+            "text": "Many people actually enjoy exploring all three — since your sun sign, moon sign (Rashi), and day-sign each highlight a different facet of who you are."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "81493ad2c5a1",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "65697681b4c1",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "Frequently Asked Questions"
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "41815b1ca758",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "973e92b3b7b8",
+            "_type": "span",
+            "marks": [
+              "em"
+            ],
+            "text": "Why is my Vedic sign different from my Western sign?"
+          },
+          {
+            "_key": "1495c1236519",
+            "_type": "span",
+            "marks": [],
+            "text": "\nBecause Vedic astrology uses the sidereal zodiac (aligned with actual star positions) while Western astrology uses the tropical zodiac (aligned with the seasons), there's now roughly a 24-degree gap between them — enough to shift most people's sign by one."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "eff5935131ca",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "f87451029e08",
+            "_type": "span",
+            "marks": [
+              "em"
+            ],
+            "text": "Can I have a Western, Vedic, and Mayan sign all at once?"
+          },
+          {
+            "_key": "c28e0f64c87e",
+            "_type": "span",
+            "marks": [],
+            "text": "\nYes. Since these are three separate systems based on different calculations, you can calculate and explore all three for your birth date."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "9d6fd0a41c7e",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "ee78df197a90",
+            "_type": "span",
+            "marks": [
+              "em"
+            ],
+            "text": "Which astrology system is the oldest?"
+          },
+          {
+            "_key": "1f9b713f4658",
+            "_type": "span",
+            "marks": [],
+            "text": "\nVedic astrology is considered one of the oldest continuously practiced systems, with roots dating back thousands of years, though Mayan and Babylonian (the root of Western) astrology are also ancient."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      }
+    ],
+    "mainImage": {
+      "_type": "image",
+      "asset": {
+        "_ref": "image-1ea55aea8de0fc91a1a6317de709cbb8bf7e0820-4772x3186-jpg",
+        "_type": "reference"
+      }
+    }
+  },
   "hungry-ghost-month-2026-survival-guide": {
     "body": [
+      {
+        "_key": "ba65c2701d52",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "1aac6a242e8f",
+            "_type": "span",
+            "marks": [
+              "strong"
+            ],
+            "text": "Update: "
+          },
+          {
+            "_key": "6d5013aae9d9",
+            "_type": "span",
+            "marks": [],
+            "text": "Ghost Month 2026 ends on September 10. "
+          },
+          {
+            "_key": "0a94087f74ae",
+            "_type": "span",
+            "marks": [
+              "7c792c555d84"
+            ],
+            "text": "Here’s what happens when the gates close — and everything you can finally do again."
+          }
+        ],
+        "markDefs": [
+          {
+            "_key": "7c792c555d84",
+            "_type": "link",
+            "href": "/articles/ghost-month-2026-gates-close-what-happens"
+          }
+        ],
+        "style": "blockquote"
+      },
       {
         "_key": "8f5fa7c766a6",
         "_type": "block",

@@ -140,23 +140,20 @@ export default function ArticlesPage() {
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Get URL search parameters
-  const [searchParams, setSearchParams] = useSearchParams();
+  // Get URL search parameters. The category is derived from the URL rather than
+  // held in state, so the filters can be real links that Google is able to follow.
+  const [searchParams] = useSearchParams();
   const categoryFromUrl = searchParams.get('category');
-  const [selectedCategory, setSelectedCategory] = useState(categoryFromUrl || "All");
+  const selectedCategory = categoryFromUrl || "All";
 
-  // Update URL when category changes
-  const handleCategoryChange = (category: string) => {
-    setSelectedCategory(category);
+  // Build the canonical URL for a category filter.
+  const categoryHref = (category: string) =>
+    category === "All" ? "/article" : `/article?category=${encodeURIComponent(category)}`;
+
+  // Switching category should always land the reader back on page 1.
+  useEffect(() => {
     setCurrentPage(1);
-    
-    // Update URL parameters
-    const newSearchParams = new URLSearchParams();
-    if (category !== "All") {
-      newSearchParams.set('category', category);
-    }
-    setSearchParams(newSearchParams);
-  };
+  }, [selectedCategory]);
 
   useEffect(() => {
     async function fetchArticles() {
@@ -508,9 +505,10 @@ export default function ArticlesPage() {
               {categories.map((category) => {
                 const isSelected = selectedCategory === category.name;
                 return (
-                  <button
+                  <Link
                     key={category.name}
-                    onClick={() => handleCategoryChange(category.name)}
+                    to={categoryHref(category.name)}
+                    aria-current={isSelected ? "page" : undefined}
                     className={`px-6 py-3 rounded-full font-medium transition-all duration-200 ${
                       isSelected
                         ? "bg-gold text-white shadow-lg transform scale-105"
@@ -518,7 +516,7 @@ export default function ArticlesPage() {
                     }`}
                   >
                     {category.name}
-                  </button>
+                  </Link>
                 );
               })}
             </div>

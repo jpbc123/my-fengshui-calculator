@@ -137,10 +137,21 @@ const components: PortableTextComponents = {
   marks: {
     link: ({ children, value }) => {
       const { href } = value;
+      const linkClass =
+        "text-gold hover:text-gold/80 underline underline-offset-2 font-medium transition-colors";
+      // Internal links stay in the same tab and use client-side routing;
+      // only outbound links get target="_blank".
+      if (typeof href === "string" && href.startsWith("/")) {
+        return (
+          <Link to={href} className={linkClass}>
+            {children}
+          </Link>
+        );
+      }
       return (
-        <a 
-          href={href} 
-          className="text-gold hover:text-gold/80 underline underline-offset-2 font-medium transition-colors"
+        <a
+          href={href}
+          className={linkClass}
           target="_blank"
           rel="noopener noreferrer"
         >

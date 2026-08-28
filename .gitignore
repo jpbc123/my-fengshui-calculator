@@ -48,3 +48,7 @@ dist-ssr
 /*.md
 /*.txt
 !/README.md
+
+# 3-digit screenshot names (e.g. 404.png)
+[0-9][0-9][0-9].png
+

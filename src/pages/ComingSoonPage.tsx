@@ -1,5 +1,6 @@
 // src/pages/ComingSoonPage.tsx
 import React from 'react';
+import { Helmet } from "@/lib/helmet-shim";
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Button } from "@/components/ui/button";
@@ -9,6 +10,11 @@ import { Mail } from "lucide-react";
 export default function ComingSoonPage() {
   return (
     <div className="bg-white text-black min-h-screen flex flex-col mt-2">
+      {/* Placeholder page with no standalone content - keep it out of the index. */}
+      <Helmet>
+        <title>Coming Soon | Feng Shui &amp; Beyond</title>
+        <meta name="robots" content="noindex, follow" />
+      </Helmet>
       <Header />
       
       <main className="flex-grow container mx-auto px-4 py-12 flex flex-col items-center justify-center text-center">

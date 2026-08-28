@@ -1,6 +1,6 @@
 // src/components/Header.tsx
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import LogoIcon from "@/components/LogoIcon";
 import { Menu, X, ChevronDown, ChevronUp } from "lucide-react";
 
@@ -21,7 +21,7 @@ const megaMenuConfig = {
   	{ name: "All Articles", href: "/article", description: "Explore expert insights on Feng Shui, astrology, numerology, and more in our curated collection of articles." },
   	{ name: "Mercury Retrograde", href: "/mercury-retrograde", description: "Real-time tracking and guidance for Mercury retrograde cycles." },
   	{ name: "Full Moon Forecast", href: "/full-moon-forecast", description: "Harness lunar energy with our full moon calendar and rituals." },
-  	{ name: "Feng Shui", href: "/article?category=Feng Shui", description: "Articles on home energy, harmony, and Feng Shui best practices." },
+  	{ name: "Feng Shui", href: "/article?category=Feng%20Shui", description: "Articles on home energy, harmony, and Feng Shui best practices." },
   	{ name: "Astrology", href: "/article?category=Astrology", description: "Discover celestial insights and astrology-based life guidance." },
   	{ name: "Numerology", href: "/article?category=Numerology", description: "Discover the power of numbers in shaping your destiny." },
   	{ name: "Celebrity", href: "/article?category=Celebrity", description: "Astrological insights into famous personalities." },
@@ -84,34 +84,8 @@ const megaMenuConfig = {
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openAccordion, setOpenAccordion] = useState<string | null>(null);
-  const navigate = useNavigate();
 
   // Handle article category navigation
-  const handleArticleCategoryClick = (href: string) => {
-    // Check if this is a direct page link (not an article category filter)
-	if (!href.includes('?category=') && href !== '/article') {
-		// Direct navigation to the page
-		navigate(href);
-		setMobileMenuOpen(false);
-		return;
-	}
-
-	// Extract category from URL params for article filtering
-	const url = new URL(href, window.location.origin);
-	const category = url.searchParams.get('category');
-	
-	if (category) {
-		// Navigate to articles page and set the category
-		navigate(`/article?category=${encodeURIComponent(category)}`);
-	} else {
-		// Navigate to all articles
-		navigate('/article');
-	}
-	
-	// Close mobile menu if open
-	setMobileMenuOpen(false);
-	};
-
   const toggleAccordion = (menuKey: string) => {
     setOpenAccordion(openAccordion === menuKey ? null : menuKey);
   };
@@ -134,20 +108,10 @@ const Header = () => {
         <ul className="space-y-3">
           {menuData.items.map((item) => (
             <li key={item.name}>
-              {menuKey === 'articles' ? (
-                <button
-                  onClick={() => handleArticleCategoryClick(item.href)}
-                  className="block w-full text-left hover:text-gold transition-colors group/item"
-                >
-                  <span className="font-semibold text-sm group-hover/item:text-gold">{item.name}</span>
-                  <p className="text-xs text-white/70 leading-tight mt-1 group-hover/item:text-white/90">{item.description}</p>
-                </button>
-              ) : (
-                <Link to={item.href} className="block hover:text-gold transition-colors group/item">
-                  <span className="font-semibold text-sm group-hover/item:text-gold">{item.name}</span>
-                  <p className="text-xs text-white/70 leading-tight mt-1 group-hover/item:text-white/90">{item.description}</p>
-                </Link>
-              )}
+              <Link to={item.href} className="block hover:text-gold transition-colors group/item">
+                <span className="font-semibold text-sm group-hover/item:text-gold">{item.name}</span>
+                <p className="text-xs text-white/70 leading-tight mt-1 group-hover/item:text-white/90">{item.description}</p>
+              </Link>
             </li>
           ))}
         </ul>
@@ -258,14 +222,15 @@ const Header = () => {
             {openAccordion === 'articles' && (
               <div className="pl-4 space-y-2 mt-2 border-l border-gold/20">
                 {megaMenuConfig.articles.items.map((item) => (
-                  <button
+                  <Link
                     key={item.name}
-                    onClick={() => handleArticleCategoryClick(item.href)}
-                    className="block w-full text-left text-sm text-white/90 hover:text-gold transition py-2"
+                    to={item.href}
+                    className="block text-sm text-white/90 hover:text-gold transition py-2"
+                    onClick={() => setMobileMenuOpen(false)}
                   >
                     <div className="font-medium">{item.name}</div>
                     <div className="text-xs text-white/70 mt-1">{item.description}</div>
-                  </button>
+                  </Link>
                 ))}
               </div>
             )}

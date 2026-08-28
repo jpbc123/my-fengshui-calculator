@@ -11,6 +11,7 @@ const Credits = () => {
       <Helmet>
         <title>Credits & Attributions | Feng Shui & Beyond</title>
         <meta name="description" content="Image credits and attributions for Feng Shui & Beyond. Acknowledging the creators and sources of images used on our site." />
+        <meta name="robots" content="noindex, follow" />
         <link rel="canonical" href="https://fengshuiandbeyond.com/credits" />
       </Helmet>
       <SplashCursor />

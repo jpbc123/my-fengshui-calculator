@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { SplashCursor } from "@/components/ui/splash-cursor";
 import { Link } from "react-router-dom";
+import { ARTICLES } from "@/data/articles-manifest";
 import { 
   Home, 
   BookOpen, 
@@ -20,8 +21,32 @@ import {
   ExternalLink
 } from "lucide-react";
 
+interface SiteLink {
+  name: string;
+  path: string;
+  description?: string;
+  subLinks?: { name: string; path: string }[];
+}
+
+interface SiteSection {
+  title: string;
+  icon: JSX.Element;
+  links: SiteLink[];
+}
+
+// Every article, straight from the build-time manifest. The article index
+// paginates client-side, so without this list the older articles have no
+// crawlable inbound link anywhere on the site.
+const articleLinks: SiteLink[] = [...ARTICLES]
+  .sort((a, b) => (b.publishDate || "").localeCompare(a.publishDate || ""))
+  .map((article) => ({
+    name: article.title,
+    path: `/articles/${article.slug.current}`,
+    description: article.metaDescription,
+  }));
+
 const Sitemap = () => {
-  const siteStructure = [
+  const siteStructure: SiteSection[] = [
     {
       title: "Home",
       icon: <Home size={20} />,
@@ -107,6 +132,11 @@ const Sitemap = () => {
         { name: "Terms of Service", path: "/terms-of-service", description: "Our service terms and usage policies" },
         { name: "Credits", path: "/credits", description: "Image credits and attributions" }
       ]
+    },
+    {
+      title: `All Articles (${articleLinks.length})`,
+      icon: <BookOpen size={20} />,
+      links: articleLinks
     }
   ];
 
@@ -209,21 +239,20 @@ const Sitemap = () => {
                           <ExternalLink size={16} className="text-gray-400 group-hover:text-gold transition-colors flex-shrink-0 ml-2 mt-0.5" />
                         </div>
                         
-                        {link.subLinks && (
-                          <div className="mt-3 ml-4 space-y-2">
-                            {link.subLinks.map((subLink, subIndex) => (
-                              <Link
-                                key={subIndex}
-                                to={subLink.path}
-                                className="block text-sm text-gray-500 hover:text-gold transition-colors py-1"
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                • {subLink.name}
-                              </Link>
-                            ))}
-                          </div>
-                        )}
                       </Link>
+                      {link.subLinks && (
+                        <div className="mt-1 ml-7 mb-2 space-y-2">
+                          {link.subLinks.map((subLink, subIndex) => (
+                            <Link
+                              key={subIndex}
+                              to={subLink.path}
+                              className="block text-sm text-gray-500 hover:text-gold transition-colors py-1"
+                            >
+                              • {subLink.name}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>

@@ -9,6 +9,8 @@ on:
 jobs:
   sync-daily-content:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write   # needed by the keepalive step below
     
     steps:
     - name: Checkout repository
@@ -84,6 +86,27 @@ jobs:
           echo "ℹ️ Not December 31st, skipping astronomical data generation"
         fi
     
+    # === KEEPALIVE ===
+    # GitHub disables scheduled workflows after 60 days of repository inactivity.
+    # All generated content lives in Sanity, so this repo can sit untouched for
+    # months while the site keeps updating. Push an empty commit once the repo has
+    # been quiet for 45 days, which resets the clock before GitHub pulls the plug.
+    - name: Keep scheduled workflows alive
+      if: always()
+      run: |
+        LAST_COMMIT=$(git log -1 --format=%ct)
+        AGE_DAYS=$(( ( $(date -u +%s) - LAST_COMMIT ) / 86400 ))
+        echo "Last commit was $AGE_DAYS day(s) ago."
+        if [ "$AGE_DAYS" -ge 45 ]; then
+          echo "⏰ Repo inactive for $AGE_DAYS days - pushing keepalive commit."
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit --allow-empty -m "chore: keepalive (reset Actions 60-day inactivity timer)"
+          git push
+        else
+          echo "✅ Repo active within the last 60 days - no keepalive needed."
+        fi
+
     # === SUMMARY ===
     - name: Summary
       if: always()

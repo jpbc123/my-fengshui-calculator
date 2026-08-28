@@ -1,5 +1,60 @@
 [
   {
+    "_id": "sanity-ghost-month-2026-gates-close-what-happens",
+    "_type": "article",
+    "source": "sanity",
+    "slug": {
+      "current": "ghost-month-2026-gates-close-what-happens"
+    },
+    "title": "Ghost Month 2026 Is Almost Over: What Happens When the Gates Close on September 10 (And Everything You Can Finally Do Again)",
+    "publishDate": "2026-08-28T14:15:15.379Z",
+    "tags": [
+      "Hungry Ghost Month",
+      "Ghost Month 2026",
+      "Zhongyuan Festival",
+      "Gates of Hell",
+      "Feng Shui Protection",
+      "Chinese Traditions",
+      "Taboos and Superstitions",
+      "Lunar Calendar",
+      "Year of the Fire Horse",
+      "Feng Shui"
+    ],
+    "metaDescription": "Ghost Month 2026 ends September 10. Here's what happens when the gates close, the rituals of the final day, and everything you're finally allowed to do again.",
+    "mainImage": {
+      "_type": "image",
+      "asset": {
+        "_ref": "image-5fa325cc6859b4e641a026d958c377019a5259e4-3648x2736-jpg",
+        "_type": "reference"
+      }
+    }
+  },
+  {
+    "_id": "sanity-vedic-vs-mayan-vs-western-astrology-difference",
+    "_type": "article",
+    "source": "sanity",
+    "slug": {
+      "current": "vedic-vs-mayan-vs-western-astrology-difference"
+    },
+    "title": "Vedic vs Mayan vs Western Astrology: What's the Difference?",
+    "publishDate": "2026-07-04T14:45:00.000Z",
+    "tags": [
+      "vedic astrology",
+      "mayan astrology",
+      "western astrology",
+      "astrology comparison",
+      "astrology"
+    ],
+    "metaDescription": "Confused between Vedic, Mayan, and Western astrology? Learn how each system calculates signs, what makes them unique, and which one fits you best.",
+    "mainImage": {
+      "_type": "image",
+      "asset": {
+        "_ref": "image-1ea55aea8de0fc91a1a6317de709cbb8bf7e0820-4772x3186-jpg",
+        "_type": "reference"
+      }
+    }
+  },
+  {
     "_id": "sanity-hungry-ghost-month-2026-survival-guide",
     "_type": "article",
     "source": "sanity",
