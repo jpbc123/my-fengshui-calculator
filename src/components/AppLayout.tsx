@@ -8,6 +8,7 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import ScrollToTop from '@/components/ScrollToTop';
 import Footer from '@/components/Footer';
 import PageTitleManager from '@/components/PageTitleManager';
+import ForSaleBadge from '@/components/ForSaleBadge';
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ const AppLayout = () => (
           </main>
           <Footer />
         </div>
+        <ForSaleBadge />
       </PageTitleManager>
     </TooltipProvider>
     <Analytics />
